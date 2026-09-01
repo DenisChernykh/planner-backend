@@ -1,12 +1,11 @@
 import { useSortable } from "@dnd-kit/react/sortable";
-import { GripVertical, Pencil } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import { useMemo } from "react";
 import {
   clampPlannerDate,
   getPlannerDayName,
   isPlannerDateEditable,
 } from "@/shared/lib/planner-calendar";
-import { Button } from "@/shared/ui";
 import {
   type CadencePeriod,
   clampProgress,
@@ -17,6 +16,7 @@ import {
   getTrackingLabel,
   type PlanGoal,
 } from "../model/plan-model";
+import { QuickFactInput } from "./quick-fact-input";
 import { trackingIconMap } from "./tracking-presentation";
 
 type GoalRowProps = {
@@ -43,6 +43,9 @@ export function GoalRow({ goal, index, cadence, month, today, weekDates, onSelec
     [goal, weekDates, month, today],
   );
   const GoalIcon = trackingIconMap[goal.tracking.type];
+  const factDate = clampPlannerDate(today, today, month);
+  const factEntry = getEntry(goal, factDate);
+  const quickFactKey = `${goal.id}-${factDate}-${String(factEntry?.value ?? "")}-${factEntry?.updatedAt ?? ""}`;
 
   return (
     <div
@@ -113,17 +116,13 @@ export function GoalRow({ goal, index, cadence, month, today, weekDates, onSelec
           />
         </div>
       </div>
-      <div className="flex min-h-[72px] items-center gap-2 px-3">
-        <span className="min-w-0 flex-1 text-[0.68rem] text-muted-foreground">Быстрый ввод</span>
-        <Button
-          variant="ghost"
-          size="icon-xs"
-          aria-label={`Открыть факт цели «${goal.title}»`}
-          onClick={() => onSelect(goal, clampPlannerDate(today, today, month))}
-        >
-          <Pencil aria-hidden="true" />
-        </Button>
-      </div>
+      <QuickFactInput
+        key={quickFactKey}
+        goal={goal}
+        month={month}
+        today={today}
+        onOpenInspector={() => onSelect(goal, factDate)}
+      />
     </div>
   );
 }
