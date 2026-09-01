@@ -1141,6 +1141,10 @@
                     "month": {
                       "type": "string"
                     },
+                    "today": {
+                      "type": "string",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$"
+                    },
                     "goals": {
                       "type": "array",
                       "items": {
@@ -1351,7 +1355,7 @@
                       }
                     }
                   },
-                  "required": ["month", "goals"]
+                  "required": ["month", "today", "goals"]
                 }
               }
             }
@@ -2105,6 +2109,138 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanningResourceNotFoundProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body is too large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON Content-Type is required",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server failure",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plans/{month}/goals/order": {
+      "put": {
+        "tags": ["Planning"],
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+            },
+            "required": true,
+            "name": "month",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cadence": {
+                    "type": "string",
+                    "enum": ["day", "week", "month"]
+                  },
+                  "goalIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["cadence", "goalIds"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Goal order saved"
+          },
+          "400": {
+            "description": "Request validation failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Untrusted Origin",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Goal not found or authentication feature disabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanningResourceNotFoundProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The submitted goal order does not match the active goals in this group",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

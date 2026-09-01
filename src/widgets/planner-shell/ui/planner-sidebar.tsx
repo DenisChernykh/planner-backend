@@ -1,7 +1,8 @@
+import { Menu } from "@base-ui/react/menu";
 import { CalendarDays, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { NavLink } from "react-router";
-import { LogoutButton } from "@/features/authentication";
+import { useLogout } from "@/features/authentication";
 import type { AuthenticatedUser } from "@/shared/api";
 import { cn } from "@/shared/lib/utils";
 import {
@@ -53,6 +54,7 @@ function PlannerNavLink({
 }
 
 export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
+  const logout = useLogout();
   const displayName = user.displayName ?? user.username ?? "Пользователь";
   const initial = displayName.trim().charAt(0).toUpperCase() || "П";
 
@@ -75,17 +77,37 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
           <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="gap-3 border-t px-4 py-5">
-        <div className="flex items-center gap-2.5">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-            {initial}
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-xs font-semibold">{displayName}</span>
-            <span className="block text-[0.68rem] text-muted-foreground">личный план</span>
-          </span>
-        </div>
-        <LogoutButton className="w-full" />
+      <SidebarFooter className="border-t px-3 py-4">
+        <Menu.Root>
+          <Menu.Trigger
+            className="flex w-full items-center gap-2.5 rounded-lg p-2 text-left outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            aria-label="Открыть меню пользователя"
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
+              {initial}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-xs font-semibold">{displayName}</span>
+              <span className="block text-[0.68rem] text-muted-foreground">личный план</span>
+            </span>
+            <span aria-hidden="true" className="text-muted-foreground">
+              ⌄
+            </span>
+          </Menu.Trigger>
+          <Menu.Portal>
+            <Menu.Positioner side="top" align="start" sideOffset={6} className="z-50">
+              <Menu.Popup className="min-w-48 rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
+                <Menu.Item
+                  className="flex cursor-default items-center rounded-md px-3 py-2 text-xs outline-none data-highlighted:bg-muted"
+                  onClick={() => logout.mutate()}
+                  disabled={logout.isPending}
+                >
+                  Выйти из Planner
+                </Menu.Item>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
       </SidebarFooter>
     </Sidebar>
   );

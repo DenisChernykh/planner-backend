@@ -13,3 +13,4 @@ export * from './patchApiNotesNoteIdBody';
 export * from './postApiNotesBody';
 export * from './postApiPlansMonthGoalsBody';
 export * from './putApiGoalsGoalIdEntriesDateBody';
+export * from './putApiPlansMonthGoalsOrderBody';

@@ -16,6 +16,7 @@ const requiredOperations = [
   ["/api/plans/{month}", "get"],
   ["/api/plans/{month}/trash", "get"],
   ["/api/plans/{month}/goals", "post"],
+  ["/api/plans/{month}/goals/order", "put"],
   ["/api/goals/{goalId}", "patch"],
   ["/api/goals/{goalId}", "delete"],
   ["/api/goals/{goalId}/restore", "post"],
