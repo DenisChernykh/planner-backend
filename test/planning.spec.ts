@@ -350,6 +350,23 @@ describe("planning application rules", () => {
     expect(await mismatch.json()).toMatchObject({ code: "GOAL_ORDER_MISMATCH" });
   });
 
+  it("reorders cadence groups larger than D1's bound-parameter limit", async () => {
+    const goals = await Promise.all(
+      Array.from({ length: 25 }, (_, index) => createGoal({ title: `Goal ${index}` })),
+    );
+    const goalIds = goals.map((goal) => goal.goal.id).reverse();
+
+    const response = await request("/api/plans/2026-04/goals/order", {
+      method: "PUT",
+      body: JSON.stringify({ cadence: "day", goalIds }),
+    });
+
+    expect(response.status).toBe(204);
+    const plan = await request("/api/plans/2026-04");
+    const body = (await plan.json()) as { goals: Array<{ id: string }> };
+    expect(body.goals.map((goal) => goal.id)).toEqual(goalIds);
+  });
+
   it("creates time goals with independent bounds and evaluates their entries", async () => {
     const variants = [
       { title: "Any time", tracking: { type: "time" }, value: "12:00", met: true },

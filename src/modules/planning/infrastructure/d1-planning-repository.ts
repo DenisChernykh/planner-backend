@@ -127,32 +127,36 @@ export class D1PlanningRepository implements PlanningRepository {
     cadence: "day" | "week" | "month",
     goalIds: string[],
   ): Promise<boolean> {
-    const ids = goalIds.map(() => "?").join(",");
-    const orderCase = goalIds.map(() => "WHEN ? THEN ?").join(" ");
     const sql = `
+      WITH requested_order AS (
+        SELECT CAST(key AS INTEGER) AS sort_order, value AS id
+        FROM json_each(?)
+      ),
+      active_goals AS (
+        SELECT id
+        FROM plan_goals
+        WHERE owner_id = ?
+          AND month = ?
+          AND cadence_period = ?
+          AND deleted_at IS NULL
+      ),
+      valid_request AS (
+        SELECT
+          (SELECT COUNT(*) FROM active_goals) = (SELECT COUNT(*) FROM requested_order)
+            AND (SELECT COUNT(*) FROM active_goals WHERE id IN (SELECT id FROM requested_order)) =
+              (SELECT COUNT(*) FROM requested_order)
+            AND (SELECT COUNT(DISTINCT id) FROM requested_order) =
+              (SELECT COUNT(*) FROM requested_order) AS valid
+      )
       UPDATE plan_goals
-      SET sort_order = CASE id ${orderCase} ELSE sort_order END
-      WHERE owner_id = ?
-        AND month = ?
-        AND cadence_period = ?
-        AND deleted_at IS NULL
-        AND (SELECT COUNT(*) FROM plan_goals
-          WHERE owner_id = ? AND month = ? AND cadence_period = ? AND deleted_at IS NULL) = ?
-        AND (SELECT COUNT(*) FROM plan_goals
-          WHERE id IN (${ids}) AND owner_id = ? AND month = ? AND cadence_period = ? AND deleted_at IS NULL) = ?
-        AND NOT EXISTS (SELECT 1 FROM plan_goals extra
-          WHERE extra.owner_id = ? AND extra.month = ? AND extra.cadence_period = ?
-            AND extra.deleted_at IS NULL AND extra.id NOT IN (${ids}))
+      SET sort_order = (SELECT requested_order.sort_order
+        FROM requested_order WHERE requested_order.id = plan_goals.id)
+      WHERE id IN (SELECT id FROM active_goals)
+        AND EXISTS (SELECT 1 FROM valid_request WHERE valid)
     `;
-    const binds: unknown[] = [];
-    for (const [index, goalId] of goalIds.entries()) binds.push(goalId, index);
-    binds.push(ownerId, month, cadence);
-    binds.push(ownerId, month, cadence, goalIds.length);
-    binds.push(...goalIds, ownerId, month, cadence, goalIds.length);
-    binds.push(ownerId, month, cadence, ...goalIds);
     const result = await this.binding
       .prepare(sql)
-      .bind(...binds)
+      .bind(JSON.stringify(goalIds), ownerId, month, cadence)
       .run();
     return result.meta.changes === goalIds.length;
   }
