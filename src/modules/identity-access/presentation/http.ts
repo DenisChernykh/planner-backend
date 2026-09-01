@@ -151,8 +151,9 @@ function callbackUrl(config: TelegramRuntimeConfig): string {
   return new URL(CALLBACK_PATH, config.appOrigin).toString();
 }
 
-function isLocalDevelopmentRequest(requestUrl: string, appOrigin: string): boolean {
-  return new URL(requestUrl).origin === appOrigin;
+function isLocalDevelopmentRequest(requestUrl: string): boolean {
+  const url = new URL(requestUrl);
+  return url.protocol === "http:" && url.hostname === "localhost";
 }
 
 function setPrivateResponseHeaders(c: { header(name: string, value: string): void }): void {
@@ -238,7 +239,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     const config = readRuntimeConfig(c.env);
     if (
       config.authMode === "disabled" ||
-      (config.authMode === "development" && !isLocalDevelopmentRequest(c.req.url, config.appOrigin))
+      (config.authMode === "development" && !isLocalDevelopmentRequest(c.req.url))
     ) {
       c.res = problem(c, {
         code: "NOT_FOUND",
@@ -384,7 +385,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     const config = readRuntimeConfig(c.env);
     if (
       config.authMode === "disabled" ||
-      (config.authMode === "development" && !isLocalDevelopmentRequest(c.req.url, config.appOrigin))
+      (config.authMode === "development" && !isLocalDevelopmentRequest(c.req.url))
     ) {
       return problem(c, {
         code: "NOT_FOUND",

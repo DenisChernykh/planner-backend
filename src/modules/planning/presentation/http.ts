@@ -52,11 +52,7 @@ const timeTrackingSchema = z
     targetStart: z.string().regex(timePattern).optional(),
     targetEnd: z.string().regex(timePattern).optional(),
   })
-  .strict()
-  .refine(
-    (tracking) => Boolean(tracking.targetStart) === Boolean(tracking.targetEnd),
-    "Time target bounds must be provided together",
-  );
+  .strict();
 const trackingSchema = z.discriminatedUnion("type", [
   checkTrackingSchema,
   quantityTrackingSchema,
@@ -65,13 +61,23 @@ const trackingSchema = z.discriminatedUnion("type", [
 ]);
 
 const dailyCadenceSchema = z.object({ period: z.literal("day") }).strict();
-const repeatingCadenceSchema = z
+const weeklyCadenceSchema = z
   .object({
-    period: z.enum(["week", "month"]),
+    period: z.literal("week"),
+    targetOccurrences: z.number().int().min(1).max(7),
+  })
+  .strict();
+const monthlyCadenceSchema = z
+  .object({
+    period: z.literal("month"),
     targetOccurrences: z.number().int().min(1).max(31),
   })
   .strict();
-const cadenceSchema = z.union([dailyCadenceSchema, repeatingCadenceSchema]);
+const cadenceSchema = z.discriminatedUnion("period", [
+  dailyCadenceSchema,
+  weeklyCadenceSchema,
+  monthlyCadenceSchema,
+]);
 
 const goalInputSchema = z
   .object({

@@ -13,6 +13,7 @@
   "scripts": {
     "check": "pnpm typegen:check && pnpm format:check && pnpm boundaries:check && pnpm typecheck && pnpm test && pnpm deploy:dry-run",
     "dev": "wrangler dev --local --var AUTH_MODE:development",
+    "dev:planner": "wrangler dev --local --var AUTH_MODE:development --var APP_ORIGIN:http://localhost:5173 --var AUTH_SUCCESS_REDIRECT_URL:http://localhost:5173/",
     "dev:telegram": "wrangler dev --local --var AUTH_MODE:telegram",
     "typegen": "wrangler types src/worker-configuration.d.ts --env-interface CloudflareBindings",
     "typegen:check": "wrangler types src/worker-configuration.d.ts --env-interface CloudflareBindings --check",

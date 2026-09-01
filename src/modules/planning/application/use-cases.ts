@@ -115,8 +115,7 @@ function validateTracking(tracking: GoalTracking): GoalTracking {
       if (
         !hasOnlyKeys(tracking, ["type", "targetStart", "targetEnd"]) ||
         (tracking.targetStart !== undefined && !TIME_PATTERN.test(tracking.targetStart)) ||
-        (tracking.targetEnd !== undefined && !TIME_PATTERN.test(tracking.targetEnd)) ||
-        Boolean(tracking.targetStart) !== Boolean(tracking.targetEnd)
+        (tracking.targetEnd !== undefined && !TIME_PATTERN.test(tracking.targetEnd))
       ) {
         throw new GoalTrackingInvalidError();
       }
@@ -184,8 +183,14 @@ export function calculateMet(tracking: GoalTracking, value: boolean | number | s
       return typeof value === "number" && value >= tracking.min && value <= tracking.max;
     case "time": {
       if (typeof value !== "string") return false;
-      if (!tracking.targetStart || !tracking.targetEnd) return true;
       const valueMinutes = parseTime(value);
+      if (tracking.targetStart && !tracking.targetEnd) {
+        return valueMinutes >= parseTime(tracking.targetStart);
+      }
+      if (!tracking.targetStart && tracking.targetEnd) {
+        return valueMinutes <= parseTime(tracking.targetEnd);
+      }
+      if (!tracking.targetStart || !tracking.targetEnd) return true;
       const start = parseTime(tracking.targetStart);
       const end = parseTime(tracking.targetEnd);
       return start <= end
