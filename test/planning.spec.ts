@@ -16,6 +16,11 @@ const bindings = {
   BUILD_REVISION: "local",
   TELEGRAM_BOT_MODE: "disabled",
 } as unknown as CloudflareBindings;
+const viteDevelopmentBindings = {
+  ...bindings,
+  APP_ORIGIN: "http://localhost:5173",
+  AUTH_SUCCESS_REDIRECT_URL: "http://localhost:5173/",
+} as unknown as CloudflareBindings;
 const productionBindings = {
   ...env,
   APP_ORIGIN: PRODUCTION_ORIGIN,
@@ -51,7 +56,9 @@ async function createGoal(input: Record<string, unknown> = {}) {
     }),
   });
   expect(response.status).toBe(201);
-  return (await response.json()) as { goal: { id: string } };
+  return (await response.json()) as {
+    goal: { id: string; tracking: GoalRecord["tracking"] };
+  };
 }
 
 async function productionRequest(
@@ -160,18 +167,22 @@ describe("planning application rules", () => {
     expect(listEntriesForPlan).toHaveBeenCalledWith("owner-a", "2026-04", false);
   });
 
-  it("calculates quantity, scale and time completion", () => {
+  it("calculates quantity, scale and every time-boundary variant", () => {
     expect(calculateMet({ type: "quantity", targetValue: 5, comparison: "atLeast" }, 5)).toBe(true);
     expect(calculateMet({ type: "quantity", targetValue: 5, comparison: "atMost" }, 6)).toBe(false);
     expect(calculateMet({ type: "quantity", targetValue: 5, comparison: "equal" }, 5)).toBe(true);
     expect(calculateMet({ type: "scale", min: 1, max: 10 }, 4)).toBe(true);
+    expect(calculateMet({ type: "time" }, "12:00")).toBe(true);
+    expect(calculateMet({ type: "time", targetStart: "08:00" }, "08:00")).toBe(true);
+    expect(calculateMet({ type: "time", targetStart: "08:00" }, "07:59")).toBe(false);
+    expect(calculateMet({ type: "time", targetEnd: "09:30" }, "09:30")).toBe(true);
+    expect(calculateMet({ type: "time", targetEnd: "09:30" }, "09:31")).toBe(false);
     expect(calculateMet({ type: "time", targetStart: "21:00", targetEnd: "01:00" }, "23:00")).toBe(
       true,
     );
     expect(calculateMet({ type: "time", targetStart: "21:00", targetEnd: "01:00" }, "12:00")).toBe(
       false,
     );
-    expect(calculateMet({ type: "time" }, "12:00")).toBe(true);
   });
 
   it("creates virtual months and stores met with the raw value", async () => {
@@ -304,6 +315,76 @@ describe("planning application rules", () => {
     ).toMatchObject({ entry: { met: false, value: "12:00" } });
   });
 
+  it("creates time goals with independent bounds and evaluates their entries", async () => {
+    const variants = [
+      { title: "Any time", tracking: { type: "time" }, value: "12:00", met: true },
+      {
+        title: "Not before",
+        tracking: { type: "time", targetStart: "08:00" },
+        value: "07:59",
+        met: false,
+      },
+      {
+        title: "Not after",
+        tracking: { type: "time", targetEnd: "09:30" },
+        value: "09:31",
+        met: false,
+      },
+      {
+        title: "Overnight",
+        tracking: { type: "time", targetStart: "21:00", targetEnd: "01:00" },
+        value: "23:15",
+        met: true,
+      },
+    ];
+
+    for (const variant of variants) {
+      const { goal } = await createGoal({ title: variant.title, tracking: variant.tracking });
+      expect(goal.tracking).toEqual(variant.tracking);
+      const response = await request(`/api/goals/${goal.id}/entries/2026-04-15`, {
+        method: "PUT",
+        body: JSON.stringify({ value: variant.value }),
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({
+        entry: { value: variant.value, met: variant.met },
+      });
+    }
+  });
+
+  it("rejects weekly cadence above seven and monthly cadence above the actual month", async () => {
+    const weekly = await request("/api/plans/2026-04/goals", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Too many weekly repeats",
+        tracking: { type: "check" },
+        cadence: { period: "week", targetOccurrences: 8 },
+      }),
+    });
+    expect(weekly.status).toBe(400);
+
+    const april = await request("/api/plans/2026-04/goals", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Too many April repeats",
+        tracking: { type: "check" },
+        cadence: { period: "month", targetOccurrences: 31 },
+      }),
+    });
+    expect(april.status).toBe(400);
+
+    const may = await request("/api/plans/2026-05/goals", {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Every day in May",
+        tracking: { type: "check" },
+        cadence: { period: "month", targetOccurrences: 31 },
+      }),
+    });
+    expect(may.status).toBe(201);
+  });
+
   it("rejects future and outside-month entries", async () => {
     const { goal } = await createGoal();
     const future = await request(`/api/goals/${goal.id}/entries/2026-04-16`, {
@@ -414,14 +495,35 @@ describe("planning application rules", () => {
     );
     expect(rejected.status).toBe(403);
 
+    const viteProxyRequest = await app.request(
+      `${ORIGIN}/api/plans/2026-04/goals`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Origin: "http://localhost:5173" },
+        body: JSON.stringify({
+          title: "Trusted through local Vite proxy",
+          tracking: { type: "check" },
+          cadence: { period: "day" },
+        }),
+      },
+      viteDevelopmentBindings,
+    );
+    expect(viteProxyRequest.status).toBe(201);
+
     const weekly = await createGoal({
       title: "Exact cadence",
       cadence: { period: "week", targetOccurrences: 2 },
     });
     const weeklyPlan = await request("/api/plans/2026-04");
-    expect(await weeklyPlan.json()).toMatchObject({
-      goals: [{ id: weekly.goal.id, cadence: { period: "week", targetOccurrences: 2 } }],
-    });
+    const weeklyPlanBody = (await weeklyPlan.json()) as { goals: unknown[] };
+    expect(weeklyPlanBody.goals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: weekly.goal.id,
+          cadence: { period: "week", targetOccurrences: 2 },
+        }),
+      ]),
+    );
     const invalidCadence = await request("/api/plans/2026-04/goals", {
       method: "POST",
       body: JSON.stringify({
