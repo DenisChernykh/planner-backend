@@ -15,6 +15,7 @@ export const GetApiPlansMonthParams = zod.strictObject({
   "month": zod.string().regex(getApiPlansMonthPathMonthRegExp)
 })
 
+export const getApiPlansMonth200ResponseTodayRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$');
 export const getApiPlansMonth200ResponseGoalsItemTrackingTwoUnitMax = 64;
 
 export const getApiPlansMonth200ResponseGoalsItemTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
@@ -37,6 +38,7 @@ export const getApiPlansMonth200ResponseGoalsItemEntriesItemUpdatedAtMin = 0;
 
 export const GetApiPlansMonth200Response = zod.strictObject({
   "month": zod.string(),
+  "today": zod.string().regex(getApiPlansMonth200ResponseTodayRegExp),
   "goals": zod.array(zod.strictObject({
   "id": zod.uuid(),
   "ownerId": zod.uuid(),
@@ -588,6 +590,183 @@ export const PostApiPlansMonthGoals500Response = zod.strictObject({
   "detail": zod.string(),
   "instance": zod.string().regex(postApiPlansMonthGoals500ResponseInstanceRegExp),
   "code": zod.string().regex(postApiPlansMonthGoals500ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrderPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$');
+
+
+export const PutApiPlansMonthGoalsOrderParams = zod.strictObject({
+  "month": zod.string().regex(putApiPlansMonthGoalsOrderPathMonthRegExp)
+})
+
+
+
+
+export const PutApiPlansMonthGoalsOrderBody = zod.strictObject({
+  "cadence": zod.enum(['day', 'week', 'month']),
+  "goalIds": zod.array(zod.uuid()).min(1)
+})
+
+export const PutApiPlansMonthGoalsOrder204Response = zod.void()
+
+export const putApiPlansMonthGoalsOrder400ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder400ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder400ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder400ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder400Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder400ResponseStatusMin).max(putApiPlansMonthGoalsOrder400ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder400ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder400ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder401ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder401ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder401ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder401ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder401Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder401ResponseStatusMin).max(putApiPlansMonthGoalsOrder401ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder401ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder401ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder403ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder403ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder403ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder403ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder403Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder403ResponseStatusMin).max(putApiPlansMonthGoalsOrder403ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder403ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder403ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder404ResponseOneOneInstanceRegExp = new RegExp('^');
+
+export const putApiPlansMonthGoalsOrder404ResponseTwoOneInstanceRegExp = new RegExp('^');
+
+export const putApiPlansMonthGoalsOrder404ResponseThreeOneInstanceRegExp = new RegExp('^');
+
+
+
+export const PutApiPlansMonthGoalsOrder404Response = zod.union([zod.strictObject({
+  "type": zod.enum(['https://free-hosting-starter.dev/problems/goal-not-found']),
+  "title": zod.enum(['Goal not found']),
+  "status": zod.literal(404),
+  "detail": zod.enum(['The goal was not found.']),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder404ResponseOneOneInstanceRegExp),
+  "code": zod.enum(['GOAL_NOT_FOUND']),
+  "requestId": zod.string().min(1)
+}),zod.strictObject({
+  "type": zod.enum(['https://free-hosting-starter.dev/problems/entry-not-found']),
+  "title": zod.enum(['Entry not found']),
+  "status": zod.literal(404),
+  "detail": zod.enum(['The goal entry was not found.']),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder404ResponseTwoOneInstanceRegExp),
+  "code": zod.enum(['ENTRY_NOT_FOUND']),
+  "requestId": zod.string().min(1)
+}),zod.strictObject({
+  "type": zod.enum(['https://free-hosting-starter.dev/problems/not-found']),
+  "title": zod.enum(['Not found']),
+  "status": zod.literal(404),
+  "detail": zod.enum(['The requested resource was not found.']),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder404ResponseThreeOneInstanceRegExp),
+  "code": zod.enum(['NOT_FOUND']),
+  "requestId": zod.string().min(1)
+})])
+
+export const putApiPlansMonthGoalsOrder409ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder409ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder409ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder409ResponseStatusMin).max(putApiPlansMonthGoalsOrder409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder409ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder413ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder413ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder413ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder413ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder413Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder413ResponseStatusMin).max(putApiPlansMonthGoalsOrder413ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder413ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder413ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder415ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder415ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder415ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder415ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder415Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder415ResponseStatusMin).max(putApiPlansMonthGoalsOrder415ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder415ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder415ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const putApiPlansMonthGoalsOrder500ResponseStatusMin = 400;
+export const putApiPlansMonthGoalsOrder500ResponseStatusMax = 599;
+
+export const putApiPlansMonthGoalsOrder500ResponseInstanceRegExp = new RegExp('^');
+export const putApiPlansMonthGoalsOrder500ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiPlansMonthGoalsOrder500Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiPlansMonthGoalsOrder500ResponseStatusMin).max(putApiPlansMonthGoalsOrder500ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiPlansMonthGoalsOrder500ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiPlansMonthGoalsOrder500ResponseCodeRegExp),
   "requestId": zod.string().min(1)
 })
 

@@ -42,7 +42,9 @@ import type {
   ProblemDetails,
   PutApiGoalsGoalIdEntriesDate200,
   PutApiGoalsGoalIdEntriesDateBody,
-  PutApiGoalsGoalIdEntriesDatePathParameters
+  PutApiGoalsGoalIdEntriesDatePathParameters,
+  PutApiPlansMonthGoalsOrderBody,
+  PutApiPlansMonthGoalsOrderPathParameters
 } from '../model';
 
 import { apiMutator } from '../../client/orval-mutator';
@@ -298,6 +300,65 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getPostApiPlansMonthGoalsMutationOptions(options), queryClient);
+    }
+    export const putApiPlansMonthGoalsOrder = (
+    { month }: PutApiPlansMonthGoalsOrderPathParameters,
+    putApiPlansMonthGoalsOrderBody: BodyType<PutApiPlansMonthGoalsOrderBody>,
+ options?: SecondParameter<typeof apiMutator>,signal?: AbortSignal
+) => {
+
+
+      return apiMutator<void>(
+      {url: `/api/plans/${encodeURIComponent(String(month))}/goals/order`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putApiPlansMonthGoalsOrderBody, signal
+    },
+      options);
+    }
+
+
+
+
+export const getPutApiPlansMonthGoalsOrderMutationOptions = <TError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>, TError,{pathParams: PutApiPlansMonthGoalsOrderPathParameters;data: BodyType<PutApiPlansMonthGoalsOrderBody>}, TContext>, request?: SecondParameter<typeof apiMutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>, TError,{pathParams: PutApiPlansMonthGoalsOrderPathParameters;data: BodyType<PutApiPlansMonthGoalsOrderBody>}, TContext> => {
+
+const mutationKey = ['putApiPlansMonthGoalsOrder'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>, {pathParams: PutApiPlansMonthGoalsOrderPathParameters;data: BodyType<PutApiPlansMonthGoalsOrderBody>}> = (props) => {
+          const {pathParams,data} = props ?? {};
+
+          return  putApiPlansMonthGoalsOrder(pathParams,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiPlansMonthGoalsOrderMutationResult = NonNullable<Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>>
+    export type PutApiPlansMonthGoalsOrderMutationBody = BodyType<PutApiPlansMonthGoalsOrderBody>
+    export type PutApiPlansMonthGoalsOrderMutationError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>
+
+    export const usePutApiPlansMonthGoalsOrder = <TError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>, TError,{pathParams: PutApiPlansMonthGoalsOrderPathParameters;data: BodyType<PutApiPlansMonthGoalsOrderBody>}, TContext>, request?: SecondParameter<typeof apiMutator>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiPlansMonthGoalsOrder>>,
+        TError,
+        {pathParams: PutApiPlansMonthGoalsOrderPathParameters;data: BodyType<PutApiPlansMonthGoalsOrderBody>},
+        TContext
+      > => {
+      return useMutation(getPutApiPlansMonthGoalsOrderMutationOptions(options), queryClient);
     }
     export const patchApiGoalsGoalId = (
     { goalId }: PatchApiGoalsGoalIdPathParameters,

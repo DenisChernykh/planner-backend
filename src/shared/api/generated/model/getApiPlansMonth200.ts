@@ -9,5 +9,7 @@ import type { GetApiPlansMonth200GoalsItem } from './getApiPlansMonth200GoalsIte
 
 export type GetApiPlansMonth200 = {
   month: string;
+  /** @pattern ^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$ */
+  today: string;
   goals: GetApiPlansMonth200GoalsItem[];
 };

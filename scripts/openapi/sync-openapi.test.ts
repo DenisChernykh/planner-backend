@@ -16,6 +16,7 @@ function validDocument() {
       "/api/plans/{month}": { get: {} },
       "/api/plans/{month}/trash": { get: {} },
       "/api/plans/{month}/goals": { post: {} },
+      "/api/plans/{month}/goals/order": { put: {} },
       "/api/goals/{goalId}": { patch: {}, delete: {} },
       "/api/goals/{goalId}/restore": { post: {} },
       "/api/goals/{goalId}/entries/{date}": { put: {}, delete: {} },
