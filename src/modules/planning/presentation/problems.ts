@@ -74,6 +74,13 @@ const PLANNING_PROBLEMS = {
     title: "Entry not found",
     type: "https://free-hosting-starter.dev/problems/entry-not-found",
   },
+  GOAL_ORDER_MISMATCH: {
+    code: "GOAL_ORDER_MISMATCH",
+    detail: "The submitted goal order does not match the active goals in this group.",
+    status: 409,
+    title: "Goal order does not match",
+    type: "https://free-hosting-starter.dev/problems/goal-order-mismatch",
+  },
 } as const satisfies Record<PlanningErrorCode, ProblemInput>;
 
 const featureDisabledProblem = {

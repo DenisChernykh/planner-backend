@@ -189,7 +189,7 @@ describe("planning application rules", () => {
     const { goal } = await createGoal();
     const empty = await request("/api/plans/2026-05");
     expect(empty.status).toBe(200);
-    expect(await empty.json()).toEqual({ month: "2026-05", goals: [] });
+    expect(await empty.json()).toEqual({ month: "2026-05", today: "2026-04-15", goals: [] });
 
     const entryResponse = await request(`/api/goals/${goal.id}/entries/2026-04-14`, {
       method: "PUT",
@@ -220,6 +220,7 @@ describe("planning application rules", () => {
     const planningPaths = [
       "/api/plans/{month}",
       "/api/plans/{month}/goals",
+      "/api/plans/{month}/goals/order",
       "/api/plans/{month}/trash",
       "/api/goals/{goalId}",
       "/api/goals/{goalId}/restore",
@@ -243,6 +244,9 @@ describe("planning application rules", () => {
       "415",
       "500",
     ]);
+    expect(
+      Object.keys(document.paths["/api/plans/{month}/goals/order"]?.put?.responses ?? {}),
+    ).toEqual(["204", "400", "401", "403", "404", "409", "413", "415", "500"]);
     expect(Object.keys(document.paths["/api/goals/{goalId}"]?.patch?.responses ?? {})).toEqual([
       "200",
       "400",
@@ -259,8 +263,10 @@ describe("planning application rules", () => {
     ).toEqual(["200", "400", "401", "403", "404", "413", "415", "500"]);
     const createBody = document.paths["/api/plans/{month}/goals"]?.post?.requestBody;
     const entryBody = document.paths["/api/goals/{goalId}/entries/{date}"]?.put?.requestBody;
+    const orderBody = document.paths["/api/plans/{month}/goals/order"]?.put?.requestBody;
     expect(JSON.stringify(createBody)).toContain("application/json");
     expect(JSON.stringify(entryBody)).toContain("application/json");
+    expect(JSON.stringify(orderBody)).toContain("goalIds");
     const createContract = JSON.stringify(createBody);
     const entryContract = JSON.stringify(entryBody);
     expect(createContract).toContain("targetOccurrences");
@@ -313,6 +319,52 @@ describe("planning application rules", () => {
         })
       ).json(),
     ).toMatchObject({ entry: { met: false, value: "12:00" } });
+  });
+
+  it("persists goal order within a cadence and rejects a changed composition", async () => {
+    const first = await createGoal({ title: "First" });
+    const second = await createGoal({ title: "Second" });
+    const weekly = await createGoal({
+      title: "Weekly",
+      cadence: { period: "week", targetOccurrences: 1 },
+    });
+    const reordered = await request("/api/plans/2026-04/goals/order", {
+      method: "PUT",
+      body: JSON.stringify({ cadence: "day", goalIds: [second.goal.id, first.goal.id] }),
+    });
+    expect(reordered.status).toBe(204);
+
+    const plan = await request("/api/plans/2026-04");
+    const body = (await plan.json()) as { goals: Array<{ id: string }> };
+    expect(body.goals.map((goal) => goal.id)).toEqual([
+      second.goal.id,
+      first.goal.id,
+      weekly.goal.id,
+    ]);
+
+    const mismatch = await request("/api/plans/2026-04/goals/order", {
+      method: "PUT",
+      body: JSON.stringify({ cadence: "day", goalIds: [first.goal.id] }),
+    });
+    expect(mismatch.status).toBe(409);
+    expect(await mismatch.json()).toMatchObject({ code: "GOAL_ORDER_MISMATCH" });
+  });
+
+  it("reorders cadence groups larger than D1's bound-parameter limit", async () => {
+    const goals = await Promise.all(
+      Array.from({ length: 25 }, (_, index) => createGoal({ title: `Goal ${index}` })),
+    );
+    const goalIds = goals.map((goal) => goal.goal.id).reverse();
+
+    const response = await request("/api/plans/2026-04/goals/order", {
+      method: "PUT",
+      body: JSON.stringify({ cadence: "day", goalIds }),
+    });
+
+    expect(response.status).toBe(204);
+    const plan = await request("/api/plans/2026-04");
+    const body = (await plan.json()) as { goals: Array<{ id: string }> };
+    expect(body.goals.map((goal) => goal.id)).toEqual(goalIds);
   });
 
   it("creates time goals with independent bounds and evaluates their entries", async () => {
@@ -559,7 +611,11 @@ describe("planning application rules", () => {
     );
     expect(ownerAEntry.status).toBe(200);
     const ownerBPlan = await productionRequest("/api/plans/2026-04", "owner-b-session");
-    expect(await ownerBPlan.json()).toEqual({ month: "2026-04", goals: [] });
+    expect(await ownerBPlan.json()).toEqual({
+      month: "2026-04",
+      today: "2026-04-15",
+      goals: [],
+    });
     const ownerBEntry = await productionRequest(
       `/api/goals/${ownerAGoal.goal.id}/entries/2026-04-15`,
       "owner-b-session",

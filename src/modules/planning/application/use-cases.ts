@@ -6,6 +6,7 @@ import {
   GoalCadenceInvalidError,
   GoalDescriptionInvalidError,
   GoalNotFoundError,
+  GoalOrderMismatchError,
   GoalTitleInvalidError,
   GoalTrackingInvalidError,
   GoalTypeImmutableError,
@@ -15,6 +16,7 @@ import type {
   GoalCreateInput,
   GoalEntry,
   GoalEntryInput,
+  GoalOrderCadence,
   GoalPatchInput,
   GoalRecord,
   GoalResource,
@@ -200,6 +202,10 @@ export function calculateMet(tracking: GoalTracking, value: boolean | number | s
   }
 }
 
+export function plannerToday(now: number): string {
+  return localToday(now);
+}
+
 function validateEntry(
   tracking: GoalTracking,
   input: GoalEntryInput,
@@ -290,6 +296,35 @@ export class ListTrash {
       true,
       await this.repository.listGoals(ownerId, month, true),
     );
+  }
+}
+
+export class ReorderGoals {
+  constructor(private readonly repository: PlanningRepository) {}
+
+  async execute(input: {
+    ownerId: string;
+    month: string;
+    cadence: GoalOrderCadence;
+    goalIds: string[];
+  }): Promise<void> {
+    if (!validMonth(input.month)) throw new GoalCadenceInvalidError();
+    if (!["day", "week", "month"].includes(input.cadence)) {
+      throw new GoalOrderMismatchError();
+    }
+    if (new Set(input.goalIds).size !== input.goalIds.length || input.goalIds.length === 0) {
+      throw new GoalOrderMismatchError();
+    }
+    if (
+      !(await this.repository.reorderGoals(
+        input.ownerId,
+        input.month,
+        input.cadence,
+        input.goalIds,
+      ))
+    ) {
+      throw new GoalOrderMismatchError();
+    }
   }
 }
 
