@@ -1,4 +1,10 @@
-import type { GoalEntry, GoalEntryInput, GoalPatchInput, GoalRecord } from "./model";
+import type {
+  GoalEntry,
+  GoalEntryInput,
+  GoalOrderCadence,
+  GoalPatchInput,
+  GoalRecord,
+} from "./model";
 
 export type GoalUpdate = GoalPatchInput & {
   updatedAt: number;
@@ -10,6 +16,12 @@ export interface PlanningRepository {
   createGoal(goal: GoalRecord): Promise<GoalRecord>;
   findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null>;
   listGoals(ownerId: string, month: string, includeDeleted: boolean): Promise<GoalRecord[]>;
+  reorderGoals(
+    ownerId: string,
+    month: string,
+    cadence: GoalOrderCadence,
+    goalIds: string[],
+  ): Promise<boolean>;
   updateOwnedGoal(goalId: string, ownerId: string, changes: GoalUpdate): Promise<GoalRecord | null>;
   softDeleteOwnedGoal(goalId: string, ownerId: string, deletedAt: number): Promise<boolean>;
   restoreOwnedGoal(goalId: string, ownerId: string, updatedAt: number): Promise<boolean>;

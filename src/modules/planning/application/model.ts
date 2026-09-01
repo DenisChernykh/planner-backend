@@ -54,6 +54,8 @@ export type GoalEntry = {
 
 export type GoalResource = GoalRecord & { entries: GoalEntry[] };
 
+export type GoalOrderCadence = GoalCadence["period"];
+
 export type GoalCreateInput = {
   title: string;
   description?: string;
