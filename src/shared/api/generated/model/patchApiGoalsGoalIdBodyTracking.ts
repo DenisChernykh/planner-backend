@@ -20,8 +20,8 @@ export type PatchApiGoalsGoalIdBodyTracking = {
   max: number;
 } | {
   type: 'time';
-  /** @pattern ^(?:[01]\d|2[0-3]):[0-5]\d$/u */
+  /** @pattern ^(?:[01]\d|2[0-3]):[0-5]\d$ */
   targetStart?: string;
-  /** @pattern ^(?:[01]\d|2[0-3]):[0-5]\d$/u */
+  /** @pattern ^(?:[01]\d|2[0-3]):[0-5]\d$ */
   targetEnd?: string;
 };

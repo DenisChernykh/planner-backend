@@ -1,13 +1,24 @@
-# Апрель
+# Planner
 
-React-клиент для личного планирования. Он переносит базу `react-starter`
-Контракт принадлежит `hono-starter-free-hosting-mvp` и использует `/api`,
-Telegram OIDC и RFC 9457 Problem Details.
+React-клиент для личного планирования по месяцам. Сейчас в нём доступны shell
+планировщика, создание цели, минимальные экраны плана и корзины. API-контракт
+принадлежит соседнему Hono backend и использует `/api`, Telegram OIDC и RFC 9457
+Problem Details.
+
+## Маршруты
+
+- `/` — переход к текущему месяцу;
+- `/plans/:month` — план выбранного месяца;
+- `/plans/:month/goals/new` — создание цели;
+- `/plans/:month/trash` — корзина месяца.
+
+Месяц передаётся в формате `YYYY-MM`. Некорректный месяц и неизвестный маршрут
+показывают отдельное понятное состояние.
 
 ## Cloudflare Free topology
 
 ```text
-Browser → april-planner Worker + Static Assets
+Browser → planner-frontend Worker + Static Assets
                          └─ /api/* → service binding → free-hosting-starter Hono Worker → D1
 ```
 
@@ -33,25 +44,56 @@ Vite proxy направляет `/api` и `/health` на `http://localhost:8787`
 другого Hono origin скопируйте `.env.example` в `.env.local` и задайте
 `DEV_API_PROXY_TARGET` как абсолютный HTTP(S) origin без path.
 
-Запустите backend отдельно в
-`/Users/denischernykh/Documents/ChatGPT/hono-starter-free-hosting-mvp`:
+Сначала запустите соседний backend из `../backend`:
 
 ```bash
 pnpm db:migrate:local
-pnpm dev
+pnpm dev:planner
 ```
+
+`dev:planner` доверяет Vite origin `http://localhost:5173`, поэтому unsafe
+запросы формы проходят проверку Origin через локальный proxy. Обычный backend
+`pnpm dev` остаётся автономным режимом на `http://localhost:8787`.
 
 ## API contract
 
-`openapi/openapi.json` получен непосредственно из Hono `createApp()`. При запущенном backend после изменения контракта выполните `pnpm api:update`; generated
-Orval-файлы вручную не редактируются.
+`openapi/openapi.json` генерируется непосредственно из Hono `createApp()` в
+`../backend`; запущенный HTTP-сервер для этого не нужен. После изменения
+контракта выполните:
+
+```bash
+pnpm api:update
+```
+
+Команда сначала обновляет snapshot, затем запускает Orval. Generated
+TypeScript/Zod-файлы вручную не редактируются. Sync проверяет наличие всех
+Planning operations, которые использует frontend.
+
+## Цели
+
+Форма поддерживает четыре способа учёта: `check`, `quantity`, `scale` и `time`,
+а также периоды `day`, `week` и `month`. Для `time` обе границы необязательны:
+можно разрешить любое время, задать только «не раньше», только «не позже» или
+обе границы. Диапазон с началом позже конца проходит через полночь. Недельная
+частота ограничена 1–7, месячная — фактическим числом дней выбранного месяца.
+
+## Проверка
+
+```bash
+pnpm test
+pnpm build
+pnpm check
+```
+
+`pnpm check` обновляет и проверяет API snapshot, формат, lint, архитектурные
+границы, тесты и Cloudflare dry-run. Это локальная проверка, не deploy.
 
 ## Deploy
 
 1. Сначала настройте и задеплойте Hono Worker c production именем
    `free-hosting-starter` в том же Cloudflare account.
 2. В backend задайте `APP_ORIGIN` и `AUTH_SUCCESS_REDIRECT_URL` как public URL
-   `april-planner` Worker и зарегистрируйте callback
+   `planner-frontend` Worker и зарегистрируйте callback
    `/api/auth/telegram/callback` в Telegram.
 3. Здесь выполните `pnpm check`; после успешного dry-run явно запустите
    `pnpm deploy`.
