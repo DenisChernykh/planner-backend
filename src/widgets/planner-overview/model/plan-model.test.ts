@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { PlanGoal } from "./plan-model";
-import { getAvailableDates, getProgress } from "./plan-model";
+import { formatEntryValue, getAvailableDates, getProgress } from "./plan-model";
 
 function goal(cadence: PlanGoal["cadence"], entries: PlanGoal["entries"]): PlanGoal {
   return {
@@ -71,5 +71,35 @@ describe("plan progress", () => {
         "2026-04-30",
       ),
     ).toMatchObject({ value: 2, total: 3 });
+  });
+});
+
+describe("fact value formatting", () => {
+  it("keeps stored values for quantity, scale, and time facts", () => {
+    const quantityGoal = {
+      ...goal({ period: "day" }, []),
+      tracking: {
+        type: "quantity" as const,
+        targetValue: 5_000,
+        comparison: "atLeast" as const,
+        unit: "шаг",
+      },
+    };
+    const scaleGoal = {
+      ...goal({ period: "day" }, []),
+      tracking: { type: "scale" as const, min: 1, max: 10 },
+    };
+    const timeGoal = {
+      ...goal({ period: "day" }, []),
+      tracking: { type: "time" as const, targetEnd: "09:00" },
+    };
+
+    expect(formatEntryValue(quantityGoal, { ...entry("2026-04-13", true), value: 5_163 })).toBe(
+      "5163 шаг",
+    );
+    expect(formatEntryValue(scaleGoal, { ...entry("2026-04-13", false), value: 4 })).toBe("4");
+    expect(formatEntryValue(timeGoal, { ...entry("2026-04-13", true), value: "08:45" })).toBe(
+      "08:45",
+    );
   });
 });

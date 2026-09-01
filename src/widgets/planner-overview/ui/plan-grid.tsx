@@ -37,14 +37,17 @@ const russianDndPlugins = [
 export function PlanGrid({ month, today, weekDates, goals, onSelect }: PlanGridProps) {
   const queryClient = useQueryClient();
   const [announcement, setAnnouncement] = useState("");
+  const [reordering, setReordering] = useState(false);
   const queryKey = getGetApiPlansMonthQueryKey({ month });
 
   const handleDragStart = (event: DragStartEvent) => {
+    if (reordering) return setAnnouncement("Подождите, текущий порядок ещё сохраняется.");
     const source = event.operation.source;
     if (source && isSortable(source))
       setAnnouncement(`Начато перемещение цели «${String(source.data.title ?? "")}».`);
   };
   const handleDragEnd = (event: DragEndEvent) => {
+    if (reordering) return setAnnouncement("Подождите, текущий порядок ещё сохраняется.");
     const source = event.operation.source;
     const target = event.operation.target;
     if (event.canceled || !source || !isSortable(source))
@@ -67,13 +70,17 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect }: PlanGridP
     queryClient.setQueryData(queryKey, { ...before, goals: nextGoals });
     const data: PutApiPlansMonthGoalsOrderBody = { cadence, goalIds };
     setAnnouncement(`Цель «${String(source.data.title ?? "")}» перемещена. Сохраняем порядок.`);
+    setReordering(true);
     void putApiPlansMonthGoalsOrder({ month }, data)
       .then(() => setAnnouncement("Порядок целей сохранён."))
       .catch(() => {
         queryClient.setQueryData(queryKey, before);
         setAnnouncement("Не удалось сохранить порядок. Порядок восстановлен.");
       })
-      .finally(() => void queryClient.invalidateQueries({ queryKey }));
+      .finally(async () => {
+        await queryClient.invalidateQueries({ queryKey });
+        setReordering(false);
+      });
   };
 
   return (
@@ -85,20 +92,26 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect }: PlanGridP
       <div className="sr-only" role="status" aria-live="polite">
         {announcement}
       </div>
-      <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-        <PlanGridHeader weekDates={weekDates} today={today} />
-        {planSections.map((section) => (
-          <PlanSection
-            key={section.cadence}
-            {...section}
-            month={month}
-            today={today}
-            weekDates={weekDates}
-            goals={goals}
-            onSelect={onSelect}
-          />
-        ))}
-      </div>
+      <section
+        className="overflow-x-auto rounded-xl border bg-card shadow-sm"
+        aria-busy={reordering}
+        aria-label="Недельная таблица плана"
+      >
+        <div className="min-w-[860px]" inert={reordering || undefined}>
+          <PlanGridHeader weekDates={weekDates} today={today} />
+          {planSections.map((section) => (
+            <PlanSection
+              key={section.cadence}
+              {...section}
+              month={month}
+              today={today}
+              weekDates={weekDates}
+              goals={goals}
+              onSelect={onSelect}
+            />
+          ))}
+        </div>
+      </section>
     </DragDropProvider>
   );
 }

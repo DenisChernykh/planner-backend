@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import { Button, Input } from "@/shared/ui";
 
+import { isQuickFactValueValid } from "./quick-fact-model";
 import { trackingIconMap } from "./tracking-presentation";
 
 type FactValueEditorProps = {
@@ -17,6 +18,7 @@ type FactValueEditorProps = {
   onValueChange: (value: string) => void;
   onSave: () => void;
   onDelete: () => void;
+  onDeleteIntent: () => void;
 };
 
 export function FactValueEditor({
@@ -31,9 +33,10 @@ export function FactValueEditor({
   onValueChange,
   onSave,
   onDelete,
+  onDeleteIntent,
 }: FactValueEditorProps) {
   const Icon = trackingIconMap[goal.tracking.type];
-  const emptyNumericValue = goal.tracking.type !== "check" && value.trim() === "";
+  const valueValid = isQuickFactValueValid(goal, value);
   return (
     <section className="space-y-3 border-b bg-card p-4">
       <div className="flex items-center justify-between">
@@ -85,7 +88,7 @@ export function FactValueEditor({
       <div className="flex gap-2">
         <Button
           className="flex-1"
-          disabled={!editable || savePending || emptyNumericValue}
+          disabled={!editable || savePending || deletePending || !valueValid}
           isLoading={savePending}
           loadingLabel="Сохраняем"
           onClick={onSave}
@@ -95,9 +98,11 @@ export function FactValueEditor({
         <Button
           variant="outline"
           size="icon"
-          disabled={!hasEntry || !editable || deletePending}
+          disabled={!hasEntry || !editable || savePending || deletePending}
           isLoading={deletePending}
           loadingLabel="Удаляем"
+          data-fact-delete
+          onPointerDown={onDeleteIntent}
           onClick={onDelete}
           aria-label="Удалить факт"
         >

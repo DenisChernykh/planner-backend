@@ -5,6 +5,7 @@ import {
   getPlannerWeekStart,
   isPlannerDateInMonth,
 } from "@/shared/lib/planner-calendar";
+import { formatEntryValue, getEntry } from "../model/plan-model";
 
 type FactWeekHistoryProps = {
   goal: GetApiPlansMonth200GoalsItem;
@@ -26,6 +27,7 @@ export function FactWeekHistory({ goal, date, month, onDateChange }: FactWeekHis
       {weekDates.map((item) => {
         const inMonth = isPlannerDateInMonth(item, month);
         const selected = item === date;
+        const entry = getEntry(goal, item);
         return (
           <button
             key={item}
@@ -35,7 +37,7 @@ export function FactWeekHistory({ goal, date, month, onDateChange }: FactWeekHis
             onClick={() => onDateChange(item)}
           >
             <span>{formatPlannerDay(item)}</span>
-            <span>{goal.entries.find((fact) => fact.date === item)?.met ? "✓" : "—"}</span>
+            <span>{formatEntryValue(goal, entry) || "—"}</span>
           </button>
         );
       })}

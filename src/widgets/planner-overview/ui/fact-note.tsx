@@ -1,3 +1,5 @@
+import type { FocusEvent } from "react";
+
 import { Textarea } from "@/shared/ui";
 
 type FactNoteProps = {
@@ -5,7 +7,7 @@ type FactNoteProps = {
   editable: boolean;
   hasEntry: boolean;
   onChange: (note: string) => void;
-  onBlur: () => void;
+  onBlur: (event: FocusEvent<HTMLTextAreaElement>) => void;
 };
 
 export function FactNote({ note, editable, hasEntry, onChange, onBlur }: FactNoteProps) {
