@@ -57,6 +57,7 @@ describe("planner routes", () => {
     expect(
       screen.getByRole("heading", { name: formatPlannerMonth(currentMonth) }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Выйти" })).toBeInTheDocument();
   });
 
   it("surfaces invalid months and unknown routes", async () => {

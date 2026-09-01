@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useWatch } from "react-hook-form";
 import { useNavigate } from "react-router";
 
+import { classifySessionError, clearCurrentSession } from "@/entities/session";
 import { getGetApiPlansMonthQueryKey, usePostApiPlansMonthGoals } from "@/shared/api";
 import { useZodForm } from "@/shared/lib/form";
 import { Alert, AlertDescription, AlertTitle } from "@/shared/ui";
@@ -56,6 +57,11 @@ export function CreateGoalForm({ month }: { month: string }) {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: getGetApiPlansMonthQueryKey({ month }) });
         void navigate(`/plans/${month}#notice=goal-created`, { replace: true });
+      },
+      onError: (error) => {
+        if (classifySessionError(error) !== "anonymous") return;
+        clearCurrentSession(queryClient);
+        void navigate("/login", { replace: true });
       },
     },
   });

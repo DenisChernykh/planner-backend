@@ -1,6 +1,7 @@
 import { CalendarDays, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { NavLink } from "react-router";
+import { LogoutButton } from "@/features/authentication";
 import type { AuthenticatedUser } from "@/shared/api";
 import { cn } from "@/shared/lib/utils";
 import {
@@ -74,7 +75,7 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
           <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="border-t px-4 py-5">
+      <SidebarFooter className="gap-3 border-t px-4 py-5">
         <div className="flex items-center gap-2.5">
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
             {initial}
@@ -84,6 +85,7 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
             <span className="block text-[0.68rem] text-muted-foreground">личный план</span>
           </span>
         </div>
+        <LogoutButton className="w-full" />
       </SidebarFooter>
     </Sidebar>
   );
