@@ -1,5 +1,5 @@
 {
-  "name": "april-planner",
+  "name": "planner-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,10 +19,10 @@
     "test": "vitest run",
     "deploy:dry-run": "pnpm build && wrangler deploy --dry-run --env production",
     "deploy": "pnpm build && wrangler deploy --env production",
-    "api:sync": "node scripts/openapi/sync-openapi.mjs",
+    "api:sync": "tsx scripts/openapi/sync-openapi.ts && biome format --write openapi/openapi.json",
     "api:generate": "orval",
     "api:update": "pnpm api:sync && pnpm api:generate",
-    "api:check": "pnpm api:generate && git diff --exit-code -- openapi/openapi.json src/shared/api/generated src/shared/api/generated-zod",
+    "api:check": "tsx scripts/openapi/check-openapi.ts",
     "architecture": "CHOKIDAR_USEPOLLING=1 steiger ./src",
     "check": "pnpm api:check && pnpm format:check && pnpm lint && pnpm architecture && pnpm test && pnpm deploy:dry-run",
     "prepare": "husky"
