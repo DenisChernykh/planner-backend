@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "april-planner-local",
+  "name": "planner-frontend-local",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-08-31",
   "assets": {
@@ -12,7 +12,7 @@
   "services": [{ "binding": "API", "service": "free-hosting-starter" }],
   "env": {
     "production": {
-      "name": "april-planner",
+      "name": "planner-frontend",
       "assets": {
         "directory": "./dist",
         "binding": "ASSETS",

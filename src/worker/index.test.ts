@@ -7,7 +7,7 @@ describe("frontend Worker routing", () => {
     const apiFetch = vi.fn(async () => new Response("api"));
     const assetFetch = vi.fn(async () => new Response("asset"));
     const response = await handleRequest(
-      new Request("https://april.example.workers.dev/api/notes"),
+      new Request("https://planner.example.workers.dev/api/notes"),
       {
         API: { fetch: apiFetch },
         ASSETS: { fetch: assetFetch },
@@ -20,6 +20,6 @@ describe("frontend Worker routing", () => {
   });
 
   it("sends browser navigation to static assets", () => {
-    expect(isApiRequest(new Request("https://april.example.workers.dev/today"))).toBe(false);
+    expect(isApiRequest(new Request("https://planner.example.workers.dev/today"))).toBe(false);
   });
 });

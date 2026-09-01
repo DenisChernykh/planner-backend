@@ -9,7 +9,14 @@
 export type PatchApiGoalsGoalIdBodyCadence = {
   period: 'day';
 } | {
-  period: 'week' | 'month';
+  period: 'week';
+  /**
+     * @minimum 1
+     * @maximum 7
+     */
+  targetOccurrences: number;
+} | {
+  period: 'month';
   /**
      * @minimum 1
      * @maximum 31

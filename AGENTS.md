@@ -1,7 +1,7 @@
 # Project instructions
 
 This React/Vite frontend uses the Hono backend at
-`/Users/denischernykh/Documents/ChatGPT/hono-starter-free-hosting-mvp`.
+`/Users/denischernykh/Documents/ChatGPT/planner/backend`.
 
 - Target Cloudflare Workers Free + Static Assets. This Worker serves the SPA and
   forwards only `/api` to Hono using the `API` Service Binding.

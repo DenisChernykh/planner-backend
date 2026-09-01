@@ -41,7 +41,7 @@ function LoginFrame({ children }: { children: ReactNode }) {
     <main className="mx-auto flex min-h-screen max-w-2xl items-center px-6 py-12">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Апрель</CardTitle>
+          <CardTitle>Planner</CardTitle>
           <CardDescription>Войдите через Telegram, чтобы открыть личные заметки.</CardDescription>
         </CardHeader>
         <CardContent>{children}</CardContent>
