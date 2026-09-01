@@ -8,7 +8,8 @@ export type PlanningErrorCode =
   | "ENTRY_DATE_INVALID"
   | "ENTRY_DATE_FUTURE"
   | "ENTRY_VALUE_INVALID"
-  | "ENTRY_NOT_FOUND";
+  | "ENTRY_NOT_FOUND"
+  | "GOAL_ORDER_MISMATCH";
 
 export abstract class PlanningError extends Error {
   abstract readonly code: PlanningErrorCode;
@@ -105,5 +106,14 @@ export class EntryNotFoundError extends PlanningError {
   constructor() {
     super("An owned goal entry lookup did not return a row.");
     this.name = "EntryNotFoundError";
+  }
+}
+
+export class GoalOrderMismatchError extends PlanningError {
+  readonly code = "GOAL_ORDER_MISMATCH";
+
+  constructor() {
+    super("The submitted goal order does not match the active goals in this group.");
+    this.name = "GoalOrderMismatchError";
   }
 }
