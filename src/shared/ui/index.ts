@@ -85,6 +85,7 @@ export {
 export { Skeleton } from "./skeleton";
 export { Spinner } from "./spinner";
 export { TextField } from "./text-field";
+export { Textarea } from "./textarea";
 export { TextareaField, type TextareaFieldProps } from "./textarea-field";
 export {
   Tooltip,

@@ -8,6 +8,17 @@ import { formatPlannerMonth, getCurrentPlannerMonth } from "@/shared/lib/planner
 
 import { routes } from "./router";
 
+function currentPlannerDate() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Yekaterinburg",
+    year: "numeric",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 vi.mock("@/entities/session", () => ({
   useCurrentSession: () => ({
     kind: "authenticated",
@@ -19,7 +30,11 @@ vi.mock("@/shared/api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/shared/api")>();
   return {
     ...actual,
-    useGetApiPlansMonth: () => ({ isPending: false, isError: false, data: { goals: [] } }),
+    useGetApiPlansMonth: () => ({
+      isPending: false,
+      isError: false,
+      data: { month: getCurrentPlannerMonth(), today: currentPlannerDate(), goals: [] },
+    }),
     useGetApiPlansMonthTrash: () => ({ isPending: false, isError: false, data: { goals: [] } }),
   };
 });
@@ -54,10 +69,14 @@ describe("planner routes", () => {
     const currentMonth = getCurrentPlannerMonth();
 
     await waitFor(() => expect(router.state.location.pathname).toBe(`/plans/${currentMonth}`));
-    expect(
-      screen.getByRole("heading", { name: formatPlannerMonth(currentMonth) }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Выйти" })).toBeInTheDocument();
+    const monthName = formatPlannerMonth(currentMonth)
+      .replace(/ \d{4}$/u, "")
+      .toLocaleLowerCase("ru-RU");
+    expect(screen.getByRole("heading", { name: `План на ${monthName}` })).toBeInTheDocument();
+    await userEvent
+      .setup()
+      .click(screen.getByRole("button", { name: "Открыть меню пользователя" }));
+    expect(await screen.findByRole("menuitem", { name: "Выйти из Planner" })).toBeInTheDocument();
   });
 
   it("surfaces invalid months and unknown routes", async () => {
