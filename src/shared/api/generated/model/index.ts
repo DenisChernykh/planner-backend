@@ -85,5 +85,7 @@ export * from './problemDetails';
 export * from './putApiGoalsGoalIdEntriesDate200';
 export * from './putApiGoalsGoalIdEntriesDate200Entry';
 export * from './putApiGoalsGoalIdEntriesDatePathParameters';
+export * from './putApiPlansMonthGoalsOrderBodyCadence';
+export * from './putApiPlansMonthGoalsOrderPathParameters';
 export * from './telegramUpdate';
 export * from '../operation';
