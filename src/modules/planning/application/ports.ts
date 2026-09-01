@@ -14,6 +14,11 @@ export interface PlanningRepository {
   softDeleteOwnedGoal(goalId: string, ownerId: string, deletedAt: number): Promise<boolean>;
   restoreOwnedGoal(goalId: string, ownerId: string, updatedAt: number): Promise<boolean>;
   listEntries(goalId: string): Promise<StoredEntry[]>;
+  listEntriesForPlan(
+    ownerId: string,
+    month: string,
+    includeDeleted: boolean,
+  ): Promise<StoredEntry[]>;
   upsertEntry(entry: StoredEntry): Promise<StoredEntry>;
   deleteEntry(goalId: string, date: string): Promise<boolean>;
 }

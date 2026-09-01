@@ -22,7 +22,7 @@ import type {
   RepeatingCadence,
   TimeTracking,
 } from "./model";
-import type { PlanningRepository, StoredEntry } from "./ports";
+import type { GoalUpdate, PlanningRepository, StoredEntry } from "./ports";
 
 const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
 const LOCAL_TIME_ZONE = "Asia/Yekaterinburg";
@@ -156,11 +156,19 @@ function toResource(goal: GoalRecord, entries: GoalEntry[]): GoalResource {
 
 async function withEntries(
   repository: PlanningRepository,
+  ownerId: string,
+  month: string,
+  includeDeleted: boolean,
   goals: GoalRecord[],
 ): Promise<GoalResource[]> {
-  return Promise.all(
-    goals.map(async (goal) => toResource(goal, await repository.listEntries(goal.id))),
-  );
+  const entriesByGoal = new Map<string, GoalEntry[]>();
+  for (const entry of await repository.listEntriesForPlan(ownerId, month, includeDeleted)) {
+    const entries = entriesByGoal.get(entry.goalId) ?? [];
+    entries.push(entry);
+    entriesByGoal.set(entry.goalId, entries);
+  }
+
+  return goals.map((goal) => toResource(goal, entriesByGoal.get(goal.id) ?? []));
 }
 
 export function calculateMet(tracking: GoalTracking, value: boolean | number | string): boolean {
@@ -255,7 +263,13 @@ export class ListPlan {
 
   async execute(ownerId: string, month: string): Promise<GoalResource[]> {
     if (!validMonth(month)) throw new GoalCadenceInvalidError();
-    return withEntries(this.repository, await this.repository.listGoals(ownerId, month, false));
+    return withEntries(
+      this.repository,
+      ownerId,
+      month,
+      false,
+      await this.repository.listGoals(ownerId, month, false),
+    );
   }
 }
 
@@ -264,7 +278,13 @@ export class ListTrash {
 
   async execute(ownerId: string, month: string): Promise<GoalResource[]> {
     if (!validMonth(month)) throw new GoalCadenceInvalidError();
-    return withEntries(this.repository, await this.repository.listGoals(ownerId, month, true));
+    return withEntries(
+      this.repository,
+      ownerId,
+      month,
+      true,
+      await this.repository.listGoals(ownerId, month, true),
+    );
   }
 }
 
@@ -277,20 +297,20 @@ export class UpdateGoal {
     const goal = requireGoal(
       await this.repository.findOwnedActiveGoal(input.goalId, input.ownerId),
     );
-    let tracking = goal.tracking;
+    const changes: GoalUpdate = { updatedAt: input.now };
     if (input.tracking !== undefined) {
-      tracking = validateTracking(input.tracking);
+      const tracking = validateTracking(input.tracking);
       if (tracking.type !== goal.tracking.type) throw new GoalTypeImmutableError();
+      changes.tracking = tracking;
     }
-    const cadence = input.cadence ? validateCadence(input.cadence, goal.month) : goal.cadence;
-    const updated = await this.repository.updateOwnedGoal(input.goalId, input.ownerId, {
-      title: input.title === undefined ? undefined : normalizeTitle(input.title),
-      description:
-        input.description === undefined ? undefined : normalizeDescription(input.description),
-      tracking,
-      cadence,
-      updatedAt: input.now,
-    });
+    if (input.cadence !== undefined) {
+      changes.cadence = validateCadence(input.cadence, goal.month);
+    }
+    if (input.title !== undefined) changes.title = normalizeTitle(input.title);
+    if (input.description !== undefined) {
+      changes.description = normalizeDescription(input.description);
+    }
+    const updated = await this.repository.updateOwnedGoal(input.goalId, input.ownerId, changes);
     return requireGoal(updated);
   }
 }

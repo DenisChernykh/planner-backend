@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
 import type { GoalRecord, GoalTracking } from "../application/model";
@@ -100,31 +100,31 @@ export class D1PlanningRepository implements PlanningRepository {
     ownerId: string,
     changes: GoalUpdate,
   ): Promise<GoalRecord | null> {
-    const current = await this.findOwnedActiveGoal(goalId, ownerId);
-    if (!current) return null;
-    const next = {
-      ...current,
-      ...(changes.title === undefined ? {} : { title: changes.title }),
-      ...(changes.description === undefined ? {} : { description: changes.description }),
-      ...(changes.tracking === undefined ? {} : { tracking: changes.tracking }),
-      ...(changes.cadence === undefined ? {} : { cadence: changes.cadence }),
-      updatedAt: changes.updatedAt,
-    };
-    await this.database
+    const updated = await this.database
       .update(planGoals)
       .set({
-        title: next.title,
-        description: next.description,
-        trackingType: next.tracking.type,
-        trackingConfig: JSON.stringify(next.tracking),
-        cadencePeriod: next.cadence.period,
-        targetOccurrences: next.cadence.period === "day" ? null : next.cadence.targetOccurrences,
-        updatedAt: next.updatedAt,
+        updatedAt: changes.updatedAt,
+        ...(changes.title === undefined ? {} : { title: changes.title }),
+        ...(changes.description === undefined ? {} : { description: changes.description }),
+        ...(changes.tracking === undefined
+          ? {}
+          : {
+              trackingType: changes.tracking.type,
+              trackingConfig: JSON.stringify(changes.tracking),
+            }),
+        ...(changes.cadence === undefined
+          ? {}
+          : {
+              cadencePeriod: changes.cadence.period,
+              targetOccurrences:
+                changes.cadence.period === "day" ? null : changes.cadence.targetOccurrences,
+            }),
       })
       .where(
         and(eq(planGoals.id, goalId), eq(planGoals.ownerId, ownerId), isNull(planGoals.deletedAt)),
-      );
-    return next;
+      )
+      .returning();
+    return updated[0] ? toGoal(updated[0]) : null;
   }
 
   async softDeleteOwnedGoal(goalId: string, ownerId: string, deletedAt: number): Promise<boolean> {
@@ -159,6 +159,29 @@ export class D1PlanningRepository implements PlanningRepository {
       .from(goalEntries)
       .where(eq(goalEntries.goalId, goalId))
       .orderBy(desc(goalEntries.localDate));
+    return rows.map(toEntry);
+  }
+
+  async listEntriesForPlan(
+    ownerId: string,
+    month: string,
+    includeDeleted: boolean,
+  ): Promise<StoredEntry[]> {
+    const planGoalIds = this.database
+      .select({ id: planGoals.id })
+      .from(planGoals)
+      .where(
+        and(
+          eq(planGoals.ownerId, ownerId),
+          eq(planGoals.month, month),
+          includeDeleted ? isNotNull(planGoals.deletedAt) : isNull(planGoals.deletedAt),
+        ),
+      );
+    const rows: EntryRow[] = await this.database
+      .select()
+      .from(goalEntries)
+      .where(inArray(goalEntries.goalId, planGoalIds))
+      .orderBy(asc(goalEntries.goalId), desc(goalEntries.localDate));
     return rows.map(toEntry);
   }
 

@@ -1,7 +1,9 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
-import { calculateMet } from "../src/modules/planning/application/use-cases";
+import type { GoalRecord } from "../src/modules/planning/application/model";
+import type { PlanningRepository } from "../src/modules/planning/application/ports";
+import { calculateMet, ListPlan } from "../src/modules/planning/application/use-cases";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
 const ORIGIN = "http://localhost:8787";
@@ -94,6 +96,70 @@ afterEach(() => {
 });
 
 describe("planning application rules", () => {
+  it("loads plan entries with one owner-scoped repository query instead of one query per goal", async () => {
+    const goals: GoalRecord[] = [
+      {
+        id: "goal-a",
+        ownerId: "owner-a",
+        month: "2026-04",
+        title: "A",
+        description: null,
+        tracking: { type: "check" },
+        cadence: { period: "day" },
+        deletedAt: null,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+      {
+        id: "goal-b",
+        ownerId: "owner-a",
+        month: "2026-04",
+        title: "B",
+        description: null,
+        tracking: { type: "check" },
+        cadence: { period: "day" },
+        deletedAt: null,
+        createdAt: 2,
+        updatedAt: 2,
+      },
+    ];
+    const listEntriesForPlan = vi.fn(async () => [
+      {
+        goalId: "goal-b",
+        date: "2026-04-14",
+        value: true,
+        met: true,
+        note: null,
+        createdAt: 3,
+        updatedAt: 3,
+      },
+    ]);
+    const repository = {
+      listGoals: vi.fn(async () => goals),
+      listEntriesForPlan,
+    } as unknown as PlanningRepository;
+
+    await expect(new ListPlan(repository).execute("owner-a", "2026-04")).resolves.toEqual([
+      { ...goals[0], entries: [] },
+      {
+        ...goals[1],
+        entries: [
+          {
+            goalId: "goal-b",
+            date: "2026-04-14",
+            value: true,
+            met: true,
+            note: null,
+            createdAt: 3,
+            updatedAt: 3,
+          },
+        ],
+      },
+    ]);
+    expect(listEntriesForPlan).toHaveBeenCalledOnce();
+    expect(listEntriesForPlan).toHaveBeenCalledWith("owner-a", "2026-04", false);
+  });
+
   it("calculates quantity, scale and time completion", () => {
     expect(calculateMet({ type: "quantity", targetValue: 5, comparison: "atLeast" }, 5)).toBe(true);
     expect(calculateMet({ type: "quantity", targetValue: 5, comparison: "atMost" }, 6)).toBe(false);
@@ -288,6 +354,31 @@ describe("planning application rules", () => {
     expect(
       (await request(`/api/goals/${goal.id}/entries/2026-04-14`, { method: "DELETE" })).status,
     ).toBe(204);
+  });
+
+  it("updates only fields supplied by a goal PATCH and returns the stored row", async () => {
+    const { goal } = await createGoal({
+      title: "Original",
+      description: "Keep this description",
+      tracking: { type: "quantity", targetValue: 30, comparison: "atLeast", unit: "minutes" },
+      cadence: { period: "week", targetOccurrences: 2 },
+    });
+
+    const response = await request(`/api/goals/${goal.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ title: "Renamed" }),
+    });
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      goal: {
+        id: goal.id,
+        title: "Renamed",
+        description: "Keep this description",
+        tracking: { type: "quantity", targetValue: 30, comparison: "atLeast", unit: "minutes" },
+        cadence: { period: "week", targetOccurrences: 2 },
+      },
+    });
   });
 
   it("moves goals to trash and restores them with history", async () => {
