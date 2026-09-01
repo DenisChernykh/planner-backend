@@ -78,6 +78,7 @@ export const planGoals = sqliteTable(
     trackingConfig: text("tracking_config").notNull(),
     cadencePeriod: text("cadence_period").notNull(),
     targetOccurrences: integer("target_occurrences"),
+    sortOrder: integer("sort_order").notNull(),
     deletedAt: integer("deleted_at"),
     createdAt: integer("created_at").notNull(),
     updatedAt: integer("updated_at").notNull(),

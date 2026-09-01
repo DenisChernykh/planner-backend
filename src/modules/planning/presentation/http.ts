@@ -13,6 +13,8 @@ import {
   DeleteGoalEntry,
   ListPlan,
   ListTrash,
+  plannerToday,
+  ReorderGoals,
   RestoreGoal,
   UpdateGoal,
   UpsertGoalEntry,
@@ -102,6 +104,12 @@ const entryInputSchema = z.union([
   z.object({ value: z.number().finite(), note: z.string().max(1_000).optional() }).strict(),
   z.object({ value: z.string(), note: z.string().max(1_000).optional() }).strict(),
 ]);
+const goalOrderSchema = z
+  .object({
+    cadence: z.enum(["day", "week", "month"]),
+    goalIds: z.array(z.uuid()).min(1),
+  })
+  .strict();
 
 const monthParams = z.object({
   month: z
@@ -184,6 +192,12 @@ const goalNotFoundError = {
     content: { "application/problem+json": { schema: planningResourceNotFoundProblemSchema } },
   },
 } as const;
+const goalOrderConflictError = {
+  409: {
+    description: "The submitted goal order does not match the active goals in this group",
+    content: { "application/problem+json": { schema: problemDetailsSchema } },
+  },
+} as const;
 
 const listPlanRoute = createRoute({
   method: "get",
@@ -195,7 +209,13 @@ const listPlanRoute = createRoute({
     200: {
       description: "Active goals and entries for a virtual month",
       content: {
-        "application/json": { schema: z.object({ month: z.string(), goals: z.array(goalSchema) }) },
+        "application/json": {
+          schema: z.object({
+            month: z.string(),
+            today: z.string().regex(datePattern),
+            goals: z.array(goalSchema),
+          }),
+        },
       },
     },
     ...standardErrors,
@@ -237,6 +257,24 @@ const createGoalRoute = createRoute({
     ...goalNotFoundError,
     ...unsafeErrors,
     ...jsonErrors,
+  },
+});
+const reorderGoalsRoute = createRoute({
+  method: "put",
+  path: "/api/plans/{month}/goals/order",
+  tags: ["Planning"],
+  security: [{ sessionCookie: [] }],
+  request: {
+    params: monthParams,
+    body: { required: true, content: { "application/json": { schema: goalOrderSchema } } },
+  },
+  responses: {
+    204: { description: "Goal order saved" },
+    ...standardErrors,
+    ...goalNotFoundError,
+    ...unsafeErrors,
+    ...jsonErrors,
+    ...goalOrderConflictError,
   },
 });
 const updateGoalRoute = createRoute({
@@ -400,7 +438,7 @@ export function createPlanningHttp(
       authenticatedOwnerId(c),
       month,
     );
-    return c.json({ month, goals }, 200);
+    return c.json({ month, today: plannerToday(Date.now()), goals }, 200);
   });
   router.openapi(listTrashRoute, async (c) => {
     const month = c.req.valid("param").month;
@@ -418,6 +456,14 @@ export function createPlanningHttp(
       ownerId: authenticatedOwnerId(c),
     });
     return c.json({ goal: { ...goal, entries: [] } }, 201);
+  });
+  router.openapi(reorderGoalsRoute, async (c) => {
+    await new ReorderGoals(dependencies.createRepository(c.env.DB)).execute({
+      ...c.req.valid("json"),
+      month: c.req.valid("param").month,
+      ownerId: authenticatedOwnerId(c),
+    });
+    return c.body(null, 204);
   });
   router.openapi(updateGoalRoute, async (c) => {
     const goal = await new UpdateGoal(dependencies.createRepository(c.env.DB)).execute({

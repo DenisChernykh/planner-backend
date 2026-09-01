@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
 import type { GoalRecord, GoalTracking } from "../application/model";
@@ -46,12 +46,15 @@ function toEntry(row: EntryRow): StoredEntry {
 
 export class D1PlanningRepository implements PlanningRepository {
   private readonly database;
+  private readonly binding: D1Database;
 
   constructor(binding: D1Database) {
+    this.binding = binding;
     this.database = drizzle(binding);
   }
 
   async createGoal(goal: GoalRecord): Promise<GoalRecord> {
+    const sortOrder = await this.nextSortOrder(goal.ownerId, goal.month, goal.cadence.period);
     await this.database.insert(planGoals).values({
       id: goal.id,
       ownerId: goal.ownerId,
@@ -62,6 +65,7 @@ export class D1PlanningRepository implements PlanningRepository {
       trackingConfig: JSON.stringify(goal.tracking),
       cadencePeriod: goal.cadence.period,
       targetOccurrences: goal.cadence.period === "day" ? null : goal.cadence.targetOccurrences,
+      sortOrder,
       deletedAt: goal.deletedAt,
       createdAt: goal.createdAt,
       updatedAt: goal.updatedAt,
@@ -91,8 +95,70 @@ export class D1PlanningRepository implements PlanningRepository {
           includeDeleted ? isNotNull(planGoals.deletedAt) : isNull(planGoals.deletedAt),
         ),
       )
-      .orderBy(asc(planGoals.createdAt), asc(planGoals.id));
+      .orderBy(
+        sql`CASE ${planGoals.cadencePeriod} WHEN 'day' THEN 0 WHEN 'week' THEN 1 ELSE 2 END`,
+        asc(planGoals.sortOrder),
+        asc(planGoals.createdAt),
+        asc(planGoals.id),
+      );
     return rows.map(toGoal);
+  }
+
+  private async nextSortOrder(ownerId: string, month: string, cadence: string): Promise<number> {
+    const [row] = await this.database
+      .select({ sortOrder: planGoals.sortOrder })
+      .from(planGoals)
+      .where(
+        and(
+          eq(planGoals.ownerId, ownerId),
+          eq(planGoals.month, month),
+          eq(planGoals.cadencePeriod, cadence),
+          isNull(planGoals.deletedAt),
+        ),
+      )
+      .orderBy(desc(planGoals.sortOrder))
+      .limit(1);
+    return (row?.sortOrder ?? -1) + 1;
+  }
+
+  async reorderGoals(
+    ownerId: string,
+    month: string,
+    cadence: "day" | "week" | "month",
+    goalIds: string[],
+  ): Promise<boolean> {
+    const sql = `
+      WITH requested_order AS (
+        SELECT CAST(key AS INTEGER) AS sort_order, value AS id
+        FROM json_each(?)
+      ),
+      active_goals AS (
+        SELECT id
+        FROM plan_goals
+        WHERE owner_id = ?
+          AND month = ?
+          AND cadence_period = ?
+          AND deleted_at IS NULL
+      ),
+      valid_request AS (
+        SELECT
+          (SELECT COUNT(*) FROM active_goals) = (SELECT COUNT(*) FROM requested_order)
+            AND (SELECT COUNT(*) FROM active_goals WHERE id IN (SELECT id FROM requested_order)) =
+              (SELECT COUNT(*) FROM requested_order)
+            AND (SELECT COUNT(DISTINCT id) FROM requested_order) =
+              (SELECT COUNT(*) FROM requested_order) AS valid
+      )
+      UPDATE plan_goals
+      SET sort_order = (SELECT requested_order.sort_order
+        FROM requested_order WHERE requested_order.id = plan_goals.id)
+      WHERE id IN (SELECT id FROM active_goals)
+        AND EXISTS (SELECT 1 FROM valid_request WHERE valid)
+    `;
+    const result = await this.binding
+      .prepare(sql)
+      .bind(JSON.stringify(goalIds), ownerId, month, cadence)
+      .run();
+    return result.meta.changes === goalIds.length;
   }
 
   async updateOwnedGoal(
@@ -100,6 +166,12 @@ export class D1PlanningRepository implements PlanningRepository {
     ownerId: string,
     changes: GoalUpdate,
   ): Promise<GoalRecord | null> {
+    const current = await this.findOwnedActiveGoal(goalId, ownerId);
+    if (!current) return null;
+    const sortOrder =
+      changes.cadence !== undefined && changes.cadence.period !== current.cadence.period
+        ? await this.nextSortOrder(current.ownerId, current.month, changes.cadence.period)
+        : undefined;
     const updated = await this.database
       .update(planGoals)
       .set({
@@ -118,6 +190,7 @@ export class D1PlanningRepository implements PlanningRepository {
               cadencePeriod: changes.cadence.period,
               targetOccurrences:
                 changes.cadence.period === "day" ? null : changes.cadence.targetOccurrences,
+              ...(sortOrder === undefined ? {} : { sortOrder }),
             }),
       })
       .where(
@@ -139,9 +212,26 @@ export class D1PlanningRepository implements PlanningRepository {
   }
 
   async restoreOwnedGoal(goalId: string, ownerId: string, updatedAt: number): Promise<boolean> {
+    const [row] = await this.database
+      .select({
+        ownerId: planGoals.ownerId,
+        month: planGoals.month,
+        cadence: planGoals.cadencePeriod,
+      })
+      .from(planGoals)
+      .where(
+        and(
+          eq(planGoals.id, goalId),
+          eq(planGoals.ownerId, ownerId),
+          isNotNull(planGoals.deletedAt),
+        ),
+      )
+      .limit(1);
+    if (!row) return false;
+    const sortOrder = await this.nextSortOrder(row.ownerId, row.month, row.cadence);
     const restored = await this.database
       .update(planGoals)
-      .set({ deletedAt: null, updatedAt })
+      .set({ deletedAt: null, updatedAt, sortOrder })
       .where(
         and(
           eq(planGoals.id, goalId),

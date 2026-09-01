@@ -15,6 +15,13 @@
       "when": 1788206942410,
       "tag": "0001_reflective_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788263664949,
+      "tag": "0002_clumsy_nighthawk",
+      "breakpoints": true
     }
   ]
 }
