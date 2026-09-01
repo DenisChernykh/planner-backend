@@ -4,11 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider, useLocation } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { currentSessionQueryKey } from "@/entities/session";
+
 import { CreateGoalForm } from "./create-goal-form";
 
 const { mutationControl } = vi.hoisted(() => ({
   mutationControl: {
     behavior: "success" as "success" | "error",
+    error: new Error("request failed") as unknown,
     mutate: vi.fn(),
     reset: vi.fn(),
   },
@@ -20,7 +23,10 @@ vi.mock("@/shared/api", async (importOriginal) => {
   return {
     ...actual,
     usePostApiPlansMonthGoals: (options?: {
-      mutation?: { onSuccess?: () => Promise<void> | void };
+      mutation?: {
+        onSuccess?: () => Promise<void> | void;
+        onError?: (error: unknown) => void;
+      };
     }) => {
       const [state, setState] = React.useState({ isPending: false, isError: false });
       return {
@@ -33,7 +39,10 @@ vi.mock("@/shared/api", async (importOriginal) => {
           mutationControl.mutate(variables);
           setState({ isPending: true, isError: false });
           if (mutationControl.behavior === "error") {
-            queueMicrotask(() => setState({ isPending: false, isError: true }));
+            queueMicrotask(() => {
+              setState({ isPending: false, isError: true });
+              options?.mutation?.onError?.(mutationControl.error);
+            });
             return;
           }
           void Promise.resolve(options?.mutation?.onSuccess?.()).then(() => {
@@ -57,6 +66,7 @@ function renderForm(
     [
       { path: "/plans/:month/goals/new", element: <CreateGoalForm month="2026-04" /> },
       { path: "/plans/:month", element: <LocationProbe /> },
+      { path: "/login", element: <LocationProbe /> },
     ],
     { initialEntries: ["/plans/2026-04/goals/new"] },
   );
@@ -72,6 +82,7 @@ function renderForm(
 describe("CreateGoalForm", () => {
   beforeEach(() => {
     mutationControl.behavior = "success";
+    mutationControl.error = new Error("request failed");
     mutationControl.mutate.mockReset();
     mutationControl.reset.mockReset();
   });
@@ -114,6 +125,24 @@ describe("CreateGoalForm", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось создать цель");
     expect(title).toHaveValue("Чтение");
+  });
+
+  it("clears an expired session and redirects to login", async () => {
+    mutationControl.behavior = "error";
+    mutationControl.error = {
+      isAxiosError: true,
+      response: { status: 401, data: { code: "UNAUTHENTICATED" } },
+    };
+    const queryClient = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
+    queryClient.setQueryData(currentSessionQueryKey(), { user: { id: "user-1" } });
+    const user = userEvent.setup();
+    renderForm(queryClient);
+
+    await user.type(screen.getByRole("textbox", { name: /Название цели/i }), "Чтение");
+    await user.click(screen.getByRole("button", { name: "Создать цель" }));
+
+    expect(await screen.findByLabelText("Текущий адрес")).toHaveTextContent("/login");
+    expect(queryClient.getQueryData(currentSessionQueryKey())).toBeUndefined();
   });
 
   it("keeps the form pending until invalidation and then navigates with a one-time notice", async () => {
