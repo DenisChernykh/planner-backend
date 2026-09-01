@@ -1,0 +1,10 @@
+# `pnpm dev` uses the local development identity and does not need secrets.
+# `pnpm dev:telegram` uses AUTH_MODE=telegram and needs the OIDC values below.
+TELEGRAM_OIDC_CLIENT_ID="replace-with-botfather-client-id"
+TELEGRAM_OIDC_CLIENT_SECRET="replace-with-botfather-client-secret"
+AUTH_FLOW_SECRET="replace-with-32-random-bytes-as-base64url"
+
+# To exercise the Telegram webhook locally, set TELEGRAM_BOT_MODE=webhook and
+# provide both independent Bot API secrets below.
+TELEGRAM_BOT_TOKEN="replace-with-telegram-bot-token"
+TELEGRAM_BOT_WEBHOOK_SECRET="replace-with-webhook-secret"
