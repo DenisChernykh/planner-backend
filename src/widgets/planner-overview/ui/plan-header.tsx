@@ -1,7 +1,8 @@
 import { BarChart3, Plus } from "lucide-react";
 import { Link } from "react-router";
 
-import { Button } from "@/shared/ui";
+import { cn } from "@/shared/lib/utils";
+import { Button, buttonVariants } from "@/shared/ui";
 
 export function PlanHeader({ month, hasGoals }: { month: string; hasGoals: boolean }) {
   const title = new Intl.DateTimeFormat("ru-RU", { month: "long", timeZone: "UTC" }).format(
@@ -24,10 +25,8 @@ export function PlanHeader({ month, hasGoals }: { month: string; hasGoals: boole
         <Button variant="outline" disabled title="Недоступно: отчёты ещё не подключены">
           <BarChart3 data-icon="inline-start" /> Итоги месяца
         </Button>
-        <Link to={`/plans/${month}/goals/new`}>
-          <Button>
-            <Plus data-icon="inline-start" /> Добавить цель
-          </Button>
+        <Link to={`/plans/${month}/goals/new`} className={cn(buttonVariants(), "h-8")}>
+          <Plus data-icon="inline-start" /> Добавить цель
         </Link>
       </div>
     </header>

@@ -1,22 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-
-import {
-  deleteApiGoalsGoalIdEntriesDate,
-  type GetApiPlansMonth200GoalsItem,
-  getGetApiPlansMonthQueryKey,
-  type PutApiGoalsGoalIdEntriesDateBody,
-  putApiGoalsGoalIdEntriesDate,
-} from "@/shared/api";
-import { isPlannerDateEditable } from "@/shared/lib/planner-calendar";
+import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import { Button } from "@/shared/ui";
 import { getTrackingLabel } from "../model/plan-model";
-import { setFactInCache } from "./fact-cache";
-import { FactDateControls } from "./fact-date-controls";
-import { buildFactPayload, initialFactValue } from "./fact-inspector-model";
-import { FactNote } from "./fact-note";
-import { FactValueEditor } from "./fact-value-editor";
-import { FactWeekHistory } from "./fact-week-history";
+import { FactInspectorDraft } from "./fact-inspector-draft";
 import { trackingIconMap } from "./tracking-presentation";
 
 type FactInspectorProps = {
@@ -36,33 +21,9 @@ export function FactInspector({
   onDateChange,
   onClose,
 }: FactInspectorProps) {
-  const queryClient = useQueryClient();
   const entry = goal.entries.find((item) => item.date === date);
-  const [value, setValue] = useState(() => initialFactValue(goal, date));
-  const [note, setNote] = useState(() => entry?.note ?? "");
-  const editable = isPlannerDateEditable(date, today, month);
   const Icon = trackingIconMap[goal.tracking.type];
-  const save = useMutation({
-    mutationFn: (data: PutApiGoalsGoalIdEntriesDateBody) =>
-      putApiGoalsGoalIdEntriesDate({ goalId: goal.id, date }, data),
-    onSuccess: ({ entry: saved }) => setFactInCache(queryClient, month, goal.id, date, saved),
-    onSettled: () =>
-      void queryClient.invalidateQueries({
-        queryKey: getGetApiPlansMonthQueryKey({ month }),
-      }),
-  });
-  const remove = useMutation({
-    mutationFn: () => deleteApiGoalsGoalIdEntriesDate({ goalId: goal.id, date }),
-    onSuccess: () => setFactInCache(queryClient, month, goal.id, date, undefined),
-    onSettled: () =>
-      void queryClient.invalidateQueries({
-        queryKey: getGetApiPlansMonthQueryKey({ month }),
-      }),
-  });
-  const saveFact = (nextNote = note) => {
-    if (!editable || (goal.tracking.type !== "check" && value.trim() === "")) return;
-    save.mutate(buildFactPayload(goal, value, nextNote));
-  };
+  const draftKey = JSON.stringify([entry?.value, entry?.note, entry?.updatedAt]);
 
   return (
     <aside
@@ -83,29 +44,13 @@ export function FactInspector({
           <Icon className="size-3.5" /> {getTrackingLabel(goal.tracking.type)}
         </p>
       </header>
-      <FactDateControls date={date} month={month} onDateChange={onDateChange} />
-      <FactValueEditor
+      <FactInspectorDraft
+        key={`${goal.id}-${date}-${draftKey}`}
         goal={goal}
-        value={value}
-        editable={editable}
-        hasEntry={Boolean(entry)}
-        savePending={save.isPending}
-        deletePending={remove.isPending}
-        saveError={save.isError}
-        deleteError={remove.isError}
-        onValueChange={setValue}
-        onSave={() => saveFact()}
-        onDelete={() => remove.mutate()}
-      />
-      <FactWeekHistory goal={goal} date={date} month={month} onDateChange={onDateChange} />
-      <FactNote
-        note={note}
-        editable={editable}
-        hasEntry={Boolean(entry)}
-        onChange={setNote}
-        onBlur={() => {
-          if (entry && note !== (entry.note ?? "")) saveFact(note);
-        }}
+        date={date}
+        month={month}
+        today={today}
+        onDateChange={onDateChange}
       />
     </aside>
   );
