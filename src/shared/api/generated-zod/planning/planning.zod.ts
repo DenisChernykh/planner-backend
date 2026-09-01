@@ -8,7 +8,7 @@
 import * as zod from 'zod';
 
 
-export const getApiPlansMonthPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$/u');
+export const getApiPlansMonthPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$');
 
 
 export const GetApiPlansMonthParams = zod.strictObject({
@@ -17,9 +17,11 @@ export const GetApiPlansMonthParams = zod.strictObject({
 
 export const getApiPlansMonth200ResponseGoalsItemTrackingTwoUnitMax = 64;
 
-export const getApiPlansMonth200ResponseGoalsItemTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const getApiPlansMonth200ResponseGoalsItemTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const getApiPlansMonth200ResponseGoalsItemCadenceTwoTargetOccurrencesMax = 31;
+export const getApiPlansMonth200ResponseGoalsItemTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const getApiPlansMonth200ResponseGoalsItemTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const getApiPlansMonth200ResponseGoalsItemCadenceTwoTargetOccurrencesMax = 7;
+
+export const getApiPlansMonth200ResponseGoalsItemCadenceThreeTargetOccurrencesMax = 31;
 
 export const getApiPlansMonth200ResponseGoalsItemDeletedAtMin = 0;
 
@@ -60,8 +62,11 @@ export const GetApiPlansMonth200Response = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(getApiPlansMonth200ResponseGoalsItemCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(getApiPlansMonth200ResponseGoalsItemCadenceThreeTargetOccurrencesMax)
 })]),
   "deletedAt": zod.int().min(getApiPlansMonth200ResponseGoalsItemDeletedAtMin).nullable(),
   "createdAt": zod.int().min(getApiPlansMonth200ResponseGoalsItemCreatedAtMin),
@@ -165,7 +170,7 @@ export const GetApiPlansMonth500Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
-export const getApiPlansMonthTrashPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$/u');
+export const getApiPlansMonthTrashPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$');
 
 
 export const GetApiPlansMonthTrashParams = zod.strictObject({
@@ -174,9 +179,11 @@ export const GetApiPlansMonthTrashParams = zod.strictObject({
 
 export const getApiPlansMonthTrash200ResponseGoalsItemTrackingTwoUnitMax = 64;
 
-export const getApiPlansMonthTrash200ResponseGoalsItemTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const getApiPlansMonthTrash200ResponseGoalsItemTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const getApiPlansMonthTrash200ResponseGoalsItemCadenceTwoTargetOccurrencesMax = 31;
+export const getApiPlansMonthTrash200ResponseGoalsItemTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const getApiPlansMonthTrash200ResponseGoalsItemTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const getApiPlansMonthTrash200ResponseGoalsItemCadenceTwoTargetOccurrencesMax = 7;
+
+export const getApiPlansMonthTrash200ResponseGoalsItemCadenceThreeTargetOccurrencesMax = 31;
 
 export const getApiPlansMonthTrash200ResponseGoalsItemDeletedAtMin = 0;
 
@@ -217,8 +224,11 @@ export const GetApiPlansMonthTrash200Response = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(getApiPlansMonthTrash200ResponseGoalsItemCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(getApiPlansMonthTrash200ResponseGoalsItemCadenceThreeTargetOccurrencesMax)
 })]),
   "deletedAt": zod.int().min(getApiPlansMonthTrash200ResponseGoalsItemDeletedAtMin).nullable(),
   "createdAt": zod.int().min(getApiPlansMonthTrash200ResponseGoalsItemCreatedAtMin),
@@ -322,7 +332,7 @@ export const GetApiPlansMonthTrash500Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
-export const postApiPlansMonthGoalsPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$/u');
+export const postApiPlansMonthGoalsPathMonthRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])$');
 
 
 export const PostApiPlansMonthGoalsParams = zod.strictObject({
@@ -335,9 +345,11 @@ export const postApiPlansMonthGoalsBodyDescriptionMax = 2000;
 
 export const postApiPlansMonthGoalsBodyTrackingTwoUnitMax = 64;
 
-export const postApiPlansMonthGoalsBodyTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const postApiPlansMonthGoalsBodyTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const postApiPlansMonthGoalsBodyCadenceTwoTargetOccurrencesMax = 31;
+export const postApiPlansMonthGoalsBodyTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const postApiPlansMonthGoalsBodyTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const postApiPlansMonthGoalsBodyCadenceTwoTargetOccurrencesMax = 7;
+
+export const postApiPlansMonthGoalsBodyCadenceThreeTargetOccurrencesMax = 31;
 
 
 
@@ -363,16 +375,21 @@ export const PostApiPlansMonthGoalsBody = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(postApiPlansMonthGoalsBodyCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(postApiPlansMonthGoalsBodyCadenceThreeTargetOccurrencesMax)
 })])
 })
 
 export const postApiPlansMonthGoals201ResponseGoalTrackingTwoUnitMax = 64;
 
-export const postApiPlansMonthGoals201ResponseGoalTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const postApiPlansMonthGoals201ResponseGoalTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const postApiPlansMonthGoals201ResponseGoalCadenceTwoTargetOccurrencesMax = 31;
+export const postApiPlansMonthGoals201ResponseGoalTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const postApiPlansMonthGoals201ResponseGoalTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const postApiPlansMonthGoals201ResponseGoalCadenceTwoTargetOccurrencesMax = 7;
+
+export const postApiPlansMonthGoals201ResponseGoalCadenceThreeTargetOccurrencesMax = 31;
 
 export const postApiPlansMonthGoals201ResponseGoalDeletedAtMin = 0;
 
@@ -412,8 +429,11 @@ export const PostApiPlansMonthGoals201Response = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(postApiPlansMonthGoals201ResponseGoalCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(postApiPlansMonthGoals201ResponseGoalCadenceThreeTargetOccurrencesMax)
 })]),
   "deletedAt": zod.int().min(postApiPlansMonthGoals201ResponseGoalDeletedAtMin).nullable(),
   "createdAt": zod.int().min(postApiPlansMonthGoals201ResponseGoalCreatedAtMin),
@@ -581,9 +601,11 @@ export const patchApiGoalsGoalIdBodyDescriptionMax = 2000;
 
 export const patchApiGoalsGoalIdBodyTrackingTwoUnitMax = 64;
 
-export const patchApiGoalsGoalIdBodyTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const patchApiGoalsGoalIdBodyTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const patchApiGoalsGoalIdBodyCadenceTwoTargetOccurrencesMax = 31;
+export const patchApiGoalsGoalIdBodyTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const patchApiGoalsGoalIdBodyTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const patchApiGoalsGoalIdBodyCadenceTwoTargetOccurrencesMax = 7;
+
+export const patchApiGoalsGoalIdBodyCadenceThreeTargetOccurrencesMax = 31;
 
 
 
@@ -609,16 +631,21 @@ export const PatchApiGoalsGoalIdBody = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(patchApiGoalsGoalIdBodyCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(patchApiGoalsGoalIdBodyCadenceThreeTargetOccurrencesMax)
 })]).optional()
 })
 
 export const patchApiGoalsGoalId200ResponseGoalTrackingTwoUnitMax = 64;
 
-export const patchApiGoalsGoalId200ResponseGoalTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const patchApiGoalsGoalId200ResponseGoalTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$/u');
-export const patchApiGoalsGoalId200ResponseGoalCadenceTwoTargetOccurrencesMax = 31;
+export const patchApiGoalsGoalId200ResponseGoalTrackingFourTargetStartRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const patchApiGoalsGoalId200ResponseGoalTrackingFourTargetEndRegExp = new RegExp('^(?:[01]\\d|2[0-3]):[0-5]\\d$');
+export const patchApiGoalsGoalId200ResponseGoalCadenceTwoTargetOccurrencesMax = 7;
+
+export const patchApiGoalsGoalId200ResponseGoalCadenceThreeTargetOccurrencesMax = 31;
 
 export const patchApiGoalsGoalId200ResponseGoalDeletedAtMin = 0;
 
@@ -658,8 +685,11 @@ export const PatchApiGoalsGoalId200Response = zod.strictObject({
   "cadence": zod.union([zod.strictObject({
   "period": zod.enum(['day'])
 }),zod.strictObject({
-  "period": zod.enum(['week', 'month']),
+  "period": zod.enum(['week']),
   "targetOccurrences": zod.int().min(1).max(patchApiGoalsGoalId200ResponseGoalCadenceTwoTargetOccurrencesMax)
+}),zod.strictObject({
+  "period": zod.enum(['month']),
+  "targetOccurrences": zod.int().min(1).max(patchApiGoalsGoalId200ResponseGoalCadenceThreeTargetOccurrencesMax)
 })]),
   "deletedAt": zod.int().min(patchApiGoalsGoalId200ResponseGoalDeletedAtMin).nullable(),
   "createdAt": zod.int().min(patchApiGoalsGoalId200ResponseGoalCreatedAtMin),
@@ -1059,7 +1089,7 @@ export const PostApiGoalsGoalIdRestore500Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
-export const putApiGoalsGoalIdEntriesDatePathDateRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$/u');
+export const putApiGoalsGoalIdEntriesDatePathDateRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$');
 
 
 export const PutApiGoalsGoalIdEntriesDateParams = zod.strictObject({
@@ -1245,7 +1275,7 @@ export const PutApiGoalsGoalIdEntriesDate500Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
-export const deleteApiGoalsGoalIdEntriesDatePathDateRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$/u');
+export const deleteApiGoalsGoalIdEntriesDatePathDateRegExp = new RegExp('^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])$');
 
 
 export const DeleteApiGoalsGoalIdEntriesDateParams = zod.strictObject({
