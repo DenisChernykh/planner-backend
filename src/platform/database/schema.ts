@@ -97,6 +97,7 @@ export const goalEntries = sqliteTable(
       .references(() => planGoals.id, { onDelete: "cascade" }),
     localDate: text("local_date").notNull(),
     value: text("value").notNull(),
+    revision: text("revision").notNull().default("initial"),
     met: integer("met", { mode: "boolean" }).notNull(),
     note: text("note"),
     createdAt: integer("created_at").notNull(),
@@ -105,5 +106,86 @@ export const goalEntries = sqliteTable(
   (table) => [
     primaryKey({ columns: [table.goalId, table.localDate] }),
     index("goal_entries_goal_date_idx").on(table.goalId, table.localDate),
+  ],
+);
+
+export const planningEntryCommands = sqliteTable("planning_entry_commands", {
+  id: text("id").primaryKey(),
+  result: text("result").notNull(),
+  createdAt: integer("created_at").notNull(),
+});
+
+export const reminderSettings = sqliteTable("reminder_settings", {
+  ownerId: text("owner_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  enabled: integer("enabled", { mode: "boolean" }).notNull().default(false),
+  timeZone: text("time_zone").notNull().default("Asia/Yekaterinburg"),
+  quietStart: text("quiet_start").notNull().default("23:00"),
+  quietEnd: text("quiet_end").notNull().default("08:00"),
+  eveningTime: text("evening_time").notNull().default("21:00"),
+  nextEveningAt: integer("next_evening_at"),
+});
+
+export const goalReminders = sqliteTable(
+  "goal_reminders",
+  {
+    goalId: text("goal_id")
+      .primaryKey()
+      .references(() => planGoals.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    mode: text("mode").notNull(),
+    time: text("time").notNull(),
+    weekdays: text("weekdays").notNull(),
+    nextRunAt: integer("next_run_at"),
+  },
+  (table) => [index("goal_reminders_due_idx").on(table.nextRunAt)],
+);
+
+export const telegramLinks = sqliteTable("telegram_links", {
+  ownerId: text("owner_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  chatId: text("chat_id").notNull().unique(),
+  telegramUserId: text("telegram_user_id").notNull().unique(),
+  status: text("status").notNull(),
+});
+
+export const telegramLinkTokens = sqliteTable("telegram_link_tokens", {
+  tokenHash: text("token_hash").primaryKey(),
+  ownerId: text("owner_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: integer("expires_at").notNull(),
+});
+
+export const reminderJobs = sqliteTable(
+  "reminder_jobs",
+  {
+    id: text("id").primaryKey(),
+    eventKey: text("event_key").notNull().unique(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    goalId: text("goal_id").references(() => planGoals.id, { onDelete: "cascade" }),
+    localDate: text("local_date").notNull(),
+    kind: text("kind").notNull(),
+    status: text("status").notNull(),
+    dueAt: integer("due_at").notNull(),
+    expiresAt: integer("expires_at").notNull(),
+    leaseUntil: integer("lease_until"),
+    chatId: text("chat_id"),
+    messageId: integer("message_id"),
+    expectedRevision: text("expected_revision"),
+    payload: text("payload").notNull().default("[]"),
+    attempts: integer("attempts").notNull().default(0),
+    createdAt: integer("created_at").notNull(),
+  },
+  (table) => [
+    index("reminder_jobs_due_idx").on(table.status, table.dueAt),
+    index("reminder_jobs_reply_idx").on(table.chatId, table.messageId),
   ],
 );

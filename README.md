@@ -15,12 +15,14 @@
 - Telegram OpenID Connect Authorization Code Flow с PKCE как эталонный модуль;
 - независимая Telegram Bot API webhook capability с отключённым по умолчанию режимом;
 - cookie-сессия и защищённый CRUD заметок;
+- Telegram-напоминания, ввод четырёх типов данных, вечерний сбор и настройки времени;
 - Vitest в Cloudflare Workers runtime;
 - Biome, строгая типизация и автоматическая проверка границ модулей;
 - один локальный и CI-gate: `pnpm check`.
 
 Здесь намеренно нет Docker, PostgreSQL, Redis, BullMQ, Queues, KV, R2, Durable
-Objects, Cron, testcontainers, Swagger UI и автоматического production deploy.
+Objects, testcontainers, Swagger UI и автоматического production deploy.
+Для личных Telegram-напоминаний согласован и настроен один Cron раз в минуту.
 Добавляйте их только тогда, когда потребность подтверждена конкретным проектом.
 
 ## HTTP API
@@ -47,6 +49,11 @@ Objects, Cron, testcontainers, Swagger UI и автоматического prod
 | `POST` | `/api/goals/{goalId}/restore` | сессия | Восстановить цель |
 | `PUT` | `/api/goals/{goalId}/entries/{date}` | сессия | Полностью заменить выполнение за день |
 | `DELETE` | `/api/goals/{goalId}/entries/{date}` | сессия | Очистить выполнение за день |
+| `GET`, `PUT` | `/api/reminders/settings` | сессия | Настройки времени и состояние Telegram |
+| `GET` | `/api/reminders/goals/{month}` | сессия | Напоминания целей месяца |
+| `PUT` | `/api/reminders/goals/{goalId}` | сессия | Режим, время и дни вопросов |
+| `POST` | `/api/reminders/telegram/connect` | сессия | Одноразовая ссылка подключения чата |
+| `DELETE` | `/api/reminders/telegram` | сессия | Отключить чат и приостановить напоминания |
 
 Пользователь видит только свои заметки. Чужой или отсутствующий `noteId`
 возвращает одинаковый `404`, чтобы не раскрывать существование чужих данных.
@@ -343,31 +350,28 @@ Secret или `AUTH_FLOW_SECRET`.
 `update_id`; данные провайдера не логируются. Общий request log добавляет лишь
 метод, статус и длительность запроса.
 
-Reference handler регистрирует только `/start` и отвечает текстом `Bot is
-ready.`. Он не создаёт пользователей, сессии, меню или бизнес-таблицы. Точка
-расширения derived product находится на уровне исходника
-`src/modules/telegram-bot/handlers.ts`: добавляйте туда transport handlers и
-вызывайте product module только через его root/public contracts. `bot.ts` при
-этом сохраняет общий lifecycle — инициализацию, cache и safe error boundary.
-Опция `createTelegramBotModule({ createWebhookHandler })` — test/composition seam
-(например, для fake handler в Vitest), а не product extension: её переопределение
-заменяет core lifecycle. Переданный handler получает проверенный request и
-контекст с `requestId`, pathname и (если он корректен) `updateId`.
+В Planner обработчики `/start`, `/help`, `/stop`, текстовых ответов и inline-кнопок
+связаны с модулем `reminders`. Подключение личного чата начинается с одноразовой
+ссылки из настроек сайта. Бизнес-операции вызываются через публичные контракты;
+`bot.ts` сохраняет инициализацию, cache и безопасную границу ошибок.
+
+Опция `createTelegramBotModule({ createWebhookHandler })` остаётся точкой подмены
+транспорта в тестах. Детали поведения: [Telegram-напоминания](docs/telegram-reminders.md).
 
 ### At-least-once delivery and idempotency
 
 Telegram может повторно доставить update при timeout или ответе с ошибкой, поэтому
 webhook имеет семантику at-least-once: повторы и конкурентная доставка ожидаемы.
-Capability передаёт `update_id` в контекст вызванного handler-а. Если команда
-продукта меняет durable state, продукт сам выводит стабильный ключ, например
-`telegram:<bot-id>:update:<update-id>`, и сохраняет его в той же транзакции D1,
-что и бизнес-мутацию. Уже зафиксированная команда должна вернуть успех без
-повторной мутации. Общей таблицы `processed_updates` в стартере нет.
+Команда записи выводит ключ `telegram:<update-id>` для единственного подключённого
+бота и сохраняет квитанцию в `planning_entry_commands` в одной транзакции D1
+с изменением значения. Повтор не применяет старое значение заново. Создание
+вопроса и откладывание также имеют стабильные ключи событий.
 
-Это не обещает exactly-once для внешнего `sendMessage`: сбой после принятия
-сообщения Telegram, но до локального завершения, может привести к дублю. Для
-надёжной исходящей доставки потребуются отдельно спроектированные outbox и
-механизм восстановления; Queue, Cron и Durable Objects в baseline не входят.
+Для исходящих вопросов есть журнал `reminder_jobs` и атомарный захват задания.
+Сбой после принятия сообщения Telegram, но до фиксации результата, помечается
+как `unknown`; автоматическая повторная отправка такого сообщения отключена.
+Вечерний сбор снова проверит незаполненные цели. Отправки запускает один Cron;
+Queues и Durable Objects не используются.
 
 Для локальной проверки HTTP-границы без настоящего токена запустите Worker и
 отправьте сохранённый fake update:
@@ -401,7 +405,7 @@ pnpm telegram:operator -- clear
 ```
 
 `set` требует точный HTTPS URL `https://<ваш-workers.dev>/telegram/webhook`
-без query-параметров. Он передаёт Telegram только обновления `message` и
+без query-параметров. Он передаёт Telegram обновления `message` и `callback_query` и
 ставит `drop_pending_updates=false`. Для намеренного удаления накопленных
 обновлений нужен явный флаг; команда выведет предупреждение:
 

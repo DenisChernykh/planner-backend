@@ -90,7 +90,7 @@ describe("Telegram operator workflow", () => {
     expect(stderr.text()).toBe("");
   });
 
-  it("sets a webhook with message updates and keeps pending updates by default", async () => {
+  it("sets a webhook with message and callback updates and keeps pending updates by default", async () => {
     const api = fakeBotApi(true);
     const stdout = output();
     const stderr = output();
@@ -109,7 +109,7 @@ describe("Telegram operator workflow", () => {
     expect(exitCode).toBe(0);
     expect(JSON.parse(api.calls[0].init.body)).toEqual({
       url: WEBHOOK_URL,
-      allowed_updates: ["message"],
+      allowed_updates: ["message", "callback_query"],
       drop_pending_updates: false,
       secret_token: WEBHOOK_SECRET,
     });

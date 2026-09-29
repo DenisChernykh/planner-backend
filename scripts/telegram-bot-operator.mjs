@@ -2,7 +2,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const DEFAULT_API_BASE_URL = "https://api.telegram.org";
 const WEBHOOK_PATH = "/telegram/webhook";
-const ALLOWED_UPDATES = ["message"];
+const ALLOWED_UPDATES = ["message", "callback_query"];
 export const REDACTED_WEBHOOK_URL = "[REDACTED_WEBHOOK_URL]";
 
 /**

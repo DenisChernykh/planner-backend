@@ -25,7 +25,9 @@ export type TelegramWebhookHandler = (
   context?: TelegramWebhookRequestContext,
 ) => Response | Promise<Response>;
 
-export type TelegramBotHandlerConfig = Pick<WebhookTelegramBotRuntimeConfig, "telegramBotToken">;
+export type TelegramBotHandlerConfig = Pick<WebhookTelegramBotRuntimeConfig, "telegramBotToken"> & {
+  actions?: import("../reminders/public-contracts").ReminderBotActions;
+};
 
 type TelegramBotInfo = Awaited<ReturnType<Bot["api"]["getMe"]>>;
 
@@ -126,8 +128,8 @@ export class TelegramWebhookFailure extends Error {
 export function createTelegramWebhookHandler(
   config: TelegramBotHandlerConfig,
 ): TelegramWebhookHandler {
-  const bot = new Bot(config.telegramBotToken);
-  registerTelegramBotHandlers(bot);
+  const bot = new Bot(config.telegramBotToken, { client: { timeoutSeconds: 5 } });
+  registerTelegramBotHandlers(bot, config.actions);
   const callback = webhookCallback(bot, "cloudflare-mod");
 
   return async (request, context) => {

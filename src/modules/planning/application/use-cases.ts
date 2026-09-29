@@ -49,11 +49,11 @@ function daysInMonth(month: string): number {
   return new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
 }
 
-function localToday(now: number): string {
+function localToday(now: number, timeZone = LOCAL_TIME_ZONE): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
     month: "2-digit",
-    timeZone: LOCAL_TIME_ZONE,
+    timeZone,
     year: "numeric",
   }).formatToParts(new Date(now));
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
@@ -202,11 +202,11 @@ export function calculateMet(tracking: GoalTracking, value: boolean | number | s
   }
 }
 
-export function plannerToday(now: number): string {
-  return localToday(now);
+export function plannerToday(now: number, timeZone = LOCAL_TIME_ZONE): string {
+  return localToday(now, timeZone);
 }
 
-function validateEntry(
+export function validateEntry(
   tracking: GoalTracking,
   input: GoalEntryInput,
 ): { value: boolean | number | string; note: string | null; met: boolean } {
@@ -384,13 +384,14 @@ export class UpsertGoalEntry {
     now: number;
     ownerId: string;
     value: GoalEntryInput;
+    timeZone?: string;
   }): Promise<GoalEntry> {
     const goal = requireGoal(
       await this.repository.findOwnedActiveGoal(input.goalId, input.ownerId),
     );
     if (!validDate(input.date) || !input.date.startsWith(goal.month))
       throw new EntryDateInvalidError();
-    if (input.date > localToday(input.now)) throw new EntryDateFutureError();
+    if (input.date > localToday(input.now, input.timeZone)) throw new EntryDateFutureError();
     const checked = validateEntry(goal.tracking, input.value);
     const stored: StoredEntry = {
       goalId: input.goalId,
@@ -413,10 +414,16 @@ export class UpsertGoalEntry {
 export class DeleteGoalEntry {
   constructor(private readonly repository: PlanningRepository) {}
 
-  async execute(ownerId: string, goalId: string, date: string, now: number): Promise<void> {
+  async execute(
+    ownerId: string,
+    goalId: string,
+    date: string,
+    now: number,
+    timeZone?: string,
+  ): Promise<void> {
     const goal = requireGoal(await this.repository.findOwnedActiveGoal(goalId, ownerId));
     if (!validDate(date) || !date.startsWith(goal.month)) throw new EntryDateInvalidError();
-    if (date > localToday(now)) throw new EntryDateFutureError();
+    if (date > localToday(now, timeZone)) throw new EntryDateFutureError();
     if (!(await this.repository.deleteEntry(goalId, date))) throw new EntryNotFoundError();
   }
 }

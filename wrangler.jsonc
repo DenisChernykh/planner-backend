@@ -20,6 +20,7 @@
       "migrations_dir": "migrations"
     }
   ],
+  "triggers": { "crons": ["* * * * *"] },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,
@@ -48,6 +49,7 @@
           "migrations_dir": "migrations"
         }
       ],
+      "triggers": { "crons": ["* * * * *"] },
       "observability": {
         "enabled": true,
         "head_sampling_rate": 1,

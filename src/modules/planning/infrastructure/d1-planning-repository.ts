@@ -3,6 +3,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
 import type { GoalRecord, GoalTracking } from "../application/model";
 import type { GoalUpdate, PlanningRepository, StoredEntry } from "../application/ports";
+import type { EntrySnapshot, RecordAnswerInput } from "../public-contracts";
 
 type GoalRow = typeof planGoals.$inferSelect;
 type EntryRow = typeof goalEntries.$inferSelect;
@@ -282,6 +283,7 @@ export class D1PlanningRepository implements PlanningRepository {
         goalId: entry.goalId,
         localDate: entry.date,
         value: JSON.stringify(entry.value),
+        revision: crypto.randomUUID(),
         met: entry.met,
         note: entry.note,
         createdAt: entry.createdAt,
@@ -291,12 +293,97 @@ export class D1PlanningRepository implements PlanningRepository {
         target: [goalEntries.goalId, goalEntries.localDate],
         set: {
           value: JSON.stringify(entry.value),
+          revision: crypto.randomUUID(),
           met: entry.met,
           note: entry.note,
           updatedAt: entry.updatedAt,
         },
       });
     return entry;
+  }
+
+  async entrySnapshot(
+    ownerId: string,
+    goalId: string,
+    date: string,
+  ): Promise<EntrySnapshot | null> {
+    const [row] = await this.database
+      .select({ entry: goalEntries })
+      .from(goalEntries)
+      .innerJoin(planGoals, eq(planGoals.id, goalEntries.goalId))
+      .where(
+        and(
+          eq(planGoals.ownerId, ownerId),
+          isNull(planGoals.deletedAt),
+          eq(goalEntries.goalId, goalId),
+          eq(goalEntries.localDate, date),
+        ),
+      )
+      .limit(1);
+    return row ? { entry: toEntry(row.entry), revision: row.entry.revision } : null;
+  }
+
+  async recordAnswer(
+    input: RecordAnswerInput,
+    entry: StoredEntry,
+    goalUpdatedAt: number,
+  ): Promise<"saved" | "conflict"> {
+    const { operationId, ownerId, goalId, date, expectedRevision, now } = input;
+    const eligibility = `EXISTS (SELECT 1 FROM plan_goals WHERE id = ? AND owner_id = ?
+      AND deleted_at IS NULL AND updated_at = ?)
+      AND NOT EXISTS (SELECT 1 FROM planning_entry_commands WHERE id = ?)`;
+    const write =
+      expectedRevision === null
+        ? this.binding
+            .prepare(`INSERT INTO goal_entries
+        (goal_id, local_date, value, met, note, created_at, updated_at, revision)
+        SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE ${eligibility}
+        ON CONFLICT(goal_id, local_date) DO NOTHING`)
+            .bind(
+              goalId,
+              date,
+              JSON.stringify(entry.value),
+              Number(entry.met),
+              entry.note,
+              entry.createdAt,
+              now,
+              operationId,
+              goalId,
+              ownerId,
+              goalUpdatedAt,
+              operationId,
+            )
+        : this.binding
+            .prepare(`UPDATE goal_entries SET value = ?, met = ?, updated_at = ?, revision = ?
+        WHERE goal_id = ? AND local_date = ? AND revision = ? AND ${eligibility}`)
+            .bind(
+              JSON.stringify(entry.value),
+              Number(entry.met),
+              now,
+              operationId,
+              goalId,
+              date,
+              expectedRevision,
+              goalId,
+              ownerId,
+              goalUpdatedAt,
+              operationId,
+            );
+    // The command receipt and mutation commit together. Re-delivery never reapplies an old answer.
+    const results = await this.binding.batch<{ result?: string }>([
+      write,
+      this.binding
+        .prepare(`INSERT INTO planning_entry_commands (id, result, created_at)
+        SELECT ?, CASE WHEN EXISTS (SELECT 1 FROM goal_entries WHERE goal_id = ?
+          AND local_date = ? AND revision = ?) THEN 'saved' ELSE 'conflict' END, ?
+        ON CONFLICT(id) DO NOTHING`)
+        .bind(operationId, goalId, date, operationId, now),
+      this.binding
+        .prepare("SELECT result FROM planning_entry_commands WHERE id = ?")
+        .bind(operationId),
+    ]);
+    const result = results[2]?.results[0]?.result;
+    return result === "saved" ? "saved" : "conflict";
   }
 
   async deleteEntry(goalId: string, date: string): Promise<boolean> {

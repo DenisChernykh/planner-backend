@@ -7,6 +7,13 @@ zero mandatory Cloudflare cost as a hard constraint. Do not add a paid plan,
 custom domain, Queue, KV, R2, Durable Object, Cron, external database, Redis,
 Docker, or automatic deployment without an explicit project decision.
 
+Approved project decision (2026-09-29): Telegram reminders serve one user and
+may use one once-per-minute Cron Trigger in the existing backend Worker, with
+schedule and delivery state in the existing D1 database. See
+`docs/telegram-reminders.md`. Do not add a queue, microservice, or scaling
+infrastructure for this feature. This decision does not authorize deployment
+or remote migrations; those remain separate operations.
+
 The baseline runtime is Hono + D1/Drizzle. Telegram OIDC and owner-scoped Notes
 are reference capabilities, not permission to grow a generic auth framework.
 
