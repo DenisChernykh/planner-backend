@@ -14,6 +14,7 @@ import type {
   GoalResource,
 } from "../domain/model";
 import {
+  plannerToday,
   requireGoal,
   validateEntry,
   validateEntryDate,
@@ -72,6 +73,24 @@ export class ListPlan {
       false,
       await this.repository.listGoals(ownerId, month, false),
     );
+  }
+}
+
+export class GetPlan {
+  constructor(private readonly repository: PlanningRepository) {}
+
+  async execute(input: {
+    ownerId: string;
+    month: string;
+    now: number;
+    timeZone: string;
+  }): Promise<{ month: string; today: string; goals: GoalResource[] }> {
+    const goals = await new ListPlan(this.repository).execute(input.ownerId, input.month);
+    return {
+      month: input.month,
+      today: plannerToday(input.now, input.timeZone),
+      goals,
+    };
   }
 }
 
