@@ -1,7 +1,9 @@
-import type { TelegramBotHandlerConfig, TelegramWebhookHandler } from "./bot";
-import { createTelegramWebhookHandler } from "./bot";
+import { createTelegramWebhookHandler } from "./infrastructure/webhook-handler";
 import { createTelegramBotHttp } from "./presentation/http";
+import type { TelegramBotHandlerConfig, TelegramWebhookHandler } from "./public-contracts";
 
+export { createReminderTransport } from "./infrastructure/reminder-transport";
+export { TELEGRAM_WEBHOOK_SECURITY_SCHEME } from "./presentation/http";
 export {
   TELEGRAM_BOT_FAILURE_CATEGORIES,
   TELEGRAM_BOT_INITIALIZATION_TIMEOUT_MS,
@@ -10,10 +12,7 @@ export {
   TelegramWebhookFailure,
   type TelegramWebhookHandler,
   type TelegramWebhookRequestContext,
-} from "./bot";
-export { TELEGRAM_WEBHOOK_SECURITY_SCHEME } from "./presentation/http";
-
-export { createReminderTransport } from "./reminder-transport";
+} from "./public-contracts";
 export type TelegramBotModuleOptions = {
   createActions?: (
     env: CloudflareBindings,

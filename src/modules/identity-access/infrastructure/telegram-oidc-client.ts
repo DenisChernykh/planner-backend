@@ -3,8 +3,8 @@ import { z } from "zod";
 import { encodeUtf8Base64 } from "../../../platform/crypto/base64url";
 import { timingSafeEqualStrings } from "../../../platform/crypto/secure-values";
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { ExternalIdentityProfile } from "../application/model";
-import type { TelegramOidcClient } from "../application/ports";
+import type { TelegramOidcClient } from "../application/ports/telegram-oidc-client";
+import type { ExternalIdentityProfile } from "../application/sessions/model";
 
 const TELEGRAM_ISSUER = "https://oauth.telegram.org";
 const AUTHORIZATION_ENDPOINT = `${TELEGRAM_ISSUER}/auth`;

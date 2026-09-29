@@ -6,14 +6,23 @@ import { problem } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { IdentityContextVariables } from "../../identity-access/public-contracts";
-import type { NotesRepository } from "../application/ports";
-import { CreateNote, DeleteNote, GetNote, ListNotes, UpdateNote } from "../application/use-cases";
+import type { GetNoteQuery } from "../application/reading/get-note.query";
+import type { ListNotesQuery } from "../application/reading/list-notes.query";
+import type { CreateNoteUseCase } from "../application/writing/create-note.use-case";
+import type { DeleteNoteUseCase } from "../application/writing/delete-note.use-case";
+import type { UpdateNoteUseCase } from "../application/writing/update-note.use-case";
 import { mapNotesError, noteResourceNotFoundProblemSchema } from "./problems";
 
 type NotesHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type NotesHttpDependencies = {
-  createRepository(database: D1Database): NotesRepository;
+  createUseCases(database: D1Database): {
+    createNote: CreateNoteUseCase;
+    deleteNote: DeleteNoteUseCase;
+    getNote: GetNoteQuery;
+    listNotes: ListNotesQuery;
+    updateNote: UpdateNoteUseCase;
+  };
 };
 
 const noteSchema = z
@@ -265,15 +274,16 @@ export function createNotesHttp(dependencies: NotesHttpDependencies): OpenAPIHon
 
   router.openapi(listRoute, async (c) => {
     const ownerId = authenticatedOwnerId(c);
-    const repository = dependencies.createRepository(c.env.DB);
-    const notes = await new ListNotes(repository).execute(ownerId, c.req.valid("query").limit);
+    const notes = await dependencies
+      .createUseCases(c.env.DB)
+      .listNotes.execute({ ownerId, limit: c.req.valid("query").limit });
     return c.json({ notes }, 200);
   });
 
   router.openapi(createNoteRoute, async (c) => {
     const ownerId = authenticatedOwnerId(c);
     const input = c.req.valid("json");
-    const note = await new CreateNote(dependencies.createRepository(c.env.DB)).execute({
+    const note = await dependencies.createUseCases(c.env.DB).createNote.execute({
       ...input,
       now: Date.now(),
       ownerId,
@@ -282,15 +292,14 @@ export function createNotesHttp(dependencies: NotesHttpDependencies): OpenAPIHon
   });
 
   router.openapi(getNoteRoute, async (c) => {
-    const note = await new GetNote(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      c.req.valid("param").noteId,
-    );
+    const note = await dependencies
+      .createUseCases(c.env.DB)
+      .getNote.execute({ ownerId: authenticatedOwnerId(c), noteId: c.req.valid("param").noteId });
     return c.json({ note }, 200);
   });
 
   router.openapi(updateNoteRoute, async (c) => {
-    const note = await new UpdateNote(dependencies.createRepository(c.env.DB)).execute({
+    const note = await dependencies.createUseCases(c.env.DB).updateNote.execute({
       changes: c.req.valid("json"),
       noteId: c.req.valid("param").noteId,
       now: Date.now(),
@@ -300,10 +309,10 @@ export function createNotesHttp(dependencies: NotesHttpDependencies): OpenAPIHon
   });
 
   router.openapi(deleteNoteRoute, async (c) => {
-    await new DeleteNote(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      c.req.valid("param").noteId,
-    );
+    await dependencies.createUseCases(c.env.DB).deleteNote.execute({
+      ownerId: authenticatedOwnerId(c),
+      noteId: c.req.valid("param").noteId,
+    });
     return c.body(null, 204);
   });
 

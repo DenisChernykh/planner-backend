@@ -147,29 +147,50 @@ src/
       index.ts                 # публичная поверхность модуля
       public-contracts.ts      # контракты для других модулей
       presentation/            # HTTP и cookies
-      application/             # use cases и ports
+      application/
+        telegram-login/        # начало, проверка и завершение OIDC-входа
+        sessions/              # проверка и отзыв сессий
+        development/           # локальная сессия разработчика
+        ports/
       infrastructure/          # D1, OIDC, crypto
     notes/
       index.ts
       presentation/
-      application/             # сценарии и порты хранилища
+      application/
+        reading/               # получение заметки и списка
+        writing/               # создание, изменение и удаление
+        ports/
       domain/                  # модель, ошибки и правила содержимого
       infrastructure/
     planning/
       index.ts
       public-contracts.ts
       presentation/
-      application/             # CRUD, запись ответа, порты
+      application/
+        plans/                 # план месяца и корзина
+        goals/                 # создание, изменение, порядок и восстановление
+        entries/               # записи целей и ответы на напоминания
+        ports/
       domain/                  # цели, значения, даты, расчёт выполнения
       infrastructure/
     reminders/
       index.ts
       public-contracts.ts
       presentation/
-      application/             # координация расписания, доставки и диалога
+      application/
+        settings/
+        connection/
+        scheduling/
+        delivery/
+        answers/
+        ports/
       domain/                  # настройки, расписание, сроки и правила доставки
       infrastructure/
-    telegram-bot/              # webhook, grammY и адаптер доставки
+    telegram-bot/
+      index.ts
+      public-contracts.ts
+      presentation/            # HTTP-контракт и проверка webhook
+      infrastructure/          # grammY, обработка обновлений и доставка
   platform/
     config/                    # runtime-конфигурация
     database/                  # общая D1 schema/connection
@@ -184,7 +205,9 @@ src/
 
 - другой модуль импортируется только через его `index.ts` или
   `public-contracts.ts`;
-- `presentation` вызывает application use cases;
+- `presentation` получает готовые use case и query и вызывает `execute(input)`;
+  сборка их зависимостей находится в корневом `index.ts` модуля, а чтение
+  репозиториев и сборка ресурсов — в application;
 - `domain` содержит модели и чистые бизнес-правила. Он не импортирует
   application, infrastructure, presentation или runtime-конфигурацию; время
   и идентификаторы получает аргументами. Luxon используется для расчёта календаря;
@@ -196,6 +219,16 @@ src/
 - каждый `index.ts` скрывает внутренний wiring своего модуля, а `src/app`
   соединяет только публичные module factories, без контейнера DI и декораторов;
 - generic repository отсутствует: ports выражают операции конкретной capability.
+
+Сценарии записываются в отдельных `*.use-case.ts`, операции чтения —
+в `*.query.ts`. Папки внутри application объединяют связанные сценарии,
+их модели и вспомогательные функции; контракты внешних зависимостей лежат
+в `ports/`. Общих файлов со всеми сценариями модуля нет.
+
+У `telegram-bot` нет собственного application: это транспортный адаптер.
+Его входящие обновления передаются в контроллер `reminders`, где команды
+преобразуются в вызовы продуктовых сценариев. Для API Hono роль контроллеров
+выполняют обработчики в `presentation/http.ts`.
 
 OIDC flow, cookies, Telegram-команды и DTO сообщений не являются моделями
 предметной области. Они остаются в сценариях авторизации и адаптации протоколов.

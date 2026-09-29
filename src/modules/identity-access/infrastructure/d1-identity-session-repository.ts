@@ -1,8 +1,8 @@
 import { and, eq, gt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { externalIdentities, sessions, users } from "../../../platform/database/schema";
-import type { ExternalIdentityProfile, SessionToCreate } from "../application/model";
-import type { IdentitySessionRepository } from "../application/ports";
+import type { IdentitySessionRepository } from "../application/ports/identity-session-repository";
+import type { ExternalIdentityProfile, SessionToCreate } from "../application/sessions/model";
 import type { AuthenticatedUser } from "../public-contracts";
 
 function toUser(row: typeof users.$inferSelect): AuthenticatedUser {

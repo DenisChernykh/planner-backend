@@ -7,7 +7,7 @@ import type { IdentityContextVariables } from "../modules/identity-access/public
 import { createNotesModule } from "../modules/notes";
 import { createPlanningModule } from "../modules/planning";
 import {
-  createReminderService,
+  createReminderOperations,
   createRemindersModule,
   reminderTimeZone,
 } from "../modules/reminders";
@@ -61,7 +61,7 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
     ...options.telegramBot,
     createActions:
       options.telegramBot?.createActions ??
-      ((env) => createReminderService(env.DB, reminderTransport(env))),
+      ((env) => createReminderOperations(env.DB, reminderTransport(env)).bot),
   });
 
   app.use("*", requestContext);
@@ -152,5 +152,5 @@ export function reminderTransport(env: CloudflareBindings) {
     : null;
 }
 export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
-  await createReminderService(env.DB, reminderTransport(env)).tick(now);
+  await createReminderOperations(env.DB, reminderTransport(env)).runReminders.execute({ now });
 }
