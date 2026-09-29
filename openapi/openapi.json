@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Free Hosting Starter API",
+    "title": "Planner API",
     "version": "0.1.0",
-    "description": "Cloudflare Workers and D1 starter for small MVP APIs."
+    "description": "Planner API for goals, progress tracking, notes, and Telegram sign-in."
   },
   "components": {
     "securitySchemes": {
@@ -128,7 +128,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["https://free-hosting-starter.dev/problems/note-not-found"]
+                "enum": ["urn:planner:problem:note-not-found"]
               },
               "title": {
                 "type": "string",
@@ -160,7 +160,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["https://free-hosting-starter.dev/problems/not-found"]
+                "enum": ["urn:planner:problem:not-found"]
               },
               "title": {
                 "type": "string",
@@ -205,7 +205,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["https://free-hosting-starter.dev/problems/goal-not-found"]
+                "enum": ["urn:planner:problem:goal-not-found"]
               },
               "title": {
                 "type": "string",
@@ -237,7 +237,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["https://free-hosting-starter.dev/problems/entry-not-found"]
+                "enum": ["urn:planner:problem:entry-not-found"]
               },
               "title": {
                 "type": "string",
@@ -269,7 +269,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["https://free-hosting-starter.dev/problems/not-found"]
+                "enum": ["urn:planner:problem:not-found"]
               },
               "title": {
                 "type": "string",
