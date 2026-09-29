@@ -1,8 +1,10 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
-import type { PlanningRepository } from "../src/modules/planning/application/ports";
-import { GetPlan, ListPlan } from "../src/modules/planning/application/use-cases";
+import { UpdateGoalUseCase } from "../src/modules/planning/application/goals/update-goal.use-case";
+import { GetPlanQuery } from "../src/modules/planning/application/plans/get-plan.query";
+import { ListPlanQuery } from "../src/modules/planning/application/plans/list-plan.query";
+import type { PlanningRepository } from "../src/modules/planning/application/ports/planning-repository";
 import type { GoalRecord } from "../src/modules/planning/domain/model";
 import { calculateMet } from "../src/modules/planning/domain/rules";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
@@ -104,6 +106,46 @@ afterEach(() => {
 });
 
 describe("planning application rules", () => {
+  it("returns the updated goal with its existing entries without controller-side reads", async () => {
+    const goal: GoalRecord = {
+      id: "goal-a",
+      ownerId: "owner-a",
+      month: "2026-04",
+      title: "Before",
+      description: null,
+      tracking: { type: "check" },
+      cadence: { period: "day" },
+      deletedAt: null,
+      createdAt: 1,
+      updatedAt: 1,
+    };
+    const entries = [
+      {
+        goalId: goal.id,
+        date: "2026-04-15",
+        value: false,
+        met: false,
+        note: "Keep this note",
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ];
+    const repository = {
+      findOwnedActiveGoal: vi.fn(async () => goal),
+      updateOwnedGoal: vi.fn(async () => ({ ...goal, title: "After", updatedAt: 2 })),
+      listEntries: vi.fn(async () => entries),
+    } as unknown as PlanningRepository;
+
+    await expect(
+      new UpdateGoalUseCase(repository).execute({
+        ownerId: goal.ownerId,
+        goalId: goal.id,
+        title: "After",
+        now: 2,
+      }),
+    ).resolves.toEqual({ ...goal, title: "After", updatedAt: 2, entries });
+  });
+
   it.each([
     ["Asia/Yekaterinburg", "2026-05-01"],
     ["America/Los_Angeles", "2026-04-30"],
@@ -113,7 +155,7 @@ describe("planning application rules", () => {
       listEntriesForPlan: vi.fn(async () => []),
     } as unknown as PlanningRepository;
     await expect(
-      new GetPlan(repository).execute({
+      new GetPlanQuery(new ListPlanQuery(repository)).execute({
         ownerId: "owner-a",
         month: "2026-04",
         now: Date.parse("2026-04-30T20:00:00Z"),
@@ -166,7 +208,9 @@ describe("planning application rules", () => {
       listEntriesForPlan,
     } as unknown as PlanningRepository;
 
-    await expect(new ListPlan(repository).execute("owner-a", "2026-04")).resolves.toEqual([
+    await expect(
+      new ListPlanQuery(repository).execute({ ownerId: "owner-a", month: "2026-04" }),
+    ).resolves.toEqual([
       { ...goals[0], entries: [] },
       {
         ...goals[1],

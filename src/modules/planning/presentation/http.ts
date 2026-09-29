@@ -6,25 +6,32 @@ import { problem } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { IdentityContextVariables } from "../../identity-access/public-contracts";
-import type { PlanningRepository } from "../application/ports";
-import {
-  CreateGoal,
-  DeleteGoal,
-  DeleteGoalEntry,
-  GetPlan,
-  ListTrash,
-  ReorderGoals,
-  RestoreGoal,
-  UpdateGoal,
-  UpsertGoalEntry,
-} from "../application/use-cases";
+import type { DeleteGoalEntryUseCase } from "../application/entries/delete-goal-entry.use-case";
+import type { UpsertGoalEntryUseCase } from "../application/entries/upsert-goal-entry.use-case";
+import type { CreateGoalUseCase } from "../application/goals/create-goal.use-case";
+import type { DeleteGoalUseCase } from "../application/goals/delete-goal.use-case";
+import type { ReorderGoalsUseCase } from "../application/goals/reorder-goals.use-case";
+import type { RestoreGoalUseCase } from "../application/goals/restore-goal.use-case";
+import type { UpdateGoalUseCase } from "../application/goals/update-goal.use-case";
+import type { GetPlanQuery } from "../application/plans/get-plan.query";
+import type { ListTrashQuery } from "../application/plans/list-trash.query";
 import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./problems";
 
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type PlanningHttpDependencies = {
   getTimeZone(database: D1Database, ownerId: string): Promise<string>;
-  createRepository(database: D1Database): PlanningRepository;
+  createUseCases(database: D1Database): {
+    createGoal: CreateGoalUseCase;
+    deleteGoal: DeleteGoalUseCase;
+    deleteEntry: DeleteGoalEntryUseCase;
+    getPlan: GetPlanQuery;
+    listTrash: ListTrashQuery;
+    reorderGoals: ReorderGoalsUseCase;
+    restoreGoal: RestoreGoalUseCase;
+    updateGoal: UpdateGoalUseCase;
+    upsertEntry: UpsertGoalEntryUseCase;
+  };
 };
 
 const monthPattern = /^\d{4}-(?:0[1-9]|1[0-2])$/u;
@@ -434,7 +441,7 @@ export function createPlanningHttp(
 
   router.openapi(listPlanRoute, async (c) => {
     const ownerId = authenticatedOwnerId(c);
-    const plan = await new GetPlan(dependencies.createRepository(c.env.DB)).execute({
+    const plan = await dependencies.createUseCases(c.env.DB).getPlan.execute({
       ownerId,
       month: c.req.valid("param").month,
       now: Date.now(),
@@ -444,14 +451,13 @@ export function createPlanningHttp(
   });
   router.openapi(listTrashRoute, async (c) => {
     const month = c.req.valid("param").month;
-    const goals = await new ListTrash(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      month,
-    );
+    const goals = await dependencies
+      .createUseCases(c.env.DB)
+      .listTrash.execute({ ownerId: authenticatedOwnerId(c), month });
     return c.json({ month, goals }, 200);
   });
   router.openapi(createGoalRoute, async (c) => {
-    const goal = await new CreateGoal(dependencies.createRepository(c.env.DB)).execute({
+    const goal = await dependencies.createUseCases(c.env.DB).createGoal.execute({
       ...c.req.valid("json"),
       month: c.req.valid("param").month,
       now: Date.now(),
@@ -460,7 +466,7 @@ export function createPlanningHttp(
     return c.json({ goal: { ...goal, entries: [] } }, 201);
   });
   router.openapi(reorderGoalsRoute, async (c) => {
-    await new ReorderGoals(dependencies.createRepository(c.env.DB)).execute({
+    await dependencies.createUseCases(c.env.DB).reorderGoals.execute({
       ...c.req.valid("json"),
       month: c.req.valid("param").month,
       ownerId: authenticatedOwnerId(c),
@@ -468,33 +474,32 @@ export function createPlanningHttp(
     return c.body(null, 204);
   });
   router.openapi(updateGoalRoute, async (c) => {
-    const goal = await new UpdateGoal(dependencies.createRepository(c.env.DB)).execute({
+    const goal = await dependencies.createUseCases(c.env.DB).updateGoal.execute({
       ...c.req.valid("json"),
       goalId: c.req.valid("param").goalId,
       now: Date.now(),
       ownerId: authenticatedOwnerId(c),
     });
-    const entries = await dependencies.createRepository(c.env.DB).listEntries(goal.id);
-    return c.json({ goal: { ...goal, entries } }, 200);
+    return c.json({ goal }, 200);
   });
   router.openapi(deleteGoalRoute, async (c) => {
-    await new DeleteGoal(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      c.req.valid("param").goalId,
-      Date.now(),
-    );
+    await dependencies.createUseCases(c.env.DB).deleteGoal.execute({
+      ownerId: authenticatedOwnerId(c),
+      goalId: c.req.valid("param").goalId,
+      now: Date.now(),
+    });
     return c.body(null, 204);
   });
   router.openapi(restoreGoalRoute, async (c) => {
-    await new RestoreGoal(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      c.req.valid("param").goalId,
-      Date.now(),
-    );
+    await dependencies.createUseCases(c.env.DB).restoreGoal.execute({
+      ownerId: authenticatedOwnerId(c),
+      goalId: c.req.valid("param").goalId,
+      now: Date.now(),
+    });
     return c.body(null, 204);
   });
   router.openapi(putEntryRoute, async (c) => {
-    const entry = await new UpsertGoalEntry(dependencies.createRepository(c.env.DB)).execute({
+    const entry = await dependencies.createUseCases(c.env.DB).upsertEntry.execute({
       date: c.req.valid("param").date,
       goalId: c.req.valid("param").goalId,
       now: Date.now(),
@@ -505,13 +510,13 @@ export function createPlanningHttp(
     return c.json({ entry }, 200);
   });
   router.openapi(deleteEntryRoute, async (c) => {
-    await new DeleteGoalEntry(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      c.req.valid("param").goalId,
-      c.req.valid("param").date,
-      Date.now(),
-      await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
-    );
+    await dependencies.createUseCases(c.env.DB).deleteEntry.execute({
+      ownerId: authenticatedOwnerId(c),
+      goalId: c.req.valid("param").goalId,
+      date: c.req.valid("param").date,
+      now: Date.now(),
+      timeZone: await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
+    });
     return c.body(null, 204);
   });
   return router;
