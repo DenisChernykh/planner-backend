@@ -13,12 +13,12 @@ import {
   DeleteGoalEntry,
   ListPlan,
   ListTrash,
-  plannerToday,
   ReorderGoals,
   RestoreGoal,
   UpdateGoal,
   UpsertGoalEntry,
 } from "../application/use-cases";
+import { plannerToday } from "../domain/rules";
 import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./problems";
 
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;

@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import type { ProblemInput } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
-import { PlanningError, type PlanningErrorCode } from "../application/errors";
+import { PlanningError, type PlanningErrorCode } from "../domain/errors";
 
 const PLANNING_PROBLEMS = {
   GOAL_NOT_FOUND: {

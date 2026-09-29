@@ -1,4 +1,4 @@
-import type { Note, NoteChanges } from "./model";
+import type { Note, NoteChanges } from "../domain/model";
 
 export interface NotesRepository {
   create(note: Note): Promise<Note>;

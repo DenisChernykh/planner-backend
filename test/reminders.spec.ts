@@ -5,13 +5,10 @@ import { createPlanningOperations, type GoalTracking } from "../src/modules/plan
 import { CreateGoal, UpsertGoalEntry } from "../src/modules/planning/application/use-cases";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { createReminderService } from "../src/modules/reminders";
-import {
-  type BotInput,
-  DEFAULT_SETTINGS,
-  type OutgoingMessage,
-} from "../src/modules/reminders/application/model";
+import type { BotInput, OutgoingMessage } from "../src/modules/reminders/application/model";
 import { DeliveryError, type ReminderTransport } from "../src/modules/reminders/application/ports";
-import { afterQuietHours, nextOccurrence } from "../src/modules/reminders/application/schedule";
+import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
+import { afterQuietHours, nextOccurrence } from "../src/modules/reminders/domain/schedule";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
@@ -491,6 +488,24 @@ describe("reminder HTTP contracts", () => {
     expect((await request(false)).status).toBe(401);
     expect((await request(true, false)).status).toBe(403);
     expect((await request()).status).toBe(200);
+    const invalidSettings = await app.request(
+      `${origin}/api/reminders/settings`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ ...DEFAULT_SETTINGS, timeZone: "Not/A_Timezone" }),
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `__Host-session=${token}`,
+          Origin: origin,
+        },
+      },
+      bindings,
+    );
+    expect(invalidSettings.status).toBe(400);
+    expect(await invalidSettings.json()).toMatchObject({
+      code: "INVALID_REQUEST",
+      detail: "Проверьте часовой пояс и время.",
+    });
     const plan = await app.request(
       `${origin}/api/plans/2026-09`,
       { headers: { Cookie: `__Host-session=${token}` } },

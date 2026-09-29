@@ -1,9 +1,10 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
-import type { GoalRecord } from "../src/modules/planning/application/model";
 import type { PlanningRepository } from "../src/modules/planning/application/ports";
-import { calculateMet, ListPlan } from "../src/modules/planning/application/use-cases";
+import { ListPlan } from "../src/modules/planning/application/use-cases";
+import type { GoalRecord } from "../src/modules/planning/domain/model";
+import { calculateMet } from "../src/modules/planning/domain/rules";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
 const ORIGIN = "http://localhost:8787";

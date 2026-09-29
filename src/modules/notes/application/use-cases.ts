@@ -1,11 +1,6 @@
-import {
-  NoteBodyTooLongError,
-  NoteNotFoundError,
-  NotePatchEmptyError,
-  NotesLimitInvalidError,
-  NoteTitleInvalidError,
-} from "./errors";
-import type { Note, NoteChanges } from "./model";
+import { NoteNotFoundError, NotesLimitInvalidError } from "../domain/errors";
+import type { Note, NoteChanges } from "../domain/model";
+import { normalizeTitle, requireValidBody, validateNoteChanges } from "../domain/rules";
 import type { NotesRepository } from "./ports";
 
 function requireNote(note: Note | null): Note {
@@ -13,21 +8,6 @@ function requireNote(note: Note | null): Note {
     throw new NoteNotFoundError();
   }
   return note;
-}
-
-function normalizeTitle(title: string): string {
-  const normalized = title.trim();
-  if (normalized.length < 1 || normalized.length > 120) {
-    throw new NoteTitleInvalidError();
-  }
-  return normalized;
-}
-
-function requireValidBody(body: string): string {
-  if (body.length > 10_000) {
-    throw new NoteBodyTooLongError();
-  }
-  return body;
 }
 
 export class CreateNote {
@@ -73,16 +53,7 @@ export class UpdateNote {
     now: number;
     ownerId: string;
   }): Promise<Note> {
-    if (input.changes.title === undefined && input.changes.body === undefined) {
-      throw new NotePatchEmptyError();
-    }
-    const changes: NoteChanges = { ...input.changes };
-    if (changes.title !== undefined) {
-      changes.title = normalizeTitle(changes.title);
-    }
-    if (changes.body !== undefined) {
-      changes.body = requireValidBody(changes.body);
-    }
+    const changes = validateNoteChanges(input.changes);
     return requireNote(
       await this.repository.updateOwned(input.noteId, input.ownerId, {
         ...changes,
