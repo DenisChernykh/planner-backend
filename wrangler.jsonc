@@ -35,11 +35,17 @@
         "AUTH_MODE": "telegram",
         "APP_ORIGIN": "https://app.getplanner.workers.dev",
         "AUTH_SUCCESS_REDIRECT_URL": "https://app.getplanner.workers.dev/",
-        "BUILD_REVISION": "53f13c0",
-        "TELEGRAM_BOT_MODE": "disabled"
+        "BUILD_REVISION": "57e81e4",
+        "TELEGRAM_BOT_MODE": "webhook"
       },
       "secrets": {
-        "required": ["TELEGRAM_OIDC_CLIENT_ID", "TELEGRAM_OIDC_CLIENT_SECRET", "AUTH_FLOW_SECRET"]
+        "required": [
+          "TELEGRAM_OIDC_CLIENT_ID",
+          "TELEGRAM_OIDC_CLIENT_SECRET",
+          "AUTH_FLOW_SECRET",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_BOT_WEBHOOK_SECRET"
+        ]
       },
       "d1_databases": [
         {
