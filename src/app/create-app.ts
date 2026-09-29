@@ -88,9 +88,9 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
       app.getOpenAPI31Document({
         openapi: "3.1.0",
         info: {
-          title: "Free Hosting Starter API",
+          title: "Planner API",
           version: "0.1.0",
-          description: "Cloudflare Workers and D1 starter for small MVP APIs.",
+          description: "Planner API for goals, progress tracking, notes, and Telegram sign-in.",
         },
       }),
     ),
@@ -99,7 +99,7 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   app.notFound((c) =>
     problem(c, {
       code: "NOT_FOUND",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
       title: "Not found",
       status: 404,
       detail: "The requested resource was not found.",
@@ -121,7 +121,7 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
     );
     return problem(c, {
       code: "INTERNAL_ERROR",
-      type: "https://free-hosting-starter.dev/problems/internal-server-error",
+      type: "urn:planner:problem:internal-server-error",
       title: "Internal server error",
       status: 500,
       detail: "The request could not be completed.",

@@ -10,7 +10,7 @@ import { createTelegramWebhookHandler } from "../src/modules/telegram-bot/bot";
 import type { RuntimeConfigBindings } from "../src/platform/config/runtime-config";
 import type { ProblemDetails } from "../src/platform/http/problem-details";
 
-const APP_ORIGIN = "https://free-hosting-starter.example.workers.dev";
+const APP_ORIGIN = "https://planner-api.example.workers.dev";
 const WEBHOOK_SECRET = "webhook_secret-01";
 const BOT_TOKEN = "123456:opaque-token";
 

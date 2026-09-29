@@ -5,7 +5,7 @@ import {
   readRuntimeConfig,
 } from "../src/platform/config/runtime-config";
 
-const APP_ORIGIN = "https://free-hosting-starter.example.workers.dev";
+const APP_ORIGIN = "https://planner-api.example.workers.dev";
 const AUTH_FLOW_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 const baseBindings: RuntimeConfigBindings = {

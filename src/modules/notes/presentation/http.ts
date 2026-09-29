@@ -39,7 +39,7 @@ const requireJsonBody: MiddlewareHandler<NotesHttpEnv> = async (c, next) => {
   ) {
     c.res = problem(c, {
       code: "UNSUPPORTED_MEDIA_TYPE",
-      type: "https://free-hosting-starter.dev/problems/unsupported-media-type",
+      type: "urn:planner:problem:unsupported-media-type",
       title: "Unsupported media type",
       status: 415,
       detail: "This endpoint requires an application/json request body.",
@@ -54,7 +54,7 @@ const limitNoteBody = bodyLimit({
   onError: (c) =>
     problem(c, {
       code: "PAYLOAD_TOO_LARGE",
-      type: "https://free-hosting-starter.dev/problems/content-too-large",
+      type: "urn:planner:problem:content-too-large",
       title: "Content too large",
       status: 413,
       detail: "The request body exceeds the accepted size.",
@@ -241,7 +241,7 @@ export function createNotesHttp(dependencies: NotesHttpDependencies): OpenAPIHon
       if (!result.success) {
         return problem(c, {
           code: "VALIDATION_FAILED",
-          type: "https://free-hosting-starter.dev/problems/validation-error",
+          type: "urn:planner:problem:validation-error",
           title: "Validation failed",
           status: 400,
           detail: "The request does not match the API contract.",
