@@ -6,13 +6,35 @@ import { CreateGoalPage } from "@/pages/create-goal";
 import { LoginPage } from "@/pages/login";
 import { NotFoundPage } from "@/pages/not-found";
 import { PlanPage } from "@/pages/plan";
+import { RemindersPage } from "@/pages/reminders";
 import { TrashPage } from "@/pages/trash";
+import { useGetApiRemindersSettings } from "@/shared/api";
 import { getCurrentPlannerMonth, isPlannerMonth } from "@/shared/lib/planner-month";
+import { Button } from "@/shared/ui";
 
 import { SessionGate } from "./session-gate";
 
 function CurrentMonthRedirect() {
-  return <Navigate to={`/plans/${getCurrentPlannerMonth()}`} replace />;
+  const settings = useGetApiRemindersSettings({ query: { refetchOnMount: "always" } });
+  if (settings.isPending || settings.isFetching)
+    return (
+      <p role="status" className="p-6">
+        Загружаем план…
+      </p>
+    );
+  if (settings.isError || !settings.data)
+    return (
+      <div className="space-y-3 p-6">
+        <p role="alert">Не удалось загрузить часовой пояс.</p>
+        <Button onClick={() => settings.refetch()}>Повторить</Button>
+      </div>
+    );
+  return (
+    <Navigate
+      to={`/plans/${getCurrentPlannerMonth(new Date(), settings.data.settings.timeZone)}`}
+      replace
+    />
+  );
 }
 
 function PlannerMonthRoute() {
@@ -34,6 +56,7 @@ export const routes = [
         children: [
           { index: true, element: <PlanPage /> },
           { path: "goals/new", element: <CreateGoalPage /> },
+          { path: "reminders", element: <RemindersPage /> },
           { path: "trash", element: <TrashPage /> },
           { path: "*", element: <NotFoundPage /> },
         ],
