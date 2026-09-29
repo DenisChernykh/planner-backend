@@ -13,6 +13,7 @@
       "!!node_modules",
       "!!.wrangler",
       "!!coverage",
+      "!!tmp",
       "!!src/worker-configuration.d.ts"
     ]
   },

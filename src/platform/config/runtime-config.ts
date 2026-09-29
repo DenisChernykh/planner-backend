@@ -84,8 +84,14 @@ type RuntimeModeBindings = {
 
 // Wrangler's required secret list is unconditional; keep bot secrets optional
 // here and let the selected bot mode decide whether they must be present.
-export type RuntimeConfigBindings = Omit<CloudflareBindings, "AUTH_MODE" | "TELEGRAM_BOT_MODE"> &
+export type RuntimeConfigBindings = Omit<
+  CloudflareBindings,
+  "AUTH_MODE" | "TELEGRAM_BOT_MODE" | "APP_ORIGIN" | "AUTH_SUCCESS_REDIRECT_URL" | "BUILD_REVISION"
+> &
   RuntimeModeBindings & {
+    APP_ORIGIN: string;
+    AUTH_SUCCESS_REDIRECT_URL: string;
+    BUILD_REVISION: string;
     AUTH_MODE: "development" | "disabled" | "telegram";
   };
 
