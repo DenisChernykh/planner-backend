@@ -7,6 +7,12 @@ import type { IdentityContextVariables } from "../modules/identity-access/public
 import { createNotesModule } from "../modules/notes";
 import { createPlanningModule } from "../modules/planning";
 import {
+  createReminderService,
+  createRemindersModule,
+  reminderTimeZone,
+} from "../modules/reminders";
+import {
+  createReminderTransport,
   createTelegramBotModule,
   TELEGRAM_WEBHOOK_SECURITY_SCHEME,
   type TelegramBotModuleOptions,
@@ -49,8 +55,14 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   const app = new OpenAPIHono<AppEnv>();
   const identity = createIdentityAccessModule(options.identity);
   const notes = createNotesModule();
-  const planning = createPlanningModule();
-  const telegramBot = createTelegramBotModule(options.telegramBot);
+  const planning = createPlanningModule({ getTimeZone: reminderTimeZone });
+  const reminders = createRemindersModule(reminderTransport);
+  const telegramBot = createTelegramBotModule({
+    ...options.telegramBot,
+    createActions:
+      options.telegramBot?.createActions ??
+      ((env) => createReminderService(env.DB, reminderTransport(env))),
+  });
 
   app.use("*", requestContext);
   app.use("/api/*", requireTrustedOrigin);
@@ -68,6 +80,8 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   app.use("/api/plans/*", identity.authentication);
   app.use("/api/goals", identity.authentication);
   app.use("/api/goals/*", identity.authentication);
+  app.use("/api/reminders/*", identity.authentication);
+  app.route("/", reminders.router);
   app.route("/", notes.router);
   app.route("/", planning.router);
 
@@ -129,4 +143,14 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   });
 
   return app;
+}
+
+export function reminderTransport(env: CloudflareBindings) {
+  const config = readRuntimeConfig(env);
+  return config.telegramBotMode === "webhook"
+    ? createReminderTransport(config.telegramBotToken)
+    : null;
+}
+export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
+  await createReminderService(env.DB, reminderTransport(env)).tick(now);
 }
