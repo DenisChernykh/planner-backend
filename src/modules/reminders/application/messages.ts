@@ -1,5 +1,6 @@
 import type { GoalRecord } from "../../planning";
-import type { Button, OutgoingMessage, ReminderJob } from "./model";
+import type { ReminderJob } from "../domain/model";
+import type { Button, OutgoingMessage } from "./model";
 
 export function questionMessage(job: ReminderJob, goal: GoalRecord): OutgoingMessage {
   const heading = `${goal.title} · ${job.localDate}`;

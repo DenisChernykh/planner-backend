@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import type { ProblemInput } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
-import { NotesError, type NotesErrorCode } from "../application/errors";
+import { NotesError, type NotesErrorCode } from "../domain/errors";
 
 const NOTE_PROBLEMS = {
   NOTE_BODY_TOO_LONG: {

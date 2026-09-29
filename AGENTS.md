@@ -27,6 +27,13 @@ are reference capabilities, not permission to grow a generic auth framework.
   `public-contracts.ts`.
 - Presentation depends on application use cases. Application code must not
   import Hono, Drizzle, D1, Wrangler, or Telegram transport details.
+- `domain` owns product models, invariants, scheduling and delivery policies.
+  It depends only on its own domain, shared domain primitives, and pure calendar
+  calculations (Luxon). Pass time and IDs as arguments; no I/O, system clock,
+  random generation, application ports, HTTP, or runtime configuration there.
+- Application use cases load data, invoke domain rules and coordinate persistence
+  and transport through ports. Transport DTOs and OIDC protocol flows stay outside
+  the product domain. Domain errors are mapped to Problem Details in presentation.
 - Infrastructure implements capability-specific application ports.
 - Keep each module's internal wiring behind its root `index.ts`; `src/app` may
   compose only public module factories. Do not add a DI container or decorators.

@@ -152,8 +152,24 @@ src/
     notes/
       index.ts
       presentation/
-      application/
+      application/             # сценарии и порты хранилища
+      domain/                  # модель, ошибки и правила содержимого
       infrastructure/
+    planning/
+      index.ts
+      public-contracts.ts
+      presentation/
+      application/             # CRUD, запись ответа, порты
+      domain/                  # цели, значения, даты, расчёт выполнения
+      infrastructure/
+    reminders/
+      index.ts
+      public-contracts.ts
+      presentation/
+      application/             # координация расписания, доставки и диалога
+      domain/                  # настройки, расписание, сроки и правила доставки
+      infrastructure/
+    telegram-bot/              # webhook, grammY и адаптер доставки
   platform/
     config/                    # runtime-конфигурация
     database/                  # общая D1 schema/connection
@@ -169,13 +185,22 @@ src/
 - другой модуль импортируется только через его `index.ts` или
   `public-contracts.ts`;
 - `presentation` вызывает application use cases;
+- `domain` содержит модели и чистые бизнес-правила. Он не импортирует
+  application, infrastructure, presentation или runtime-конфигурацию; время
+  и идентификаторы получает аргументами. Luxon используется для расчёта календаря;
+- `application` загружает данные, вызывает domain и выполняет действия через порты;
 - application-код не знает о Hono, D1 и Telegram SDK/HTTP;
-- application-ошибки принадлежат своему модулю, а presentation-слой переводит
+- доменные и application-ошибки принадлежат своему модулю, а presentation-слой переводит
   их в безопасные Problem Details с фиксированными публичными текстами;
 - infrastructure реализует объявленные application ports;
 - каждый `index.ts` скрывает внутренний wiring своего модуля, а `src/app`
   соединяет только публичные module factories, без контейнера DI и декораторов;
 - generic repository отсутствует: ports выражают операции конкретной capability.
+
+OIDC flow, cookies, Telegram-команды и DTO сообщений не являются моделями
+предметной области. Они остаются в сценариях авторизации и адаптации протоколов.
+Атомарные операции, проверка версии и защита от повторной записи выполняются
+через порты хранилища; перенос правил в domain не заменяет гарантии D1.
 
 Центрального registry бизнес-ошибок намеренно нет. Локального исчерпывающего
 маппера достаточно, пока модули собираются одним приложением. Registry имеет
