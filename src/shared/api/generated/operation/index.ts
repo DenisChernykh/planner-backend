@@ -14,3 +14,5 @@ export * from './postApiNotesBody';
 export * from './postApiPlansMonthGoalsBody';
 export * from './putApiGoalsGoalIdEntriesDateBody';
 export * from './putApiPlansMonthGoalsOrderBody';
+export * from './putApiRemindersGoalsGoalIdBody';
+export * from './putApiRemindersSettingsBody';

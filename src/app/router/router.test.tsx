@@ -30,6 +30,10 @@ vi.mock("@/shared/api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/shared/api")>();
   return {
     ...actual,
+    useGetApiRemindersSettings: () => ({
+      isPending: false,
+      data: { settings: { timeZone: "Asia/Yekaterinburg" } },
+    }),
     useGetApiPlansMonth: () => ({
       isPending: false,
       isError: false,

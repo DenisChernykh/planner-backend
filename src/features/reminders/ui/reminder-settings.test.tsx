@@ -1,0 +1,107 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { putApiRemindersGoalsGoalId, putApiRemindersSettings } from "@/shared/api";
+import { GeneralSettings } from "./general-settings";
+import { GoalReminder } from "./goal-reminder";
+import { TelegramConnection } from "./telegram-connection";
+
+vi.mock("@/shared/api", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/shared/api")>()),
+  putApiRemindersSettings: vi.fn().mockResolvedValue({}),
+  putApiRemindersGoalsGoalId: vi.fn().mockResolvedValue({}),
+}));
+function wrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryClientProvider
+      client={new QueryClient({ defaultOptions: { mutations: { retry: false } } })}
+    >
+      {children}
+    </QueryClientProvider>
+  );
+}
+beforeEach(() => vi.clearAllMocks());
+describe("reminder settings", () => {
+  it("submits the chosen timezone and times without read-only response fields", async () => {
+    const user = userEvent.setup();
+    render(
+      <GeneralSettings
+        initial={{
+          enabled: false,
+          timeZone: "Asia/Yekaterinburg",
+          quietStart: "23:00",
+          quietEnd: "08:00",
+          eveningTime: "21:00",
+        }}
+      />,
+      { wrapper },
+    );
+    await user.click(screen.getByRole("checkbox", { name: "Присылать напоминания" }));
+    await user.clear(screen.getByLabelText("Часовой пояс"));
+    await user.type(screen.getByLabelText("Часовой пояс"), "Europe/Moscow");
+    await user.click(screen.getByRole("button", { name: "Сохранить настройки" }));
+    await waitFor(() =>
+      expect(putApiRemindersSettings).toHaveBeenCalledWith({
+        enabled: true,
+        timeZone: "Europe/Moscow",
+        quietStart: "23:00",
+        quietEnd: "08:00",
+        eveningTime: "21:00",
+      }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent("Настройки сохранены");
+  });
+  it("saves per-goal weekdays and prevents a schedule without any days", async () => {
+    const user = userEvent.setup();
+    render(
+      <GoalReminder
+        month="2026-09"
+        goal={{
+          goalId: "goal-a",
+          title: "Пробуждение",
+          mode: "scheduled",
+          time: "09:00",
+          weekdays: [1, 2],
+          nextRunAt: null,
+        }}
+      />,
+      { wrapper },
+    );
+    await user.click(screen.getByRole("checkbox", { name: "Вт" }));
+    await user.click(screen.getByRole("button", { name: "Сохранить напоминание" }));
+    await waitFor(() =>
+      expect(putApiRemindersGoalsGoalId).toHaveBeenCalledWith(
+        { goalId: "goal-a" },
+        { mode: "scheduled", time: "09:00", weekdays: [1] },
+      ),
+    );
+    await user.click(screen.getByRole("checkbox", { name: "Пн" }));
+    expect(screen.getByRole("button", { name: "Сохранить напоминание" })).toBeDisabled();
+  });
+  it("explains when the bot is disabled and does not offer a broken connection", () => {
+    render(
+      <TelegramConnection
+        state={{
+          connection: "disconnected",
+          botAvailable: false,
+          deliveryIssues: 0,
+          settings: {
+            ownerId: "owner",
+            nextEveningAt: null,
+            enabled: false,
+            timeZone: "UTC",
+            quietStart: "23:00",
+            quietEnd: "08:00",
+            eveningTime: "21:00",
+          },
+        }}
+      />,
+      { wrapper },
+    );
+    expect(screen.getByRole("button", { name: "Подключить Telegram" })).toBeDisabled();
+    expect(
+      screen.getByText("Бот пока не включён. Настройки можно сохранить заранее."),
+    ).toBeInTheDocument();
+  });
+});
