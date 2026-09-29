@@ -1,0 +1,52 @@
+{
+  "name": "planner-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Planner API on Cloudflare Workers and D1",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.15.1"
+  },
+  "packageManager": "pnpm@11.15.1",
+  "scripts": {
+    "check": "pnpm typegen:check && pnpm format:check && pnpm boundaries:check && pnpm typecheck && pnpm test && pnpm deploy:dry-run",
+    "dev": "wrangler dev --local --var AUTH_MODE:development",
+    "dev:planner": "wrangler dev --local --var AUTH_MODE:development --var APP_ORIGIN:http://localhost:5173 --var AUTH_SUCCESS_REDIRECT_URL:http://localhost:5173/",
+    "dev:telegram": "wrangler dev --local --var AUTH_MODE:telegram",
+    "typegen": "wrangler types src/worker-configuration.d.ts --env-interface CloudflareBindings",
+    "typegen:check": "wrangler types src/worker-configuration.d.ts --env-interface CloudflareBindings --check",
+    "format": "biome check --write .",
+    "format:check": "biome check .",
+    "boundaries:check": "node scripts/check-module-boundaries.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply planner-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply planner-db --remote --env production",
+    "telegram:operator": "node scripts/telegram-bot-operator.mjs",
+    "deploy:dry-run": "wrangler deploy --dry-run --env=",
+    "deploy": "wrangler deploy --env production"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "1.6.1",
+    "drizzle-orm": "0.45.2",
+    "grammy": "1.46.0",
+    "hono": "4.13.5",
+    "jose": "6.2.10",
+    "luxon": "3.7.2",
+    "zod": "4.5.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.11",
+    "@cloudflare/vitest-plugin": "1.1.2",
+    "@types/luxon": "3.7.5",
+    "@types/node": "24.13.3",
+    "drizzle-kit": "0.31.10",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11",
+    "wrangler": "4.127.1"
+  }
+}

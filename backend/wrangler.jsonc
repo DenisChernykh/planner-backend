@@ -1,0 +1,98 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "account_id": "a4c9bdc930a7c203670462011024234e",
+  "name": "planner-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "AUTH_MODE": "disabled",
+    "APP_ORIGIN": "http://localhost:8787",
+    "AUTH_SUCCESS_REDIRECT_URL": "http://localhost:8787/",
+    "BUILD_REVISION": "local",
+    "TELEGRAM_BOT_MODE": "disabled"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "planner-db",
+      "database_id": "80819e8e-d87f-4240-983e-919b358a42fc",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "invocation_logs": false
+    }
+  },
+  "env": {
+    "production": {
+      "name": "app",
+      "vars": {
+        "AUTH_MODE": "telegram",
+        "APP_ORIGIN": "https://app.getplanner.workers.dev",
+        "AUTH_SUCCESS_REDIRECT_URL": "https://app.getplanner.workers.dev/",
+        "BUILD_REVISION": "monolith",
+        "TELEGRAM_BOT_MODE": "webhook"
+      },
+      "secrets": {
+        "required": [
+          "TELEGRAM_OIDC_CLIENT_ID",
+          "TELEGRAM_OIDC_CLIENT_SECRET",
+          "AUTH_FLOW_SECRET",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_BOT_WEBHOOK_SECRET"
+        ]
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "planner-db",
+          "database_id": "80819e8e-d87f-4240-983e-919b358a42fc",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "triggers": {
+        "crons": ["* * * * *"]
+      },
+      "observability": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "logs": {
+          "invocation_logs": false
+        }
+      },
+      "assets": {
+        "directory": "../frontend/dist",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": [
+          "/api",
+          "/api/*",
+          "/health",
+          "/health/*",
+          "/openapi.json",
+          "/telegram",
+          "/telegram/*"
+        ]
+      }
+    }
+  },
+  "assets": {
+    "directory": "../frontend/dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api",
+      "/api/*",
+      "/health",
+      "/health/*",
+      "/openapi.json",
+      "/telegram",
+      "/telegram/*"
+    ]
+  }
+}

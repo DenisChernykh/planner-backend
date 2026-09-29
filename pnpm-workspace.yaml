@@ -1,7 +1,14 @@
+packages:
+  - backend
+  - frontend
+autoInstallPeers: false
 allowBuilds:
   esbuild: true
   workerd: true
 engineStrict: true
 saveExact: true
-strictPeerDependencies: true
 verifyDepsBeforeRun: error
+enableGlobalVirtualStore: false
+# Vite plugins and Vitest must share the same Vite API types.
+overrides:
+  vite: 8.1.5
