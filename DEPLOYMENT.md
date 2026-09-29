@@ -16,31 +16,76 @@ The frontend serves static assets and forwards `/api` through its `API` service
 binding. Both Wrangler configurations pin the account. The backend trusts the
 public frontend origin and redirects successful logins to its root.
 
-## Telegram reminders — local implementation, not deployed
+## Telegram reminders — deployed and bot connected on 2026-09-29
 
 The reminder feature adds migration `0003_safe_sprite.sql`, a once-per-minute
-Cron Trigger, and `/plans/:month/reminders` in the frontend. The migration has
-only been applied locally. Production `TELEGRAM_BOT_MODE` remains `disabled`
-in the checked-in configuration. No remote operation was performed for this change.
+Cron Trigger, and `/plans/:month/reminders` in the frontend. After the owner's
+deployment request, migration `0003` was applied to production and both merged
+`main` revisions were published, backend first.
 
-After explicit authorization and verification of the targets above:
+| Worker | Source revision | Deployed version |
+| --- | --- | --- |
+| `planner-api` | `57e81e4` | `bbe064a7-0a33-45fc-926e-2f433fe61834` |
+| `app` | `49ab9e6b` | `9e8e5cb3-29ed-4f38-926a-3d0d664e0053` |
 
-1. Apply the additive migration to `planner-db` using
-   `pnpm db:migrate:remote`. Apply it before deploying the new backend: planning
-   writes now use the added entry revision column.
-2. Store `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_WEBHOOK_SECRET` through Wrangler's
-   hidden `secret put --env production` prompts. These are separate from OIDC secrets.
-3. Set production `TELEGRAM_BOT_MODE=webhook`, update the build revision, run both
-   projects' `pnpm check`, and deploy the backend followed by the frontend.
-4. Register `https://planner-api.getplanner.workers.dev/telegram/webhook` with
-   `pnpm telegram:operator -- set <url>` using the existing secure operator setup.
-   Re-register an existing webhook too: `allowed_updates` must include
-   `message` and `callback_query`. Do not discard pending updates.
-5. Open the frontend reminder settings, create a connection link, press Start
-   and confirm in the private bot chat. Enable reminders and configure a goal.
-6. Verify a real scheduled question, text answer, inline button, correction,
-   conflict with a website entry, and evening digest. Cron configuration changes
-   can take time to propagate. Check delivery issue counts without logging secrets.
+Production `BUILD_REVISION=57e81e4` was supplied as a deploy argument. The deployed
+trees match the checked PR heads: both full local checks passed (101 backend and
+75 frontend tests), and backend GitHub CI passed. Production checks confirmed:
+
+- Health HTTP 200 with revision `57e81e4` and all reminder paths in OpenAPI.
+- SPA HTTP 200 at `/` and `/plans/2026-09/reminders`; the served JavaScript matches
+  the local production build byte for byte.
+- Unauthenticated reminder settings return HTTP 401 through the frontend binding.
+- Telegram login start returns HTTP 302 with the existing callback and S256 PKCE.
+- Existing counts are unchanged (3 users, 6 goals, 55 entries), all entries have
+  a revision, and `PRAGMA foreign_key_check` reports no violations.
+
+### Bot activation
+
+The owner authorized connecting `@planner_month_ru_bot`. Its Bot API token was
+verified with `getMe`; both Bot API secrets were stored through Wrangler's hidden
+prompts. Production now uses `TELEGRAM_BOT_MODE=webhook` and requires both secrets.
+The existing OIDC settings remain in place.
+
+Backend source `418a6f8` was published as version
+`f65dfa5a-4626-4a26-8ade-a35f2c250bd9`. The subsequent webhook-secret update created
+active version `6393c09a-2e42-4dec-90d1-0abcfae16282`, with the same code and
+`BUILD_REVISION=418a6f8`. Frontend deployment is unchanged.
+
+The registered webhook is
+`https://planner-api.getplanner.workers.dev/telegram/webhook`, with
+`message` and `callback_query` enabled. Pending updates were not discarded.
+Verification observed:
+
+- Full backend `pnpm check` passed with 101 tests before publication.
+- Health returned HTTP 200 with revision `418a6f8`.
+- A webhook request without the secret returned HTTP 401.
+- Telegram reported the expected webhook URL, zero pending updates, and no
+  delivery error at the initial verification.
+- The owner confirmed a real Telegram login; Planner opened the authenticated
+  plan. A connection link was created from its reminder settings.
+- The real bot sent the connection confirmation. After refreshing the settings,
+  Planner showed the private chat as connected.
+
+A separate synthetic empty-update probe returned HTTP 403; its cause was not
+established. It is not counted as a passing webhook smoke. The real private-chat
+connection above exercised inbound updates and outgoing replies successfully.
+A scheduled question, goal answer, correction, and evening digest have not yet
+been verified against live Telegram. Global reminders remain disabled in the
+connected account until the owner chooses a schedule.
+
+### Connecting another account
+
+The same bot serves separate Planner accounts. Each person signs in through
+their own Telegram account, opens **Напоминания → Подключить Telegram**, follows
+the generated link, and presses **Start** and **Подключить** in the private bot
+chat. They then enable reminders and configure their own goals and schedule.
+No new bot, token, deployment, or server is needed. Chat connections, settings,
+and goals remain owner-scoped.
+
+For future setup, store secrets only through hidden `secret put --env production`
+prompts. Register or update the webhook with `message` and `callback_query`
+without discarding pending updates. Do not manually recreate migration `0003`.
 
 For a local scheduled-handler check, use
 `http://localhost:8787/cdn-cgi/local/scheduled` with Wrangler dev. With the bot
@@ -144,7 +189,8 @@ pnpm exec wrangler secret put AUTH_FLOW_SECRET --env production
 
 `AUTH_FLOW_SECRET` must be a freshly generated, random 32-byte value encoded as
 base64url. Never put secret values in chat, shell arguments, logs, or Git. A Bot
-API token is not an OIDC Client Secret. Bot API webhook mode remains disabled.
+API token is not an OIDC Client Secret. Bot API webhook mode was enabled separately
+on 2026-09-29 as recorded above.
 
 ## Publish and verify
 
@@ -152,10 +198,10 @@ For subsequent authorized deployments, publish the backend before the frontend:
 
 ```sh
 # In backend/
-pnpm deploy
+pnpm exec wrangler deploy --env production --var BUILD_REVISION:$(git rev-parse --short HEAD)
 
 # In frontend/
-pnpm deploy
+pnpm run deploy
 ```
 
 The initial production smoke, before the address change, confirmed:

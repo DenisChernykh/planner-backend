@@ -7,9 +7,12 @@ zero mandatory Cloudflare cost as a hard constraint. Do not add a paid plan,
 custom domain, Queue, KV, R2, Durable Object, Cron, external database, Redis,
 Docker, or automatic deployment without an explicit project decision.
 
-Approved project decision (2026-09-29): Telegram reminders serve one user and
-may use one once-per-minute Cron Trigger in the existing backend Worker, with
-schedule and delivery state in the existing D1 database. See
+Approved project decision (2026-09-29, clarified by the project owner): Telegram
+reminders are sized for one user's personal-use workload; this is a capacity
+assumption, not an access restriction. Each authenticated account may connect
+its own private Telegram chat and use owner-scoped reminders. Do not introduce
+a designated-owner allowlist. Reminders may use one once-per-minute Cron Trigger
+in the existing backend Worker, with schedule and delivery state in the existing D1 database. See
 `docs/telegram-reminders.md`. Do not add a queue, microservice, or scaling
 infrastructure for this feature. This decision does not authorize deployment
 or remote migrations; those remain separate operations.
