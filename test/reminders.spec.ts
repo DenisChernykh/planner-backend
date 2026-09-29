@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
 import { createPlanningOperations, type GoalTracking } from "../src/modules/planning";
 import { CreateGoal, UpsertGoalEntry } from "../src/modules/planning/application/use-cases";
@@ -24,6 +24,7 @@ let sent: { id: number; message: OutgoingMessage }[];
 let transport: ReminderTransport;
 let updateId: number;
 const service = () => createReminderService(env.DB, transport);
+afterEach(() => vi.restoreAllMocks());
 const incoming = (fields: Partial<BotInput>): BotInput => ({
   updateId: ++updateId,
   chatId: "123",
@@ -121,6 +122,143 @@ describe("reminder schedules", () => {
 });
 
 describe("Telegram reminders with D1", () => {
+  it.each(["scheduled", "evening"] as const)(
+    "replaces an unsent %s job when rescheduled on the same day, but retains sent events",
+    async (mode) => {
+      const created = await goal({ type: "check" }, mode);
+      const morning = Date.parse("2026-09-29T02:00:00Z"); // 07:00, quiet until 08:00
+      if (mode === "scheduled")
+        await service().saveGoal(
+          OWNER,
+          created.id,
+          {
+            mode,
+            time: "07:00",
+            weekdays: [1, 2, 3, 4, 5, 6, 7],
+          },
+          morning - 60_000,
+        );
+      else
+        await service().saveSettings(
+          OWNER,
+          {
+            ...DEFAULT_SETTINGS,
+            enabled: true,
+            eveningTime: "07:00",
+          },
+          morning - 60_000,
+        );
+      await service().tick(morning);
+      const pending = await firstJob();
+      expect(pending.status).toBe("pending");
+      expect(sent).toHaveLength(0);
+      const reschedule = (time: string, at: number) =>
+        mode === "scheduled"
+          ? service().saveGoal(
+              OWNER,
+              created.id,
+              {
+                mode,
+                time,
+                weekdays: [1, 2, 3, 4, 5, 6, 7],
+              },
+              at,
+            )
+          : service().saveSettings(
+              OWNER,
+              {
+                ...DEFAULT_SETTINGS,
+                enabled: true,
+                eveningTime: time,
+              },
+              at,
+            );
+      await reschedule("09:00", morning + 30 * 60_000);
+      expect(await repository.job(pending.id)).toBeNull();
+      await service().tick(now);
+      expect(sent).toHaveLength(1);
+      const delivered = await firstJob();
+      expect(delivered.dueAt).toBe(now);
+      await reschedule("10:00", now + 60_000);
+      await service().tick(now + 60 * 60_000);
+      expect(sent).toHaveLength(1);
+      expect((await repository.job(delivered.id))?.status).toBe("sent");
+    },
+  );
+  it.each(["time", "weekdays", "mode", "quiet hours"])(
+    "does not enqueue a stale question when %s change during a tick",
+    async (change) => {
+      const created = await goal();
+      const original = D1ReminderRepository.prototype.advanceGoal;
+      vi.spyOn(D1ReminderRepository.prototype, "advanceGoal").mockImplementationOnce(
+        async function (this: D1ReminderRepository, item, previous, job, settings) {
+          if (change === "quiet hours")
+            await service().saveSettings(
+              OWNER,
+              {
+                ...DEFAULT_SETTINGS,
+                enabled: true,
+                quietStart: "00:00",
+                quietEnd: "10:00",
+              },
+              now - 30_000,
+            );
+          else
+            await service().saveGoal(
+              OWNER,
+              created.id,
+              {
+                mode: change === "mode" ? "evening" : "scheduled",
+                time: change === "time" ? "09:30" : "09:00",
+                weekdays: change === "weekdays" ? [2] : [1, 2, 3, 4, 5, 6, 7],
+              },
+              now - 30_000,
+            );
+          await original.call(this, item, previous, job, settings);
+        },
+      );
+      await service().tick(now);
+      expect(sent).toHaveLength(0);
+      expect(
+        await env.DB.prepare("SELECT count(*) AS total FROM reminder_jobs").first("total"),
+      ).toBe(0);
+      const [updated] = await repository.reminders(OWNER);
+      expect(updated?.nextRunAt).toBe(
+        change === "mode" ? null : change === "time" ? now + 30 * 60_000 : now,
+      );
+    },
+  );
+  it.each(["time", "quiet hours"])(
+    "does not enqueue a stale digest when evening %s change",
+    async (change) => {
+      await goal({ type: "check" }, "evening");
+      const evening = Date.parse("2026-09-29T16:00:00Z");
+      const original = D1ReminderRepository.prototype.advanceEvening;
+      vi.spyOn(D1ReminderRepository.prototype, "advanceEvening").mockImplementationOnce(
+        async function (this: D1ReminderRepository, settings, previous, next, job) {
+          await service().saveSettings(
+            OWNER,
+            {
+              ...DEFAULT_SETTINGS,
+              enabled: true,
+              eveningTime: change === "time" ? "21:30" : "21:00",
+              quietStart: change === "quiet hours" ? "20:00" : "23:00",
+            },
+            evening - 30_000,
+          );
+          await original.call(this, settings, previous, next, job);
+        },
+      );
+      await service().tick(evening);
+      expect(sent).toHaveLength(0);
+      expect(
+        await env.DB.prepare("SELECT count(*) AS total FROM reminder_jobs").first("total"),
+      ).toBe(0);
+      expect((await repository.settings(OWNER)).nextEveningAt).toBe(
+        change === "time" ? evening + 30 * 60_000 : evening,
+      );
+    },
+  );
   it.each([
     [{ type: "check" } as GoalTracking, "да", true],
     [{ type: "quantity", targetValue: 10, comparison: "atLeast" } as GoalTracking, "2,5", 2.5],

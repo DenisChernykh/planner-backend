@@ -20,9 +20,14 @@ export interface ReminderRepository {
   disconnect(ownerId: string): Promise<void>;
   block(ownerId: string): Promise<void>;
   enqueue(job: ReminderJob): Promise<ReminderJob>;
-  advanceGoal(reminder: GoalReminder, previous: number, job: ReminderJob | null): Promise<void>;
+  advanceGoal(
+    reminder: GoalReminder,
+    previous: number,
+    job: ReminderJob | null,
+    settings: ReminderSettings,
+  ): Promise<void>;
   advanceEvening(
-    ownerId: string,
+    settings: ReminderSettings,
     previous: number,
     next: number,
     job: ReminderJob | null,

@@ -184,7 +184,7 @@ export class ReminderService {
                 afterQuietHours(now, settings),
               )
             : null;
-        await this.repository.advanceGoal({ ...item, nextRunAt: next }, previous, job);
+        await this.repository.advanceGoal({ ...item, nextRunAt: next }, previous, job, settings);
       }
       if (settings.nextEveningAt !== null && settings.nextEveningAt <= now) {
         const previous = settings.nextEveningAt;
@@ -202,7 +202,7 @@ export class ReminderService {
               )
             : null;
         await this.repository.advanceEvening(
-          settings.ownerId,
+          settings,
           previous,
           nextOccurrence(now, settings.timeZone, settings.eveningTime),
           job,
