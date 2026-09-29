@@ -19,7 +19,7 @@ Problem Details.
 
 ```text
 Browser → planner-frontend Worker + Static Assets
-                         └─ /api/* → service binding → free-hosting-starter Hono Worker → D1
+                         └─ /api/* → service binding → planner-api Hono Worker → D1
 ```
 
 Frontend Worker — единственный browser origin: он выдаёт Vite `dist` как SPA и
@@ -91,7 +91,7 @@ pnpm check
 ## Deploy
 
 1. Сначала настройте и задеплойте Hono Worker c production именем
-   `free-hosting-starter` в том же Cloudflare account.
+   `planner-api` в том же Cloudflare account.
 2. В backend задайте `APP_ORIGIN` и `AUTH_SUCCESS_REDIRECT_URL` как public URL
    `planner-frontend` Worker и зарегистрируйте callback
    `/api/auth/telegram/callback` в Telegram.
