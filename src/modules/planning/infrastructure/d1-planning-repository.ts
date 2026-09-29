@@ -1,7 +1,12 @@
 import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
-import type { GoalUpdate, PlanningRepository, StoredEntry } from "../application/ports";
+import type { AnswerRepository } from "../application/ports/answer-repository";
+import type {
+  GoalUpdate,
+  PlanningRepository,
+  StoredEntry,
+} from "../application/ports/planning-repository";
 import type { GoalRecord, GoalTracking } from "../domain/model";
 import type { EntrySnapshot, RecordAnswerInput } from "../public-contracts";
 
@@ -45,7 +50,7 @@ function toEntry(row: EntryRow): StoredEntry {
   };
 }
 
-export class D1PlanningRepository implements PlanningRepository {
+export class D1PlanningRepository implements PlanningRepository, AnswerRepository {
   private readonly database;
   private readonly binding: D1Database;
 

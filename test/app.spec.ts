@@ -3,10 +3,8 @@ import { exportJWK, generateKeyPair, SignJWT } from "jose";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
 import type { TelegramOidcClient } from "../src/modules/identity-access";
-import type {
-  ExternalIdentityProfile,
-  LoginFlow,
-} from "../src/modules/identity-access/application/model";
+import type { ExternalIdentityProfile } from "../src/modules/identity-access/application/sessions/model";
+import type { LoginFlow } from "../src/modules/identity-access/application/telegram-login/model";
 import { AesGcmLoginFlowCodec } from "../src/modules/identity-access/infrastructure/aes-gcm-login-flow-codec";
 import { TelegramOidcHttpClient } from "../src/modules/identity-access/infrastructure/telegram-oidc-client";
 import type { RuntimeConfigBindings } from "../src/platform/config/runtime-config";

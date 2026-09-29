@@ -1,5 +1,10 @@
-import { NoteBodyTooLongError, NotePatchEmptyError, NoteTitleInvalidError } from "./errors";
-import type { NoteChanges } from "./model";
+import {
+  NoteBodyTooLongError,
+  NoteNotFoundError,
+  NotePatchEmptyError,
+  NoteTitleInvalidError,
+} from "./errors";
+import type { Note, NoteChanges } from "./model";
 
 export function normalizeTitle(title: string): string {
   const normalized = title.trim();
@@ -22,4 +27,11 @@ export function validateNoteChanges(input: NoteChanges): NoteChanges {
   if (changes.title !== undefined) changes.title = normalizeTitle(changes.title);
   if (changes.body !== undefined) changes.body = requireValidBody(changes.body);
   return changes;
+}
+
+export function requireNote(note: Note | null): Note {
+  if (!note) {
+    throw new NoteNotFoundError();
+  }
+  return note;
 }

@@ -7,20 +7,13 @@ import type { WorkerHttpEnv } from "../../../platform/http/environment";
 import { applicationErrorToResponse, problem } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
 import { ApplicationError } from "../../../shared/application/application-error";
-import type {
-  IdentitySessionRepository,
-  LoginFlowCodec,
-  TelegramOidcClient,
-} from "../application/ports";
-import {
-  AuthenticateSession,
-  CompleteTelegramLogin,
-  FindDevelopmentSession,
-  Logout,
-  StartDevelopmentSession,
-  StartTelegramLogin,
-  ValidateTelegramLoginFlow,
-} from "../application/use-cases";
+import type { FindDevelopmentSessionQuery } from "../application/development/find-development-session.query";
+import type { StartDevelopmentSessionUseCase } from "../application/development/start-development-session.use-case";
+import type { AuthenticateSessionQuery } from "../application/sessions/authenticate-session.query";
+import type { LogoutUseCase } from "../application/sessions/logout.use-case";
+import type { CompleteTelegramLoginUseCase } from "../application/telegram-login/complete-telegram-login.use-case";
+import type { StartTelegramLoginUseCase } from "../application/telegram-login/start-telegram-login.use-case";
+import type { ValidateTelegramLoginFlowQuery } from "../application/telegram-login/validate-telegram-login-flow.query";
 import {
   type AuthenticatedUser,
   type IdentityContextVariables,
@@ -35,9 +28,18 @@ const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 type IdentityHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type IdentityHttpDependencies = {
-  createFlowCodec(secret: string): LoginFlowCodec;
-  createOidcClient(config: TelegramRuntimeConfig): TelegramOidcClient;
-  createRepository(database: D1Database): IdentitySessionRepository;
+  createSessions(database: D1Database): {
+    findDevelopmentSession: FindDevelopmentSessionQuery;
+    startDevelopmentSession: StartDevelopmentSessionUseCase;
+    authenticateSession: AuthenticateSessionQuery;
+    logout: LogoutUseCase;
+  };
+  createStartLogin(config: TelegramRuntimeConfig): StartTelegramLoginUseCase;
+  createValidateLogin(config: TelegramRuntimeConfig): ValidateTelegramLoginFlowQuery;
+  createCompleteLogin(
+    config: TelegramRuntimeConfig,
+    database: D1Database,
+  ): CompleteTelegramLoginUseCase;
 };
 
 const userSchema = z
@@ -252,12 +254,12 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     }
 
     const sessionToken = getCookie(c, SESSION_COOKIE_NAME);
-    const repository = dependencies.createRepository(c.env.DB);
+    const sessions = dependencies.createSessions(c.env.DB);
 
     if (config.authMode === "development") {
       let user: AuthenticatedUser | null = null;
       if (sessionToken) {
-        user = await new FindDevelopmentSession(repository).execute({
+        user = await sessions.findDevelopmentSession.execute({
           now: Date.now(),
           sessionToken,
         });
@@ -267,9 +269,9 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       }
 
       if (!user) {
-        const developmentSession = await new StartDevelopmentSession(repository).execute(
-          Date.now(),
-        );
+        const developmentSession = await sessions.startDevelopmentSession.execute({
+          now: Date.now(),
+        });
         user = developmentSession.user;
         setSessionCookie(c, developmentSession.sessionToken);
       }
@@ -289,7 +291,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     }
 
     try {
-      const user = await new AuthenticateSession(repository).execute({
+      const user = await sessions.authenticateSession.execute({
         now: Date.now(),
         sessionToken,
       });
@@ -317,9 +319,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
         detail: "The requested resource was not found.",
       });
     }
-    const flowCodec = dependencies.createFlowCodec(config.authFlowSecret);
-    const oidcClient = dependencies.createOidcClient(config);
-    const result = await new StartTelegramLogin(oidcClient, flowCodec).execute({
+    const result = await dependencies.createStartLogin(config).execute({
       clientId: config.telegramClientId,
       now: Date.now(),
       redirectUri: callbackUrl(config),
@@ -348,8 +348,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     }
 
     const redirectUri = callbackUrl(config);
-    const flowCodec = dependencies.createFlowCodec(config.authFlowSecret);
-    const flow = await new ValidateTelegramLoginFlow(flowCodec).execute({
+    const flow = await dependencies.createValidateLogin(config).execute({
       clientId: config.telegramClientId,
       flowCookie,
       now: Date.now(),
@@ -361,10 +360,9 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       if (query.error || !query.code) {
         throw new ApplicationError("INVALID_REQUEST", "Telegram login was declined.");
       }
-      const result = await new CompleteTelegramLogin(
-        dependencies.createOidcClient(config),
-        dependencies.createRepository(c.env.DB),
-      ).execute({ code: query.code, flow, now: Date.now(), redirectUri });
+      const result = await dependencies
+        .createCompleteLogin(config, c.env.DB)
+        .execute({ code: query.code, flow, now: Date.now(), redirectUri });
       setSessionCookie(c, result.sessionToken);
       return c.redirect(config.authSuccessRedirectUrl, 302);
     } finally {
@@ -395,9 +393,9 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
         detail: "The requested resource was not found.",
       });
     }
-    await new Logout(dependencies.createRepository(c.env.DB)).execute(
-      getCookie(c, SESSION_COOKIE_NAME),
-    );
+    await dependencies
+      .createSessions(c.env.DB)
+      .logout.execute({ sessionToken: getCookie(c, SESSION_COOKIE_NAME) });
     clearSessionCookie(c);
     setPrivateResponseHeaders(c);
     return c.body(null, 204);

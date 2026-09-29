@@ -12,7 +12,7 @@ import {
   TelegramWebhookFailure,
   type TelegramWebhookHandler,
   type TelegramWebhookRequestContext,
-} from "../bot";
+} from "../public-contracts";
 import {
   telegramWebhookInvalidBody,
   telegramWebhookNotFound,

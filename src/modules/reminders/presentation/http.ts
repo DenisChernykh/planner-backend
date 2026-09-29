@@ -9,12 +9,27 @@ import {
   type IdentityContextVariables,
   requireAuthenticatedUser,
 } from "../../identity-access/public-contracts";
-import type { ReminderService } from "../application/service";
+import type { ConnectTelegramUseCase } from "../application/connection/connect-telegram.use-case";
+import type { DisconnectTelegramUseCase } from "../application/connection/disconnect-telegram.use-case";
+import type { GetGoalRemindersQuery } from "../application/settings/get-goal-reminders.query";
+import type { GetReminderStateQuery } from "../application/settings/get-reminder-state.query";
+import type { SaveGoalReminderUseCase } from "../application/settings/save-goal-reminder.use-case";
+import type { SaveReminderSettingsUseCase } from "../application/settings/save-reminder-settings.use-case";
+
 import {
   GoalReminderInvalidError,
   ReminderScheduleInvalidError,
   ReminderSettingsInvalidError,
 } from "../domain/errors";
+
+type ReminderHttpUseCases = {
+  getState: GetReminderStateQuery;
+  getGoalReminders: GetGoalRemindersQuery;
+  saveSettings: SaveReminderSettingsUseCase;
+  saveGoalReminder: SaveGoalReminderUseCase;
+  connect: ConnectTelegramUseCase;
+  disconnect: DisconnectTelegramUseCase;
+};
 
 type Env = WorkerHttpEnv<IdentityContextVariables>;
 const time = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u);
@@ -53,7 +68,7 @@ const security = [{ sessionCookie: [] }];
 const tags = ["Reminders"];
 
 export function createReminderHttp(
-  service: (env: CloudflareBindings) => ReminderService,
+  useCases: (env: CloudflareBindings) => ReminderHttpUseCases,
 ): OpenAPIHono<Env> {
   const router = new OpenAPIHono<Env>({
     defaultHook: (result, c) => {
@@ -135,7 +150,7 @@ export function createReminderHttp(
         ...errors,
       },
     }),
-    async (c) => c.json(await service(c.env).state(owner(c)), 200),
+    async (c) => c.json(await useCases(c.env).getState.execute({ ownerId: owner(c) }), 200),
   );
   router.openapi(
     createRoute({
@@ -147,7 +162,14 @@ export function createReminderHttp(
       responses: { 200: { description: "Settings saved", content: json(settings) }, ...errors },
     }),
     async (c) =>
-      c.json(await service(c.env).saveSettings(owner(c), c.req.valid("json"), Date.now()), 200),
+      c.json(
+        await useCases(c.env).saveSettings.execute({
+          ownerId: owner(c),
+          input: c.req.valid("json"),
+          now: Date.now(),
+        }),
+        200,
+      ),
   );
   router.openapi(
     createRoute({
@@ -166,7 +188,12 @@ export function createReminderHttp(
     }),
     async (c) =>
       c.json(
-        { goals: await service(c.env).goalSettings(owner(c), c.req.valid("param").month) },
+        {
+          goals: await useCases(c.env).getGoalReminders.execute({
+            ownerId: owner(c),
+            month: c.req.valid("param").month,
+          }),
+        },
         200,
       ),
   );
@@ -187,8 +214,13 @@ export function createReminderHttp(
     }),
     async (c) =>
       c.json(
-        await service(c.env)
-          .saveGoal(owner(c), c.req.valid("param").goalId, c.req.valid("json"), Date.now())
+        await useCases(c.env)
+          .saveGoalReminder.execute({
+            ownerId: owner(c),
+            goalId: c.req.valid("param").goalId,
+            input: c.req.valid("json"),
+            now: Date.now(),
+          })
           .then(({ goalId, mode, time, weekdays, nextRunAt }) => ({
             goalId,
             mode,
@@ -215,7 +247,10 @@ export function createReminderHttp(
     }),
     async (c) => {
       c.header("Cache-Control", "no-store");
-      return c.json(await service(c.env).connect(owner(c), Date.now()), 200);
+      return c.json(
+        await useCases(c.env).connect.execute({ ownerId: owner(c), now: Date.now() }),
+        200,
+      );
     },
   );
   router.openapi(
@@ -227,7 +262,7 @@ export function createReminderHttp(
       responses: { 204: { description: "Telegram disconnected and reminders paused" }, ...errors },
     }),
     async (c) => {
-      await service(c.env).disconnect(owner(c));
+      await useCases(c.env).disconnect.execute({ ownerId: owner(c) });
       return c.body(null, 204);
     },
   );

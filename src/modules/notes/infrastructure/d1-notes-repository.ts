@@ -1,7 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { notes } from "../../../platform/database/schema";
-import type { NotesRepository } from "../application/ports";
+import type { NotesRepository } from "../application/ports/notes-repository";
 import type { Note, NoteChanges } from "../domain/model";
 
 export class D1NotesRepository implements NotesRepository {
