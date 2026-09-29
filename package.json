@@ -1,8 +1,8 @@
 {
-  "name": "free-hosting-starter",
+  "name": "planner-api",
   "version": "0.1.0",
   "private": true,
-  "description": "Free-tier-first Cloudflare Workers API starter",
+  "description": "Planner API on Cloudflare Workers and D1",
   "license": "UNLICENSED",
   "type": "module",
   "engines": {
@@ -24,8 +24,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:generate": "drizzle-kit generate",
-    "db:migrate:local": "wrangler d1 migrations apply free-hosting-starter-db --local",
-    "db:migrate:remote": "wrangler d1 migrations apply free-hosting-starter-db --remote --env production",
+    "db:migrate:local": "wrangler d1 migrations apply planner-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply planner-db --remote --env production",
     "telegram:operator": "node scripts/telegram-bot-operator.mjs",
     "deploy:dry-run": "wrangler deploy --dry-run --env=",
     "deploy": "wrangler deploy --env production"

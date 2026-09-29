@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "free-hosting-starter-local",
+  "account_id": "a4c9bdc930a7c203670462011024234e",
+  "name": "planner-api-local",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-28",
   "compatibility_flags": ["nodejs_compat"],
@@ -14,8 +15,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "free-hosting-starter-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_name": "planner-db",
+      "database_id": "80819e8e-d87f-4240-983e-919b358a42fc",
       "migrations_dir": "migrations"
     }
   ],
@@ -28,12 +29,12 @@
   },
   "env": {
     "production": {
-      "name": "free-hosting-starter",
+      "name": "planner-api",
       "vars": {
         "AUTH_MODE": "telegram",
-        "APP_ORIGIN": "https://free-hosting-starter.example.workers.dev",
-        "AUTH_SUCCESS_REDIRECT_URL": "https://free-hosting-starter.example.workers.dev/api/auth/me",
-        "BUILD_REVISION": "production",
+        "APP_ORIGIN": "https://app.getplanner.workers.dev",
+        "AUTH_SUCCESS_REDIRECT_URL": "https://app.getplanner.workers.dev/",
+        "BUILD_REVISION": "53f13c0",
         "TELEGRAM_BOT_MODE": "disabled"
       },
       "secrets": {
@@ -42,8 +43,8 @@
       "d1_databases": [
         {
           "binding": "DB",
-          "database_name": "free-hosting-starter-db",
-          "database_id": "00000000-0000-0000-0000-000000000000",
+          "database_name": "planner-db",
+          "database_id": "80819e8e-d87f-4240-983e-919b358a42fc",
           "migrations_dir": "migrations"
         }
       ],
