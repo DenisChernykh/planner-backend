@@ -24,6 +24,7 @@ import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./probl
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type PlanningHttpDependencies = {
+  getTimeZone(database: D1Database, ownerId: string): Promise<string>;
   createRepository(database: D1Database): PlanningRepository;
 };
 
@@ -438,7 +439,17 @@ export function createPlanningHttp(
       authenticatedOwnerId(c),
       month,
     );
-    return c.json({ month, today: plannerToday(Date.now()), goals }, 200);
+    return c.json(
+      {
+        month,
+        today: plannerToday(
+          Date.now(),
+          await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
+        ),
+        goals,
+      },
+      200,
+    );
   });
   router.openapi(listTrashRoute, async (c) => {
     const month = c.req.valid("param").month;
@@ -498,6 +509,7 @@ export function createPlanningHttp(
       now: Date.now(),
       ownerId: authenticatedOwnerId(c),
       value: c.req.valid("json"),
+      timeZone: await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
     });
     return c.json({ entry }, 200);
   });
@@ -507,6 +519,7 @@ export function createPlanningHttp(
       c.req.valid("param").goalId,
       c.req.valid("param").date,
       Date.now(),
+      await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
     );
     return c.body(null, 204);
   });

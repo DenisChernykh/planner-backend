@@ -1,0 +1,224 @@
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { bodyLimit } from "hono/body-limit";
+import { HTTPException } from "hono/http-exception";
+import type { WorkerHttpEnv } from "../../../platform/http/environment";
+import { applicationErrorToResponse, problem } from "../../../platform/http/problem-details";
+import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
+import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  type IdentityContextVariables,
+  requireAuthenticatedUser,
+} from "../../identity-access/public-contracts";
+import type { ReminderService } from "../application/service";
+
+type Env = WorkerHttpEnv<IdentityContextVariables>;
+const time = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u);
+const settingsInput = z
+  .object({
+    enabled: z.boolean(),
+    timeZone: z.string().min(1).max(80),
+    quietStart: time,
+    quietEnd: time,
+    eveningTime: time,
+  })
+  .strict();
+const settings = settingsInput.extend({
+  ownerId: z.string(),
+  nextEveningAt: z.number().nullable(),
+});
+const rule = z
+  .object({
+    mode: z.enum(["off", "scheduled", "evening"]),
+    time,
+    weekdays: z.array(z.number().int().min(1).max(7)).min(1).max(7),
+  })
+  .strict();
+const ruleOutput = rule.extend({ goalId: z.string(), nextRunAt: z.number().nullable() });
+const errors = Object.fromEntries(
+  [400, 401, 403, 404, 413, 415, 500, 503].map((status) => [
+    status,
+    {
+      description: "Request failed",
+      content: { "application/problem+json": { schema: problemDetailsSchema } },
+    },
+  ]),
+);
+const json = <T extends z.ZodType>(schema: T) => ({ "application/json": { schema } });
+const security = [{ sessionCookie: [] }];
+const tags = ["Reminders"];
+
+export function createReminderHttp(
+  service: (env: CloudflareBindings) => ReminderService,
+): OpenAPIHono<Env> {
+  const router = new OpenAPIHono<Env>({
+    defaultHook: (result, c) => {
+      if (!result.success)
+        return applicationErrorToResponse(
+          c,
+          new ApplicationError("INVALID_REQUEST", "Проверьте настройки напоминаний."),
+        );
+    },
+  });
+  router.onError((error, c) => {
+    if (error instanceof HTTPException && error.status === 400)
+      return applicationErrorToResponse(
+        c,
+        new ApplicationError("INVALID_REQUEST", "Некорректный JSON."),
+      );
+    throw error;
+  });
+  router.use("/api/reminders/*", async (c, next) => {
+    c.header("Cache-Control", "no-store");
+    await next();
+  });
+  router.use(
+    "/api/reminders/*",
+    bodyLimit({
+      maxSize: 16 * 1024,
+      onError: (c) =>
+        problem(c, {
+          code: "PAYLOAD_TOO_LARGE",
+          type: "urn:planner:problem:content-too-large",
+          title: "Content too large",
+          status: 413,
+          detail: "Request body is too large.",
+        }),
+    }),
+  );
+  router.use("/api/reminders/*", async (c, next) => {
+    if (
+      c.req.method === "PUT" &&
+      !/^application\/json(?:\s*;|$)/iu.test(c.req.header("Content-Type") ?? "")
+    ) {
+      return problem(c, {
+        code: "UNSUPPORTED_MEDIA_TYPE",
+        type: "urn:planner:problem:unsupported-media-type",
+        title: "Unsupported media type",
+        status: 415,
+        detail: "JSON is required.",
+      });
+    }
+    await next();
+  });
+  const owner = (c: {
+    get(name: "authenticatedUser"): IdentityContextVariables["authenticatedUser"];
+  }) => requireAuthenticatedUser({ authenticatedUser: c.get("authenticatedUser") }).id;
+  router.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/reminders/settings",
+      tags,
+      security,
+      responses: {
+        200: {
+          description: "Reminder settings and Telegram connection",
+          content: json(
+            z.object({
+              settings,
+              connection: z.string(),
+              botAvailable: z.boolean(),
+              deliveryIssues: z.number(),
+            }),
+          ),
+        },
+        ...errors,
+      },
+    }),
+    async (c) => c.json(await service(c.env).state(owner(c)), 200),
+  );
+  router.openapi(
+    createRoute({
+      method: "put",
+      path: "/api/reminders/settings",
+      tags,
+      security,
+      request: { body: { required: true, content: json(settingsInput) } },
+      responses: { 200: { description: "Settings saved", content: json(settings) }, ...errors },
+    }),
+    async (c) =>
+      c.json(await service(c.env).saveSettings(owner(c), c.req.valid("json"), Date.now()), 200),
+  );
+  router.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/reminders/goals/{month}",
+      tags,
+      security,
+      request: { params: z.object({ month: z.string().regex(/^\d{4}-(?:0[1-9]|1[0-2])$/u) }) },
+      responses: {
+        200: {
+          description: "Goal reminder settings",
+          content: json(z.object({ goals: z.array(ruleOutput.extend({ title: z.string() })) })),
+        },
+        ...errors,
+      },
+    }),
+    async (c) =>
+      c.json(
+        { goals: await service(c.env).goalSettings(owner(c), c.req.valid("param").month) },
+        200,
+      ),
+  );
+  router.openapi(
+    createRoute({
+      method: "put",
+      path: "/api/reminders/goals/{goalId}",
+      tags,
+      security,
+      request: {
+        params: z.object({ goalId: z.uuid() }),
+        body: { required: true, content: json(rule) },
+      },
+      responses: {
+        200: { description: "Goal reminder saved", content: json(ruleOutput) },
+        ...errors,
+      },
+    }),
+    async (c) =>
+      c.json(
+        await service(c.env)
+          .saveGoal(owner(c), c.req.valid("param").goalId, c.req.valid("json"), Date.now())
+          .then(({ goalId, mode, time, weekdays, nextRunAt }) => ({
+            goalId,
+            mode,
+            time,
+            weekdays,
+            nextRunAt,
+          })),
+        200,
+      ),
+  );
+  router.openapi(
+    createRoute({
+      method: "post",
+      path: "/api/reminders/telegram/connect",
+      tags,
+      security,
+      responses: {
+        200: {
+          description: "One-use Telegram connection URL",
+          content: json(z.object({ url: z.string(), expiresAt: z.number() })),
+        },
+        ...errors,
+      },
+    }),
+    async (c) => {
+      c.header("Cache-Control", "no-store");
+      return c.json(await service(c.env).connect(owner(c), Date.now()), 200);
+    },
+  );
+  router.openapi(
+    createRoute({
+      method: "delete",
+      path: "/api/reminders/telegram",
+      tags,
+      security,
+      responses: { 204: { description: "Telegram disconnected and reminders paused" }, ...errors },
+    }),
+    async (c) => {
+      await service(c.env).disconnect(owner(c));
+      return c.body(null, 204);
+    },
+  );
+  return router;
+}

@@ -25,6 +25,9 @@ type TelegramBotHttpEnv = WorkerHttpEnv;
 export const TELEGRAM_WEBHOOK_SECURITY_SCHEME = "telegramWebhookSecret";
 
 export type TelegramBotHttpDependencies = {
+  createActions?: (
+    env: CloudflareBindings,
+  ) => import("../../reminders/public-contracts").ReminderBotActions;
   createWebhookHandler(config: TelegramBotHandlerConfig): TelegramWebhookHandler;
 };
 
@@ -161,7 +164,7 @@ export function createTelegramBotHttp(
     throw error;
   });
 
-  let cached: { handler: TelegramWebhookHandler; token: string } | undefined;
+  let cached: { handler: TelegramWebhookHandler; token: string; database: D1Database } | undefined;
 
   router.openapi(
     {
@@ -175,13 +178,15 @@ export function createTelegramBotHttp(
       const update = c.req.valid("json");
       const context = webhookContext(c, update);
 
-      if (!cached || cached.token !== config.telegramBotToken) {
+      if (!cached || cached.token !== config.telegramBotToken || cached.database !== c.env.DB) {
         try {
           cached = {
             handler: dependencies.createWebhookHandler({
               telegramBotToken: config.telegramBotToken,
+              actions: dependencies.createActions?.(c.env),
             }),
             token: config.telegramBotToken,
+            database: c.env.DB,
           };
         } catch {
           console.error(

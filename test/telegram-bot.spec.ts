@@ -148,7 +148,9 @@ describe("Telegram Bot webhook", () => {
 
     expect(response.status).toBe(200);
     expect(fake.factory).toHaveBeenCalledOnce();
-    expect(fake.factory).toHaveBeenCalledWith({ telegramBotToken: BOT_TOKEN });
+    expect(fake.factory).toHaveBeenCalledWith(
+      expect.objectContaining({ telegramBotToken: BOT_TOKEN }),
+    );
     expect(fake.seen).toEqual([update]);
   });
 
