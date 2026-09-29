@@ -46,3 +46,7 @@ Thumbs.db
 ~$*.doc
 ~$*.xlsx
 ~$*.pptx
+
+.vite/
+playwright-report/
+test-results/
