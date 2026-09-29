@@ -34,10 +34,7 @@ export function ReminderSettings({ month }: { month: string }) {
     <div className="mx-auto max-w-3xl space-y-6 px-5 py-7 sm:px-8">
       <TelegramConnection state={settings.data} />
       <section className="rounded-xl border bg-card p-5 sm:p-6">
-        <GeneralSettings
-          key={`${settings.data.settings.ownerId}:${settings.data.connection}`}
-          initial={settings.data.settings}
-        />
+        <GeneralSettings key={settings.data.settings.ownerId} initial={settings.data.settings} />
       </section>
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
