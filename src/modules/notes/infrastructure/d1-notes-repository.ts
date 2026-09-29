@@ -1,8 +1,8 @@
 import { and, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { notes } from "../../../platform/database/schema";
-import type { Note, NoteChanges } from "../application/model";
 import type { NotesRepository } from "../application/ports";
+import type { Note, NoteChanges } from "../domain/model";
 
 export class D1NotesRepository implements NotesRepository {
   private readonly database;

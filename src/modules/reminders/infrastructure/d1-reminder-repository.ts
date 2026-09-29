@@ -7,13 +7,13 @@ import {
   telegramLinks,
   telegramLinkTokens,
 } from "../../../platform/database/schema";
+import type { ReminderRepository } from "../application/ports";
 import {
   DEFAULT_SETTINGS,
   type GoalReminder,
   type ReminderJob,
   type ReminderSettings,
-} from "../application/model";
-import type { ReminderRepository } from "../application/ports";
+} from "../domain/model";
 
 type JobRow = typeof reminderJobs.$inferSelect;
 const toJob = (row: JobRow): ReminderJob => ({

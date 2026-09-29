@@ -1,31 +1,39 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import { type GoalEntryInput, type GoalResource, PlanningError } from "../../planning";
 import type { PlanningOperations } from "../../planning/public-contracts";
-import { questionMessage } from "./messages";
+import {
+  canAnswerJob,
+  canAskGoal,
+  createReminderJob,
+  deliveryDecision,
+  dueGoalReminders,
+  failedDeliveryChanges,
+  isRecentOccurrence,
+  needsReminder,
+  snoozedUntil,
+} from "../domain/jobs";
 import type {
-  BotInput,
   GoalReminderInput,
-  OutgoingMessage,
   ReminderJob,
   ReminderSettings,
   SettingsInput,
-} from "./model";
+} from "../domain/model";
+import {
+  afterQuietHours,
+  localDate,
+  nextOccurrence,
+  validateReminder,
+  validateSettings,
+} from "../domain/schedule";
+import { questionMessage } from "./messages";
+import type { BotInput, OutgoingMessage } from "./model";
 import {
   DeliveryError,
   type LinkTokenCodec,
   type ReminderRepository,
   type ReminderTransport,
 } from "./ports";
-import {
-  afterQuietHours,
-  isReminderDay,
-  localDate,
-  nextOccurrence,
-  validateReminder,
-  validateSettings,
-} from "./schedule";
 
-const DAY = 86_400_000;
 const unavailable = () => new ApplicationError("NOT_FOUND", "Вопрос или цель больше недоступны.");
 
 export class ReminderService {
@@ -122,25 +130,18 @@ export class ReminderService {
     now: number,
     dueAt = now,
   ): ReminderJob {
-    return {
+    return createReminderJob({
       id: crypto.randomUUID(),
-      eventKey,
       ownerId,
       goalId,
-      localDate: date,
+      date,
       kind,
-      status: "pending",
+      eventKey,
+      now,
       dueAt,
-      expiresAt: now + DAY,
-      leaseUntil: null,
-      chatId: null,
-      messageId: null,
-      expectedRevision: null,
-      payload: "[]",
-      attempts: 0,
-      createdAt: now,
-    };
+    });
   }
+
   private async missing(
     ownerId: string,
     date: string,
@@ -150,57 +151,53 @@ export class ReminderService {
     const configured = new Map(
       (await this.repository.reminders(ownerId)).map((item) => [item.goalId, item]),
     );
-    return goals.filter((goal) => {
-      const item = configured.get(goal.id);
-      return (
-        item &&
-        item.mode !== "off" &&
-        isReminderDay(date, settings, item.weekdays) &&
-        !goal.entries.some((entry) => entry.date === date)
-      );
-    });
+    return goals.filter((goal) =>
+      needsReminder(
+        date,
+        settings,
+        configured.get(goal.id),
+        goal.entries.some((entry) => entry.date === date),
+      ),
+    );
   }
+
   async tick(now: number): Promise<void> {
     if (!this.transport) return;
     await this.repository.recover(now);
     for (const settings of await this.repository.activeSettings()) {
       if ((await this.repository.link(settings.ownerId))?.status !== "active") continue;
       const configured = await this.repository.reminders(settings.ownerId);
-      for (const item of configured
-        .filter((r) => r.mode === "scheduled" && r.nextRunAt !== null && r.nextRunAt <= now)
-        .slice(0, 5)) {
+      for (const item of dueGoalReminders(configured, now)) {
         const previous = item.nextRunAt as number;
         const date = localDate(previous, settings.timeZone);
         const next = nextOccurrence(now, settings.timeZone, item.time, item.weekdays);
-        const job =
-          now - previous < DAY
-            ? this.makeJob(
-                settings.ownerId,
-                item.goalId,
-                date,
-                "question",
-                `scheduled:${item.goalId}:${date}`,
-                now,
-                afterQuietHours(now, settings),
-              )
-            : null;
+        const job = isRecentOccurrence(previous, now)
+          ? this.makeJob(
+              settings.ownerId,
+              item.goalId,
+              date,
+              "question",
+              `scheduled:${item.goalId}:${date}`,
+              now,
+              afterQuietHours(now, settings),
+            )
+          : null;
         await this.repository.advanceGoal({ ...item, nextRunAt: next }, previous, job, settings);
       }
       if (settings.nextEveningAt !== null && settings.nextEveningAt <= now) {
         const previous = settings.nextEveningAt;
         const date = localDate(previous, settings.timeZone);
-        const job =
-          now - previous < DAY
-            ? this.makeJob(
-                settings.ownerId,
-                null,
-                date,
-                "digest",
-                `evening:${settings.ownerId}:${date}`,
-                now,
-                afterQuietHours(now, settings),
-              )
-            : null;
+        const job = isRecentOccurrence(previous, now)
+          ? this.makeJob(
+              settings.ownerId,
+              null,
+              date,
+              "digest",
+              `evening:${settings.ownerId}:${date}`,
+              now,
+              afterQuietHours(now, settings),
+            )
+          : null;
         await this.repository.advanceEvening(
           settings,
           previous,
@@ -232,16 +229,14 @@ export class ReminderService {
     if (!this.transport || job.status !== "pending") return;
     const settings = await this.repository.settings(job.ownerId);
     const link = await this.repository.link(job.ownerId);
-    if (link?.status !== "active" || (!interactive && !settings.enabled) || job.expiresAt <= now) {
+    const decision = deliveryDecision(job, settings, link, now, interactive);
+    if (decision.action === "cancel") {
       await this.repository.updateJob(job.id, { status: "cancelled" });
       return;
     }
-    if (!interactive) {
-      const dueAt = afterQuietHours(now, settings);
-      if (dueAt > now) {
-        await this.repository.updateJob(job.id, { dueAt });
-        return;
-      }
+    if (decision.action === "postpone") {
+      await this.repository.updateJob(job.id, { dueAt: decision.dueAt });
+      return;
     }
     let message: OutgoingMessage | null;
     if (job.kind === "digest") message = await this.digest(job, settings);
@@ -252,12 +247,9 @@ export class ReminderService {
         (item) => item.goalId === job.goalId,
       );
       message =
-        !goal ||
-        goal.month !== job.localDate.slice(0, 7) ||
-        (!interactive && (!rule || rule.mode === "off")) ||
-        (entry && job.kind !== "correction")
-          ? null
-          : questionMessage(job, goal);
+        goal && canAskGoal(job, goal.month, entry !== null, rule, interactive)
+          ? questionMessage(job, goal)
+          : null;
     }
     if (!message) {
       await this.repository.updateJob(job.id, { status: "cancelled" });
@@ -265,26 +257,20 @@ export class ReminderService {
     }
     if (!(await this.repository.claim(job.id, now))) return;
     try {
-      const messageId = await this.transport.send(link.chatId, message);
+      const messageId = await this.transport.send(decision.chatId, message);
       await this.repository.updateJob(job.id, {
         status: "sent",
-        chatId: link.chatId,
+        chatId: decision.chatId,
         messageId,
         leaseUntil: null,
       });
     } catch (error) {
       const failure = error instanceof DeliveryError ? error : new DeliveryError("unknown");
       if (failure.kind === "blocked") await this.repository.block(job.ownerId);
-      await this.repository.updateJob(job.id, {
-        status:
-          failure.kind === "retry" && job.attempts < 4
-            ? "pending"
-            : failure.kind === "unknown"
-              ? "unknown"
-              : "failed",
-        dueAt: now + Math.max(60, failure.retryAfter) * 1000,
-        leaseUntil: null,
-      });
+      await this.repository.updateJob(
+        job.id,
+        failedDeliveryChanges(job, failure.kind, failure.retryAfter, now),
+      );
       console.warn(
         JSON.stringify({
           event: "reminder_delivery_failed",
@@ -344,13 +330,7 @@ export class ReminderService {
       : input.replyToMessageId !== undefined
         ? await this.repository.replyJob(input.chatId, input.replyToMessageId)
         : null;
-    if (
-      !job ||
-      job.ownerId !== link.ownerId ||
-      job.chatId !== input.chatId ||
-      !["sent", "answered"].includes(job.status) ||
-      now - job.createdAt > 7 * DAY
-    )
+    if (!canAnswerJob(job, link.ownerId, input.chatId, now))
       return {
         text: "Ответьте на конкретный вопрос бота. Старые или отключённые вопросы больше недоступны.",
       };
@@ -401,7 +381,7 @@ export class ReminderService {
         "question",
         `snooze:${input.updateId}`,
         now,
-        afterQuietHours(now + 30 * 60_000, settings),
+        snoozedUntil(now, settings),
       );
       child.payload = job.payload;
       await this.repository.enqueue(child);

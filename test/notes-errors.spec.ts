@@ -1,11 +1,4 @@
 import { describe, expect, it } from "vitest";
-import {
-  NoteBodyTooLongError,
-  NoteNotFoundError,
-  NotePatchEmptyError,
-  NotesLimitInvalidError,
-  NoteTitleInvalidError,
-} from "../src/modules/notes/application/errors";
 import type { NotesRepository } from "../src/modules/notes/application/ports";
 import {
   CreateNote,
@@ -14,6 +7,13 @@ import {
   ListNotes,
   UpdateNote,
 } from "../src/modules/notes/application/use-cases";
+import {
+  NoteBodyTooLongError,
+  NoteNotFoundError,
+  NotePatchEmptyError,
+  NotesLimitInvalidError,
+  NoteTitleInvalidError,
+} from "../src/modules/notes/domain/errors";
 import { mapNotesError } from "../src/modules/notes/presentation/problems";
 
 const missingRepository: NotesRepository = {

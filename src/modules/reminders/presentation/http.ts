@@ -10,6 +10,11 @@ import {
   requireAuthenticatedUser,
 } from "../../identity-access/public-contracts";
 import type { ReminderService } from "../application/service";
+import {
+  GoalReminderInvalidError,
+  ReminderScheduleInvalidError,
+  ReminderSettingsInvalidError,
+} from "../domain/errors";
 
 type Env = WorkerHttpEnv<IdentityContextVariables>;
 const time = z.string().regex(/^(?:[01]\d|2[0-3]):[0-5]\d$/u);
@@ -60,6 +65,12 @@ export function createReminderHttp(
     },
   });
   router.onError((error, c) => {
+    if (
+      error instanceof ReminderSettingsInvalidError ||
+      error instanceof GoalReminderInvalidError ||
+      error instanceof ReminderScheduleInvalidError
+    )
+      return applicationErrorToResponse(c, new ApplicationError("INVALID_REQUEST", error.message));
     if (error instanceof HTTPException && error.status === 400)
       return applicationErrorToResponse(
         c,

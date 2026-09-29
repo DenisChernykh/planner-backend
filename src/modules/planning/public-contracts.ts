@@ -1,4 +1,4 @@
-import type { GoalEntry, GoalEntryInput, GoalRecord, GoalResource } from "./application/model";
+import type { GoalEntry, GoalEntryInput, GoalRecord, GoalResource } from "./domain/model";
 
 export type EntrySnapshot = { entry: GoalEntry; revision: string };
 export type RecordAnswerInput = {
