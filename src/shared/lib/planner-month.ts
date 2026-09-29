@@ -18,10 +18,10 @@ export function isPlannerMonth(value: string | undefined): value is string {
   return value !== undefined && MONTH_PATTERN.test(value);
 }
 
-export function getCurrentPlannerMonth(now = new Date()): string {
+export function getCurrentPlannerMonth(now = new Date(), timeZone = "Asia/Yekaterinburg"): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     month: "2-digit",
-    timeZone: "Asia/Yekaterinburg",
+    timeZone,
     year: "numeric",
   }).formatToParts(now);
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));

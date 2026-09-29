@@ -4,6 +4,12 @@ import { pathToFileURL } from "node:url";
 
 const requiredOperations = [
   ["/health", "get"],
+  ["/api/reminders/settings", "get"],
+  ["/api/reminders/settings", "put"],
+  ["/api/reminders/goals/{month}", "get"],
+  ["/api/reminders/goals/{goalId}", "put"],
+  ["/api/reminders/telegram/connect", "post"],
+  ["/api/reminders/telegram", "delete"],
   ["/api/auth/telegram/start", "get"],
   ["/api/auth/telegram/callback", "get"],
   ["/api/auth/me", "get"],
