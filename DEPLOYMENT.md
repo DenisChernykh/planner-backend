@@ -16,22 +16,43 @@ The frontend serves static assets and forwards `/api` through its `API` service
 binding. Both Wrangler configurations pin the account. The backend trusts the
 public frontend origin and redirects successful logins to its root.
 
-## Telegram reminders — local implementation, not deployed
+## Telegram reminders — deployed on 2026-09-29, Bot API awaiting credentials
 
 The reminder feature adds migration `0003_safe_sprite.sql`, a once-per-minute
-Cron Trigger, and `/plans/:month/reminders` in the frontend. The migration has
-only been applied locally. Production `TELEGRAM_BOT_MODE` remains `disabled`
-in the checked-in configuration. No remote operation was performed for this change.
+Cron Trigger, and `/plans/:month/reminders` in the frontend. After the owner's
+deployment request, migration `0003` was applied to production and both merged
+`main` revisions were published, backend first.
 
-After explicit authorization and verification of the targets above:
+| Worker | Source revision | Deployed version |
+| --- | --- | --- |
+| `planner-api` | `57e81e4` | `bbe064a7-0a33-45fc-926e-2f433fe61834` |
+| `app` | `49ab9e6b` | `9e8e5cb3-29ed-4f38-926a-3d0d664e0053` |
 
-1. Apply the additive migration to `planner-db` using
-   `pnpm db:migrate:remote`. Apply it before deploying the new backend: planning
-   writes now use the added entry revision column.
+Production `BUILD_REVISION=57e81e4` was supplied as a deploy argument. The deployed
+trees match the checked PR heads: both full local checks passed (101 backend and
+75 frontend tests), and backend GitHub CI passed. Production checks confirmed:
+
+- Health HTTP 200 with revision `57e81e4` and all reminder paths in OpenAPI.
+- SPA HTTP 200 at `/` and `/plans/2026-09/reminders`; the served JavaScript matches
+  the local production build byte for byte.
+- Unauthenticated reminder settings return HTTP 401 through the frontend binding.
+- Telegram login start returns HTTP 302 with the existing callback and S256 PKCE.
+- Existing counts are unchanged (3 users, 6 goals, 55 entries), all entries have
+  a revision, and `PRAGMA foreign_key_check` reports no violations.
+
+Only the existing OIDC secrets are installed. `TELEGRAM_BOT_TOKEN` and
+`TELEGRAM_BOT_WEBHOOK_SECRET` are absent, so production `TELEGRAM_BOT_MODE` remains
+`disabled` and the webhook returns HTTP 404. Reminder settings can be saved, but
+messages are not sent. A completed login and real Telegram delivery were not
+retested during this deployment.
+
+To finish enabling Telegram delivery after supplying the missing credentials:
+
+1. Migration `0003` is already applied; do not re-create its tables manually.
 2. Store `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_WEBHOOK_SECRET` through Wrangler's
    hidden `secret put --env production` prompts. These are separate from OIDC secrets.
-3. Set production `TELEGRAM_BOT_MODE=webhook`, update the build revision, run both
-   projects' `pnpm check`, and deploy the backend followed by the frontend.
+3. Set production `TELEGRAM_BOT_MODE=webhook`, run the backend `pnpm check`, and
+   redeploy it with the current source revision. The frontend is already deployed.
 4. Register `https://planner-api.getplanner.workers.dev/telegram/webhook` with
    `pnpm telegram:operator -- set <url>` using the existing secure operator setup.
    Re-register an existing webhook too: `allowed_updates` must include
@@ -152,10 +173,10 @@ For subsequent authorized deployments, publish the backend before the frontend:
 
 ```sh
 # In backend/
-pnpm deploy
+pnpm exec wrangler deploy --env production --var BUILD_REVISION:$(git rev-parse --short HEAD)
 
 # In frontend/
-pnpm deploy
+pnpm run deploy
 ```
 
 The initial production smoke, before the address change, confirmed:
