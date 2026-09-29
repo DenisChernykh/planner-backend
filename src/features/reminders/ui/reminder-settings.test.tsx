@@ -1,10 +1,17 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { putApiRemindersGoalsGoalId, putApiRemindersSettings } from "@/shared/api";
+import {
+  getGetApiRemindersGoalsMonthQueryKey,
+  getGetApiRemindersSettingsQueryKey,
+  putApiRemindersGoalsGoalId,
+  putApiRemindersSettings,
+} from "@/shared/api";
 import { GeneralSettings } from "./general-settings";
 import { GoalReminder } from "./goal-reminder";
+import { ReminderSettings } from "./reminder-settings";
 import { TelegramConnection } from "./telegram-connection";
 
 vi.mock("@/shared/api", async (importOriginal) => ({
@@ -23,6 +30,50 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 beforeEach(() => vi.clearAllMocks());
 describe("reminder settings", () => {
+  it("preserves unsaved fields when Telegram connects and disconnects", async () => {
+    const user = userEvent.setup();
+    const client = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
+    const state = {
+      settings: {
+        ownerId: "owner",
+        enabled: false,
+        timeZone: "Asia/Yekaterinburg",
+        quietStart: "23:00",
+        quietEnd: "08:00",
+        eveningTime: "21:00",
+        nextEveningAt: null,
+      },
+      connection: "disconnected",
+      botAvailable: true,
+      deliveryIssues: 0,
+    };
+    client.setQueryData(getGetApiRemindersSettingsQueryKey(), state);
+    client.setQueryData(getGetApiRemindersGoalsMonthQueryKey({ month: "2026-09" }), { goals: [] });
+    render(
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <ReminderSettings month="2026-09" />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await user.click(screen.getByRole("checkbox", { name: "Присылать напоминания" }));
+    await user.clear(screen.getByLabelText("Часовой пояс"));
+    await user.type(screen.getByLabelText("Часовой пояс"), "Europe/Moscow");
+    for (const connection of ["active", "disconnected"]) {
+      await act(async () => {
+        client.setQueryData(getGetApiRemindersSettingsQueryKey(), { ...state, connection });
+      });
+      await waitFor(() =>
+        expect(
+          screen.getByRole("button", {
+            name: connection === "active" ? "Отключить Telegram" : "Подключить Telegram",
+          }),
+        ).toBeInTheDocument(),
+      );
+      expect(screen.getByLabelText("Часовой пояс")).toHaveValue("Europe/Moscow");
+      expect(screen.getByRole("checkbox", { name: "Присылать напоминания" })).toBeChecked();
+    }
+  });
   it("submits the chosen timezone and times without read-only response fields", async () => {
     const user = userEvent.setup();
     render(

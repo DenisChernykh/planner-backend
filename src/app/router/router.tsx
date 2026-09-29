@@ -15,14 +15,14 @@ import { Button } from "@/shared/ui";
 import { SessionGate } from "./session-gate";
 
 function CurrentMonthRedirect() {
-  const settings = useGetApiRemindersSettings();
-  if (settings.isPending)
+  const settings = useGetApiRemindersSettings({ query: { refetchOnMount: "always" } });
+  if (settings.isPending || settings.isFetching)
     return (
       <p role="status" className="p-6">
         Загружаем план…
       </p>
     );
-  if (!settings.data)
+  if (settings.isError || !settings.data)
     return (
       <div className="space-y-3 p-6">
         <p role="alert">Не удалось загрузить часовой пояс.</p>
