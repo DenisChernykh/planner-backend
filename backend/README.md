@@ -1,7 +1,12 @@
-# Planner API
+# Planner — серверная часть
 
-Бэкенд Planner на Cloudflare Workers: цели, учёт прогресса, заметки
-и авторизация через Telegram. Данные хранятся в Cloudflare D1.
+Серверная часть единого Planner Worker: цели, учёт прогресса, заметки
+и авторизация через Telegram. Этот же Worker отдаёт React SPA из `../frontend/dist`.
+Данные хранятся в существующей Cloudflare D1.
+
+Установка и полный gate выполняются из [корня workspace](../README.md):
+`pnpm install --frozen-lockfile`, `pnpm db:migrate:local`, `pnpm dev`, `pnpm check`.
+Перед серверными тестами из этой папки соберите SPA командой `pnpm --dir .. build`.
 
 Стартовый сценарий рассчитан на Cloudflare Workers Free, D1 Free и стандартный
 домен `workers.dev`. Обязательных платных ресурсов в составе нет.
@@ -245,8 +250,7 @@ OIDC flow, cookies, Telegram-команды и DTO сообщений не яв�
 
 ## Локальный запуск
 
-Нужны Node.js 24 и pnpm 11.15.1. Версии зафиксированы в `.nvmrc`, `package.json`
-и lockfile.
+Нужны Node.js 24 и pnpm 11.15.1. Следующие команды выполняются из корня workspace:
 
 ```bash
 pnpm install
@@ -263,7 +267,7 @@ curl http://localhost:8787/openapi.json
 
 Для отдельной локальной проверки Telegram auth скопируйте `.dev.vars.example`
 в `.dev.vars`, заполните значения только на своей машине и запустите
-`pnpm dev:telegram`. `.dev.vars` игнорируется Git. Этот режим по-прежнему
+`pnpm --dir backend dev:telegram` из корня. `.dev.vars` игнорируется Git. Этот режим по-прежнему
 требует корректного HTTPS callback для реального Telegram OIDC.
 
 Перед коммитом выполните:
@@ -523,32 +527,11 @@ polling. Установка, очистка и inspection не выполняю�
 
 ## Ручной production deploy
 
-CI ничего не публикует. Перед первым deploy:
-
-1. Убедитесь, что Cloudflare account остаётся на Free plan.
-2. Создайте D1 и замените template placeholder, как описано выше.
-3. Узнайте свой реальный `workers.dev` hostname и обновите `APP_ORIGIN` и
-   `AUTH_SUCCESS_REDIRECT_URL` в production env.
-4. Настройте BotFather callback для OIDC и положите требуемые OIDC secrets
-   скрытыми командами; Bot API secrets добавляйте только при явном включении
-   `TELEGRAM_BOT_MODE=webhook`.
-5. Выполните локальный `pnpm check`.
-6. Примените миграции и опубликуйте Worker вручную:
-
-```bash
-pnpm db:migrate:remote
-pnpm deploy
-```
-
-`pnpm deploy` не меняет состояние Telegram. После публикации, если Bot API
-capability явно включена, отдельной командой `telegram:operator set` задайте
-точный HTTPS webhook и затем выполните `telegram:operator info`. Это две
-разные операции с разными доказательствами.
-
-Production resource names по умолчанию: Worker `planner-api`, D1
-`planner-db`. Custom domain для базового сценария не требуется.
-Не запускайте `wrangler tail` во время OIDC smoke: real-time trace содержит
-полный request URL и может показать одноразовые callback `code` и `state`.
+Публикация запускается из корня workspace: `pnpm deploy` сначала собирает SPA,
+затем публикует единый Worker `app`. Перед публикацией — корневой `pnpm check`
+и `pnpm deploy:dry-run`. Remote миграции и webhook не запускаются автоматически.
+Первый переход с двух Worker требует переноса secrets и переключения Cron/webhook;
+см. [инструкцию миграции](../docs/monolith-migration.md).
 
 ## Контракт нулевой обязательной стоимости
 
