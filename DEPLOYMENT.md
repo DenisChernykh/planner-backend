@@ -16,6 +16,37 @@ The frontend serves static assets and forwards `/api` through its `API` service
 binding. Both Wrangler configurations pin the account. The backend trusts the
 public frontend origin and redirects successful logins to its root.
 
+## Telegram reminders — local implementation, not deployed
+
+The reminder feature adds migration `0003_safe_sprite.sql`, a once-per-minute
+Cron Trigger, and `/plans/:month/reminders` in the frontend. The migration has
+only been applied locally. Production `TELEGRAM_BOT_MODE` remains `disabled`
+in the checked-in configuration. No remote operation was performed for this change.
+
+After explicit authorization and verification of the targets above:
+
+1. Apply the additive migration to `planner-db` using
+   `pnpm db:migrate:remote`. Apply it before deploying the new backend: planning
+   writes now use the added entry revision column.
+2. Store `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_WEBHOOK_SECRET` through Wrangler's
+   hidden `secret put --env production` prompts. These are separate from OIDC secrets.
+3. Set production `TELEGRAM_BOT_MODE=webhook`, update the build revision, run both
+   projects' `pnpm check`, and deploy the backend followed by the frontend.
+4. Register `https://planner-api.getplanner.workers.dev/telegram/webhook` with
+   `pnpm telegram:operator -- set <url>` using the existing secure operator setup.
+   Re-register an existing webhook too: `allowed_updates` must include
+   `message` and `callback_query`. Do not discard pending updates.
+5. Open the frontend reminder settings, create a connection link, press Start
+   and confirm in the private bot chat. Enable reminders and configure a goal.
+6. Verify a real scheduled question, text answer, inline button, correction,
+   conflict with a website entry, and evening digest. Cron configuration changes
+   can take time to propagate. Check delivery issue counts without logging secrets.
+
+For a local scheduled-handler check, use
+`http://localhost:8787/cdn-cgi/local/scheduled` with Wrangler dev. With the bot
+mode disabled this is intentionally a no-op. The automated runtime test uses
+fake Telegram responses and does not send real messages.
+
 ## Resource names and database transfer on 2026-09-29
 
 The API Worker was renamed to `planner-api` while preserving immutable Worker

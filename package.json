@@ -36,11 +36,13 @@
     "grammy": "1.46.0",
     "hono": "4.13.5",
     "jose": "6.2.10",
+    "luxon": "3.7.2",
     "zod": "4.5.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.11",
     "@cloudflare/vitest-plugin": "1.1.2",
+    "@types/luxon": "3.7.5",
     "@types/node": "24.13.3",
     "drizzle-kit": "0.31.10",
     "typescript": "7.0.2",
