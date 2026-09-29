@@ -1,12 +1,10 @@
 import { ArrowLeft, CircleAlert } from "lucide-react";
 import { Link } from "react-router";
 
-import { getCurrentPlannerMonth } from "@/shared/lib/planner-month";
 import { cn } from "@/shared/lib/utils";
 import { buttonVariants } from "@/shared/ui";
 
 export function NotFoundPage({ invalidMonth }: { invalidMonth?: string }) {
-  const currentMonth = getCurrentPlannerMonth();
   const title = invalidMonth ? "Некорректный месяц" : "Страница не найдена";
   const description = invalidMonth
     ? `Значение «${invalidMonth}» должно быть в формате ГГГГ-ММ.`
@@ -20,10 +18,7 @@ export function NotFoundPage({ invalidMonth }: { invalidMonth?: string }) {
         </span>
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-        <Link
-          to={`/plans/${currentMonth}`}
-          className={cn(buttonVariants(), "mt-6 h-10 rounded-lg px-4")}
-        >
+        <Link to="/" className={cn(buttonVariants(), "mt-6 h-10 rounded-lg px-4")}>
           <ArrowLeft data-icon="inline-start" />К текущему плану
         </Link>
       </section>

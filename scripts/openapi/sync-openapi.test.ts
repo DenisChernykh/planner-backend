@@ -7,6 +7,11 @@ function validDocument() {
     openapi: "3.1.0",
     paths: {
       "/health": { get: {} },
+      "/api/reminders/settings": { get: {}, put: {} },
+      "/api/reminders/goals/{month}": { get: {} },
+      "/api/reminders/goals/{goalId}": { put: {} },
+      "/api/reminders/telegram/connect": { post: {} },
+      "/api/reminders/telegram": { delete: {} },
       "/api/auth/telegram/start": { get: {} },
       "/api/auth/telegram/callback": { get: {} },
       "/api/auth/me": { get: {} },
