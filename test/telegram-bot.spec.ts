@@ -6,7 +6,7 @@ import type {
   TelegramWebhookRequestContext,
 } from "../src/modules/telegram-bot";
 import { TELEGRAM_BOT_INITIALIZATION_TIMEOUT_MS } from "../src/modules/telegram-bot";
-import { createTelegramWebhookHandler } from "../src/modules/telegram-bot/bot";
+import { createTelegramWebhookHandler } from "../src/modules/telegram-bot/infrastructure/webhook-handler";
 import type { RuntimeConfigBindings } from "../src/platform/config/runtime-config";
 import type { ProblemDetails } from "../src/platform/http/problem-details";
 

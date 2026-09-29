@@ -1,12 +1,10 @@
 import { describe, expect, it } from "vitest";
-import type { NotesRepository } from "../src/modules/notes/application/ports";
-import {
-  CreateNote,
-  DeleteNote,
-  GetNote,
-  ListNotes,
-  UpdateNote,
-} from "../src/modules/notes/application/use-cases";
+import type { NotesRepository } from "../src/modules/notes/application/ports/notes-repository";
+import { GetNoteQuery } from "../src/modules/notes/application/reading/get-note.query";
+import { ListNotesQuery } from "../src/modules/notes/application/reading/list-notes.query";
+import { CreateNoteUseCase } from "../src/modules/notes/application/writing/create-note.use-case";
+import { DeleteNoteUseCase } from "../src/modules/notes/application/writing/delete-note.use-case";
+import { UpdateNoteUseCase } from "../src/modules/notes/application/writing/update-note.use-case";
 import {
   NoteBodyTooLongError,
   NoteNotFoundError,
@@ -27,7 +25,7 @@ const missingRepository: NotesRepository = {
 describe("Notes application errors", () => {
   it("uses module-owned errors for every application invariant", async () => {
     expect(() =>
-      new CreateNote(missingRepository).execute({
+      new CreateNoteUseCase(missingRepository).execute({
         body: "Body",
         now: 1,
         ownerId: "owner",
@@ -35,38 +33,38 @@ describe("Notes application errors", () => {
       }),
     ).toThrowError(NoteTitleInvalidError);
     expect(() =>
-      new CreateNote(missingRepository).execute({
+      new CreateNoteUseCase(missingRepository).execute({
         body: "x".repeat(10_001),
         now: 1,
         ownerId: "owner",
         title: "Title",
       }),
     ).toThrowError(NoteBodyTooLongError);
-    expect(() => new ListNotes(missingRepository).execute("owner", 101)).toThrowError(
-      NotesLimitInvalidError,
-    );
+    expect(() =>
+      new ListNotesQuery(missingRepository).execute({ ownerId: "owner", limit: 101 }),
+    ).toThrowError(NotesLimitInvalidError);
     await expect(
-      new UpdateNote(missingRepository).execute({
+      new UpdateNoteUseCase(missingRepository).execute({
         changes: {},
         noteId: "note",
         now: 1,
         ownerId: "owner",
       }),
     ).rejects.toBeInstanceOf(NotePatchEmptyError);
-    await expect(new GetNote(missingRepository).execute("owner", "note")).rejects.toBeInstanceOf(
-      NoteNotFoundError,
-    );
     await expect(
-      new UpdateNote(missingRepository).execute({
+      new GetNoteQuery(missingRepository).execute({ ownerId: "owner", noteId: "note" }),
+    ).rejects.toBeInstanceOf(NoteNotFoundError);
+    await expect(
+      new UpdateNoteUseCase(missingRepository).execute({
         changes: { body: "Updated" },
         noteId: "note",
         now: 1,
         ownerId: "owner",
       }),
     ).rejects.toBeInstanceOf(NoteNotFoundError);
-    await expect(new DeleteNote(missingRepository).execute("owner", "note")).rejects.toBeInstanceOf(
-      NoteNotFoundError,
-    );
+    await expect(
+      new DeleteNoteUseCase(missingRepository).execute({ ownerId: "owner", noteId: "note" }),
+    ).rejects.toBeInstanceOf(NoteNotFoundError);
   });
 
   it.each([

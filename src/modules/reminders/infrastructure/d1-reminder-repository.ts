@@ -7,7 +7,7 @@ import {
   telegramLinks,
   telegramLinkTokens,
 } from "../../../platform/database/schema";
-import type { ReminderRepository } from "../application/ports";
+import type { ReminderRepository } from "../application/ports/reminder-repository";
 import {
   DEFAULT_SETTINGS,
   type GoalReminder,

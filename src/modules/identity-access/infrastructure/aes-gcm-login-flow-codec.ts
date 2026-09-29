@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { decodeBase64Url, encodeBase64Url } from "../../../platform/crypto/base64url";
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { LoginFlow } from "../application/model";
-import type { LoginFlowCodec } from "../application/ports";
+import type { LoginFlowCodec } from "../application/ports/login-flow-codec";
+import type { LoginFlow } from "../application/telegram-login/model";
 
 const FLOW_VERSION = "v1";
 // Keep v1 authenticated data stable so in-flight Telegram logins survive resource renames.

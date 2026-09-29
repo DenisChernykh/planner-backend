@@ -2,14 +2,15 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
 import { createPlanningOperations, type GoalTracking } from "../src/modules/planning";
-import { CreateGoal, UpsertGoalEntry } from "../src/modules/planning/application/use-cases";
+import { UpsertGoalEntryUseCase } from "../src/modules/planning/application/entries/upsert-goal-entry.use-case";
+import { CreateGoalUseCase } from "../src/modules/planning/application/goals/create-goal.use-case";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
-import { createReminderService } from "../src/modules/reminders";
-import type { BotInput, OutgoingMessage } from "../src/modules/reminders/application/model";
-import { DeliveryError, type ReminderTransport } from "../src/modules/reminders/application/ports";
+import { createReminderOperations } from "../src/modules/reminders";
 import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
 import { afterQuietHours, nextOccurrence } from "../src/modules/reminders/domain/schedule";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
+import type { BotInput, OutgoingMessage } from "../src/modules/reminders/public-contracts";
+import { DeliveryError, type ReminderTransport } from "../src/modules/reminders/public-contracts";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
 const OWNER = "c5e7a036-50a6-4c56-90a1-59b3d212b44a";
@@ -20,7 +21,7 @@ const planningRepository = new D1PlanningRepository(env.DB);
 let sent: { id: number; message: OutgoingMessage }[];
 let transport: ReminderTransport;
 let updateId: number;
-const service = () => createReminderService(env.DB, transport);
+const operations = () => createReminderOperations(env.DB, transport);
 afterEach(() => vi.restoreAllMocks());
 const incoming = (fields: Partial<BotInput>): BotInput => ({
   updateId: ++updateId,
@@ -68,7 +69,7 @@ async function goal(
   tracking: GoalTracking = { type: "time" },
   mode: "scheduled" | "evening" = "scheduled",
 ) {
-  const created = await new CreateGoal(planningRepository).execute({
+  const created = await new CreateGoalUseCase(planningRepository).execute({
     ownerId: OWNER,
     month: "2026-09",
     title: tracking.type,
@@ -76,12 +77,12 @@ async function goal(
     cadence: { period: "day" },
     now,
   });
-  await service().saveGoal(
-    OWNER,
-    created.id,
-    { mode, time: "09:00", weekdays: [1, 2, 3, 4, 5, 6, 7] },
-    now - 60_000,
-  );
+  await operations().saveGoalReminder.execute({
+    ownerId: OWNER,
+    goalId: created.id,
+    input: { mode, time: "09:00", weekdays: [1, 2, 3, 4, 5, 6, 7] },
+    now: now - 60_000,
+  });
   return created;
 }
 async function firstJob() {
@@ -119,65 +120,108 @@ describe("reminder schedules", () => {
 });
 
 describe("Telegram reminders with D1", () => {
+  it("handles help and stop commands before interpreting a reply to a question", async () => {
+    const created = await goal();
+    await operations().runReminders.execute({ now });
+    const help = await operations().bot.receive(
+      incoming({ text: "  /help  ", replyToMessageId: 1 }),
+      now,
+    );
+    expect(help.text).toContain("Настройки — в Planner");
+    expect(await planning.entry(OWNER, created.id, "2026-09-29")).toBeNull();
+    expect((await firstJob()).status).toBe("sent");
+
+    const stopped = await operations().bot.receive(
+      incoming({ text: "/stop", replyToMessageId: 1 }),
+      now,
+    );
+    expect(stopped.text).toContain("чат отвязан");
+    expect(await repository.link(OWNER)).toBeNull();
+    expect((await repository.settings(OWNER)).enabled).toBe(false);
+    const reply = await operations().bot.receive(
+      incoming({ text: "07:40", replyToMessageId: 1 }),
+      now,
+    );
+    expect(reply.text).toContain("подключите Telegram");
+    expect(await planning.entry(OWNER, created.id, "2026-09-29")).toBeNull();
+  });
+
+  it("keeps settings readable and scheduled work untouched when the bot is unavailable", async () => {
+    await goal();
+    const disabled = createReminderOperations(env.DB, null);
+    expect(await disabled.getState.execute({ ownerId: OWNER })).toMatchObject({
+      botAvailable: false,
+      connection: "active",
+    });
+    await expect(disabled.connect.execute({ ownerId: OWNER, now })).rejects.toMatchObject({
+      code: "DEPENDENCY_UNAVAILABLE",
+    });
+    await disabled.runReminders.execute({ now });
+    expect(sent).toHaveLength(0);
+    expect(await repository.due(now)).toHaveLength(0);
+    await operations().runReminders.execute({ now });
+    expect(sent).toHaveLength(1);
+  });
+
   it.each(["scheduled", "evening"] as const)(
     "replaces an unsent %s job when rescheduled on the same day, but retains sent events",
     async (mode) => {
       const created = await goal({ type: "check" }, mode);
       const morning = Date.parse("2026-09-29T02:00:00Z"); // 07:00, quiet until 08:00
       if (mode === "scheduled")
-        await service().saveGoal(
-          OWNER,
-          created.id,
-          {
+        await operations().saveGoalReminder.execute({
+          ownerId: OWNER,
+          goalId: created.id,
+          input: {
             mode,
             time: "07:00",
             weekdays: [1, 2, 3, 4, 5, 6, 7],
           },
-          morning - 60_000,
-        );
+          now: morning - 60_000,
+        });
       else
-        await service().saveSettings(
-          OWNER,
-          {
+        await operations().saveSettings.execute({
+          ownerId: OWNER,
+          input: {
             ...DEFAULT_SETTINGS,
             enabled: true,
             eveningTime: "07:00",
           },
-          morning - 60_000,
-        );
-      await service().tick(morning);
+          now: morning - 60_000,
+        });
+      await operations().runReminders.execute({ now: morning });
       const pending = await firstJob();
       expect(pending.status).toBe("pending");
       expect(sent).toHaveLength(0);
       const reschedule = (time: string, at: number) =>
         mode === "scheduled"
-          ? service().saveGoal(
-              OWNER,
-              created.id,
-              {
+          ? operations().saveGoalReminder.execute({
+              ownerId: OWNER,
+              goalId: created.id,
+              input: {
                 mode,
                 time,
                 weekdays: [1, 2, 3, 4, 5, 6, 7],
               },
-              at,
-            )
-          : service().saveSettings(
-              OWNER,
-              {
+              now: at,
+            })
+          : operations().saveSettings.execute({
+              ownerId: OWNER,
+              input: {
                 ...DEFAULT_SETTINGS,
                 enabled: true,
                 eveningTime: time,
               },
-              at,
-            );
+              now: at,
+            });
       await reschedule("09:00", morning + 30 * 60_000);
       expect(await repository.job(pending.id)).toBeNull();
-      await service().tick(now);
+      await operations().runReminders.execute({ now });
       expect(sent).toHaveLength(1);
       const delivered = await firstJob();
       expect(delivered.dueAt).toBe(now);
       await reschedule("10:00", now + 60_000);
-      await service().tick(now + 60 * 60_000);
+      await operations().runReminders.execute({ now: now + 60 * 60_000 });
       expect(sent).toHaveLength(1);
       expect((await repository.job(delivered.id))?.status).toBe("sent");
     },
@@ -190,31 +234,31 @@ describe("Telegram reminders with D1", () => {
       vi.spyOn(D1ReminderRepository.prototype, "advanceGoal").mockImplementationOnce(
         async function (this: D1ReminderRepository, item, previous, job, settings) {
           if (change === "quiet hours")
-            await service().saveSettings(
-              OWNER,
-              {
+            await operations().saveSettings.execute({
+              ownerId: OWNER,
+              input: {
                 ...DEFAULT_SETTINGS,
                 enabled: true,
                 quietStart: "00:00",
                 quietEnd: "10:00",
               },
-              now - 30_000,
-            );
+              now: now - 30_000,
+            });
           else
-            await service().saveGoal(
-              OWNER,
-              created.id,
-              {
+            await operations().saveGoalReminder.execute({
+              ownerId: OWNER,
+              goalId: created.id,
+              input: {
                 mode: change === "mode" ? "evening" : "scheduled",
                 time: change === "time" ? "09:30" : "09:00",
                 weekdays: change === "weekdays" ? [2] : [1, 2, 3, 4, 5, 6, 7],
               },
-              now - 30_000,
-            );
+              now: now - 30_000,
+            });
           await original.call(this, item, previous, job, settings);
         },
       );
-      await service().tick(now);
+      await operations().runReminders.execute({ now });
       expect(sent).toHaveLength(0);
       expect(
         await env.DB.prepare("SELECT count(*) AS total FROM reminder_jobs").first("total"),
@@ -233,20 +277,20 @@ describe("Telegram reminders with D1", () => {
       const original = D1ReminderRepository.prototype.advanceEvening;
       vi.spyOn(D1ReminderRepository.prototype, "advanceEvening").mockImplementationOnce(
         async function (this: D1ReminderRepository, settings, previous, next, job) {
-          await service().saveSettings(
-            OWNER,
-            {
+          await operations().saveSettings.execute({
+            ownerId: OWNER,
+            input: {
               ...DEFAULT_SETTINGS,
               enabled: true,
               eveningTime: change === "time" ? "21:30" : "21:00",
               quietStart: change === "quiet hours" ? "20:00" : "23:00",
             },
-            evening - 30_000,
-          );
+            now: evening - 30_000,
+          });
           await original.call(this, settings, previous, next, job);
         },
       );
-      await service().tick(evening);
+      await operations().runReminders.execute({ now: evening });
       expect(sent).toHaveLength(0);
       expect(
         await env.DB.prepare("SELECT count(*) AS total FROM reminder_jobs").first("total"),
@@ -263,9 +307,9 @@ describe("Telegram reminders with D1", () => {
     [{ type: "time" } as GoalTracking, "07:40", "07:40"],
   ])("records %j answers for the question date, even tomorrow", async (tracking, answer, value) => {
     const created = await goal(tracking);
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     expect(sent).toHaveLength(1);
-    const response = await service().receive(
+    const response = await operations().bot.receive(
       incoming({ text: answer, replyToMessageId: 1 }),
       now + 86_400_000,
     );
@@ -275,7 +319,7 @@ describe("Telegram reminders with D1", () => {
   });
   it("does not ask for existing false values or deleted goals", async () => {
     const created = await goal({ type: "check" });
-    await new UpsertGoalEntry(planningRepository).execute({
+    await new UpsertGoalEntryUseCase(planningRepository).execute({
       ownerId: OWNER,
       goalId: created.id,
       date: "2026-09-29",
@@ -284,15 +328,15 @@ describe("Telegram reminders with D1", () => {
     });
     const removed = await goal();
     await planningRepository.softDeleteOwnedGoal(removed.id, OWNER, now);
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     expect(sent).toHaveLength(0);
   });
   it("does not overwrite the website and requires a fresh correction after a conflict", async () => {
     const created = await goal();
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     const job = await firstJob();
     const website = (value: string) =>
-      new UpsertGoalEntry(planningRepository).execute({
+      new UpsertGoalEntryUseCase(planningRepository).execute({
         ownerId: OWNER,
         goalId: created.id,
         date: "2026-09-29",
@@ -300,15 +344,18 @@ describe("Telegram reminders with D1", () => {
         value: { value, note: "keep this note" },
       });
     await website("08:10");
-    const conflict = await service().receive(incoming({ text: "07:40", replyToMessageId: 1 }), now);
+    const conflict = await operations().bot.receive(
+      incoming({ text: "07:40", replyToMessageId: 1 }),
+      now,
+    );
     expect(conflict.text).toContain("уже есть запись");
-    await service().receive(incoming({ callback: `edit:${job.id}` }), now);
+    await operations().bot.receive(incoming({ callback: `edit:${job.id}` }), now);
     expect(sent[1]?.message.forceReply).toBe(true);
     await website("08:20"); // same millisecond: revision must still differ
-    await service().receive(incoming({ text: "07:45", replyToMessageId: 2 }), now);
+    await operations().bot.receive(incoming({ text: "07:45", replyToMessageId: 2 }), now);
     expect((await planning.entry(OWNER, created.id, "2026-09-29"))?.entry.value).toBe("08:20");
-    await service().receive(incoming({ callback: `edit:${job.id}` }), now);
-    await service().receive(incoming({ text: "07:50", replyToMessageId: 3 }), now);
+    await operations().bot.receive(incoming({ callback: `edit:${job.id}` }), now);
+    await operations().bot.receive(incoming({ text: "07:50", replyToMessageId: 3 }), now);
     expect((await planning.entry(OWNER, created.id, "2026-09-29"))?.entry).toMatchObject({
       value: "07:50",
       note: "keep this note",
@@ -342,37 +389,40 @@ describe("Telegram reminders with D1", () => {
   });
   it("does not duplicate scheduled sends or snoozes on repeated updates", async () => {
     await goal();
-    await Promise.all([service().tick(now), service().tick(now)]);
+    await Promise.all([
+      operations().runReminders.execute({ now }),
+      operations().runReminders.execute({ now }),
+    ]);
     expect(sent).toHaveLength(1);
     const job = await firstJob();
     const snooze = incoming({ callback: `snooze:${job.id}` });
-    await service().receive(snooze, now);
-    await service().receive(snooze, now);
-    await service().tick(now + 29 * 60_000);
+    await operations().bot.receive(snooze, now);
+    await operations().bot.receive(snooze, now);
+    await operations().runReminders.execute({ now: now + 29 * 60_000 });
     expect(sent).toHaveLength(1);
-    await service().tick(now + 30 * 60_000);
+    await operations().runReminders.execute({ now: now + 30 * 60_000 });
     expect(sent).toHaveLength(2);
   });
   it("sends one evening digest, preserves button identities and updates it after answers", async () => {
     const first = await goal({ type: "check" }, "evening");
     const second = await goal({ type: "time" }, "evening");
     const evening = Date.parse("2026-09-29T16:00:00Z");
-    await service().tick(evening);
+    await operations().runReminders.execute({ now: evening });
     expect(sent).toHaveLength(1);
     const digest = await firstJob();
     const initial = await repository.job(digest.id);
     const ids = JSON.parse(initial?.payload ?? "[]") as string[];
-    await service().receive(
+    await operations().bot.receive(
       incoming({ callback: `pick:${digest.id}:${ids.indexOf(first.id)}` }),
       evening,
     );
-    await service().receive(incoming({ text: "да", replyToMessageId: 2 }), evening);
+    await operations().bot.receive(incoming({ text: "да", replyToMessageId: 2 }), evening);
     expect(transport.edit).toHaveBeenCalled();
     const updated = await repository.job(digest.id);
     expect((JSON.parse(updated?.payload ?? "[]") as string[]).indexOf(second.id)).toBe(
       ids.indexOf(second.id),
     );
-    await service().receive(
+    await operations().bot.receive(
       incoming({ callback: `pick:${digest.id}:${ids.indexOf(second.id)}` }),
       evening,
     );
@@ -381,14 +431,14 @@ describe("Telegram reminders with D1", () => {
   it("retries 429, pauses blocked chats, and does not retry ambiguous sends", async () => {
     await goal();
     vi.mocked(transport.send).mockRejectedValueOnce(new DeliveryError("retry", 120));
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     expect((await firstJob()).status).toBe("pending");
-    await service().tick(now + 60_000);
+    await operations().runReminders.execute({ now: now + 60_000 });
     expect(transport.send).toHaveBeenCalledTimes(1);
     vi.mocked(transport.send).mockRejectedValueOnce(new DeliveryError("unknown"));
-    await service().tick(now + 120_000);
+    await operations().runReminders.execute({ now: now + 120_000 });
     expect((await firstJob()).status).toBe("unknown");
-    await service().tick(now + 180_000);
+    await operations().runReminders.execute({ now: now + 180_000 });
     expect(transport.send).toHaveBeenCalledTimes(2);
     const other = await goal();
     await repository.saveReminder({
@@ -400,46 +450,46 @@ describe("Telegram reminders with D1", () => {
       nextRunAt: now,
     });
     vi.mocked(transport.send).mockRejectedValueOnce(new DeliveryError("blocked"));
-    await service().tick(now + 240_000);
+    await operations().runReminders.execute({ now: now + 240_000 });
     expect((await repository.link(OWNER))?.status).toBe("blocked");
   });
   it("ignores other senders, arbitrary text, and questions after disconnect", async () => {
     await goal();
-    await service().tick(now);
-    expect((await service().receive(incoming({ text: "07:40" }), now)).text).toContain(
+    await operations().runReminders.execute({ now });
+    expect((await operations().bot.receive(incoming({ text: "07:40" }), now)).text).toContain(
       "конкретный вопрос",
     );
     expect(
       (
-        await service().receive(
+        await operations().bot.receive(
           incoming({ text: "07:40", replyToMessageId: 1, telegramUserId: "999" }),
           now,
         )
       ).text,
     ).toContain("подключите Telegram");
-    await service().disconnect(OWNER);
+    await operations().disconnect.execute({ ownerId: OWNER });
     expect(
-      (await service().receive(incoming({ text: "07:40", replyToMessageId: 1 }), now)).text,
+      (await operations().bot.receive(incoming({ text: "07:40", replyToMessageId: 1 }), now)).text,
     ).toContain("подключите Telegram");
   });
   it("requires confirmation of an expiring, one-use connection token", async () => {
-    await service().disconnect(OWNER);
-    const connection = await service().connect(OWNER, now);
+    await operations().disconnect.execute({ ownerId: OWNER });
+    const connection = await operations().connect.execute({ ownerId: OWNER, now });
     const token = new URL(connection.url).searchParams.get("start");
-    const start = await service().receive(incoming({ text: `/start ${token}` }), now);
+    const start = await operations().bot.receive(incoming({ text: `/start ${token}` }), now);
     expect(start.buttons?.[0]?.[0]?.data).toBe(`link:${token}`);
     expect(await repository.link(OWNER)).toBeNull();
     const responses = await Promise.all([
-      service().receive(incoming({ callback: `link:${token}` }), now),
-      service().receive(incoming({ callback: `link:${token}` }), now),
+      operations().bot.receive(incoming({ callback: `link:${token}` }), now),
+      operations().bot.receive(incoming({ callback: `link:${token}` }), now),
     ]);
     expect(
       responses.filter((response) => response.text.startsWith("Telegram подключён")),
     ).toHaveLength(1);
-    const expired = await service().connect(OWNER, now);
+    const expired = await operations().connect.execute({ ownerId: OWNER, now });
     expect(
       (
-        await service().receive(
+        await operations().bot.receive(
           incoming({ text: `/start ${new URL(expired.url).searchParams.get("start")}` }),
           now + 600_001,
         )
@@ -607,9 +657,9 @@ describe("reminder runtime integration", () => {
       weekdays: [1, 2, 3, 4, 5, 6, 7],
       nextRunAt: late,
     });
-    await service().tick(late);
+    await operations().runReminders.execute({ now: late });
     expect(sent).toHaveLength(0);
-    await service().tick(Date.parse("2026-09-30T03:00:00Z"));
+    await operations().runReminders.execute({ now: Date.parse("2026-09-30T03:00:00Z") });
     expect(sent.length).toBeGreaterThan(0);
     const questions = await env.DB.prepare(
       "SELECT local_date FROM reminder_jobs WHERE goal_id = ? AND status = 'sent'",
@@ -617,7 +667,7 @@ describe("reminder runtime integration", () => {
       .bind(created.id)
       .all<{ local_date: string }>();
     expect(questions.results[0]?.local_date).toBe("2026-09-30"); // midnight event belongs to Sep 30
-    const other = await new CreateGoal(planningRepository).execute({
+    const other = await new CreateGoalUseCase(planningRepository).execute({
       ownerId: OWNER,
       month: "2026-10",
       title: "Future",
@@ -625,27 +675,31 @@ describe("reminder runtime integration", () => {
       cadence: { period: "day" },
       now,
     });
-    await service().saveGoal(
-      OWNER,
-      other.id,
-      { mode: "scheduled", time: "09:00", weekdays: [1, 2, 3, 4, 5, 6, 7] },
-      now - 60_000,
-    );
+    await operations().saveGoalReminder.execute({
+      ownerId: OWNER,
+      goalId: other.id,
+      input: { mode: "scheduled", time: "09:00", weekdays: [1, 2, 3, 4, 5, 6, 7] },
+      now: now - 60_000,
+    });
     const before = sent.length;
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     expect(sent).toHaveLength(before);
   });
   it("recovers a crashed delivery as unknown and cancels pending work when disabled", async () => {
     await goal();
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     const job = await firstJob();
     await repository.updateJob(job.id, { status: "sending", leaseUntil: now - 1 });
-    await service().tick(now);
+    await operations().runReminders.execute({ now });
     expect((await repository.job(job.id))?.status).toBe("unknown");
     expect(sent).toHaveLength(1);
     await repository.updateJob(job.id, { status: "pending" });
-    await service().saveSettings(OWNER, { ...DEFAULT_SETTINGS, enabled: false }, now);
-    await service().tick(now);
+    await operations().saveSettings.execute({
+      ownerId: OWNER,
+      input: { ...DEFAULT_SETTINGS, enabled: false },
+      now,
+    });
+    await operations().runReminders.execute({ now });
     expect((await repository.job(job.id))?.status).toBe("cancelled");
     expect(sent).toHaveLength(1);
   });
