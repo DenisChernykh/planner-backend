@@ -16,17 +16,11 @@ Problem Details.
 Месяц передаётся в формате `YYYY-MM`. Некорректный месяц и неизвестный маршрут
 показывают отдельное понятное состояние.
 
-## Cloudflare Free topology
+## Монолит
 
-```text
-Browser → planner-frontend Worker + Static Assets
-                         └─ /api/* → service binding → planner-api Hono Worker → D1
-```
-
-Frontend Worker — единственный browser origin: он выдаёт Vite `dist` как SPA и
-проксирует `/api` через Cloudflare Service Binding. Это не требует Pages,
-Docker, внешнего reverse proxy или платных ресурсов и сохраняет
-`__Host-session` для Telegram OIDC.
+Интерфейс и Hono API публикуются одним Worker `app`. SPA обслуживается Static
+Assets; `/api/*` вызывается на том же origin без промежуточного Worker.
+Конфигурация находится в `../backend/wrangler.jsonc`.
 
 ## Авторизация
 
@@ -36,25 +30,12 @@ Docker, внешнего reverse proxy или платных ресурсов и
 
 ## Локальная разработка
 
-```bash
-pnpm install
-pnpm dev
-```
+Основной запуск из корня: `pnpm install --frozen-lockfile`,
+`pnpm db:migrate:local`, `pnpm dev`; открыть `http://localhost:8787`.
 
-Vite proxy направляет `/api` и `/health` на `http://localhost:8787`. Для
-другого Hono origin скопируйте `.env.example` в `.env.local` и задайте
-`DEV_API_PROXY_TARGET` как абсолютный HTTP(S) origin без path.
-
-Сначала запустите соседний backend из `../backend`:
-
-```bash
-pnpm db:migrate:local
-pnpm dev:planner
-```
-
-`dev:planner` доверяет Vite origin `http://localhost:5173`, поэтому unsafe
-запросы формы проходят проверку Origin через локальный proxy. Обычный backend
-`pnpm dev` остаётся автономным режимом на `http://localhost:8787`.
+Для HMR из корня запустите `pnpm dev:api` и `pnpm dev:ui` в двух терминалах.
+Vite на `http://localhost:5173` проксирует API в локальный Worker на порту 8787.
+`DEV_API_PROXY_TARGET` в `.env.local` позволяет изменить адрес локального API.
 
 ## API contract
 
@@ -87,21 +68,13 @@ pnpm check
 ```
 
 `pnpm check` обновляет и проверяет API snapshot, формат, lint, архитектурные
-границы, тесты и Cloudflare dry-run. Это локальная проверка, не deploy.
+границы, тесты и сборку SPA. Полный gate монолита запускается из корня.
 
 ## Deploy
 
-1. Сначала настройте и задеплойте Hono Worker c production именем
-   `planner-api` в том же Cloudflare account.
-2. В backend задайте `APP_ORIGIN` и `AUTH_SUCCESS_REDIRECT_URL` как public URL
-   `planner-frontend` Worker и зарегистрируйте callback
-   `/api/auth/telegram/callback` в Telegram.
-3. Здесь выполните `pnpm check`; после успешного dry-run явно запустите
-   `pnpm deploy`.
-
-`pnpm deploy` создаёт удалённый Worker и намеренно не запускается автоматически.
-Локальные checks и dry-run не доказывают remote deploy, D1 migration или
-реальный Telegram login.
+Из корня: `pnpm deploy:dry-run`, а для явно разрешённой публикации —
+`pnpm deploy`. Первый переход описан в
+[инструкции миграции](../docs/monolith-migration.md).
 
 ## Telegram-напоминания
 

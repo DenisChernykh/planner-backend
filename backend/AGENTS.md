@@ -2,7 +2,7 @@
 
 ## Product boundary
 
-This is an API-only, free-tier-first Cloudflare Workers starter for MVPs. Keep
+This is the server package of a single-Worker Planner monolith with Static Assets. Keep
 zero mandatory Cloudflare cost as a hard constraint. Do not add a paid plan,
 custom domain, Queue, KV, R2, Durable Object, Cron, external database, Redis,
 Docker, or automatic deployment without an explicit project decision.
@@ -75,7 +75,7 @@ default workers.dev deployment, browser auth requires a same-origin frontend.
 - Before changing dependencies, confirm `node --version` and `pnpm --version`.
 - Install locally with `pnpm install`. Use `--frozen-lockfile` for the clean CI
   reproducibility gate.
-- Before handoff, run `pnpm check`. Narrow checks are useful while iterating but
+- Before handoff, run `pnpm check` from the workspace root. Narrow checks are useful while iterating but
   do not replace the full gate.
 - Keep GitHub Actions check-only. Deployment and D1 migration are manual.
 

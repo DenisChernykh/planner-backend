@@ -1,3 +1,7 @@
+> История публикаций до объединения в монолит. Описанные ниже два Worker
+> относятся к прежней схеме. Для следующей публикации используйте
+> [инструкцию миграции](../docs/monolith-migration.md) и корневой `pnpm deploy`.
+
 # Planner production
 
 Cloudflare account: `crests.secrecy_3n@icloud.com`
