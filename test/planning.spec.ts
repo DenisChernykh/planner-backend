@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
 import type { PlanningRepository } from "../src/modules/planning/application/ports";
-import { ListPlan } from "../src/modules/planning/application/use-cases";
+import { GetPlan, ListPlan } from "../src/modules/planning/application/use-cases";
 import type { GoalRecord } from "../src/modules/planning/domain/model";
 import { calculateMet } from "../src/modules/planning/domain/rules";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
@@ -104,6 +104,25 @@ afterEach(() => {
 });
 
 describe("planning application rules", () => {
+  it.each([
+    ["Asia/Yekaterinburg", "2026-05-01"],
+    ["America/Los_Angeles", "2026-04-30"],
+  ])("builds the plan response using the supplied time in %s", async (timeZone, today) => {
+    const repository = {
+      listGoals: vi.fn(async () => []),
+      listEntriesForPlan: vi.fn(async () => []),
+    } as unknown as PlanningRepository;
+    await expect(
+      new GetPlan(repository).execute({
+        ownerId: "owner-a",
+        month: "2026-04",
+        now: Date.parse("2026-04-30T20:00:00Z"),
+        timeZone,
+      }),
+    ).resolves.toEqual({ month: "2026-04", today, goals: [] });
+    expect(repository.listGoals).toHaveBeenCalledWith("owner-a", "2026-04", false);
+  });
+
   it("loads plan entries with one owner-scoped repository query instead of one query per goal", async () => {
     const goals: GoalRecord[] = [
       {

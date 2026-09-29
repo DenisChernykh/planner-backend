@@ -11,14 +11,13 @@ import {
   CreateGoal,
   DeleteGoal,
   DeleteGoalEntry,
-  ListPlan,
+  GetPlan,
   ListTrash,
   ReorderGoals,
   RestoreGoal,
   UpdateGoal,
   UpsertGoalEntry,
 } from "../application/use-cases";
-import { plannerToday } from "../domain/rules";
 import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./problems";
 
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
@@ -434,22 +433,14 @@ export function createPlanningHttp(
   router.use("/api/goals/*", limitPlanningBody);
 
   router.openapi(listPlanRoute, async (c) => {
-    const month = c.req.valid("param").month;
-    const goals = await new ListPlan(dependencies.createRepository(c.env.DB)).execute(
-      authenticatedOwnerId(c),
-      month,
-    );
-    return c.json(
-      {
-        month,
-        today: plannerToday(
-          Date.now(),
-          await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
-        ),
-        goals,
-      },
-      200,
-    );
+    const ownerId = authenticatedOwnerId(c);
+    const plan = await new GetPlan(dependencies.createRepository(c.env.DB)).execute({
+      ownerId,
+      month: c.req.valid("param").month,
+      now: Date.now(),
+      timeZone: await dependencies.getTimeZone(c.env.DB, ownerId),
+    });
+    return c.json(plan, 200);
   });
   router.openapi(listTrashRoute, async (c) => {
     const month = c.req.valid("param").month;
