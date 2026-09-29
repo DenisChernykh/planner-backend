@@ -1,4 +1,4 @@
-import { and, eq, inArray, lte, sql } from "drizzle-orm";
+import { and, eq, exists, inArray, isNull, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   goalReminders,
@@ -27,6 +27,27 @@ const toReminder = (row: typeof goalReminders.$inferSelect): GoalReminder => ({
   weekdays: JSON.parse(row.weekdays) as number[],
 });
 
+// Unsent automatic jobs can be rebuilt after a schedule edit. Keep delivery history,
+// including uncertain sends, and never release the event key of a delivered message.
+const replaceableAutomaticJob = and(
+  or(like(reminderJobs.eventKey, "scheduled:%"), like(reminderJobs.eventKey, "evening:%")),
+  isNull(reminderJobs.messageId),
+  or(
+    eq(reminderJobs.status, "pending"),
+    and(eq(reminderJobs.status, "cancelled"), eq(reminderJobs.attempts, 0)),
+  ),
+);
+
+const matchingSettings = (settings: ReminderSettings) =>
+  and(
+    eq(reminderSettings.ownerId, settings.ownerId),
+    eq(reminderSettings.enabled, settings.enabled),
+    eq(reminderSettings.timeZone, settings.timeZone),
+    eq(reminderSettings.quietStart, settings.quietStart),
+    eq(reminderSettings.quietEnd, settings.quietEnd),
+    eq(reminderSettings.eveningTime, settings.eveningTime),
+  );
+
 export class D1ReminderRepository implements ReminderRepository {
   private readonly db;
   constructor(private readonly binding: D1Database) {
@@ -46,7 +67,10 @@ export class D1ReminderRepository implements ReminderRepository {
         .insert(reminderSettings)
         .values(settings)
         .onConflictDoUpdate({ target: reminderSettings.ownerId, set: settings }),
-      // Rebuild pending automatic work with the new settings. Sent questions stay addressable.
+      // Release unsent automatic event keys before rebuilding the day's schedule.
+      this.db
+        .delete(reminderJobs)
+        .where(and(eq(reminderJobs.ownerId, settings.ownerId), replaceableAutomaticJob)),
       this.db
         .update(reminderJobs)
         .set({ status: "cancelled" })
@@ -74,6 +98,9 @@ export class D1ReminderRepository implements ReminderRepository {
         .insert(goalReminders)
         .values(values)
         .onConflictDoUpdate({ target: goalReminders.goalId, set: values }),
+      this.db
+        .delete(reminderJobs)
+        .where(and(eq(reminderJobs.goalId, item.goalId), replaceableAutomaticJob)),
       this.db
         .update(reminderJobs)
         .set({ status: "cancelled" })
@@ -169,21 +196,36 @@ export class D1ReminderRepository implements ReminderRepository {
     if (!row) throw new Error("Missing reminder job");
     return toJob(row);
   }
-  async advanceGoal(item: GoalReminder, previous: number, job: ReminderJob | null): Promise<void> {
-    // The unique event key permits concurrent ticks to safely insert the same event.
+  async advanceGoal(
+    item: GoalReminder,
+    previous: number,
+    job: ReminderJob | null,
+    settings: ReminderSettings,
+  ): Promise<void> {
     const advance = this.db
       .update(goalReminders)
       .set({ nextRunAt: item.nextRunAt })
-      .where(and(eq(goalReminders.goalId, item.goalId), eq(goalReminders.nextRunAt, previous)));
-    if (job)
-      await this.db.batch([
-        this.db.insert(reminderJobs).values(job).onConflictDoNothing(),
-        advance,
-      ]);
-    else await advance;
+      .where(
+        and(
+          eq(goalReminders.goalId, item.goalId),
+          eq(goalReminders.ownerId, item.ownerId),
+          eq(goalReminders.nextRunAt, previous),
+          eq(goalReminders.mode, item.mode),
+          eq(goalReminders.time, item.time),
+          eq(goalReminders.weekdays, JSON.stringify(item.weekdays)),
+          exists(
+            this.db
+              .select({ ownerId: reminderSettings.ownerId })
+              .from(reminderSettings)
+              .where(matchingSettings(settings)),
+          ),
+        ),
+      )
+      .toSQL();
+    await this.advanceSchedule(this.binding.prepare(advance.sql).bind(...advance.params), job);
   }
   async advanceEvening(
-    ownerId: string,
+    settings: ReminderSettings,
     previous: number,
     next: number,
     job: ReminderJob | null,
@@ -191,15 +233,44 @@ export class D1ReminderRepository implements ReminderRepository {
     const advance = this.db
       .update(reminderSettings)
       .set({ nextEveningAt: next })
-      .where(
-        and(eq(reminderSettings.ownerId, ownerId), eq(reminderSettings.nextEveningAt, previous)),
-      );
-    if (job)
-      await this.db.batch([
-        this.db.insert(reminderJobs).values(job).onConflictDoNothing(),
-        advance,
-      ]);
-    else await advance;
+      .where(and(matchingSettings(settings), eq(reminderSettings.nextEveningAt, previous)))
+      .toSQL();
+    await this.advanceSchedule(this.binding.prepare(advance.sql).bind(...advance.params), job);
+  }
+  private async advanceSchedule(advance: D1PreparedStatement, job: ReminderJob | null) {
+    if (!job) {
+      await advance.run();
+      return;
+    }
+    // D1 batches are atomic. Only the winner of the immediately preceding schedule
+    // update may insert work; a losing/stale tick must not enqueue a question.
+    await this.binding.batch([
+      advance,
+      this.binding
+        .prepare(`INSERT INTO reminder_jobs
+        (id, event_key, owner_id, goal_id, local_date, kind, status, due_at, expires_at,
+         lease_until, chat_id, message_id, expected_revision, payload, attempts, created_at)
+        SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() = 1
+        ON CONFLICT(event_key) DO NOTHING`)
+        .bind(
+          job.id,
+          job.eventKey,
+          job.ownerId,
+          job.goalId,
+          job.localDate,
+          job.kind,
+          job.status,
+          job.dueAt,
+          job.expiresAt,
+          job.leaseUntil,
+          job.chatId,
+          job.messageId,
+          job.expectedRevision,
+          job.payload,
+          job.attempts,
+          job.createdAt,
+        ),
+    ]);
   }
   async due(now: number): Promise<ReminderJob[]> {
     return (
