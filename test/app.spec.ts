@@ -9,12 +9,13 @@ import type {
 } from "../src/modules/identity-access/application/model";
 import { AesGcmLoginFlowCodec } from "../src/modules/identity-access/infrastructure/aes-gcm-login-flow-codec";
 import { TelegramOidcHttpClient } from "../src/modules/identity-access/infrastructure/telegram-oidc-client";
+import type { RuntimeConfigBindings } from "../src/platform/config/runtime-config";
 import type { ProblemDetails } from "../src/platform/http/problem-details";
 
-const APP_ORIGIN = "https://free-hosting-starter.example.workers.dev";
+const APP_ORIGIN = "https://planner-api.example.workers.dev";
 const FLOW_SECRET = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-const telegramBindings: CloudflareBindings = {
+const telegramBindings: RuntimeConfigBindings = {
   ...env,
   APP_ORIGIN,
   AUTH_FLOW_SECRET: FLOW_SECRET,
@@ -264,7 +265,7 @@ describe("public Worker contract", () => {
       detail: "The requested resource was not found.",
       status: 404,
       title: "Not found",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
     });
     const disabledLogout = await app.request(
       "http://localhost:8787/api/auth/logout",
@@ -277,7 +278,7 @@ describe("public Worker contract", () => {
       detail: "The requested resource was not found.",
       status: 404,
       title: "Not found",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
     });
   });
 
@@ -299,7 +300,7 @@ describe("public Worker contract", () => {
         detail: "The request could not be completed.",
         status: 500,
         title: "Internal server error",
-        type: "https://free-hosting-starter.dev/problems/internal-server-error",
+        type: "urn:planner:problem:internal-server-error",
       });
       expect(JSON.stringify(body)).not.toContain("sensitive");
       expect(JSON.stringify(body)).not.toContain("secret=");
@@ -318,14 +319,14 @@ describe("public Worker contract", () => {
       detail: "The requested resource was not found.",
       status: 404,
       title: "Not found",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
     });
     const second = await expectProblem(await request(), {
       code: "NOT_FOUND",
       detail: "The requested resource was not found.",
       status: 404,
       title: "Not found",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
     });
 
     expect(first.instance).not.toBe(second.instance);
@@ -353,7 +354,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "The Telegram login state is invalid.",
       status: 400,
       title: "Invalid request",
-      type: "https://free-hosting-starter.dev/problems/invalid-request",
+      type: "urn:planner:problem:invalid-request",
     });
     expect(JSON.stringify(callbackProblem)).not.toContain("unused");
     expect(JSON.stringify(callbackProblem)).not.toContain("state=");
@@ -400,7 +401,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "The request Origin does not match APP_ORIGIN.",
       status: 403,
       title: "Forbidden",
-      type: "https://free-hosting-starter.dev/problems/untrusted-origin",
+      type: "urn:planner:problem:untrusted-origin",
     });
 
     const missingContentType = await apiRequest("/api/notes", firstSession, {
@@ -413,7 +414,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "This endpoint requires an application/json request body.",
       status: 415,
       title: "Unsupported media type",
-      type: "https://free-hosting-starter.dev/problems/unsupported-media-type",
+      type: "urn:planner:problem:unsupported-media-type",
     });
 
     const oversizedJson = JSON.stringify({ title: "Large", body: "x".repeat(70 * 1024) });
@@ -438,7 +439,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "The request body exceeds the accepted size.",
       status: 413,
       title: "Content too large",
-      type: "https://free-hosting-starter.dev/problems/content-too-large",
+      type: "urn:planner:problem:content-too-large",
     });
 
     const created = await apiRequest("/api/notes", firstSession, {
@@ -471,7 +472,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "The note was not found.",
       status: 404,
       title: "Note not found",
-      type: "https://free-hosting-starter.dev/problems/note-not-found",
+      type: "urn:planner:problem:note-not-found",
     });
     const missingNote = await apiRequest(`/api/notes/${crypto.randomUUID()}`, secondSession);
     const missingProblem = await expectProblem(missingNote, {
@@ -479,7 +480,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "The note was not found.",
       status: 404,
       title: "Note not found",
-      type: "https://free-hosting-starter.dev/problems/note-not-found",
+      type: "urn:planner:problem:note-not-found",
     });
     expect({ ...hiddenProblem, instance: undefined, requestId: undefined }).toEqual({
       ...missingProblem,
@@ -511,7 +512,7 @@ describe("Telegram session and owned Notes reference", () => {
       detail: "A valid session is required.",
       status: 401,
       title: "Unauthenticated",
-      type: "https://free-hosting-starter.dev/problems/unauthenticated",
+      type: "urn:planner:problem:unauthenticated",
     });
   });
 });

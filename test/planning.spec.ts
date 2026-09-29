@@ -7,7 +7,7 @@ import { calculateMet, ListPlan } from "../src/modules/planning/application/use-
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
 const ORIGIN = "http://localhost:8787";
-const PRODUCTION_ORIGIN = "https://free-hosting-starter.example.workers.dev";
+const PRODUCTION_ORIGIN = "https://planner-api.example.workers.dev";
 const bindings = {
   ...env,
   APP_ORIGIN: ORIGIN,

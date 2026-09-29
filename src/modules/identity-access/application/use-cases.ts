@@ -12,7 +12,7 @@ const LOGIN_FLOW_TTL_MS = 10 * 60 * 1000;
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const DEVELOPMENT_IDENTITY = {
   displayName: "Local Developer",
-  issuer: "urn:free-hosting-starter:development",
+  issuer: "urn:planner-api:development",
   photoUrl: null,
   subject: "local-developer",
   username: "local-developer",

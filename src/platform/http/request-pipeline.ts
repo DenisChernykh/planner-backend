@@ -46,7 +46,7 @@ export const requireTrustedOrigin: MiddlewareHandler<WorkerHttpEnv> = async (c, 
   ) {
     c.res = problem(c, {
       code: "UNTRUSTED_ORIGIN",
-      type: "https://free-hosting-starter.dev/problems/untrusted-origin",
+      type: "urn:planner:problem:untrusted-origin",
       title: "Forbidden",
       status: 403,
       detail: "The request Origin does not match APP_ORIGIN.",

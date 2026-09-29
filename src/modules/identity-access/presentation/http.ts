@@ -221,7 +221,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       if (!result.success) {
         return problem(c, {
           code: "VALIDATION_FAILED",
-          type: "https://free-hosting-starter.dev/problems/validation-error",
+          type: "urn:planner:problem:validation-error",
           title: "Validation failed",
           status: 400,
           detail: "The request does not match the API contract.",
@@ -243,7 +243,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     ) {
       c.res = problem(c, {
         code: "NOT_FOUND",
-        type: "https://free-hosting-starter.dev/problems/not-found",
+        type: "urn:planner:problem:not-found",
         title: "Not found",
         status: 404,
         detail: "The requested resource was not found.",
@@ -311,7 +311,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     if (!config) {
       return problem(c, {
         code: "NOT_FOUND",
-        type: "https://free-hosting-starter.dev/problems/not-found",
+        type: "urn:planner:problem:not-found",
         title: "Not found",
         status: 404,
         detail: "The requested resource was not found.",
@@ -334,7 +334,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     if (!config) {
       return problem(c, {
         code: "NOT_FOUND",
-        type: "https://free-hosting-starter.dev/problems/not-found",
+        type: "urn:planner:problem:not-found",
         title: "Not found",
         status: 404,
         detail: "The requested resource was not found.",
@@ -389,7 +389,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
     ) {
       return problem(c, {
         code: "NOT_FOUND",
-        type: "https://free-hosting-starter.dev/problems/not-found",
+        type: "urn:planner:problem:not-found",
         title: "Not found",
         status: 404,
         detail: "The requested resource was not found.",

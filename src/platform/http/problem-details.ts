@@ -34,27 +34,27 @@ export function applicationErrorToResponse(c: Context, error: ApplicationError):
     DEPENDENCY_UNAVAILABLE: {
       status: 503,
       title: "Dependency unavailable",
-      type: "https://free-hosting-starter.dev/problems/dependency-unavailable",
+      type: "urn:planner:problem:dependency-unavailable",
     },
     FORBIDDEN: {
       status: 403,
       title: "Forbidden",
-      type: "https://free-hosting-starter.dev/problems/forbidden",
+      type: "urn:planner:problem:forbidden",
     },
     INVALID_REQUEST: {
       status: 400,
       title: "Invalid request",
-      type: "https://free-hosting-starter.dev/problems/invalid-request",
+      type: "urn:planner:problem:invalid-request",
     },
     NOT_FOUND: {
       status: 404,
       title: "Not found",
-      type: "https://free-hosting-starter.dev/problems/not-found",
+      type: "urn:planner:problem:not-found",
     },
     UNAUTHENTICATED: {
       status: 401,
       title: "Unauthenticated",
-      type: "https://free-hosting-starter.dev/problems/unauthenticated",
+      type: "urn:planner:problem:unauthenticated",
     },
   };
 

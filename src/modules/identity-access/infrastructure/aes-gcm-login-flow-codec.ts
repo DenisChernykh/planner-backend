@@ -5,6 +5,7 @@ import type { LoginFlow } from "../application/model";
 import type { LoginFlowCodec } from "../application/ports";
 
 const FLOW_VERSION = "v1";
+// Keep v1 authenticated data stable so in-flight Telegram logins survive resource renames.
 const ADDITIONAL_DATA = new TextEncoder().encode("free-hosting-starter:telegram-flow:v1");
 
 const loginFlowSchema = z.object({

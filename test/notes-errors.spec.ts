@@ -77,7 +77,7 @@ describe("Notes application errors", () => {
         detail: "Note body must not exceed 10000 characters.",
         status: 400,
         title: "Note body is too long",
-        type: "https://free-hosting-starter.dev/problems/note-body-too-long",
+        type: "urn:planner:problem:note-body-too-long",
       },
     ],
     [
@@ -87,7 +87,7 @@ describe("Notes application errors", () => {
         detail: "The note was not found.",
         status: 404,
         title: "Note not found",
-        type: "https://free-hosting-starter.dev/problems/note-not-found",
+        type: "urn:planner:problem:note-not-found",
       },
     ],
     [
@@ -97,7 +97,7 @@ describe("Notes application errors", () => {
         detail: "At least one note field is required.",
         status: 400,
         title: "Note update is empty",
-        type: "https://free-hosting-starter.dev/problems/note-patch-empty",
+        type: "urn:planner:problem:note-patch-empty",
       },
     ],
     [
@@ -107,7 +107,7 @@ describe("Notes application errors", () => {
         detail: "Note title must contain 1 to 120 characters.",
         status: 400,
         title: "Note title is invalid",
-        type: "https://free-hosting-starter.dev/problems/note-title-invalid",
+        type: "urn:planner:problem:note-title-invalid",
       },
     ],
     [
@@ -117,7 +117,7 @@ describe("Notes application errors", () => {
         detail: "Notes limit must be an integer from 1 to 100.",
         status: 400,
         title: "Notes limit is invalid",
-        type: "https://free-hosting-starter.dev/problems/notes-limit-invalid",
+        type: "urn:planner:problem:notes-limit-invalid",
       },
     ],
   ])("maps $expected.code to fixed public metadata", (error, expected) => {
