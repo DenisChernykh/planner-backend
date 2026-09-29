@@ -43,14 +43,14 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
     : [];
   const ownLayer = relativeFromModule[0];
 
-  const imports = source.matchAll(/(?:\bfrom\s*|\bimport\s*)["']([^"']+)["']/gu);
+  const imports = source.matchAll(/(?:\bfrom\s*|\bimport\s*(?:\(\s*)?)["']([^"']+)["']/gu);
   for (const match of imports) {
     const specifier = match[1];
     if (!specifier) continue;
 
     if (ownLayer === "application") {
       if (
-        ["hono", "@hono/", "drizzle-orm", "jose", "wrangler", "cloudflare:"].some(
+        ["hono", "@hono/", "drizzle-orm", "grammy", "jose", "wrangler", "cloudflare:"].some(
           (dependency) => specifier === dependency || specifier.startsWith(dependency),
         ) ||
         specifier.includes("/presentation/") ||
@@ -60,6 +60,12 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
       }
     }
 
+    // Domain imports stay inside its own domain (or shared domain primitives).
+    // Luxon is a pure calendar calculation dependency, not a runtime adapter.
+    if (ownLayer === "domain" && !specifier.startsWith(".") && specifier !== "luxon") {
+      report(file, `domain must not import runtime or application dependency (${specifier})`);
+    }
+
     if (ownLayer === "presentation" && specifier.includes("/infrastructure/")) {
       report(file, `presentation must not import infrastructure (${specifier})`);
     }
@@ -67,6 +73,16 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
     if (!specifier.startsWith(".")) continue;
     const importedFile = resolveRelativeImport(file, specifier);
     const importedModule = moduleName(importedFile);
+    if (ownLayer === "domain") {
+      const ownDomain = path.join(sourceRoot, "modules", ownModule, "domain") + path.sep;
+      const sharedDomain = path.join(sourceRoot, "shared", "domain") + path.sep;
+      if (!importedFile.startsWith(ownDomain) && !importedFile.startsWith(sharedDomain)) {
+        report(
+          file,
+          `domain must not depend on outer layers or other module wiring (${specifier})`,
+        );
+      }
+    }
     if (ownModule && importedModule && ownModule !== importedModule) {
       const importedRelative = path
         .relative(path.join(sourceRoot, "modules", importedModule), importedFile)
