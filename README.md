@@ -1,8 +1,7 @@
-# free-hosting-starter
+# Planner API
 
-Компактный API-стартер для MVP на Cloudflare Workers. Он сохраняет понятные
-границы модулей и даёт рабочий эталон авторизации, но не переносит в маленький
-проект инфраструктуру enterprise-приложения.
+Бэкенд Planner на Cloudflare Workers: цели, учёт прогресса, заметки
+и авторизация через Telegram. Данные хранятся в Cloudflare D1.
 
 Стартовый сценарий рассчитан на Cloudflare Workers Free, D1 Free и стандартный
 домен `workers.dev`. Обязательных платных ресурсов в составе нет.
@@ -65,7 +64,7 @@ pathname и fragment из `requestId` для конкретного возник
 
 ```json
 {
-  "type": "https://free-hosting-starter.dev/problems/note-not-found",
+  "type": "urn:planner:problem:note-not-found",
   "title": "Note not found",
   "status": 404,
   "detail": "The note was not found.",
@@ -240,7 +239,7 @@ expand/migrate/contract шаги, а не одну разрушающую миг
 
 ```bash
 pnpm exec wrangler login
-pnpm exec wrangler d1 create free-hosting-starter-db
+pnpm exec wrangler d1 create planner-db
 ```
 
 Wrangler вернёт UUID. В конкретном проекте замените им обе all-zero записи
@@ -484,8 +483,8 @@ capability явно включена, отдельной командой `teleg
 точный HTTPS webhook и затем выполните `telegram:operator info`. Это две
 разные операции с разными доказательствами.
 
-Production resource names по умолчанию: Worker `free-hosting-starter`, D1
-`free-hosting-starter-db`. Custom domain для базового сценария не требуется.
+Production resource names по умолчанию: Worker `planner-api`, D1
+`planner-db`. Custom domain для базового сценария не требуется.
 Не запускайте `wrangler tail` во время OIDC smoke: real-time trace содержит
 полный request URL и может показать одноразовые callback `code` и `state`.
 
