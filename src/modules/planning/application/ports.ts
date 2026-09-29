@@ -4,7 +4,7 @@ import type {
   GoalOrderCadence,
   GoalPatchInput,
   GoalRecord,
-} from "./model";
+} from "../domain/model";
 
 export type GoalUpdate = GoalPatchInput & {
   updatedAt: number;

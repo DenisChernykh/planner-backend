@@ -1,10 +1,6 @@
-import type {
-  GoalReminder,
-  OutgoingMessage,
-  ReminderJob,
-  ReminderSettings,
-  TelegramLink,
-} from "./model";
+import type { DeliveryFailureKind } from "../domain/jobs";
+import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "../domain/model";
+import type { OutgoingMessage } from "./model";
 
 export interface ReminderRepository {
   settings(ownerId: string): Promise<ReminderSettings>;
@@ -47,7 +43,7 @@ export interface ReminderTransport {
 }
 export class DeliveryError extends Error {
   constructor(
-    readonly kind: "blocked" | "retry" | "unknown" | "permanent",
+    readonly kind: DeliveryFailureKind,
     readonly retryAfter = 60,
   ) {
     super("Telegram delivery failed");

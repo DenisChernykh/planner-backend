@@ -1,5 +1,9 @@
 import { DateTime, IANAZone } from "luxon";
-import { ApplicationError } from "../../../shared/application/application-error";
+import {
+  GoalReminderInvalidError,
+  ReminderScheduleInvalidError,
+  ReminderSettingsInvalidError,
+} from "./errors";
 import type { GoalReminderInput, SettingsInput } from "./model";
 
 const TIME = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
@@ -10,7 +14,7 @@ export function validateSettings(value: SettingsInput): void {
     !TIME.test(value.quietEnd) ||
     !TIME.test(value.eveningTime)
   ) {
-    throw new ApplicationError("INVALID_REQUEST", "Проверьте часовой пояс и время.");
+    throw new ReminderSettingsInvalidError();
   }
 }
 export function validateReminder(value: GoalReminderInput): void {
@@ -22,7 +26,7 @@ export function validateReminder(value: GoalReminderInput): void {
     new Set(value.weekdays).size !== value.weekdays.length ||
     value.weekdays.some((day) => !Number.isInteger(day) || day < 1 || day > 7)
   ) {
-    throw new ApplicationError("INVALID_REQUEST", "Выберите время и дни недели.");
+    throw new GoalReminderInvalidError();
   }
 }
 export function localDate(now: number, zone: string): string {
@@ -47,7 +51,7 @@ export function nextOccurrence(
     const candidate = atTime(day, time);
     if (weekdays.includes(day.weekday) && candidate.toMillis() > now) return candidate.toMillis();
   }
-  throw new ApplicationError("INVALID_REQUEST", "Не удалось рассчитать расписание.");
+  throw new ReminderScheduleInvalidError();
 }
 export function afterQuietHours(now: number, settings: SettingsInput): number {
   if (settings.quietStart === settings.quietEnd) return now;

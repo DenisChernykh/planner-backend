@@ -1,8 +1,8 @@
 import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
-import type { GoalRecord, GoalTracking } from "../application/model";
 import type { GoalUpdate, PlanningRepository, StoredEntry } from "../application/ports";
+import type { GoalRecord, GoalTracking } from "../domain/model";
 import type { EntrySnapshot, RecordAnswerInput } from "../public-contracts";
 
 type GoalRow = typeof planGoals.$inferSelect;

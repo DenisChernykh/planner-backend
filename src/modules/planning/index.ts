@@ -31,7 +31,7 @@ export type {
   RepeatingCadence,
   ScaleTracking,
   TimeTracking,
-} from "./application/model";
+} from "./domain/model";
 
 export function createPlanningOperations(database: D1Database): PlanningOperations {
   const repository = new D1PlanningRepository(database);
@@ -43,4 +43,4 @@ export function createPlanningOperations(database: D1Database): PlanningOperatio
   };
 }
 
-export { PlanningError } from "./application/errors";
+export { PlanningError } from "./domain/errors";
