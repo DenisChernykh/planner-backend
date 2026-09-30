@@ -2,8 +2,9 @@
 
 These PNG exports are the visual reference for AI agents and developers. Open
 the images before changing the Planner plan screen or the goal-creation flow.
-The editable source lives in Pen; the exports are committed so repository-based
-agents can inspect the current layout without local Pen access.
+The editable source is [Planner.pen](./Planner.pen). Keep the `images/` directory
+alongside it; it contains an image used by the document. The PNG exports let
+repository-based agents inspect the current layout without local Pen access.
 
 ## September plan
 
@@ -19,3 +20,10 @@ Controls in the grid represent checkbox, count, scale, and time tracking.
 This screen documents the supported combinations of tracking type and period.
 Use the API contract and `src/app/styles/index.css` as the semantic source for
 fields and visual tokens.
+
+## Telegram notifications
+
+`Planner.pen` contains reusable Telegram components and 12 notification scenarios
+inside iPhone 17 Pro frames. They cover checkbox, count, scale and time tracking,
+the evening digest, postponement, corrections, account connection, reply input
+with the iOS keyboard, validation errors, and bot commands.
