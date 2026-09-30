@@ -27,7 +27,7 @@ bound to the semantic tokens in `src/app/styles/index.css`.
 When Pencil MCP is available, inspect the editable source before implementing
 or changing these screens:
 
-- document: `/Users/denischernykh/.pencil/documents/5d55898f-4fac-4e16-86fe-0635a7b60925/pencil-welcome-desktop.pen`
+- document: `docs/design/Planner.pen` (relative to this package)
 - plan screen: `h9BBT` (`Editable Plan / September`)
 - goal-creation screen: `elkpw` (`Create Goal / All Variants`)
 
