@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 import {
   deleteApiGoalsGoalIdEntriesDate,
@@ -24,6 +24,7 @@ type FactInspectorDraftProps = {
   month: string;
   today: string;
   onDateChange: (date: string) => void;
+  children: (content: ReactNode) => ReactNode;
 };
 
 type FactOperation = { kind: "save"; data: PutApiGoalsGoalIdEntriesDateBody } | { kind: "delete" };
@@ -38,6 +39,7 @@ export function FactInspectorDraft({
   month,
   today,
   onDateChange,
+  children,
 }: FactInspectorDraftProps) {
   const queryClient = useQueryClient();
   const entry = goal.entries.find((item) => item.date === date);
@@ -87,7 +89,7 @@ export function FactInspectorDraft({
   const saving = mutation.isPending && mutation.variables?.kind === "save";
   const deleting = mutation.isPending && mutation.variables?.kind === "delete";
 
-  return (
+  return children(
     <>
       <FactDateControls date={date} month={month} onDateChange={onDateChange} />
       <FactValueEditor
@@ -122,6 +124,6 @@ export function FactInspectorDraft({
             saveFact(note);
         }}
       />
-    </>
+    </>,
   );
 }

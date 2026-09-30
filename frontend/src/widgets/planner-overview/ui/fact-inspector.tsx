@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { type ReactNode, type RefObject, useRef, useSyncExternalStore } from "react";
 
 import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import { Button, Sheet, SheetContent, SheetDescription, SheetTitle } from "@/shared/ui";
@@ -34,45 +34,71 @@ export function FactInspector(props: FactInspectorProps) {
     () => false,
   );
 
-  if (!overlay) return <FactInspectorPanel {...props} />;
+  const panelRef = useRef<HTMLElement>(null);
+  const entry = props.goal.entries.find((item) => item.date === props.date);
+  const draftKey = JSON.stringify([entry?.value, entry?.note, entry?.updatedAt]);
+  const closeInspector = () => {
+    const panel = panelRef.current;
+    const active = panel?.ownerDocument.activeElement;
+    if (active instanceof HTMLElement && panel?.contains(active)) active.blur();
+    props.onClose();
+  };
 
   return (
-    <Sheet
-      open
-      onOpenChange={(open) => {
-        if (!open) props.onClose();
+    <FactInspectorDraft key={`${props.goal.id}-${props.date}-${draftKey}`} {...props}>
+      {(draft) => {
+        const panel = (
+          <FactInspectorPanel
+            goal={props.goal}
+            onClose={closeInspector}
+            overlay={overlay}
+            panelRef={panelRef}
+          >
+            {draft}
+          </FactInspectorPanel>
+        );
+        if (!overlay) return panel;
+        return (
+          <Sheet
+            open
+            onOpenChange={(open) => {
+              if (!open) closeInspector();
+            }}
+          >
+            <SheetContent
+              side="bottom"
+              showCloseButton={false}
+              className="h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] overflow-hidden rounded-t-2xl sm:mx-auto sm:max-w-md"
+            >
+              <SheetTitle className="sr-only">{props.goal.title} — факт за день</SheetTitle>
+              <SheetDescription className="sr-only">
+                Выберите дату, измените факт или добавьте заметку к цели.
+              </SheetDescription>
+              {panel}
+            </SheetContent>
+          </Sheet>
+        );
       }}
-    >
-      <SheetContent
-        side="bottom"
-        showCloseButton={false}
-        className="h-[calc(100dvh-1rem)] max-h-[calc(100dvh-1rem)] overflow-hidden rounded-t-2xl sm:mx-auto sm:max-w-md"
-      >
-        <SheetTitle className="sr-only">{props.goal.title} — факт за день</SheetTitle>
-        <SheetDescription className="sr-only">
-          Выберите дату, измените факт или добавьте заметку к цели.
-        </SheetDescription>
-        <FactInspectorPanel {...props} overlay />
-      </SheetContent>
-    </Sheet>
+    </FactInspectorDraft>
   );
 }
 
 function FactInspectorPanel({
   goal,
-  date,
-  month,
-  today,
-  onDateChange,
   onClose,
-  overlay = false,
-}: FactInspectorProps & { overlay?: boolean }) {
-  const entry = goal.entries.find((item) => item.date === date);
+  overlay,
+  panelRef,
+  children,
+}: Pick<FactInspectorProps, "goal" | "onClose"> & {
+  overlay: boolean;
+  panelRef: RefObject<HTMLElement | null>;
+  children: ReactNode;
+}) {
   const Icon = trackingIconMap[goal.tracking.type];
-  const draftKey = JSON.stringify([entry?.value, entry?.note, entry?.updatedAt]);
 
   return (
     <aside
+      ref={panelRef}
       className={`flex h-full flex-col bg-secondary ${overlay ? "min-h-0 w-full" : "min-h-[560px] w-[320px] shrink-0 border-l"}`}
       aria-label="Инспектор факта"
     >
@@ -97,14 +123,7 @@ function FactInspectorPanel({
         </p>
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
-        <FactInspectorDraft
-          key={`${goal.id}-${date}-${draftKey}`}
-          goal={goal}
-          date={date}
-          month={month}
-          today={today}
-          onDateChange={onDateChange}
-        />
+        {children}
       </div>
     </aside>
   );
