@@ -33,7 +33,7 @@ export function FactWeekHistory({ goal, date, month, onDateChange }: FactWeekHis
             key={item}
             type="button"
             disabled={!inMonth}
-            className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-xs ${selected ? "border-primary bg-primary-soft" : "bg-card"}`}
+            className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-left text-xs lg:min-h-0 ${selected ? "border-primary bg-primary-soft" : "bg-card"}`}
             onClick={() => onDateChange(item)}
           >
             <span>{formatPlannerDay(item)}</span>
