@@ -76,7 +76,7 @@ function FactInspectorPanel({
       className={`flex h-full flex-col bg-secondary ${overlay ? "min-h-0 w-full" : "min-h-[560px] w-[320px] shrink-0 border-l"}`}
       aria-label="Инспектор факта"
     >
-      <header className="shrink-0 space-y-3 border-b bg-card p-4 md:p-5">
+      <header className="shrink-0 space-y-3 border-b bg-card p-4 lg:p-5">
         <div className="flex items-center justify-between gap-3">
           <span className="rounded-full bg-primary-soft px-2 py-1 text-[0.65rem] font-bold text-primary">
             ВЫБРАНО
@@ -84,7 +84,7 @@ function FactInspectorPanel({
           <Button
             variant="ghost"
             size="icon-xs"
-            className="size-11 rounded-lg text-xl md:size-6 md:rounded-none md:text-xs"
+            className="size-11 rounded-lg text-xl lg:size-6 lg:rounded-none lg:text-xs"
             onClick={onClose}
             aria-label="Закрыть инспектор"
           >
