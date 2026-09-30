@@ -29,7 +29,7 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
 
   return (
     <section className="flex min-h-[calc(100svh-3.5rem)] min-w-0 bg-background">
-      <main className="min-w-0 flex-1 px-8 py-7">
+      <main className="min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7">
         <PlanHeader month={month} hasGoals={plan.goals.length > 0} />
         <PlanNavigation month={month} weekStart={weekStart} onWeekChange={setWeekStart} />
         {notice === "goal-created" && (
@@ -69,7 +69,7 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
       </main>
       {selectedGoal && (
         <FactInspector
-          key={`${selectedGoal.id}-${selectedDate}`}
+          key={selectedGoal.id}
           goal={selectedGoal}
           month={month}
           today={plan.today}
