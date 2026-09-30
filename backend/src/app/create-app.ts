@@ -55,7 +55,11 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   const app = new OpenAPIHono<AppEnv>();
   const identity = createIdentityAccessModule(options.identity);
   const notes = createNotesModule();
-  const planning = createPlanningModule({ getTimeZone: reminderTimeZone });
+  const planning = createPlanningModule({
+    getTimeZone: reminderTimeZone,
+    prepareCurrentPlan: (database, input) =>
+      createReminderOperations(database, null).prepareCurrentPlan.execute(input),
+  });
   const reminders = createRemindersModule(reminderTransport);
   const telegramBot = createTelegramBotModule({
     ...options.telegramBot,

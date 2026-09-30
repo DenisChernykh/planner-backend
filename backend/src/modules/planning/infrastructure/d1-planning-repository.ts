@@ -1,7 +1,24 @@
-import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  isNotNull,
+  isNull,
+  lte,
+  sql,
+} from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
 import type { AnswerRepository } from "../application/ports/answer-repository";
+import type {
+  CarriedGoal,
+  MonthRolloverCommit,
+  MonthRolloverRepository,
+  MonthRolloverState,
+} from "../application/ports/month-rollover-repository";
 import type {
   GoalUpdate,
   PlanningRepository,
@@ -38,6 +55,32 @@ function toGoal(row: GoalRow): GoalRecord {
   };
 }
 
+function toGoalRow(goal: GoalRecord, sortOrder: number) {
+  return {
+    id: goal.id,
+    ownerId: goal.ownerId,
+    month: goal.month,
+    title: goal.title,
+    description: goal.description,
+    trackingType: goal.tracking.type,
+    trackingConfig: JSON.stringify(goal.tracking),
+    cadencePeriod: goal.cadence.period,
+    targetOccurrences: goal.cadence.period === "day" ? null : goal.cadence.targetOccurrences,
+    sortOrder,
+    deletedAt: goal.deletedAt,
+    createdAt: goal.createdAt,
+    updatedAt: goal.updatedAt,
+  };
+}
+
+// Includes ordering and definitions, so a concurrent edit or deletion retries the snapshot.
+const rolloverRevision = `json_array(id, title, description, tracking_config, cadence_period,
+  target_occurrences, sort_order, created_at, updated_at)`;
+const previousMonthSql = `SELECT MAX(month) FROM (
+  SELECT month FROM plan_goals WHERE owner_id = ? AND month < ?
+  UNION ALL SELECT month FROM plan_month_rollovers WHERE owner_id = ? AND month < ?
+)`;
+
 function toEntry(row: EntryRow): StoredEntry {
   return {
     goalId: row.goalId,
@@ -50,7 +93,9 @@ function toEntry(row: EntryRow): StoredEntry {
   };
 }
 
-export class D1PlanningRepository implements PlanningRepository, AnswerRepository {
+export class D1PlanningRepository
+  implements PlanningRepository, AnswerRepository, MonthRolloverRepository
+{
   private readonly database;
   private readonly binding: D1Database;
 
@@ -61,22 +106,127 @@ export class D1PlanningRepository implements PlanningRepository, AnswerRepositor
 
   async createGoal(goal: GoalRecord): Promise<GoalRecord> {
     const sortOrder = await this.nextSortOrder(goal.ownerId, goal.month, goal.cadence.period);
-    await this.database.insert(planGoals).values({
-      id: goal.id,
-      ownerId: goal.ownerId,
-      month: goal.month,
-      title: goal.title,
-      description: goal.description,
-      trackingType: goal.tracking.type,
-      trackingConfig: JSON.stringify(goal.tracking),
-      cadencePeriod: goal.cadence.period,
-      targetOccurrences: goal.cadence.period === "day" ? null : goal.cadence.targetOccurrences,
-      sortOrder,
-      deletedAt: goal.deletedAt,
-      createdAt: goal.createdAt,
-      updatedAt: goal.updatedAt,
-    });
+    await this.database.insert(planGoals).values(toGoalRow(goal, sortOrder));
     return goal;
+  }
+
+  async rolloverState(ownerId: string, month: string): Promise<MonthRolloverState> {
+    const initialized = await this.binding
+      .prepare("SELECT 1 FROM plan_month_rollovers WHERE owner_id = ? AND month = ?")
+      .bind(ownerId, month)
+      .first();
+    if (initialized) return { initialized: true, sourceMonth: null, goals: [] };
+    const previous = await this.binding
+      .prepare(previousMonthSql)
+      .bind(ownerId, month, ownerId, month)
+      .first<{ "MAX(month)": string | null }>();
+    const sourceMonth = previous?.["MAX(month)"] ?? null;
+    const rows =
+      sourceMonth === null
+        ? []
+        : await this.database
+            .select({
+              ...getTableColumns(planGoals),
+              revision: sql<string>`${sql.raw(rolloverRevision)}`,
+            })
+            .from(planGoals)
+            .where(
+              and(
+                eq(planGoals.ownerId, ownerId),
+                eq(planGoals.month, sourceMonth),
+                isNull(planGoals.deletedAt),
+              ),
+            )
+            .orderBy(asc(planGoals.sortOrder), asc(planGoals.createdAt), asc(planGoals.id));
+    return {
+      initialized: false,
+      sourceMonth,
+      goals: rows.map((row) => ({
+        goal: toGoal(row),
+        revision: row.revision,
+        sortOrder: row.sortOrder,
+      })),
+    };
+  }
+
+  async commitRollover(input: MonthRolloverCommit): Promise<boolean> {
+    const { ownerId, month, operationId, sourceMonth, now } = input;
+    const revisions = JSON.stringify(input.goals.map((item) => item.revision));
+    const goals = JSON.stringify(
+      input.goals.map((item) => ({
+        ...toGoalRow(item.goal, item.sortOrder),
+        carriedFromGoalId: item.sourceGoalId,
+      })),
+    );
+    // Receipt and all goals commit together. The operation ID gates the losing batch.
+    // A manually planned target (including trash) is sealed without copying anything.
+    const results = await this.binding.batch([
+      this.binding
+        .prepare(`INSERT INTO plan_month_rollovers
+        (owner_id, month, operation_id, source_month, created_at)
+        SELECT ?, ?, ?, CASE WHEN EXISTS (
+          SELECT 1 FROM plan_goals WHERE owner_id = ? AND month = ?
+        ) THEN NULL ELSE ? END, ?
+        WHERE EXISTS (SELECT 1 FROM plan_goals WHERE owner_id = ? AND month = ?)
+          OR ((${previousMonthSql}) IS ?
+            AND (SELECT COUNT(*) FROM plan_goals WHERE owner_id = ? AND month = ? AND deleted_at IS NULL) = json_array_length(?)
+            AND NOT EXISTS (SELECT 1 FROM plan_goals WHERE owner_id = ? AND month = ? AND deleted_at IS NULL
+              AND ${rolloverRevision} NOT IN (SELECT value FROM json_each(?))))
+        ON CONFLICT(owner_id, month) DO NOTHING`)
+        .bind(
+          ownerId,
+          month,
+          operationId,
+          ownerId,
+          month,
+          sourceMonth,
+          now,
+          ownerId,
+          month,
+          ownerId,
+          month,
+          ownerId,
+          month,
+          sourceMonth,
+          ownerId,
+          sourceMonth,
+          revisions,
+          ownerId,
+          sourceMonth,
+          revisions,
+        ),
+      this.binding
+        .prepare(`INSERT INTO plan_goals
+        (id, owner_id, month, title, description, tracking_type, tracking_config,
+          cadence_period, target_occurrences, sort_order, deleted_at, created_at, updated_at, carried_from_goal_id)
+        SELECT json_extract(value, '$.id'), json_extract(value, '$.ownerId'), json_extract(value, '$.month'),
+          json_extract(value, '$.title'), json_extract(value, '$.description'), json_extract(value, '$.trackingType'),
+          json_extract(value, '$.trackingConfig'), json_extract(value, '$.cadencePeriod'),
+          json_extract(value, '$.targetOccurrences'), json_extract(value, '$.sortOrder'), NULL,
+          json_extract(value, '$.createdAt'), json_extract(value, '$.updatedAt'), json_extract(value, '$.carriedFromGoalId')
+        FROM json_each(?) WHERE EXISTS (SELECT 1 FROM plan_month_rollovers
+          WHERE owner_id = ? AND month = ? AND operation_id = ? AND source_month = ?)`)
+        .bind(goals, ownerId, month, operationId, sourceMonth),
+    ]);
+    return results[0]?.meta.changes === 1;
+  }
+
+  async carriedGoals(ownerId: string, month: string): Promise<CarriedGoal[]> {
+    const rows = await this.database
+      .select({ sourceGoalId: planGoals.carriedFromGoalId, goalId: planGoals.id })
+      .from(planGoals)
+      .where(
+        and(
+          eq(planGoals.ownerId, ownerId),
+          lte(planGoals.month, month),
+          isNull(planGoals.deletedAt),
+          isNotNull(planGoals.carriedFromGoalId),
+        ),
+      )
+      .orderBy(asc(planGoals.month));
+    return rows.flatMap((row) =>
+      row.sourceGoalId === null ? [] : [{ ...row, sourceGoalId: row.sourceGoalId }],
+    );
   }
 
   async findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null> {

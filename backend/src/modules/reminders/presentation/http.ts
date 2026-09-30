@@ -11,6 +11,7 @@ import {
 } from "../../identity-access/public-contracts";
 import type { ConnectTelegramUseCase } from "../application/connection/connect-telegram.use-case";
 import type { DisconnectTelegramUseCase } from "../application/connection/disconnect-telegram.use-case";
+import type { PrepareCurrentPlanUseCase } from "../application/scheduling/prepare-current-plan.use-case";
 import type { GetGoalRemindersQuery } from "../application/settings/get-goal-reminders.query";
 import type { GetReminderStateQuery } from "../application/settings/get-reminder-state.query";
 import type { SaveGoalReminderUseCase } from "../application/settings/save-goal-reminder.use-case";
@@ -23,6 +24,7 @@ import {
 } from "../domain/errors";
 
 type ReminderHttpUseCases = {
+  prepareCurrentPlan: PrepareCurrentPlanUseCase;
   getState: GetReminderStateQuery;
   getGoalReminders: GetGoalRemindersQuery;
   saveSettings: SaveReminderSettingsUseCase;
@@ -186,16 +188,12 @@ export function createReminderHttp(
         ...errors,
       },
     }),
-    async (c) =>
-      c.json(
-        {
-          goals: await useCases(c.env).getGoalReminders.execute({
-            ownerId: owner(c),
-            month: c.req.valid("param").month,
-          }),
-        },
-        200,
-      ),
+    async (c) => {
+      const operations = useCases(c.env);
+      const input = { ownerId: owner(c), month: c.req.valid("param").month, now: Date.now() };
+      await operations.prepareCurrentPlan.execute(input);
+      return c.json({ goals: await operations.getGoalReminders.execute(input) }, 200);
+    },
   );
   router.openapi(
     createRoute({

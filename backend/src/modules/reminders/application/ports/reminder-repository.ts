@@ -5,6 +5,8 @@ export interface ReminderRepository {
   activeSettings(): Promise<ReminderSettings[]>;
   reminders(ownerId: string): Promise<GoalReminder[]>;
   saveReminder(reminder: GoalReminder): Promise<void>;
+  inheritReminder(source: GoalReminder, target: GoalReminder, timeZone: string): Promise<boolean>;
+  scheduledReminders(ownerId: string, month: string): Promise<GoalReminder[]>;
   link(ownerId: string): Promise<TelegramLink | null>;
   linkForChat(chatId: string, userId: string): Promise<TelegramLink | null>;
   createLinkToken(ownerId: string, hash: string, expiresAt: number): Promise<void>;

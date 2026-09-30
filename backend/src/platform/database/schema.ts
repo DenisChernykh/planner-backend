@@ -1,5 +1,12 @@
 import { sql } from "drizzle-orm";
-import { index, integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  index,
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -72,6 +79,7 @@ export const planGoals = sqliteTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     month: text("month").notNull(),
+    carriedFromGoalId: text("carried_from_goal_id"),
     title: text("title").notNull(),
     description: text("description"),
     trackingType: text("tracking_type").notNull(),
@@ -86,7 +94,26 @@ export const planGoals = sqliteTable(
   (table) => [
     index("plan_goals_owner_month_idx").on(table.ownerId, table.month),
     index("plan_goals_owner_deleted_idx").on(table.ownerId, table.deletedAt),
+    uniqueIndex("plan_goals_carried_from_idx").on(
+      table.ownerId,
+      table.month,
+      table.carriedFromGoalId,
+    ),
   ],
+);
+
+export const planMonthRollovers = sqliteTable(
+  "plan_month_rollovers",
+  {
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    month: text("month").notNull(),
+    operationId: text("operation_id").notNull(),
+    sourceMonth: text("source_month"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.ownerId, table.month] })],
 );
 
 export const goalEntries = sqliteTable(
