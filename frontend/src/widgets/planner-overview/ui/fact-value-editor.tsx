@@ -60,7 +60,7 @@ export function FactValueEditor({
       {goal.tracking.type === "quantity" && (
         <Input
           aria-label="Факт за день"
-          className="h-11 rounded-lg text-base lg:h-8 lg:rounded-none lg:text-xs"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="number"
           value={value}
           disabled={!editable}
@@ -71,7 +71,7 @@ export function FactValueEditor({
       {goal.tracking.type === "scale" && (
         <Input
           aria-label="Факт за день"
-          className="h-11 rounded-lg text-base lg:h-8 lg:rounded-none lg:text-xs"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="number"
           min={goal.tracking.min}
           max={goal.tracking.max}
@@ -84,7 +84,7 @@ export function FactValueEditor({
       {goal.tracking.type === "time" && (
         <Input
           aria-label="Факт за день"
-          className="h-11 rounded-lg text-base lg:h-8 lg:rounded-none lg:text-xs"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="time"
           value={value}
           disabled={!editable}
