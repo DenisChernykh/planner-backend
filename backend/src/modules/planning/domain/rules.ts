@@ -39,7 +39,7 @@ function validDate(date: string): boolean {
   return day <= daysInMonth(`${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}`);
 }
 
-function daysInMonth(month: string): number {
+export function daysInMonth(month: string): number {
   const year = Number(month.slice(0, 4));
   const monthNumber = Number(month.slice(5, 7));
   return new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
