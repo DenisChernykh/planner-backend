@@ -66,3 +66,8 @@ export function afterQuietHours(now: number, settings: SettingsInput): number {
 export function isReminderDay(date: string, settings: SettingsInput, weekdays: number[]): boolean {
   return weekdays.includes(DateTime.fromISO(date, { zone: settings.timeZone }).weekday);
 }
+
+// Carry today's schedule, including an occurrence due before the first tick, without replaying older days.
+export function startOfReminderDay(now: number, zone: string): number {
+  return DateTime.fromMillis(now, { zone }).startOf("day").toMillis();
+}

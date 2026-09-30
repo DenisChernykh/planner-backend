@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle, Button, Spinner } from "@/shared/u
 import { PlanOverviewContent } from "./plan-overview-content";
 
 export function PlanOverview({ month }: { month: string }) {
-  const plan = useGetApiPlansMonth({ month });
+  const plan = useGetApiPlansMonth({ month }, { query: { refetchOnMount: "always" } });
   const notice = useConsumedFragmentParameter("notice");
   const [retrying, setRetrying] = useState(false);
 

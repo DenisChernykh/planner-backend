@@ -12,6 +12,7 @@ import { useGetApiRemindersSettings } from "@/shared/api";
 import { getCurrentPlannerMonth, isPlannerMonth } from "@/shared/lib/planner-month";
 import { Button } from "@/shared/ui";
 
+import { MonthRollover } from "./month-rollover";
 import { SessionGate } from "./session-gate";
 
 function CurrentMonthRedirect() {
@@ -40,7 +41,12 @@ function CurrentMonthRedirect() {
 function PlannerMonthRoute() {
   const month = useParams().month;
   if (!isPlannerMonth(month)) return <NotFoundPage invalidMonth={month ?? ""} />;
-  return <Outlet />;
+  return (
+    <>
+      <MonthRollover month={month} />
+      <Outlet />
+    </>
+  );
 }
 
 export const routes = [
