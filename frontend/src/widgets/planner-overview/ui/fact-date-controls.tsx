@@ -28,6 +28,7 @@ export function FactDateControls({ date, month, onDateChange }: FactDateControls
         <Button
           variant="outline"
           size="icon-sm"
+          className="size-11 rounded-lg lg:size-7 lg:rounded-none"
           disabled={date <= firstDate}
           onClick={() => onDateChange(addPlannerDays(date, -1))}
           aria-label="Предыдущий день"
@@ -43,11 +44,12 @@ export function FactDateControls({ date, month, onDateChange }: FactDateControls
           onChange={(event) => {
             if (event.target.value) onDateChange(event.target.value);
           }}
-          className="h-8 text-xs"
+          className="h-11 flex-1 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
         />
         <Button
           variant="outline"
           size="icon-sm"
+          className="size-11 rounded-lg lg:size-7 lg:rounded-none"
           disabled={date >= lastDate}
           onClick={() => onDateChange(addPlannerDays(date, 1))}
           aria-label="Следующий день"

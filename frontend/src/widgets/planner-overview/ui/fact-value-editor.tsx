@@ -52,13 +52,15 @@ export function FactValueEditor({
           variant={value === "true" ? "default" : "outline"}
           disabled={!editable || savePending}
           onClick={() => onValueChange(value === "true" ? "false" : "true")}
-          className="w-full"
+          className="h-11 w-full rounded-lg lg:h-8 lg:rounded-none"
         >
           {value === "true" ? "✓ Выполнено" : "Отметить выполнение"}
         </Button>
       )}
       {goal.tracking.type === "quantity" && (
         <Input
+          aria-label="Факт за день"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="number"
           value={value}
           disabled={!editable}
@@ -68,6 +70,8 @@ export function FactValueEditor({
       )}
       {goal.tracking.type === "scale" && (
         <Input
+          aria-label="Факт за день"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="number"
           min={goal.tracking.min}
           max={goal.tracking.max}
@@ -79,6 +83,8 @@ export function FactValueEditor({
       )}
       {goal.tracking.type === "time" && (
         <Input
+          aria-label="Факт за день"
+          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
           type="time"
           value={value}
           disabled={!editable}
@@ -87,7 +93,7 @@ export function FactValueEditor({
       )}
       <div className="flex gap-2">
         <Button
-          className="flex-1"
+          className="h-11 min-w-0 flex-1 rounded-lg lg:h-8 lg:rounded-none"
           disabled={!editable || savePending || deletePending || !valueValid}
           isLoading={savePending}
           loadingLabel="Сохраняем"
@@ -98,6 +104,7 @@ export function FactValueEditor({
         <Button
           variant="outline"
           size="icon"
+          className="size-11 rounded-lg lg:size-8 lg:rounded-none"
           disabled={!hasEntry || !editable || savePending || deletePending}
           isLoading={deletePending}
           loadingLabel="Удаляем"
