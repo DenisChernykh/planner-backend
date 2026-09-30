@@ -21,6 +21,7 @@ export function FactNote({ note, editable, hasEntry, onChange, onBlur }: FactNot
       </label>
       <Textarea
         id="fact-note"
+        className="text-base md:text-xs"
         value={note}
         disabled={!hasEntry || !editable}
         onChange={(event) => onChange(event.target.value)}
