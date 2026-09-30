@@ -12,6 +12,7 @@ import { DigestMessages } from "./application/delivery/digest-messages";
 import { FindMissingGoalsQuery } from "./application/delivery/find-missing-goals.query";
 import { OpenReminderQuestionUseCase } from "./application/delivery/open-reminder-question.use-case";
 import type { ReminderTransport } from "./application/ports/reminder-transport";
+import { PrepareCurrentPlanUseCase } from "./application/scheduling/prepare-current-plan.use-case";
 import { RunRemindersUseCase } from "./application/scheduling/run-reminders.use-case";
 import { GetGoalRemindersQuery } from "./application/settings/get-goal-reminders.query";
 import { GetReminderStateQuery } from "./application/settings/get-reminder-state.query";
@@ -41,14 +42,21 @@ export function createReminderOperations(
     recordAnswer,
   );
   const disconnect = new DisconnectTelegramUseCase(repository);
+  const prepareCurrentPlan = new PrepareCurrentPlanUseCase(repository, planning);
   return {
+    prepareCurrentPlan,
     getState: new GetReminderStateQuery(repository, transport !== null),
     getGoalReminders: new GetGoalRemindersQuery(repository, planning),
     saveSettings: new SaveReminderSettingsUseCase(repository),
     saveGoalReminder: new SaveGoalReminderUseCase(repository, planning),
     connect: new ConnectTelegramUseCase(repository, transport, tokens),
     disconnect,
-    runReminders: new RunRemindersUseCase(repository, transport !== null, deliver),
+    runReminders: new RunRemindersUseCase(
+      repository,
+      transport !== null,
+      deliver,
+      prepareCurrentPlan,
+    ),
     bot: new ReminderBotController(
       new ValidateLinkTokenQuery(repository, tokens),
       new ConfirmTelegramLinkUseCase(repository, tokens),

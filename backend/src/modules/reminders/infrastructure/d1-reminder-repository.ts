@@ -2,6 +2,7 @@ import { and, eq, exists, inArray, isNull, like, lte, or, sql } from "drizzle-or
 import { drizzle } from "drizzle-orm/d1";
 import {
   goalReminders,
+  planGoals,
   reminderJobs,
   reminderSettings,
   telegramLinks,
@@ -107,6 +108,54 @@ export class D1ReminderRepository implements ReminderRepository {
         .where(and(eq(reminderJobs.goalId, item.goalId), eq(reminderJobs.status, "pending"))),
     ]);
   }
+  async inheritReminder(
+    source: GoalReminder,
+    target: GoalReminder,
+    timeZone: string,
+  ): Promise<boolean> {
+    // Retry-safe and never overwrite a new month's manually edited setting.
+    // Recheck the source and timezone to reject an inheritance based on stale reads.
+    const result = await this.binding
+      .prepare(`INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays, next_run_at)
+      SELECT target.id, source.owner_id, source.mode, source.time, source.weekdays, ?
+      FROM goal_reminders source JOIN plan_goals target ON target.carried_from_goal_id = source.goal_id
+      WHERE target.id = ? AND target.owner_id = ? AND target.deleted_at IS NULL
+        AND source.goal_id = ? AND source.owner_id = ? AND source.mode = ? AND source.time = ? AND source.weekdays = ?
+        AND NOT EXISTS (SELECT 1 FROM reminder_settings WHERE owner_id = ? AND time_zone != ?)
+      ON CONFLICT(goal_id) DO NOTHING`)
+      .bind(
+        target.nextRunAt,
+        target.goalId,
+        target.ownerId,
+        source.goalId,
+        source.ownerId,
+        source.mode,
+        source.time,
+        JSON.stringify(source.weekdays),
+        source.ownerId,
+        timeZone,
+      )
+      .run();
+    return result.meta.changes === 1;
+  }
+
+  async scheduledReminders(ownerId: string, month: string): Promise<GoalReminder[]> {
+    const rows = await this.db
+      .select({ reminder: goalReminders })
+      .from(goalReminders)
+      .innerJoin(planGoals, eq(planGoals.id, goalReminders.goalId))
+      .where(
+        and(
+          eq(goalReminders.ownerId, ownerId),
+          eq(planGoals.ownerId, ownerId),
+          eq(planGoals.month, month),
+          isNull(planGoals.deletedAt),
+          eq(goalReminders.mode, "scheduled"),
+        ),
+      );
+    return rows.map(({ reminder }) => toReminder(reminder));
+  }
+
   async link(ownerId: string) {
     return (
       (await this.db.select().from(telegramLinks).where(eq(telegramLinks.ownerId, ownerId)))[0] ??

@@ -20,6 +20,10 @@ import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./probl
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type PlanningHttpDependencies = {
+  prepareCurrentPlan(
+    database: D1Database,
+    input: { ownerId: string; month: string; now: number },
+  ): Promise<void>;
   getTimeZone(database: D1Database, ownerId: string): Promise<string>;
   createUseCases(database: D1Database): {
     createGoal: CreateGoalUseCase;
@@ -441,10 +445,13 @@ export function createPlanningHttp(
 
   router.openapi(listPlanRoute, async (c) => {
     const ownerId = authenticatedOwnerId(c);
+    const month = c.req.valid("param").month;
+    const now = Date.now();
+    await dependencies.prepareCurrentPlan(c.env.DB, { ownerId, month, now });
     const plan = await dependencies.createUseCases(c.env.DB).getPlan.execute({
       ownerId,
-      month: c.req.valid("param").month,
-      now: Date.now(),
+      month,
+      now,
       timeZone: await dependencies.getTimeZone(c.env.DB, ownerId),
     });
     return c.json(plan, 200);
