@@ -32,6 +32,13 @@ import { UI_MIME_TYPE, UI_URI } from "./ui.ts";
 
 export const VERSION = "1.0.0";
 const read = { readOnlyHint: true, destructiveHint: false, openWorldHint: false };
+// Current-month reads can carry goals and reminder rules from the previous month.
+const preparePlan = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+};
 const write = {
   readOnlyHint: false,
   destructiveHint: true,
@@ -116,10 +123,10 @@ export function createServer(
     {
       title: "Посмотреть план",
       description:
-        "Цели и результаты за месяц YYYY-MM. today — текущая дата в часовом поясе аккаунта.",
+        "Цели и результаты за месяц YYYY-MM. При открытии текущего месяца переносит продолжающиеся цели и напоминания из прошлого месяца. today — текущая дата в часовом поясе аккаунта.",
       inputSchema: getPlanInput,
       outputSchema: getPlanOutput,
-      annotations: read,
+      annotations: preparePlan,
       _meta: visible,
     },
     ({ month }) =>
@@ -302,10 +309,11 @@ export function createServer(
     "get_goal_reminders",
     {
       title: "Посмотреть расписание целей",
-      description: "Настройки напоминаний для целей выбранного месяца.",
+      description:
+        "Настройки напоминаний для целей выбранного месяца. При чтении текущего месяца переносит продолжающиеся цели и напоминания из прошлого месяца.",
       inputSchema: getPlanInput,
       outputSchema: z.object({ goals: z.array(reminderRule.extend({ title: z.string() })) }),
-      annotations: read,
+      annotations: preparePlan,
       _meta: visible,
     },
     ({ month }) =>
@@ -385,10 +393,10 @@ export function createServer(
     {
       title: "Ритм",
       description:
-        "Открывает полный интерфейс Ритма в ChatGPT. Без month читает текущий месяц в часовом поясе аккаунта.",
+        "Открывает полный интерфейс Ритма в ChatGPT. Без month читает текущий месяц в часовом поясе аккаунта. При открытии текущего месяца переносит продолжающиеся цели и напоминания из прошлого месяца.",
       inputSchema: z.strictObject({ month: month.optional() }),
       outputSchema: getPlanOutput,
-      annotations: read,
+      annotations: preparePlan,
       _meta: {
         ui: { resourceUri: UI_URI, visibility: ["model", "app"] },
         "openai/ui": { entrypoints: [{ type: "global" }] },

@@ -73,6 +73,15 @@ test("built Sites Worker initializes, lists tools and reads Planner in workerd",
   assert.equal(init.serverInfo.name, "ritm");
   const { tools } = await rpc(2, "tools/list", {});
   assert.equal(tools.length, 18);
+  for (const name of ["get_plan", "get_goal_reminders", "open_ritm"]) {
+    const tool = tools.find((tool) => tool.name === name);
+    assert.equal(tool.annotations.readOnlyHint, false, `${name} can prepare the current month`);
+    assert.equal(tool.annotations.destructiveHint, false);
+    assert.equal(tool.annotations.idempotentHint, true);
+  }
+  for (const name of ["get_account", "get_trash", "get_reminder_settings"]) {
+    assert.equal(tools.find((tool) => tool.name === name).annotations.readOnlyHint, true);
+  }
   const { contents } = await rpc(3, "resources/read", { uri: "ui://ritm/app-v1.html" });
   assert.equal(contents[0].mimeType, "text/html;profile=mcp-app");
   assert.ok(contents[0].text.includes("Ритм"));
