@@ -378,7 +378,7 @@ export class D1ReminderRepository implements ReminderRepository {
         .bind(cutoff),
       this.binding
         .prepare(
-          "DELETE FROM planning_entry_commands WHERE id IN (SELECT id FROM planning_entry_commands WHERE created_at < ? LIMIT 25)",
+          "DELETE FROM planning_entry_commands WHERE id IN (SELECT id FROM planning_entry_commands WHERE goal_id IS NULL AND created_at < ? LIMIT 25)",
         )
         .bind(cutoff),
       this.binding.prepare("DELETE FROM telegram_link_tokens WHERE expires_at <= ?").bind(now),

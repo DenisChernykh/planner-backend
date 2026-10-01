@@ -1,4 +1,6 @@
-# Planner
+# Ритм
+
+Цели, привычки и результаты в вашем темпе. `planner` — название репозитория.
 
 Модульный монолит: React SPA, Hono API, Telegram webhook и напоминания
 публикуются одним Cloudflare Worker `app`. Данные — в существующей D1
@@ -34,18 +36,19 @@ pnpm dev
 ## Структура и проверки
 
 - `frontend/` — React/Vite, интерфейс и сгенерированный API-клиент.
+- `chatgpt/` — личный плагин Ритм; UI берётся из frontend.
 - `backend/src/modules/` — Identity, Planning, Notes, Reminders, Telegram Bot.
 - `backend/src/index.ts` — HTTP и Cron entrypoint единственного Worker.
 - `backend/wrangler.jsonc` — единственная конфигурация публикации, D1 и Static Assets.
 - `backend/migrations/` — существующая история миграций.
 
 `pnpm check` проверяет контракт OpenAPI, формат, архитектурные границы,
-типизацию, тесты обоих пакетов, сборку Worker и маршрутизацию локального
+типизацию, тесты всех пакетов, сборки и маршрутизацию локального
 монолита. Smoke использует временное локальное состояние; remote D1 и Telegram
 не вызываются. CI выполняет тот же gate после frozen install.
 
 После изменения API: `pnpm api:update`. Snapshot и клиент генерируются из
-серверного кода той же Git-ревизии. `pnpm test` запускает тесты обоих пакетов;
+серверного кода той же Git-ревизии. `pnpm test` запускает тесты всех пакетов;
 `pnpm build` собирает SPA; `pnpm deploy:dry-run` собирает production Worker
 со Static Assets без публикации.
 
@@ -73,3 +76,9 @@ PR объединения принимается merge-коммитом: squash/
 
 Документация: [API](backend/README.md), [интерфейс](frontend/README.md),
 [напоминания](backend/docs/telegram-reminders.md).
+
+Личный плагин **Ритм** для ChatGPT: [запуск и подключение](chatgpt/README.md).
+Он переиспользует React UI веб-версии, работает с целями, результатами, корзиной
+и напоминаниями. `pnpm chatgpt:build` готовит Sites Worker; `pnpm chatgpt:dev`
+запускает личный адаптер локально. Раздел «Подключения» выдаёт отдельный
+отзывной ключ. `pnpm check` включает проверки плагина.

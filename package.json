@@ -14,7 +14,7 @@
     "dev:ui": "pnpm --dir frontend dev",
     "dev:api": "pnpm build && pnpm --dir backend dev:planner",
     "build": "pnpm --dir frontend build",
-    "check": "pnpm format:check && pnpm --dir frontend check && pnpm --dir backend check && pnpm test:smoke",
+    "check": "pnpm format:check && pnpm --dir frontend check && pnpm --dir backend check && pnpm --dir chatgpt check && pnpm test:smoke",
     "api:update": "pnpm --dir frontend api:update",
     "api:check": "pnpm --dir frontend api:check",
     "boundaries:check": "pnpm --dir backend boundaries:check && pnpm --dir frontend architecture",
@@ -25,8 +25,10 @@
     "deploy:dry-run": "pnpm build && pnpm --dir backend exec wrangler deploy --dry-run --env production",
     "deploy": "pnpm build && pnpm --dir backend deploy",
     "telegram:operator": "pnpm --dir backend telegram:operator",
-    "test": "pnpm --dir frontend test && pnpm --dir backend test",
+    "test": "pnpm --dir frontend test && pnpm --dir backend test && pnpm --dir chatgpt test",
     "test:smoke": "node scripts/check-monolith.mjs",
-    "format:check": "pnpm --dir backend exec biome check ../package.json ../scripts"
+    "format:check": "pnpm --dir backend exec biome check ../package.json ../scripts",
+    "chatgpt:dev": "pnpm --dir chatgpt dev",
+    "chatgpt:build": "pnpm --dir chatgpt build"
   }
 }

@@ -1,3 +1,4 @@
+import { AdjustGoalEntryUseCase } from "./application/entries/adjust-goal-entry.use-case";
 import { DeleteGoalEntryUseCase } from "./application/entries/delete-goal-entry.use-case";
 import { GetEntrySnapshotQuery } from "./application/entries/get-entry-snapshot.query";
 import { RecordAnswerUseCase } from "./application/entries/record-answer.use-case";
@@ -21,6 +22,7 @@ export function createPlanningUseCases(database: D1Database) {
   const repository = new D1PlanningRepository(database);
   const listPlan = new ListPlanQuery(repository);
   return {
+    adjustEntry: new AdjustGoalEntryUseCase(repository),
     listPlan,
     ensureCurrentPlan: new EnsureCurrentPlanUseCase(repository),
     getPlan: new GetPlanQuery(listPlan),
