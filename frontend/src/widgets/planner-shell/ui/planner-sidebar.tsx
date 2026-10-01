@@ -1,9 +1,10 @@
 import { Menu } from "@base-ui/react/menu";
-import { Bell, CalendarDays, Trash2 } from "lucide-react";
+import { Bell, CalendarDays, Plug, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { NavLink } from "react-router";
 import { useLogout } from "@/features/authentication";
 import type { AuthenticatedUser } from "@/shared/api";
+import { useAppRuntime } from "@/shared/lib/runtime";
 import { cn } from "@/shared/lib/utils";
 import {
   Sidebar,
@@ -54,6 +55,7 @@ function PlannerNavLink({
 }
 
 export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
+  const embedded = useAppRuntime() === "chatgpt";
   const logout = useLogout();
   const displayName = user.displayName ?? user.username ?? "Пользователь";
   const initial = displayName.trim().charAt(0).toUpperCase() || "П";
@@ -66,9 +68,9 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
           className="flex h-9 items-center gap-2.5 rounded-lg px-1 outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
           <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-sm font-extrabold text-primary-foreground">
-            P
+            Р
           </span>
-          <span className="text-[0.95rem] font-bold tracking-tight">Planner</span>
+          <span className="text-[0.95rem] font-bold tracking-tight">Ритм</span>
         </NavLink>
       </SidebarHeader>
       <SidebarContent className="px-2">
@@ -76,39 +78,49 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
           <PlannerNavLink to={`/plans/${month}`} label="План" icon={CalendarDays} />
           <PlannerNavLink to={`/plans/${month}/reminders`} label="Напоминания" icon={Bell} />
           <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
+          {!embedded && (
+            <PlannerNavLink to={`/plans/${month}/connections`} label="Подключения" icon={Plug} />
+          )}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t px-3 py-4">
-        <Menu.Root>
-          <Menu.Trigger
-            className="flex w-full items-center gap-2.5 rounded-lg p-2 text-left outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-            aria-label="Открыть меню пользователя"
-          >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-              {initial}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-semibold">{displayName}</span>
-              <span className="block text-[0.68rem] text-muted-foreground">личный план</span>
-            </span>
-            <span aria-hidden="true" className="text-muted-foreground">
-              ⌄
-            </span>
-          </Menu.Trigger>
-          <Menu.Portal>
-            <Menu.Positioner side="top" align="start" sideOffset={6} className="z-50">
-              <Menu.Popup className="min-w-48 rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
-                <Menu.Item
-                  className="flex cursor-default items-center rounded-md px-3 py-2 text-xs outline-none data-highlighted:bg-muted"
-                  onClick={() => logout.mutate()}
-                  disabled={logout.isPending}
-                >
-                  Выйти из Planner
-                </Menu.Item>
-              </Menu.Popup>
-            </Menu.Positioner>
-          </Menu.Portal>
-        </Menu.Root>
+        {embedded ? (
+          <div className="px-2 text-xs text-muted-foreground">
+            <p className="font-semibold text-foreground">{displayName}</p>
+            <p className="mt-1">Ритм в ChatGPT</p>
+          </div>
+        ) : (
+          <Menu.Root>
+            <Menu.Trigger
+              className="flex w-full items-center gap-2.5 rounded-lg p-2 text-left outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+              aria-label="Открыть меню пользователя"
+            >
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-bold text-primary">
+                {initial}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs font-semibold">{displayName}</span>
+                <span className="block text-[0.68rem] text-muted-foreground">личный план</span>
+              </span>
+              <span aria-hidden="true" className="text-muted-foreground">
+                ⌄
+              </span>
+            </Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner side="top" align="start" sideOffset={6} className="z-50">
+                <Menu.Popup className="min-w-48 rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
+                  <Menu.Item
+                    className="flex cursor-default items-center rounded-md px-3 py-2 text-xs outline-none data-highlighted:bg-muted"
+                    onClick={() => logout.mutate()}
+                    disabled={logout.isPending}
+                  >
+                    Выйти из Ритма
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

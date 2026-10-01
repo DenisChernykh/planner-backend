@@ -1,0 +1,30 @@
+{
+  "name": "ritm-chatgpt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ритм — личные цели, привычки и результаты в ChatGPT",
+  "type": "module",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.15.1"
+  },
+  "scripts": {
+    "dev": "pnpm build && node --watch scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "pnpm build && node scripts/preview.mjs",
+    "check": "biome check . && tsc --noEmit && pnpm test",
+    "test": "pnpm build && node --test src/*.test.ts tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "zod": "4.5.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.11",
+    "@types/node": "24.13.3",
+    "esbuild": "0.28.2",
+    "miniflare": "5.20260828.0-alpha",
+    "typescript": "7.0.2"
+  }
+}

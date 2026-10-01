@@ -6,9 +6,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getGetApiRemindersGoalsMonthQueryKey,
   getGetApiRemindersSettingsQueryKey,
+  postApiRemindersTelegramConnect,
   putApiRemindersGoalsGoalId,
   putApiRemindersSettings,
 } from "@/shared/api";
+import { ExternalNavigationContext } from "@/shared/lib/runtime";
 import { GeneralSettings } from "./general-settings";
 import { GoalReminder } from "./goal-reminder";
 import { ReminderSettings } from "./reminder-settings";
@@ -18,6 +20,10 @@ vi.mock("@/shared/api", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/shared/api")>()),
   putApiRemindersSettings: vi.fn().mockResolvedValue({}),
   putApiRemindersGoalsGoalId: vi.fn().mockResolvedValue({}),
+  postApiRemindersTelegramConnect: vi.fn().mockResolvedValue({
+    url: "https://t.me/ritm_test_bot?start=connect_test",
+    expiresAt: 1_800_000_000_000,
+  }),
 }));
 function wrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -30,6 +36,45 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 beforeEach(() => vi.clearAllMocks());
 describe("reminder settings", () => {
+  it("opens Telegram through the embedded host and reports rejected navigation", async () => {
+    const user = userEvent.setup();
+    const navigateExternal = vi.fn().mockResolvedValue(undefined);
+    render(
+      <ExternalNavigationContext value={navigateExternal}>
+        <TelegramConnection
+          state={{
+            connection: "disconnected",
+            botAvailable: true,
+            deliveryIssues: 0,
+            settings: {
+              ownerId: "owner",
+              nextEveningAt: null,
+              enabled: false,
+              timeZone: "UTC",
+              quietStart: "23:00",
+              quietEnd: "08:00",
+              eveningTime: "21:00",
+            },
+          }}
+        />
+      </ExternalNavigationContext>,
+      { wrapper },
+    );
+    await user.click(screen.getByRole("button", { name: "Подключить Telegram" }));
+    const link = await screen.findByRole("link", { name: "Открыть бота в Telegram" });
+    const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+    await act(async () => {
+      link.dispatchEvent(event);
+    });
+    expect(event.defaultPrevented).toBe(true);
+    expect(navigateExternal).toHaveBeenCalledWith("https://t.me/ritm_test_bot?start=connect_test");
+    expect(postApiRemindersTelegramConnect).toHaveBeenCalledTimes(1);
+
+    navigateExternal.mockRejectedValueOnce(new Error("The host rejected the request"));
+    await user.click(link);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Не удалось открыть Telegram");
+    expect(postApiRemindersTelegramConnect).toHaveBeenCalledTimes(1);
+  });
   it("preserves unsaved fields when Telegram connects and disconnects", async () => {
     const user = userEvent.setup();
     const client = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });

@@ -1,6 +1,10 @@
-import axios, { type AxiosRequestConfig } from "axios";
+import axios, { type AxiosAdapter, type AxiosRequestConfig } from "axios";
 
 const client = axios.create({ withCredentials: true });
+
+export function configureApiAdapter(adapter: AxiosAdapter) {
+  client.defaults.adapter = adapter;
+}
 
 export type ErrorType<ErrorData> = ErrorData;
 export type BodyType<BodyData> = BodyData;

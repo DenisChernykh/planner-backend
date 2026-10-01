@@ -46,6 +46,16 @@ export default defineConfig(({ command, mode }) => {
       : undefined;
 
   return {
+    ...(mode === "chatgpt"
+      ? {
+          base: "./",
+          build: {
+            outDir: "dist-chatgpt",
+            assetsInlineLimit: 10_000_000,
+            rolldownOptions: { input: "chatgpt.html", output: { codeSplitting: false } },
+          },
+        }
+      : {}),
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

@@ -1,6 +1,7 @@
 packages:
   - backend
   - frontend
+  - chatgpt
 autoInstallPeers: false
 allowBuilds:
   esbuild: true

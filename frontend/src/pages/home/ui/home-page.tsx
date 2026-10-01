@@ -12,12 +12,12 @@ export function HomePage() {
     <main className="mx-auto flex min-h-screen max-w-2xl items-center px-6 py-12">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Planner</CardTitle>
+          <CardTitle>Ритм</CardTitle>
           <CardDescription>Вы вошли как {name}.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Приложение отдаётся Cloudflare Worker, а API остаётся на том же origin в Hono backend.
+            Ваши цели, привычки и результаты — в одном месте.
           </p>
           <LogoutButton />
         </CardContent>

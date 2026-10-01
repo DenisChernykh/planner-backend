@@ -50,6 +50,15 @@ export const sessions = sqliteTable(
   ],
 );
 
+export const chatgptConnections = sqliteTable("chatgpt_connections", {
+  ownerId: text("owner_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull().unique(),
+  createdAt: integer("created_at").notNull(),
+  expiresAt: integer("expires_at").notNull(),
+});
+
 export const notes = sqliteTable(
   "notes",
   {
@@ -136,11 +145,16 @@ export const goalEntries = sqliteTable(
   ],
 );
 
-export const planningEntryCommands = sqliteTable("planning_entry_commands", {
-  id: text("id").primaryKey(),
-  result: text("result").notNull(),
-  createdAt: integer("created_at").notNull(),
-});
+export const planningEntryCommands = sqliteTable(
+  "planning_entry_commands",
+  {
+    id: text("id").primaryKey(),
+    result: text("result").notNull(),
+    createdAt: integer("created_at").notNull(),
+    goalId: text("goal_id").references(() => planGoals.id, { onDelete: "cascade" }),
+  },
+  (table) => [index("planning_entry_commands_goal_idx").on(table.goalId)],
+);
 
 export const reminderSettings = sqliteTable("reminder_settings", {
   ownerId: text("owner_id")

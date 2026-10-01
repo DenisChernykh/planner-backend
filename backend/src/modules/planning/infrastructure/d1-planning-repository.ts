@@ -482,6 +482,7 @@ export class D1PlanningRepository
     input: RecordAnswerInput,
     entry: StoredEntry,
     goalUpdatedAt: number,
+    receiptLifetime: "retry-window" | "goal" = "retry-window",
   ): Promise<"saved" | "conflict"> {
     const { operationId, ownerId, goalId, date, expectedRevision, now } = input;
     const eligibility = `EXISTS (SELECT 1 FROM plan_goals WHERE id = ? AND owner_id = ?
@@ -528,11 +529,18 @@ export class D1PlanningRepository
     const results = await this.binding.batch<{ result?: string }>([
       write,
       this.binding
-        .prepare(`INSERT INTO planning_entry_commands (id, result, created_at)
+        .prepare(`INSERT INTO planning_entry_commands (id, result, created_at, goal_id)
         SELECT ?, CASE WHEN EXISTS (SELECT 1 FROM goal_entries WHERE goal_id = ?
-          AND local_date = ? AND revision = ?) THEN 'saved' ELSE 'conflict' END, ?
+          AND local_date = ? AND revision = ?) THEN 'saved' ELSE 'conflict' END, ?, ?
         ON CONFLICT(id) DO NOTHING`)
-        .bind(operationId, goalId, date, operationId, now),
+        .bind(
+          operationId,
+          goalId,
+          date,
+          operationId,
+          now,
+          receiptLifetime === "goal" ? goalId : null,
+        ),
       this.binding
         .prepare("SELECT result FROM planning_entry_commands WHERE id = ?")
         .bind(operationId),

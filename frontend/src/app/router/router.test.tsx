@@ -80,7 +80,7 @@ describe("planner routes", () => {
     await userEvent
       .setup()
       .click(screen.getByRole("button", { name: "Открыть меню пользователя" }));
-    expect(await screen.findByRole("menuitem", { name: "Выйти из Planner" })).toBeInTheDocument();
+    expect(await screen.findByRole("menuitem", { name: "Выйти из Ритма" })).toBeInTheDocument();
   });
 
   it("surfaces invalid months and unknown routes", async () => {

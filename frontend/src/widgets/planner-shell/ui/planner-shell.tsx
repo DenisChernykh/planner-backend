@@ -17,7 +17,7 @@ export function PlannerShell({ month, children }: PropsWithChildren<{ month: str
         <div className="flex h-14 items-center justify-between border-b bg-card px-4 md:hidden">
           <div className="flex items-center gap-2.5">
             <span className="flex size-7 items-center justify-center rounded-lg bg-primary text-xs font-extrabold text-primary-foreground">
-              P
+              Р
             </span>
             <span className="text-sm font-bold">{formatPlannerMonth(month)}</span>
           </div>

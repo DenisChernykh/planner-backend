@@ -9,16 +9,19 @@ import { problemDetailsSchema } from "../../../platform/http/problem-details-sch
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { FindDevelopmentSessionQuery } from "../application/development/find-development-session.query";
 import type { StartDevelopmentSessionUseCase } from "../application/development/start-development-session.use-case";
+import type { ChatGptConnection } from "../application/integrations/chatgpt-connection";
 import type { AuthenticateSessionQuery } from "../application/sessions/authenticate-session.query";
 import type { LogoutUseCase } from "../application/sessions/logout.use-case";
 import type { CompleteTelegramLoginUseCase } from "../application/telegram-login/complete-telegram-login.use-case";
 import type { StartTelegramLoginUseCase } from "../application/telegram-login/start-telegram-login.use-case";
 import type { ValidateTelegramLoginFlowQuery } from "../application/telegram-login/validate-telegram-login-flow.query";
 import {
+  ACCOUNT_API_SECURITY,
   type AuthenticatedUser,
   type IdentityContextVariables,
   SESSION_COOKIE_NAME,
 } from "../public-contracts";
+import { integrationPathAllowed, registerChatGptConnection } from "./chatgpt-http";
 
 const FLOW_COOKIE_NAME = "__Host-telegram-flow";
 const CALLBACK_PATH = "/api/auth/telegram/callback";
@@ -28,6 +31,7 @@ const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 type IdentityHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type IdentityHttpDependencies = {
+  createChatGptConnection(database: D1Database): ChatGptConnection;
   createSessions(database: D1Database): {
     findDevelopmentSession: FindDevelopmentSessionQuery;
     startDevelopmentSession: StartDevelopmentSessionUseCase;
@@ -108,7 +112,7 @@ const meRoute = createRoute({
   method: "get",
   path: "/api/auth/me",
   tags: ["Authentication"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   responses: {
     200: {
       description: "Current authenticated user",
@@ -253,6 +257,22 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       return;
     }
 
+    const authorization = c.req.header("Authorization");
+    if (authorization) {
+      if (!integrationPathAllowed(new URL(c.req.url).pathname))
+        throw new ApplicationError("FORBIDDEN", "This route is unavailable to integration keys.");
+      const match = /^Bearer (ritm_[A-Za-z0-9_-]{43})$/u.exec(authorization);
+      if (!match?.[1])
+        throw new ApplicationError("UNAUTHENTICATED", "A valid integration key is required.");
+      const user = await dependencies
+        .createChatGptConnection(c.env.DB)
+        .authenticate(match[1], Date.now());
+      c.set("authenticatedUser", user);
+      setPrivateResponseHeaders(c);
+      await next();
+      return;
+    }
+
     const sessionToken = getCookie(c, SESSION_COOKIE_NAME);
     const sessions = dependencies.createSessions(c.env.DB);
 
@@ -307,6 +327,8 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       throw error;
     }
   };
+
+  registerChatGptConnection(router, authentication, dependencies.createChatGptConnection);
 
   router.openapi(startRoute, async (c) => {
     const config = telegramConfig(c.env);
