@@ -7,12 +7,11 @@ export function AuthenticationDisabledPage() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Авторизация выключена</CardTitle>
-          <CardDescription>Telegram login не настроен в текущем backend окружении.</CardDescription>
+          <CardDescription>Вход через Telegram пока недоступен.</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            В этой версии Hono защищённые заметки также недоступны: backend отвечает 404 для API
-            авторизации и заметок. Включите AUTH_MODE=telegram, чтобы работать с личными данными.
+            Сейчас нельзя открыть личный план. Попробуйте зайти позже.
           </p>
         </CardContent>
       </Card>

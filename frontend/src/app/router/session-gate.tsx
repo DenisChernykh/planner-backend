@@ -27,9 +27,7 @@ export function SessionGate() {
           <CardTitle>Не удалось открыть приложение</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-destructive">
-            Проверьте доступность Hono API и попробуйте ещё раз.
-          </p>
+          <p className="text-sm text-destructive">Проверьте соединение и попробуйте ещё раз.</p>
         </CardContent>
       </Card>
     </main>
