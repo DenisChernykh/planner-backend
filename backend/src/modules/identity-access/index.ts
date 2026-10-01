@@ -1,6 +1,7 @@
 import type { TelegramRuntimeConfig } from "../../platform/config/runtime-config";
 import { FindDevelopmentSessionQuery } from "./application/development/find-development-session.query";
 import { StartDevelopmentSessionUseCase } from "./application/development/start-development-session.use-case";
+import { ChatGptConnection } from "./application/integrations/chatgpt-connection";
 import type { TelegramOidcClient } from "./application/ports/telegram-oidc-client";
 import { AuthenticateSessionQuery } from "./application/sessions/authenticate-session.query";
 import { LogoutUseCase } from "./application/sessions/logout.use-case";
@@ -9,6 +10,7 @@ import { StartTelegramLoginUseCase } from "./application/telegram-login/start-te
 import { ValidateTelegramLoginFlowQuery } from "./application/telegram-login/validate-telegram-login-flow.query";
 import { AesGcmLoginFlowCodec } from "./infrastructure/aes-gcm-login-flow-codec";
 import { D1IdentitySessionRepository } from "./infrastructure/d1-identity-session-repository";
+import { D1IntegrationTokenRepository } from "./infrastructure/d1-integration-token-repository";
 import { TelegramOidcHttpClient } from "./infrastructure/telegram-oidc-client";
 import { createIdentityHttp } from "./presentation/http";
 
@@ -32,6 +34,8 @@ export function createIdentityAccessModule(options: IdentityAccessModuleOptions 
     ((config: TelegramRuntimeConfig) =>
       new TelegramOidcHttpClient(config.telegramClientId, config.telegramClientSecret));
   return createIdentityHttp({
+    createChatGptConnection: (database) =>
+      new ChatGptConnection(new D1IntegrationTokenRepository(database)),
     createSessions: createSessionUseCases,
     createStartLogin: (config) =>
       new StartTelegramLoginUseCase(

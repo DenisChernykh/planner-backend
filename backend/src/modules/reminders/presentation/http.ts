@@ -6,6 +6,7 @@ import { applicationErrorToResponse, problem } from "../../../platform/http/prob
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
 import { ApplicationError } from "../../../shared/application/application-error";
 import {
+  ACCOUNT_API_SECURITY,
   type IdentityContextVariables,
   requireAuthenticatedUser,
 } from "../../identity-access/public-contracts";
@@ -66,7 +67,7 @@ const errors = Object.fromEntries(
   ]),
 );
 const json = <T extends z.ZodType>(schema: T) => ({ "application/json": { schema } });
-const security = [{ sessionCookie: [] }];
+const security = ACCOUNT_API_SECURITY;
 const tags = ["Reminders"];
 
 export function createReminderHttp(

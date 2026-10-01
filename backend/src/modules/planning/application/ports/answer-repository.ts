@@ -8,5 +8,6 @@ export interface AnswerRepository {
     input: RecordAnswerInput,
     entry: StoredEntry,
     goalUpdatedAt: number,
+    receiptLifetime?: "retry-window" | "goal",
   ): Promise<"saved" | "conflict">;
 }
