@@ -2,7 +2,7 @@ import { App, type McpUiHostContext } from "@modelcontextprotocol/ext-apps";
 import { createRoot } from "react-dom/client";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { configureApiAdapter, createChatGptAdapter } from "@/shared/api";
-import { RuntimeContext } from "@/shared/lib/runtime";
+import { ExternalNavigationContext, RuntimeContext } from "@/shared/lib/runtime";
 import { AppProvider } from "../config/app-provider";
 import { queryClient } from "../config/query-client";
 import { routes } from "../router/routes";
@@ -17,6 +17,11 @@ let router: ReturnType<typeof createMemoryRouter> | undefined;
 
 function applyContext(context: Partial<McpUiHostContext>) {
   if (context.theme) document.documentElement.classList.toggle("dark", context.theme === "dark");
+}
+
+async function openExternalLink(url: string) {
+  const result = await app.openLink({ url });
+  if (result.isError) throw new Error("ChatGPT could not open the external link");
 }
 
 app.onhostcontextchanged = applyContext;
@@ -50,9 +55,11 @@ async function start() {
   });
   root.render(
     <RuntimeContext value="chatgpt">
-      <AppProvider>
-        <RouterProvider router={router} />
-      </AppProvider>
+      <ExternalNavigationContext value={openExternalLink}>
+        <AppProvider>
+          <RouterProvider router={router} />
+        </AppProvider>
+      </ExternalNavigationContext>
     </RuntimeContext>,
   );
   // A sidebar can stay mounted while chat tools write. Refresh visible data
