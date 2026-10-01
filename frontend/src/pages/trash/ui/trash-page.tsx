@@ -12,7 +12,7 @@ export function TrashPage() {
       <PlannerPageHeader
         eyebrow="Корзина"
         title={`Удалённые цели · ${formatPlannerMonth(month)}`}
-        description="Восстановление и окончательное удаление появятся вместе с полноценным экраном корзины."
+        description="Верните цель в план вместе с её результатами и заметками."
         backTo={`/plans/${month}`}
         backLabel="К плану"
       />

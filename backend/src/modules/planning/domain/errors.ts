@@ -1,4 +1,5 @@
 export type PlanningErrorCode =
+  | "ENTRY_CONFLICT"
   | "GOAL_NOT_FOUND"
   | "GOAL_TITLE_INVALID"
   | "GOAL_DESCRIPTION_INVALID"
@@ -88,6 +89,14 @@ export class EntryDateFutureError extends PlanningError {
   constructor() {
     super("An entry cannot be recorded for a future date.");
     this.name = "EntryDateFutureError";
+  }
+}
+
+export class EntryConflictError extends PlanningError {
+  readonly code = "ENTRY_CONFLICT";
+  constructor() {
+    super("The entry changed concurrently.");
+    this.name = "EntryConflictError";
   }
 }
 

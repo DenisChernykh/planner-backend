@@ -5,15 +5,19 @@ import {
   getGetApiRemindersSettingsQueryKey,
   postApiRemindersTelegramConnect,
 } from "@/shared/api";
+import { useExternalNavigation } from "@/shared/lib/runtime";
 import { Button, buttonVariants } from "@/shared/ui";
 
 export function TelegramConnection({ state }: { state: GetApiRemindersSettings200 }) {
   const client = useQueryClient();
+  const navigateExternal = useExternalNavigation();
+  const openLink = useMutation({ mutationFn: async (url: string) => navigateExternal?.(url) });
   const connect = useMutation({ mutationFn: () => postApiRemindersTelegramConnect() });
   const disconnect = useMutation({
     mutationFn: () => deleteApiRemindersTelegram(),
     onSuccess: async () => {
       connect.reset();
+      openLink.reset();
       await client.invalidateQueries({ queryKey: getGetApiRemindersSettingsQueryKey() });
     },
   });
@@ -67,6 +71,11 @@ export function TelegramConnection({ state }: { state: GetApiRemindersSettings20
             href={connect.data.url}
             target="_blank"
             rel="noreferrer"
+            onClick={(event) => {
+              if (!navigateExternal) return;
+              event.preventDefault();
+              openLink.mutate(connect.data.url);
+            }}
           >
             Открыть бота в Telegram
           </a>
@@ -78,6 +87,11 @@ export function TelegramConnection({ state }: { state: GetApiRemindersSettings20
       {(connect.isError || disconnect.isError) && (
         <p role="alert" className="text-sm text-destructive">
           Не удалось изменить подключение. Попробуйте ещё раз.
+        </p>
+      )}
+      {openLink.isError && (
+        <p role="alert" className="text-sm text-destructive">
+          Не удалось открыть Telegram. Попробуйте ещё раз.
         </p>
       )}
       {state.deliveryIssues > 0 && (
