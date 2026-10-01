@@ -1,10 +1,16 @@
 export { getApiProblem } from "./client/api-problem";
-export { apiMutator } from "./client/orval-mutator";
+export { type CallTool, createChatGptAdapter } from "./client/chatgpt-adapter";
+export { apiMutator, configureApiAdapter } from "./client/orval-mutator";
 export {
   getApiAuthMe,
   getGetApiAuthMeQueryKey,
   postApiAuthLogout,
 } from "./generated/authentication/authentication";
+export {
+  deleteApiIntegrationsChatgpt,
+  getApiIntegrationsChatgpt,
+  postApiIntegrationsChatgpt,
+} from "./generated/integrations/integrations";
 export * from "./generated/model";
 export type { PostApiPlansMonthGoalsBody } from "./generated/operation/postApiPlansMonthGoalsBody";
 export type { PutApiGoalsGoalIdEntriesDateBody } from "./generated/operation/putApiGoalsGoalIdEntriesDateBody";
@@ -14,6 +20,8 @@ export type { PutApiRemindersSettingsBody } from "./generated/operation/putApiRe
 export {
   deleteApiGoalsGoalIdEntriesDate,
   getGetApiPlansMonthQueryKey,
+  getGetApiPlansMonthTrashQueryKey,
+  postApiGoalsGoalIdRestore,
   putApiGoalsGoalIdEntriesDate,
   putApiPlansMonthGoalsOrder,
   useGetApiPlansMonth,

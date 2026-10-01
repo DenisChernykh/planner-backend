@@ -4,6 +4,13 @@ import { problemDetailsSchema } from "../../../platform/http/problem-details-sch
 import { PlanningError, type PlanningErrorCode } from "../domain/errors";
 
 const PLANNING_PROBLEMS = {
+  ENTRY_CONFLICT: {
+    code: "ENTRY_CONFLICT",
+    detail: "The entry changed concurrently. Reread it before starting a new operation.",
+    status: 409,
+    title: "Entry changed",
+    type: "urn:planner:problem:entry-conflict",
+  },
   GOAL_NOT_FOUND: {
     code: "GOAL_NOT_FOUND",
     detail: "The goal was not found.",

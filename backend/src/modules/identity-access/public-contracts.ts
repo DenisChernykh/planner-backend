@@ -10,6 +10,10 @@ export type IdentityContextVariables = {
 };
 
 export const SESSION_COOKIE_NAME = "__Host-session";
+export const ACCOUNT_API_SECURITY: Record<string, string[]>[] = [
+  { sessionCookie: [] },
+  { integrationKey: [] },
+];
 
 export function requireAuthenticatedUser(variables: IdentityContextVariables): AuthenticatedUser {
   if (!variables.authenticatedUser) {

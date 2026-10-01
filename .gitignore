@@ -17,6 +17,7 @@ node_modules/
 
 # Build, test, and tool caches
 dist/
+dist-chatgpt/
 coverage/
 .nyc_output/
 .cache/

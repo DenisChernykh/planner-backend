@@ -5,7 +5,11 @@ import type { WorkerHttpEnv } from "../../../platform/http/environment";
 import { problem } from "../../../platform/http/problem-details";
 import { problemDetailsSchema } from "../../../platform/http/problem-details-schema";
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { IdentityContextVariables } from "../../identity-access/public-contracts";
+import {
+  ACCOUNT_API_SECURITY,
+  type IdentityContextVariables,
+} from "../../identity-access/public-contracts";
+import type { AdjustGoalEntryUseCase } from "../application/entries/adjust-goal-entry.use-case";
 import type { DeleteGoalEntryUseCase } from "../application/entries/delete-goal-entry.use-case";
 import type { UpsertGoalEntryUseCase } from "../application/entries/upsert-goal-entry.use-case";
 import type { CreateGoalUseCase } from "../application/goals/create-goal.use-case";
@@ -26,6 +30,7 @@ export type PlanningHttpDependencies = {
   ): Promise<void>;
   getTimeZone(database: D1Database, ownerId: string): Promise<string>;
   createUseCases(database: D1Database): {
+    adjustEntry: AdjustGoalEntryUseCase;
     createGoal: CreateGoalUseCase;
     deleteGoal: DeleteGoalUseCase;
     deleteEntry: DeleteGoalEntryUseCase;
@@ -214,7 +219,7 @@ const listPlanRoute = createRoute({
   method: "get",
   path: "/api/plans/{month}",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: { params: monthParams },
   responses: {
     200: {
@@ -237,7 +242,7 @@ const listTrashRoute = createRoute({
   method: "get",
   path: "/api/plans/{month}/trash",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: { params: monthParams },
   responses: {
     200: {
@@ -254,7 +259,7 @@ const createGoalRoute = createRoute({
   method: "post",
   path: "/api/plans/{month}/goals",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: {
     params: monthParams,
     body: { required: true, content: { "application/json": { schema: goalInputSchema } } },
@@ -274,7 +279,7 @@ const reorderGoalsRoute = createRoute({
   method: "put",
   path: "/api/plans/{month}/goals/order",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: {
     params: monthParams,
     body: { required: true, content: { "application/json": { schema: goalOrderSchema } } },
@@ -292,7 +297,7 @@ const updateGoalRoute = createRoute({
   method: "patch",
   path: "/api/goals/{goalId}",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: {
     params: goalParams,
     body: { required: true, content: { "application/json": { schema: goalPatchSchema } } },
@@ -313,7 +318,7 @@ const deleteGoalRoute = createRoute({
   method: "delete",
   path: "/api/goals/{goalId}",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: { params: goalParams },
   responses: {
     204: { description: "Goal moved to trash" },
@@ -326,7 +331,7 @@ const restoreGoalRoute = createRoute({
   method: "post",
   path: "/api/goals/{goalId}/restore",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: { params: goalParams },
   responses: {
     204: { description: "Goal restored from trash" },
@@ -339,7 +344,7 @@ const putEntryRoute = createRoute({
   method: "put",
   path: "/api/goals/{goalId}/entries/{date}",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: {
     params: entryParams,
     body: { required: true, content: { "application/json": { schema: entryInputSchema } } },
@@ -359,7 +364,7 @@ const deleteEntryRoute = createRoute({
   method: "delete",
   path: "/api/goals/{goalId}/entries/{date}",
   tags: ["Planning"],
-  security: [{ sessionCookie: [] }],
+  security: ACCOUNT_API_SECURITY,
   request: { params: entryParams },
   responses: {
     204: { description: "Entry removed" },
@@ -378,7 +383,8 @@ function authenticatedOwnerId(c: {
 }
 
 const requirePlanningJson: MiddlewareHandler<PlanningHttpEnv> = async (c, next) => {
-  const isCreate = c.req.method === "POST" && new URL(c.req.url).pathname.endsWith("/goals");
+  const isCreate =
+    c.req.method === "POST" && /\/(?:goals|adjust)$/u.test(new URL(c.req.url).pathname);
   const needsJson = isCreate || c.req.method === "PATCH" || c.req.method === "PUT";
   if (!needsJson) {
     await next();
@@ -411,6 +417,38 @@ const limitPlanningBody = bodyLimit({
       status: 413,
       detail: "The request body exceeds the accepted size.",
     }),
+});
+
+const adjustEntryRoute = createRoute({
+  method: "post",
+  path: "/api/goals/{goalId}/entries/{date}/adjust",
+  tags: ["Planning"],
+  security: ACCOUNT_API_SECURITY,
+  request: {
+    params: entryParams,
+    body: {
+      required: true,
+      content: {
+        "application/json": {
+          schema: z.object({ delta: z.number().finite(), operationId: z.uuid() }).strict(),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: "Quantity adjusted once; replay does not apply the delta again",
+      content: { "application/json": { schema: z.object({ entry: entrySchema }) } },
+    },
+    409: {
+      description: "The entry changed concurrently; reread before a new operation",
+      content: { "application/problem+json": { schema: problemDetailsSchema } },
+    },
+    ...standardErrors,
+    ...goalNotFoundError,
+    ...unsafeErrors,
+    ...jsonErrors,
+  },
 });
 
 export function createPlanningHttp(
@@ -505,6 +543,18 @@ export function createPlanningHttp(
     });
     return c.body(null, 204);
   });
+  router.openapi(adjustEntryRoute, async (c) => {
+    const ownerId = authenticatedOwnerId(c);
+    const entry = await dependencies.createUseCases(c.env.DB).adjustEntry.execute({
+      ...c.req.valid("param"),
+      ...c.req.valid("json"),
+      ownerId,
+      now: Date.now(),
+      timeZone: await dependencies.getTimeZone(c.env.DB, ownerId),
+    });
+    return c.json({ entry }, 200);
+  });
+
   router.openapi(putEntryRoute, async (c) => {
     const entry = await dependencies.createUseCases(c.env.DB).upsertEntry.execute({
       date: c.req.valid("param").date,

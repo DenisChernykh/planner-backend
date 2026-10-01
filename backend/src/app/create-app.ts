@@ -95,6 +95,12 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
     name: "__Host-session",
   });
 
+  app.openAPIRegistry.registerComponent("securitySchemes", "integrationKey", {
+    type: "http",
+    scheme: "bearer",
+    description: "Revocable personal ChatGPT key; cannot manage credentials.",
+  });
+
   app.openAPIRegistry.registerComponent("securitySchemes", TELEGRAM_WEBHOOK_SECURITY_SCHEME, {
     type: "apiKey",
     in: "header",
@@ -106,9 +112,9 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
       app.getOpenAPI31Document({
         openapi: "3.1.0",
         info: {
-          title: "Planner API",
+          title: "Ритм API",
           version: "0.1.0",
-          description: "Planner API for goals, progress tracking, notes, and Telegram sign-in.",
+          description: "Цели, привычки, результаты и напоминания Ритма.",
         },
       }),
     ),

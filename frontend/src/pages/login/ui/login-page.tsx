@@ -3,9 +3,11 @@ import { Navigate } from "react-router";
 
 import { useCurrentSession } from "@/entities/session";
 import { TelegramLoginLink } from "@/features/authentication";
+import { useAppRuntime } from "@/shared/lib/runtime";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Spinner } from "@/shared/ui";
 
 export function LoginPage() {
+  const embedded = useAppRuntime() === "chatgpt";
   const session = useCurrentSession();
 
   if (session.kind === "loading") {
@@ -31,7 +33,14 @@ export function LoginPage() {
 
   return (
     <LoginFrame>
-      <TelegramLoginLink />
+      {embedded ? (
+        <p className="text-sm">
+          Проверьте ключ подключения в настройках плагина. Создать или заменить его можно в разделе
+          «Подключения» веб-версии Ритма.
+        </p>
+      ) : (
+        <TelegramLoginLink />
+      )}
     </LoginFrame>
   );
 }
@@ -41,8 +50,8 @@ function LoginFrame({ children }: { children: ReactNode }) {
     <main className="mx-auto flex min-h-screen max-w-2xl items-center px-6 py-12">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Planner</CardTitle>
-          <CardDescription>Войдите через Telegram, чтобы открыть личные заметки.</CardDescription>
+          <CardTitle>Ритм</CardTitle>
+          <CardDescription>Цели, привычки и результаты в вашем темпе.</CardDescription>
         </CardHeader>
         <CardContent>{children}</CardContent>
       </Card>
