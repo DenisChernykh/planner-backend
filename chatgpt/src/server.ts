@@ -52,8 +52,9 @@ const create = {
   openWorldHint: false,
 };
 const visible = { ui: { visibility: ["model", "app"] } };
+// Keep the background transparent for clients that render the icon as an alpha mask.
 const icon = {
-  src: `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#4f46e5"/><path d="M7 17h4l3-8 5 15 3-7h3" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>')}`,
+  src: `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M7 17h4l3-8 5 15 3-7h3" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>')}`,
   mimeType: "image/svg+xml",
   sizes: ["any"],
 };
