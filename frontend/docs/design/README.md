@@ -38,8 +38,10 @@ with the iOS keyboard, validation errors, and bot commands.
 
 ## Goal progress and scheduled reports
 
-[Progress and Telegram report mockups](./progress/README.md) cover the weekly
-overview, a goal's statistics, report settings on desktop and mobile, and the
-Telegram message. Seven editable screens and reusable components live in the
-same `Planner.pen`, under «Прогресс». The PNG exports and their frame IDs are
-listed alongside the sample data and interaction notes.
+[Progress and Telegram report mockups](./progress/README.md) cover weekly and
+monthly statistics, all tracking types, comparisons and streaks, the shared start
+date, report settings, empty and error states, and six Telegram message variants.
+The same `Planner.pen` contains 53 editable screens and state boards, a navigation
+map, and reusable components under «Прогресс». Desktop, 390 px and 320 px exports
+are indexed with frame IDs, reproducible sample data, interaction notes, and
+coverage of the specification.
