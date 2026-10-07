@@ -1,4 +1,4 @@
-import { and, eq, exists, inArray, isNull, like, lte, or, sql } from "drizzle-orm";
+import { and, eq, exists, gt, inArray, isNull, like, lte, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   goalReminders,
@@ -385,12 +385,16 @@ export class D1ReminderRepository implements ReminderRepository {
     ]);
   }
 
-  async deliveryIssues(ownerId: string): Promise<number> {
+  async deliveryIssues(ownerId: string, since: number): Promise<number> {
     const [row] = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(reminderJobs)
       .where(
-        and(eq(reminderJobs.ownerId, ownerId), inArray(reminderJobs.status, ["failed", "unknown"])),
+        and(
+          eq(reminderJobs.ownerId, ownerId),
+          inArray(reminderJobs.status, ["failed", "unknown"]),
+          gt(reminderJobs.createdAt, since),
+        ),
       );
     return row?.count ?? 0;
   }

@@ -33,5 +33,5 @@ export interface ReminderRepository {
   claim(id: string, now: number): Promise<boolean>;
   updateJob(id: string, changes: Partial<ReminderJob>): Promise<void>;
   recover(now: number): Promise<void>;
-  deliveryIssues(ownerId: string): Promise<number>;
+  deliveryIssues(ownerId: string, since: number): Promise<number>;
 }

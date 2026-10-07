@@ -153,7 +153,8 @@ export function createReminderHttp(
         ...errors,
       },
     }),
-    async (c) => c.json(await useCases(c.env).getState.execute({ ownerId: owner(c) }), 200),
+    async (c) =>
+      c.json(await useCases(c.env).getState.execute({ ownerId: owner(c), now: Date.now() }), 200),
   );
   router.openapi(
     createRoute({

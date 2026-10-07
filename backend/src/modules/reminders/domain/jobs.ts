@@ -2,6 +2,7 @@ import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "
 import { afterQuietHours, isReminderDay } from "./schedule";
 
 const DAY = 86_400_000;
+export const DELIVERY_ISSUE_WINDOW_MS = DAY;
 
 export function createReminderJob(input: {
   id: string;

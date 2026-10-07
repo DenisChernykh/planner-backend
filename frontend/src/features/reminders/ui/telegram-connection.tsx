@@ -96,8 +96,9 @@ export function TelegramConnection({ state }: { state: GetApiRemindersSettings20
       )}
       {state.deliveryIssues > 0 && (
         <p role="status" className="text-sm text-muted-foreground">
-          Есть сообщения с ошибкой или неподтверждённой доставкой: {state.deliveryIssues}.
-          Незаполненные цели попадут в следующий вечерний сбор.
+          Сообщения за последние 24 часа с ошибкой или неподтверждённой доставкой:{" "}
+          {state.deliveryIssues}. Проверьте чат в Telegram. Пропущенные записи можно заполнить в
+          плане.
         </p>
       )}
     </section>

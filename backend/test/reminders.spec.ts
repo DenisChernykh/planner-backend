@@ -149,7 +149,7 @@ describe("Telegram reminders with D1", () => {
   it("keeps settings readable and scheduled work untouched when the bot is unavailable", async () => {
     await goal();
     const disabled = createReminderOperations(env.DB, null);
-    expect(await disabled.getState.execute({ ownerId: OWNER })).toMatchObject({
+    expect(await disabled.getState.execute({ ownerId: OWNER, now })).toMatchObject({
       botAvailable: false,
       connection: "active",
     });
@@ -453,6 +453,39 @@ describe("Telegram reminders with D1", () => {
     await operations().runReminders.execute({ now: now + 240_000 });
     expect((await repository.link(OWNER))?.status).toBe("blocked");
   });
+  it.each(["permanent", "unknown"] as const)(
+    "expires the %s delivery warning after 24 hours without erasing or retrying the job",
+    async (failure) => {
+      await goal();
+      vi.mocked(transport.send).mockRejectedValueOnce(new DeliveryError(failure));
+      await operations().runReminders.execute({ now });
+      const job = await firstJob();
+      const day = 24 * 60 * 60 * 1000;
+
+      expect(await operations().getState.execute({ ownerId: OWNER, now })).toMatchObject({
+        deliveryIssues: 1,
+      });
+      expect(await operations().getState.execute({ ownerId: "another-owner", now })).toMatchObject({
+        deliveryIssues: 0,
+      });
+      expect(
+        await operations().getState.execute({ ownerId: OWNER, now: now + day - 1 }),
+      ).toMatchObject({ deliveryIssues: 1 });
+      expect(await operations().getState.execute({ ownerId: OWNER, now: now + day })).toMatchObject(
+        { deliveryIssues: 0 },
+      );
+      expect(
+        await operations().getState.execute({ ownerId: OWNER, now: now + 3 * day }),
+      ).toMatchObject({ deliveryIssues: 0 });
+
+      expect(await repository.job(job.id)).toMatchObject({
+        status: failure === "unknown" ? "unknown" : "failed",
+        attempts: 1,
+      });
+      await operations().runReminders.execute({ now: now + 60_000 });
+      expect(transport.send).toHaveBeenCalledTimes(1);
+    },
+  );
   it("ignores other senders, arbitrary text, and questions after disconnect", async () => {
     await goal();
     await operations().runReminders.execute({ now });
