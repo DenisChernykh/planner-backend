@@ -1,0 +1,484 @@
+{
+  "scope": "Supplement to manual review; not a complete WCAG or screen-reader audit",
+  "scans": [
+    {
+      "state": "a11y-form",
+      "axeVersion": "4.12.1",
+      "url": "http://localhost:8788/plans/2026-10/goals/new",
+      "counts": {
+        "inapplicable": 51,
+        "incomplete": 0,
+        "passes": 38,
+        "violations": 1
+      },
+      "violations": [
+        {
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI",
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodeCount": 6,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.4 (foreground color: #7c6d67, background color: #f3f1f1, font size: 7.8pt (10.4px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"text-[0.65rem] font-bold tracking-[0.08em] text-muted-foreground uppercase\">Минимум</span>",
+              "target": [
+                "label[for=\"_r_n_\"] > .tracking-\\[0\\.08em\\].text-\\[0\\.65rem\\].uppercase"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.4 (foreground color: #7c6d67, background color: #f3f1f1, font size: 7.8pt (10.4px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"text-[0.65rem] font-bold tracking-[0.08em] text-muted-foreground uppercase\">Максимум</span>",
+              "target": [
+                "label[for=\"_r_p_\"] > .tracking-\\[0\\.08em\\].text-\\[0\\.65rem\\].uppercase"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.4 (foreground color: #7c6d67, background color: #f3f1f1, font size: 7.8pt (10.4px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "html": "<p class=\"text-[0.65rem] font-bold tracking-[0.08em] text-muted-foreground uppercase\">Предпросмотр</p>",
+              "target": [
+                ".sm\\:w-52 > .tracking-\\[0\\.08em\\]"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.4 (foreground color: #7c6d67, background color: #f3f1f1, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"text-xs text-muted-foreground\">Укажите границы</span>",
+              "target": [
+                ".px-2 > .text-muted-foreground.text-xs"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.09 (foreground color: #3e68ea, background color: #e7edfc, font size: 7.8pt (10.4px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"text-[0.65rem] font-normal text-primary/80\">без лимита</span>",
+              "target": [
+                ".text-primary\\/80"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 4.4 (foreground color: #7c6d67, background color: #f3f1f1, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1",
+              "html": "<p class=\"rounded-lg border bg-muted px-4 py-3 text-xs text-muted-foreground\">Цель доступна для отметки каждый день выбранного месяца.</p>",
+              "target": [
+                ".py-3"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT",
+            "RGAAv4",
+            "RGAA-3.2.1"
+          ]
+        }
+      ],
+      "incomplete": []
+    },
+    {
+      "state": "a11y-plan",
+      "axeVersion": "4.12.1",
+      "url": "http://localhost:8788/plans/2026-09",
+      "counts": {
+        "inapplicable": 51,
+        "incomplete": 1,
+        "passes": 37,
+        "violations": 4
+      },
+      "violations": [
+        {
+          "help": "Main landmark should not be contained in another landmark",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-main-is-top-level?application=axeAPI",
+          "id": "landmark-main-is-top-level",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  The main landmark is contained in another landmark.",
+              "html": "<main class=\"min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7\">",
+              "target": [
+                ".py-5"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "Document should not have more than one main landmark",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-no-duplicate-main?application=axeAPI",
+          "id": "landmark-no-duplicate-main",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Document has more than one main landmark",
+              "html": "<main data-slot=\"sidebar-inset\" class=\"relative flex w-full...\">",
+              "target": [
+                ".md\\:peer-data-\\[variant\\=inset\\]\\:m-2"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable",
+              "html": "<main data-slot=\"sidebar-inset\" class=\"relative flex w-full...\">",
+              "target": [
+                ".md\\:peer-data-\\[variant\\=inset\\]\\:m-2"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "All page content should be contained by landmarks",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+          "id": "region",
+          "impact": "moderate",
+          "nodeCount": 5,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<div data-slot=\"sidebar-header\" data-sidebar=\"header\" class=\"flex flex-col gap-2 p-2 px-4 pt-7 pb-5\">",
+              "target": [
+                ".pt-7"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>План</span>",
+              "target": [
+                ".bg-primary-soft[aria-current=\"page\"][href=\"/plans/2026-09\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Напоминания</span>",
+              "target": [
+                "a[href$=\"reminders\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Корзина</span>",
+              "target": [
+                "a[href$=\"trash\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Подключения</span>",
+              "target": [
+                "a[href$=\"connections\"] > span"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.keyboard",
+            "best-practice",
+            "RGAAv4",
+            "RGAA-9.2.1"
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI",
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span aria-hidden=\"true\" class=\"text-muted-foreground\">⌄</span>",
+              "target": [
+                ".text-muted-foreground[aria-hidden=\"true\"]"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT",
+            "RGAAv4",
+            "RGAA-3.2.1"
+          ]
+        }
+      ]
+    },
+    {
+      "state": "a11y-plan-filled",
+      "axeVersion": "4.12.1",
+      "url": "http://localhost:8788/plans/2026-10",
+      "counts": {
+        "inapplicable": 51,
+        "incomplete": 1,
+        "passes": 37,
+        "violations": 5
+      },
+      "violations": [
+        {
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI",
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodeCount": 2,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.91 (foreground color: #2f9f3d, background color: #e7edfc, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"font-bold text-success\">21 стр.</span>",
+              "target": [
+                "button[aria-label=\"Читать 20 страниц, СР 07\"] > .text-success.font-bold"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.91 (foreground color: #2f9f3d, background color: #e7edfc, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1",
+              "html": "<span class=\"font-bold text-success\">23:30</span>",
+              "target": [
+                "button[aria-label=\"Лечь спать 22:00–01:00, СР 07\"] > .text-success.font-bold"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT",
+            "RGAAv4",
+            "RGAA-3.2.1"
+          ]
+        },
+        {
+          "help": "Main landmark should not be contained in another landmark",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-main-is-top-level?application=axeAPI",
+          "id": "landmark-main-is-top-level",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  The main landmark is contained in another landmark.",
+              "html": "<main class=\"min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7\">",
+              "target": [
+                ".py-5"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "Document should not have more than one main landmark",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-no-duplicate-main?application=axeAPI",
+          "id": "landmark-no-duplicate-main",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Document has more than one main landmark",
+              "html": "<main data-slot=\"sidebar-inset\" class=\"relative flex w-full...\">",
+              "target": [
+                ".md\\:peer-data-\\[variant\\=inset\\]\\:m-2"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/landmark-unique?application=axeAPI",
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "nodeCount": 1,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable",
+              "html": "<main data-slot=\"sidebar-inset\" class=\"relative flex w-full...\">",
+              "target": [
+                ".md\\:peer-data-\\[variant\\=inset\\]\\:m-2"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.semantics",
+            "best-practice"
+          ]
+        },
+        {
+          "help": "All page content should be contained by landmarks",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/region?application=axeAPI",
+          "id": "region",
+          "impact": "moderate",
+          "nodeCount": 5,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<div data-slot=\"sidebar-header\" data-sidebar=\"header\" class=\"flex flex-col gap-2 p-2 px-4 pt-7 pb-5\">",
+              "target": [
+                ".pt-7"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>План</span>",
+              "target": [
+                ".h-10[aria-current=\"page\"][href=\"/plans/2026-10\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Напоминания</span>",
+              "target": [
+                "a[href$=\"reminders\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Корзина</span>",
+              "target": [
+                "a[href$=\"trash\"] > span"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+              "html": "<span>Подключения</span>",
+              "target": [
+                "a[href$=\"connections\"] > span"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.keyboard",
+            "best-practice",
+            "RGAAv4",
+            "RGAA-9.2.1"
+          ]
+        }
+      ],
+      "incomplete": [
+        {
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=axeAPI",
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodeCount": 7,
+          "nodes": [
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span aria-hidden=\"true\" class=\"text-muted-foreground\">⌄</span>",
+              "target": [
+                "#base-ui-_r_g_ > .text-muted-foreground[aria-hidden=\"true\"]"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content",
+              "html": "<span class=\"font-bold text-success\">4</span>",
+              "target": [
+                "button[aria-label=\"Самочувствие, СР 07\"] > .text-success.font-bold"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span class=\"flex size-5 items-center justify-center rounded-full border border-success bg-success-soft text-success\">✓</span>",
+              "target": [
+                "button[aria-label=\"Самочувствие, СР 07\"] > .border-success.bg-success-soft.text-success"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span class=\"font-bold text-success\">✓</span>",
+              "target": [
+                "button[aria-label=\"Прогулка 30 минут, СР 07\"] > .text-success.font-bold"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span class=\"flex size-5 items-center justify-center rounded-full border border-success bg-success-soft text-success\">✓</span>",
+              "target": [
+                "button[aria-label=\"Прогулка 30 минут, СР 07\"] > .border-success.bg-success-soft.text-success"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span class=\"flex size-5 items-center justify-center rounded-full border border-success bg-success-soft text-success\">✓</span>",
+              "target": [
+                "button[aria-label=\"Читать 20 страниц, СР 07\"] > .border-success.bg-success-soft.text-success"
+              ]
+            },
+            {
+              "failureSummary": "Fix any of the following:\n  Element content contains only non-text characters",
+              "html": "<span class=\"flex size-5 items-center justify-center rounded-full border border-success bg-success-soft text-success\">✓</span>",
+              "target": [
+                "button[aria-label=\"Лечь спать 22:00–01:00, СР 07\"] > .border-success.bg-success-soft.text-success"
+              ]
+            }
+          ],
+          "tags": [
+            "cat.color",
+            "wcag2aa",
+            "wcag143",
+            "TTv5",
+            "TT13.c",
+            "EN-301-549",
+            "EN-9.1.4.3",
+            "ACT",
+            "RGAAv4",
+            "RGAA-3.2.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "manual_checks": {
+    "search_keyboard": "Search field focused on opening; Tab moved through controls; Enter opened a result; Escape closed and restored launch-button focus after animation",
+    "day_button": {
+      "visible": "21 стр. ✓",
+      "aria_label": "Читать 20 страниц, СР 07",
+      "aria_pressed": "false"
+    },
+    "checkbox_names": "Отметить выполнение / Снять отметку выполнения lack goal and date",
+    "viewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ]
+  }
+}
