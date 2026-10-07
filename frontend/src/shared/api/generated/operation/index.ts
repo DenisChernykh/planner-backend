@@ -8,6 +8,8 @@
 
 export * from './getApiAuthTelegramCallbackParams';
 export * from './getApiNotesParams';
+export * from './getApiSearchGoalsParams';
+export * from './getApiSearchParams';
 export * from './patchApiGoalsGoalIdBody';
 export * from './patchApiNotesNoteIdBody';
 export * from './postApiGoalsGoalIdEntriesDateAdjustBody';

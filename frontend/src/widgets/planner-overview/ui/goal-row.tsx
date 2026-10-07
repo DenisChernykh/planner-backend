@@ -27,9 +27,19 @@ type GoalRowProps = {
   today: string;
   weekDates: string[];
   onSelect: (goal: PlanGoal, date: string) => void;
+  selection?: { goalId: string; date: string };
 };
 
-export function GoalRow({ goal, index, cadence, month, today, weekDates, onSelect }: GoalRowProps) {
+export function GoalRow({
+  goal,
+  index,
+  cadence,
+  month,
+  today,
+  weekDates,
+  onSelect,
+  selection,
+}: GoalRowProps) {
   const { ref, handleRef, isDragging } = useSortable({
     id: goal.id,
     index,
@@ -84,11 +94,13 @@ export function GoalRow({ goal, index, cadence, month, today, weekDates, onSelec
             type="button"
             disabled={!inMonth}
             onClick={() => onSelect(goal, date)}
+            data-entry-date={date}
+            aria-pressed={selection?.goalId === goal.id && selection.date === date}
             className={`flex min-h-[72px] flex-col items-center justify-center gap-1 border-r text-xs transition-colors ${
               !inMonth
                 ? "cursor-not-allowed bg-muted/50 text-muted-foreground/60"
                 : "hover:bg-primary-soft"
-            } ${date === today ? "bg-primary-soft" : ""}`}
+            } ${date === today || (selection?.goalId === goal.id && selection.date === date) ? "bg-primary-soft" : ""} ${selection?.goalId === goal.id && selection.date === date ? "ring-2 ring-inset ring-primary" : ""}`}
             aria-label={`${goal.title}, ${getPlannerDayName(dateIndex)} ${date.slice(8)}${editable ? "" : ", просмотр"}`}
           >
             <span className={entry?.met ? "font-bold text-success" : "text-muted-foreground"}>

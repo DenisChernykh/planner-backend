@@ -13,6 +13,7 @@ import { EnsureCurrentPlanUseCase } from "./application/plans/ensure-current-pla
 import { GetPlanQuery } from "./application/plans/get-plan.query";
 import { ListPlanQuery } from "./application/plans/list-plan.query";
 import { ListTrashQuery } from "./application/plans/list-trash.query";
+import { SearchPlanningQuery } from "./application/plans/search-planning.query";
 import { plannerToday } from "./domain/rules";
 import { D1PlanningRepository } from "./infrastructure/d1-planning-repository";
 import { createPlanningHttp } from "./presentation/http";
@@ -24,6 +25,7 @@ export function createPlanningUseCases(database: D1Database) {
   return {
     adjustEntry: new AdjustGoalEntryUseCase(repository),
     listPlan,
+    search: new SearchPlanningQuery(repository),
     ensureCurrentPlan: new EnsureCurrentPlanUseCase(repository),
     getPlan: new GetPlanQuery(listPlan),
     findGoal: new FindGoalQuery(repository),

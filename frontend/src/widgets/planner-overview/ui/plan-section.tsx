@@ -14,6 +14,7 @@ export function PlanSection({
   today,
   weekDates,
   onSelect,
+  selection,
 }: PlanSectionProps) {
   const sectionGoals = goals.filter((goal) => goal.cadence.period === cadence);
   if (sectionGoals.length === 0) return null;
@@ -36,6 +37,7 @@ export function PlanSection({
           today={today}
           weekDates={weekDates}
           onSelect={onSelect}
+          selection={selection}
         />
       ))}
     </section>

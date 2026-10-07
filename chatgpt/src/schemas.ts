@@ -79,6 +79,52 @@ export const goal = z.object({
 });
 export const planResponse = z.object({ month, today: z.iso.date(), goals: z.array(goal) });
 export const getPlanOutput = planResponse.extend({ accountId: z.uuid() });
+export const searchGoal = goal
+  .omit({ entries: true, ownerId: true, createdAt: true, updatedAt: true })
+  .extend({ deletedAt: z.number().nullable() });
+export const searchInput = z.strictObject({
+  query: z
+    .strictObject({
+      q: z.string().max(160).optional(),
+      kind: z.enum(["all", "goals", "entries"]).optional(),
+      from: z.iso.date().optional(),
+      to: z.iso.date().optional(),
+      tracking: z.enum(["check", "quantity", "scale", "time"]).optional(),
+      cadence: z.enum(["day", "week", "month"]).optional(),
+      goalId: z.uuid().optional(),
+      presence: z.enum(["any", "present", "missing"]).optional(),
+      met: z.enum(["any", "met", "unmet"]).optional(),
+      note: z.enum(["any", "present", "absent"]).optional(),
+      comparison: z.enum(["lt", "gt", "eq", "between"]).optional(),
+      value: z.string().max(64).optional(),
+      valueTo: z.string().max(64).optional(),
+      includeDeleted: z.boolean().optional(),
+      offset: z.int().min(0).max(1_000_000).optional(),
+      limit: z.int().min(1).max(100).optional(),
+    })
+    .default({}),
+});
+export const searchOutput = z.object({
+  results: z.array(
+    z.object({
+      id: z.string(),
+      kind: z.enum(["goal", "entry"]),
+      goal: searchGoal,
+      date: z.iso.date().nullable(),
+      entry: entry.nullable(),
+      match: z.enum(["title", "description", "note"]).nullable(),
+    }),
+  ),
+  total: z.int(),
+  counts: z.object({ goals: z.int(), entries: z.int() }),
+  nextOffset: z.int().nullable(),
+  suggestion: z.string().nullable(),
+  today: z.iso.date(),
+});
+export const searchGoalsInput = z.strictObject({
+  query: z.strictObject({ includeDeleted: z.boolean().optional() }).default({}),
+});
+export const searchGoalsOutput = z.object({ goals: z.array(searchGoal) });
 export const createGoalOutput = z.object({ goal });
 export const recordEntryOutput = z.object({ entry });
 export const success = z.object({ success: z.literal(true) });

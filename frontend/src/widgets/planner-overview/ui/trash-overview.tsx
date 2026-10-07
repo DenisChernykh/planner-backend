@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { Link } from "react-router";
+import { useEffect, useRef } from "react";
+import { Link, useSearchParams } from "react-router";
 
 import {
   type GetApiPlansMonthTrash200GoalsItem,
@@ -14,8 +15,23 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { Button, buttonVariants, Spinner } from "@/shared/ui";
 
-function DeletedGoal({ goal, month }: { goal: GetApiPlansMonthTrash200GoalsItem; month: string }) {
+function DeletedGoal({
+  goal,
+  month,
+  highlighted,
+}: {
+  goal: GetApiPlansMonthTrash200GoalsItem;
+  month: string;
+  highlighted: boolean;
+}) {
   const client = useQueryClient();
+  const ref = useRef<HTMLLIElement>(null);
+  useEffect(() => {
+    if (highlighted) {
+      ref.current?.scrollIntoView?.({ block: "nearest" });
+      ref.current?.focus();
+    }
+  }, [highlighted]);
   const restore = useMutation({
     mutationFn: () => postApiGoalsGoalIdRestore({ goalId: goal.id }),
     onSuccess: async () => {
@@ -27,7 +43,14 @@ function DeletedGoal({ goal, month }: { goal: GetApiPlansMonthTrash200GoalsItem;
     },
   });
   return (
-    <li className="space-y-3 rounded-lg border p-4 sm:p-5">
+    <li
+      ref={ref}
+      tabIndex={-1}
+      className={cn(
+        "space-y-3 rounded-lg border p-4 outline-none sm:p-5",
+        highlighted && "border-primary bg-primary-soft ring-1 ring-primary",
+      )}
+    >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-2">
           <h3 className="break-words font-semibold">{goal.title}</h3>
@@ -62,6 +85,7 @@ function DeletedGoal({ goal, month }: { goal: GetApiPlansMonthTrash200GoalsItem;
 
 export function TrashOverview({ month }: { month: string }) {
   const trash = useGetApiPlansMonthTrash({ month });
+  const [params] = useSearchParams();
 
   return (
     <section className="mx-auto max-w-5xl px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
@@ -89,7 +113,12 @@ export function TrashOverview({ month }: { month: string }) {
           {trash.data && trash.data.goals.length > 0 && (
             <ul className="space-y-3" aria-label="Удалённые цели">
               {trash.data.goals.map((goal) => (
-                <DeletedGoal key={goal.id} goal={goal} month={month} />
+                <DeletedGoal
+                  key={goal.id}
+                  goal={goal}
+                  month={month}
+                  highlighted={params.get("goal") === goal.id}
+                />
               ))}
             </ul>
           )}

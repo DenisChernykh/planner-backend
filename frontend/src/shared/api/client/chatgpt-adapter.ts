@@ -16,6 +16,8 @@ const month = "(\\d{4}-\\d{2})";
 const date = "(\\d{4}-\\d{2}-\\d{2})";
 const routes = [
   ["GET", "/api/auth/me", "get_account", []],
+  ["GET", "/api/search", "search_planner", []],
+  ["GET", "/api/search/goals", "get_search_goals", []],
   ["GET", `/api/plans/${month}`, "get_plan", ["month"]],
   ["GET", `/api/plans/${month}/trash`, "get_trash", ["month"]],
   ["POST", `/api/plans/${month}/goals`, "create_goal", ["month"]],
@@ -51,7 +53,11 @@ export function createChatGptAdapter(callTool: CallTool): AxiosAdapter {
     );
     const body: unknown = typeof config.data === "string" ? JSON.parse(config.data) : config.data;
     if (body !== undefined) params[name === "record_entry" ? "entry" : "input"] = body;
+    if (name === "search_planner" || name === "get_search_goals") {
+      params.query = { ...config.params, includeDeleted: config.params?.includeDeleted === "true" };
+    }
     const result = await callTool({ name, arguments: params });
+    if (config.signal?.aborted) throw new AxiosError("Запрос отменён.", "ERR_CANCELED", config);
     const apiError = result._meta?.apiError as { status: number; code: string } | undefined;
     const response = {
       data: result.structuredContent,

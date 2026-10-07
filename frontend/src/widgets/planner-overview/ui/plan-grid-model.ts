@@ -8,6 +8,7 @@ export type PlanGridProps = {
   weekDates: string[];
   goals: GetApiPlansMonth200GoalsItem[];
   onSelect: (goal: GetApiPlansMonth200GoalsItem, date: string) => void;
+  selection?: { goalId: string; date: string };
 };
 
 export const planSections: Array<{ cadence: CadencePeriod; label: string; hint: string }> = [

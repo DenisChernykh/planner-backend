@@ -1,10 +1,11 @@
 import { Plus } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useSearchParams } from "react-router";
 
 import type { GetApiPlansMonth200, GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import {
   clampPlannerDate,
+  getPlannerMonthEnd,
   getPlannerWeekDates,
   getPlannerWeekStart,
 } from "@/shared/lib/planner-calendar";
@@ -18,14 +19,44 @@ import { PlanNavigation } from "./plan-navigation";
 type PlanOverviewContentProps = { month: string; plan: GetApiPlansMonth200; notice: string | null };
 
 export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContentProps) {
+  const [params, setParams] = useSearchParams();
+  const fromSearch = useLocation().state?.fromSearch === true;
   const initialDate = clampPlannerDate(plan.today, plan.today, month);
-  const [weekStart, setWeekStart] = useState(() => getPlannerWeekStart(initialDate));
-  const [selection, setSelection] = useState<{ goalId: string; date: string }>();
+  const requestedDate = params.get("date") ?? initialDate;
+  const selectedDate = /^\d{4}-\d{2}-\d{2}$/u.test(requestedDate)
+    ? clampPlannerDate(requestedDate, getPlannerMonthEnd(month), month)
+    : initialDate;
+  const selectedGoal = plan.goals.find((goal) => goal.id === params.get("goal"));
+  const selectedGoalId = selectedGoal?.id;
+  const [weekStart, setWeekStart] = useState(() =>
+    getPlannerWeekStart(selectedGoal ? selectedDate : initialDate),
+  );
   const weekDates = getPlannerWeekDates(weekStart);
-  const selectedGoal = plan.goals.find((goal) => goal.id === selection?.goalId);
-  const selectedDate = selection?.date ?? initialDate;
-  const select = (goal: GetApiPlansMonth200GoalsItem, date: string) =>
-    setSelection({ goalId: goal.id, date });
+  const select = (goal: GetApiPlansMonth200GoalsItem, date: string) => {
+    setParams(
+      (previous) => {
+        previous.set("goal", goal.id);
+        previous.set("date", date);
+        return previous;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  };
+  useEffect(() => {
+    if (selectedGoalId) setWeekStart(getPlannerWeekStart(selectedDate));
+  }, [selectedGoalId, selectedDate]);
+  useEffect(() => {
+    if (!selectedGoalId || weekStart !== getPlannerWeekStart(selectedDate)) return;
+    const frame = requestAnimationFrame(() => {
+      const row = [...document.querySelectorAll<HTMLElement>("[data-goal-id]")].find(
+        (node) => node.dataset.goalId === selectedGoalId,
+      );
+      const cell = row?.querySelector<HTMLElement>(`[data-entry-date="${selectedDate}"]`);
+      cell?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+      if (fromSearch) cell?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selectedGoalId, selectedDate, weekStart, fromSearch]);
 
   return (
     <section className="flex min-h-[calc(100svh-3.5rem)] min-w-0 bg-background">
@@ -60,6 +91,7 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
             weekDates={weekDates}
             goals={plan.goals}
             onSelect={select}
+            selection={selectedGoalId ? { goalId: selectedGoalId, date: selectedDate } : undefined}
           />
         )}
         <p className="mt-3 text-xs text-muted-foreground">
@@ -75,7 +107,16 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
           today={plan.today}
           date={selectedDate}
           onDateChange={(date) => select(selectedGoal, date)}
-          onClose={() => setSelection(undefined)}
+          onClose={() =>
+            setParams(
+              (previous) => {
+                previous.delete("goal");
+                previous.delete("date");
+                return previous;
+              },
+              { replace: true, preventScrollReset: true },
+            )
+          }
         />
       )}
     </section>

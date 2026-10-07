@@ -120,6 +120,8 @@ export function registerChatGptConnection(
 export function integrationPathAllowed(pathname: string): boolean {
   return (
     pathname === "/api/auth/me" ||
+    pathname === "/api/search" ||
+    pathname === "/api/search/goals" ||
     /^\/api\/plans\/\d{4}-\d{2}(?:\/trash|\/goals(?:\/order)?)?$/u.test(pathname) ||
     /^\/api\/goals\/[0-9a-f-]{36}(?:\/restore|\/entries\/\d{4}-\d{2}-\d{2}(?:\/adjust)?)?$/iu.test(
       pathname,

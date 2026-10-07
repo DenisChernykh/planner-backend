@@ -1,6 +1,6 @@
 import type { RouteObject } from "react-router";
 import { Navigate, Outlet, useParams } from "react-router";
-
+import { PlannerSearchProvider } from "@/features/search";
 import { AuthenticationDisabledPage } from "@/pages/authentication-disabled";
 import { ConnectionsPage } from "@/pages/connections";
 import { CreateGoalPage } from "@/pages/create-goal";
@@ -43,10 +43,10 @@ function PlannerMonthRoute() {
   const month = useParams().month;
   if (!isPlannerMonth(month)) return <NotFoundPage invalidMonth={month ?? ""} />;
   return (
-    <>
+    <PlannerSearchProvider month={month}>
       <MonthRollover month={month} />
       <Outlet />
-    </>
+    </PlannerSearchProvider>
   );
 }
 

@@ -25,6 +25,10 @@ import {
   reminderRule,
   reminderRuleInput,
   reminderSettingsInput,
+  searchGoalsInput,
+  searchGoalsOutput,
+  searchInput,
+  searchOutput,
   settingsResponse,
   success,
 } from "./schemas.ts";
@@ -149,6 +153,46 @@ export function createServer(
     },
     ({ month, input }) =>
       run((api) => api.request(`/api/plans/${month}/goals`, createGoalOutput, input, "POST")),
+  );
+  server.registerTool(
+    "search_planner",
+    {
+      title: "Поиск целей и записей",
+      description:
+        "Ищет цели по названию и описанию, записи по заметке во всех месяцах. Поддерживает даты, тип учёта, наличие и выполнение записи, заметки и корзину. Сравнение значения требует goalId; отсутствие записи не означает невыполнение. Для продолжения передай nextOffset как offset.",
+      inputSchema: searchInput,
+      outputSchema: searchOutput,
+      annotations: read,
+      _meta: visible,
+    },
+    ({ query }) =>
+      run((api) => {
+        const parameters = new URLSearchParams(
+          Object.entries(query)
+            .filter(([, value]) => value !== undefined)
+            .map(([key, value]) => [key, String(value)]),
+        );
+        return api.request(`/api/search?${parameters}`, searchOutput);
+      }),
+  );
+  server.registerTool(
+    "get_search_goals",
+    {
+      title: "Цели для фильтра поиска",
+      description:
+        "Список принадлежащих аккаунту целей с месяцем и единицами измерения, без записей за день.",
+      inputSchema: searchGoalsInput,
+      outputSchema: searchGoalsOutput,
+      annotations: read,
+      _meta: visible,
+    },
+    ({ query }) =>
+      run((api) =>
+        api.request(
+          `/api/search/goals?includeDeleted=${query.includeDeleted === true}`,
+          searchGoalsOutput,
+        ),
+      ),
   );
   server.registerTool(
     "update_goal",

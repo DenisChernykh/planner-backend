@@ -5,6 +5,39 @@ import { createChatGptAdapter } from "./chatgpt-adapter";
 
 const goalId = "00000000-0000-4000-8000-000000000002";
 
+it("forwards search conditions and pagination to read-only tools", async () => {
+  const call = vi.fn().mockResolvedValue({ structuredContent: { results: [] } });
+  const client = axios.create({ adapter: createChatGptAdapter(call) });
+  await client.get("/api/search", {
+    params: {
+      q: "колено",
+      goalId,
+      comparison: "lt",
+      value: "1200",
+      includeDeleted: "true",
+      offset: 50,
+    },
+  });
+  expect(call).toHaveBeenCalledWith({
+    name: "search_planner",
+    arguments: {
+      query: {
+        q: "колено",
+        goalId,
+        comparison: "lt",
+        value: "1200",
+        includeDeleted: true,
+        offset: 50,
+      },
+    },
+  });
+  await client.get("/api/search/goals", { params: { includeDeleted: "false" } });
+  expect(call).toHaveBeenLastCalledWith({
+    name: "get_search_goals",
+    arguments: { query: { includeDeleted: false } },
+  });
+});
+
 it("runs generated HTTP calls through tools and preserves the original API response", async () => {
   const entry = { date: "2026-10-01", value: 0, note: "Заметка", met: false };
   const call = vi.fn().mockResolvedValue({ structuredContent: { entry } });

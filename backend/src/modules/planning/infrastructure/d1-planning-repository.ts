@@ -4,6 +4,7 @@ import {
   desc,
   eq,
   getTableColumns,
+  gte,
   inArray,
   isNotNull,
   isNull,
@@ -24,6 +25,7 @@ import type {
   PlanningRepository,
   StoredEntry,
 } from "../application/ports/planning-repository";
+import type { SearchRepository, SearchScope } from "../application/ports/search-repository";
 import type { GoalRecord, GoalTracking } from "../domain/model";
 import type { EntrySnapshot, RecordAnswerInput } from "../public-contracts";
 
@@ -94,7 +96,7 @@ function toEntry(row: EntryRow): StoredEntry {
 }
 
 export class D1PlanningRepository
-  implements PlanningRepository, AnswerRepository, MonthRolloverRepository
+  implements PlanningRepository, AnswerRepository, MonthRolloverRepository, SearchRepository
 {
   private readonly database;
   private readonly binding: D1Database;
@@ -102,6 +104,43 @@ export class D1PlanningRepository
   constructor(binding: D1Database) {
     this.binding = binding;
     this.database = drizzle(binding);
+  }
+
+  private searchScope(ownerId: string, scope: SearchScope) {
+    return and(
+      eq(planGoals.ownerId, ownerId),
+      scope.includeDeleted ? undefined : isNull(planGoals.deletedAt),
+      scope.from ? gte(planGoals.month, scope.from.slice(0, 7)) : undefined,
+      scope.to ? lte(planGoals.month, scope.to.slice(0, 7)) : undefined,
+      scope.tracking ? eq(planGoals.trackingType, scope.tracking) : undefined,
+      scope.cadence ? eq(planGoals.cadencePeriod, scope.cadence) : undefined,
+      scope.goalId ? eq(planGoals.id, scope.goalId) : undefined,
+    );
+  }
+
+  async searchGoals(ownerId: string, scope: SearchScope): Promise<GoalRecord[]> {
+    const rows = await this.database
+      .select()
+      .from(planGoals)
+      .where(this.searchScope(ownerId, scope))
+      .orderBy(desc(planGoals.month), asc(planGoals.title), asc(planGoals.id));
+    return rows.map(toGoal);
+  }
+
+  async searchEntries(ownerId: string, scope: SearchScope): Promise<StoredEntry[]> {
+    // Join through the owner's indexed goals, including the trash only by explicit request.
+    const rows = await this.database
+      .select({ entry: goalEntries })
+      .from(planGoals)
+      .innerJoin(goalEntries, eq(goalEntries.goalId, planGoals.id))
+      .where(
+        and(
+          this.searchScope(ownerId, scope),
+          scope.from ? gte(goalEntries.localDate, scope.from) : undefined,
+          scope.to ? lte(goalEntries.localDate, scope.to) : undefined,
+        ),
+      );
+    return rows.map(({ entry }) => toEntry(entry));
   }
 
   async createGoal(goal: GoalRecord): Promise<GoalRecord> {

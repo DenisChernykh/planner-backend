@@ -1,13 +1,16 @@
+import { Search } from "lucide-react";
 import type { CSSProperties, PropsWithChildren } from "react";
 
 import { useCurrentSession } from "@/entities/session";
+import { usePlannerSearch } from "@/features/search";
 import { formatPlannerMonth } from "@/shared/lib/planner-month";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui";
+import { Button, SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui";
 
 import { PlannerSidebar } from "./planner-sidebar";
 
 export function PlannerShell({ month, children }: PropsWithChildren<{ month: string }>) {
   const session = useCurrentSession();
+  const search = usePlannerSearch();
   if (session.kind !== "authenticated") return null;
 
   return (
@@ -21,7 +24,19 @@ export function PlannerShell({ month, children }: PropsWithChildren<{ month: str
             </span>
             <span className="text-sm font-bold">{formatPlannerMonth(month)}</span>
           </div>
-          <SidebarTrigger aria-label="Открыть навигацию" className="size-9 rounded-lg" />
+          <div className="flex items-center gap-1">
+            {search && (
+              <Button
+                variant="ghost"
+                onClick={search.openSearch}
+                aria-label="Открыть поиск"
+                className="size-11 rounded-lg"
+              >
+                <Search className="size-5" />
+              </Button>
+            )}
+            <SidebarTrigger aria-label="Открыть навигацию" className="size-11 rounded-lg" />
+          </div>
         </div>
         <div className="min-h-[calc(100svh-3.5rem)] md:min-h-svh">{children}</div>
       </SidebarInset>

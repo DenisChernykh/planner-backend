@@ -187,6 +187,244 @@
           }
         ]
       },
+      "SearchPage": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchResult"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "goals": {
+                "type": "integer"
+              },
+              "entries": {
+                "type": "integer"
+              }
+            },
+            "required": ["goals", "entries"]
+          },
+          "nextOffset": {
+            "type": ["integer", "null"]
+          },
+          "suggestion": {
+            "type": ["string", "null"]
+          },
+          "today": {
+            "type": "string"
+          }
+        },
+        "required": ["results", "total", "counts", "nextOffset", "suggestion", "today"]
+      },
+      "SearchResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["goal", "entry"]
+          },
+          "goal": {
+            "$ref": "#/components/schemas/SearchGoal"
+          },
+          "date": {
+            "type": ["string", "null"]
+          },
+          "entry": {
+            "type": ["object", "null"],
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "met": {
+                "type": "boolean"
+              },
+              "note": {
+                "type": ["string", "null"]
+              },
+              "createdAt": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "updatedAt": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+          },
+          "match": {
+            "type": ["string", "null"],
+            "enum": ["title", "description", "note", null]
+          }
+        },
+        "required": ["id", "kind", "goal", "date", "entry", "match"]
+      },
+      "SearchGoal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "month": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "tracking": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["check"]
+                  }
+                },
+                "required": ["type"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["quantity"]
+                  },
+                  "unit": {
+                    "type": "string",
+                    "maxLength": 64
+                  },
+                  "targetValue": {
+                    "type": "number"
+                  },
+                  "comparison": {
+                    "type": "string",
+                    "enum": ["atLeast", "atMost", "equal"]
+                  }
+                },
+                "required": ["type", "targetValue", "comparison"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["scale"]
+                  },
+                  "min": {
+                    "type": "integer"
+                  },
+                  "max": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["type", "min", "max"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["time"]
+                  },
+                  "targetStart": {
+                    "type": "string",
+                    "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "targetEnd": {
+                    "type": "string",
+                    "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+                  }
+                },
+                "required": ["type"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "cadence": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "enum": ["day"]
+                  }
+                },
+                "required": ["period"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "enum": ["week"]
+                  },
+                  "targetOccurrences": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 7
+                  }
+                },
+                "required": ["period", "targetOccurrences"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "enum": ["month"]
+                  },
+                  "targetOccurrences": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  }
+                },
+                "required": ["period", "targetOccurrences"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "deletedAt": {
+            "type": ["integer", "null"],
+            "minimum": 0
+          }
+        },
+        "required": ["id", "month", "title", "description", "tracking", "cadence", "deletedAt"]
+      },
       "PlanningResourceNotFoundProblemDetails": {
         "anyOf": [
           {
@@ -2280,6 +2518,315 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotesResourceNotFoundProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server failure",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search": {
+      "get": {
+        "tags": ["Search"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 160,
+              "default": ""
+            },
+            "required": false,
+            "name": "q",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["all", "goals", "entries"],
+              "default": "all"
+            },
+            "required": false,
+            "name": "kind",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "required": false,
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "required": false,
+            "name": "to",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["check", "quantity", "scale", "time"]
+            },
+            "required": false,
+            "name": "tracking",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["day", "week", "month"]
+            },
+            "required": false,
+            "name": "cadence",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "name": "goalId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["any", "present", "missing"],
+              "default": "any"
+            },
+            "required": false,
+            "name": "presence",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["any", "met", "unmet"],
+              "default": "any"
+            },
+            "required": false,
+            "name": "met",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["any", "present", "absent"],
+              "default": "any"
+            },
+            "required": false,
+            "name": "note",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["gt", "lt", "eq", "between"]
+            },
+            "required": false,
+            "name": "comparison",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "required": false,
+            "name": "value",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "required": false,
+            "name": "valueTo",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "default": "false"
+            },
+            "required": false,
+            "name": "includeDeleted",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "maximum": 1000000,
+              "default": 0
+            },
+            "required": false,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner-scoped ranked goals and daily entries across all months",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search conditions",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Authentication feature disabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server failure",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search/goals": {
+      "get": {
+        "tags": ["Search"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"],
+              "default": "false"
+            },
+            "required": false,
+            "name": "includeDeleted",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner's goal choices for search, without daily entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "goals": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SearchGoal"
+                      }
+                    }
+                  },
+                  "required": ["goals"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid search conditions",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Authentication feature disabled",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

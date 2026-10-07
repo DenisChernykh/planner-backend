@@ -21,6 +21,14 @@ This screen documents the supported combinations of tracking type and period.
 Use the API contract and `src/app/styles/index.css` as the semantic source for
 fields and visual tokens.
 
+## Global search
+
+[Search screens and interaction rules](./search/README.md) document the proposed
+global search: initial state, results with a preview, expanded filters, and mobile.
+The editable screens and reusable components are in the existing `Planner.pen`,
+to the right of the earlier layouts. The search folder includes native PNG exports,
+mobile detail/filter screens, and empty, loading, and error states.
+
 ## Telegram notifications
 
 `Planner.pen` contains reusable Telegram components and 12 notification scenarios

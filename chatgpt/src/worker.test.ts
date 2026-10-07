@@ -76,6 +76,25 @@ function fixture(t: TestContext, upstream?: PlannerFetch) {
       return Response.json({
         user: { id: accountId, displayName: "Владелец", username: null, photoUrl: null },
       });
+    if (path === "/api/search/goals") return Response.json({ goals });
+    if (path === "/api/search")
+      return Response.json({
+        results: [
+          {
+            id: `entry:${goalId}:${date}`,
+            kind: "entry",
+            goal: goals[0],
+            date,
+            entry: savedEntry,
+            match: null,
+          },
+        ],
+        total: 1,
+        counts: { goals: 0, entries: 1 },
+        nextOffset: null,
+        suggestion: null,
+        today: date,
+      });
     if (path === "/api/reminders/settings") {
       if (request.method === "PUT") {
         settings = { ...settings, ...(await request.json()) };
@@ -167,6 +186,8 @@ test("MCP discovers tools and public UI without contacting Planner or exposing a
       "get_account",
       "get_plan",
       "create_goal",
+      "search_planner",
+      "get_search_goals",
       "update_goal",
       "record_entry",
       "adjust_entry",
@@ -185,10 +206,21 @@ test("MCP discovers tools and public UI without contacting Planner or exposing a
     ],
   );
   assert.equal(tools[0].annotations?.readOnlyHint, true);
-  assert.equal(tools[4].annotations?.idempotentHint, true);
-  assert.equal(tools[4].annotations?.destructiveHint, true);
-  assert.deepEqual(tools[17]._meta?.ui, { resourceUri: UI_URI, visibility: ["model", "app"] });
-  assert.deepEqual(tools[17]._meta?.["openai/ui"], { entrypoints: [{ type: "global" }] });
+  assert.equal(
+    tools.find((tool) => tool.name === "record_entry")?.annotations?.idempotentHint,
+    true,
+  );
+  assert.equal(
+    tools.find((tool) => tool.name === "record_entry")?.annotations?.destructiveHint,
+    true,
+  );
+  assert.deepEqual(tools.find((tool) => tool.name === "open_ritm")?._meta?.ui, {
+    resourceUri: UI_URI,
+    visibility: ["model", "app"],
+  });
+  assert.deepEqual(tools.find((tool) => tool.name === "open_ritm")?._meta?.["openai/ui"], {
+    entrypoints: [{ type: "global" }],
+  });
   const { resources } = await client.listResources();
   assert.equal(resources[0].uri, UI_URI);
   const resource = (await client.readResource({ uri: UI_URI })).contents[0];
@@ -223,6 +255,36 @@ test("the sidebar entrypoint reads the same saved Planner data and never writes"
   const denied = await other.callTool({ name: "open_ritm", arguments: {} });
   assert.equal(denied.isError, true);
   assert.equal(requests.length, 0);
+});
+
+test("search passes encoded filters to the owner's API without any mutation", async (t) => {
+  const { connect, requests } = fixture(t);
+  const client = await connect();
+  const result = await client.callTool({
+    name: "search_planner",
+    arguments: {
+      query: {
+        q: "колено & вода",
+        goalId,
+        comparison: "lt",
+        value: "1200",
+        includeDeleted: true,
+        offset: 50,
+      },
+    },
+  });
+  assert.equal(result.isError, undefined);
+  assert.ok(requests.every((request) => request.method === "GET"));
+  const url = new URL(requests.at(-1)!.url);
+  assert.equal(url.pathname, "/api/search");
+  assert.equal(url.searchParams.get("q"), "колено & вода");
+  assert.equal(url.searchParams.get("includeDeleted"), "true");
+  assert.equal(url.searchParams.get("offset"), "50");
+  const choices = await client.callTool({ name: "get_search_goals", arguments: { query: {} } });
+  assert.equal(choices.isError, undefined);
+  const tools = (await client.listTools()).tools;
+  for (const name of ["search_planner", "get_search_goals"])
+    assert.equal(tools.find((tool) => tool.name === name)?.annotations?.readOnlyHint, true);
 });
 
 test("200 replaces 900 and repeated PUT keeps 200; a fresh MCP client reads the saved value", async (t) => {

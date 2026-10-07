@@ -140,6 +140,28 @@ it("keeps owner boundaries for keys and prevents another account from revoking a
   ).toBe(404);
   const plan = await request("/api/plans/2026-10", "GET", undefined, otherToken);
   expect(((await plan.json()) as { goals: unknown[] }).goals).toEqual([]);
+  const ownSearch = await request("/api/search?q=Вода", "GET", undefined, token);
+  expect(ownSearch.status).toBe(200);
+  expect(await ownSearch.json()).toMatchObject({ total: 1, results: [{ goal: { id } }] });
+  const ownCatalogue = await request("/api/search/goals", "GET", undefined, token);
+  expect(ownCatalogue.status).toBe(200);
+  expect(await ownCatalogue.json()).toMatchObject({ goals: [{ id }] });
+  const otherSearch = await request(
+    `/api/search?goalId=${id}&includeDeleted=true`,
+    "GET",
+    undefined,
+    otherToken,
+  );
+  expect(otherSearch.status).toBe(200);
+  expect(await otherSearch.json()).toMatchObject({ results: [], total: 0, suggestion: null });
+  const otherCatalogue = await request(
+    "/api/search/goals?includeDeleted=true",
+    "GET",
+    undefined,
+    otherToken,
+  );
+  expect(otherCatalogue.status).toBe(200);
+  expect(await otherCatalogue.json()).toEqual({ goals: [] });
 });
 
 it("adds once across replays, preserves the note, accepts zero and validates goal type/date", async () => {

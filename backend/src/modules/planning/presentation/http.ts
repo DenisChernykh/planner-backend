@@ -19,7 +19,10 @@ import type { RestoreGoalUseCase } from "../application/goals/restore-goal.use-c
 import type { UpdateGoalUseCase } from "../application/goals/update-goal.use-case";
 import type { GetPlanQuery } from "../application/plans/get-plan.query";
 import type { ListTrashQuery } from "../application/plans/list-trash.query";
+import type { SearchPlanningQuery } from "../application/plans/search-planning.query";
 import { mapPlanningError, planningResourceNotFoundProblemSchema } from "./problems";
+import { cadenceSchema, entrySchema, goalSchema, trackingSchema } from "./resource-schemas";
+import { registerSearchRoutes } from "./search-http";
 
 type PlanningHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
@@ -36,6 +39,7 @@ export type PlanningHttpDependencies = {
     deleteEntry: DeleteGoalEntryUseCase;
     getPlan: GetPlanQuery;
     listTrash: ListTrashQuery;
+    search: SearchPlanningQuery;
     reorderGoals: ReorderGoalsUseCase;
     restoreGoal: RestoreGoalUseCase;
     updateGoal: UpdateGoalUseCase;
@@ -45,57 +49,6 @@ export type PlanningHttpDependencies = {
 
 const monthPattern = /^\d{4}-(?:0[1-9]|1[0-2])$/u;
 const datePattern = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/u;
-const timePattern = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
-
-const checkTrackingSchema = z.object({ type: z.literal("check") }).strict();
-const quantityTrackingSchema = z
-  .object({
-    type: z.literal("quantity"),
-    unit: z.string().trim().max(64).optional(),
-    targetValue: z.number().finite(),
-    comparison: z.enum(["atLeast", "atMost", "equal"]),
-  })
-  .strict();
-const scaleTrackingSchema = z
-  .object({
-    type: z.literal("scale"),
-    min: z.number().int(),
-    max: z.number().int(),
-  })
-  .strict()
-  .refine((tracking) => tracking.min < tracking.max, "Scale min must be below max");
-const timeTrackingSchema = z
-  .object({
-    type: z.literal("time"),
-    targetStart: z.string().regex(timePattern).optional(),
-    targetEnd: z.string().regex(timePattern).optional(),
-  })
-  .strict();
-const trackingSchema = z.discriminatedUnion("type", [
-  checkTrackingSchema,
-  quantityTrackingSchema,
-  scaleTrackingSchema,
-  timeTrackingSchema,
-]);
-
-const dailyCadenceSchema = z.object({ period: z.literal("day") }).strict();
-const weeklyCadenceSchema = z
-  .object({
-    period: z.literal("week"),
-    targetOccurrences: z.number().int().min(1).max(7),
-  })
-  .strict();
-const monthlyCadenceSchema = z
-  .object({
-    period: z.literal("month"),
-    targetOccurrences: z.number().int().min(1).max(31),
-  })
-  .strict();
-const cadenceSchema = z.discriminatedUnion("period", [
-  dailyCadenceSchema,
-  weeklyCadenceSchema,
-  monthlyCadenceSchema,
-]);
 
 const goalInputSchema = z
   .object({
@@ -142,28 +95,6 @@ const entryParams = z.object({
     .string()
     .regex(datePattern)
     .openapi({ param: { name: "date", in: "path" } }),
-});
-
-const entrySchema = z.object({
-  date: z.string(),
-  value: z.union([z.boolean(), z.number(), z.string()]),
-  met: z.boolean(),
-  note: z.string().nullable(),
-  createdAt: z.number().int().nonnegative(),
-  updatedAt: z.number().int().nonnegative(),
-});
-const goalSchema = z.object({
-  id: z.uuid(),
-  ownerId: z.uuid(),
-  month: z.string(),
-  title: z.string(),
-  description: z.string().nullable(),
-  tracking: trackingSchema,
-  cadence: cadenceSchema,
-  deletedAt: z.number().int().nonnegative().nullable(),
-  createdAt: z.number().int().nonnegative(),
-  updatedAt: z.number().int().nonnegative(),
-  entries: z.array(entrySchema),
 });
 
 const standardErrors = {
@@ -480,6 +411,7 @@ export function createPlanningHttp(
   router.use("/api/plans/*", limitPlanningBody);
   router.use("/api/goals", limitPlanningBody);
   router.use("/api/goals/*", limitPlanningBody);
+  registerSearchRoutes(router, dependencies);
 
   router.openapi(listPlanRoute, async (c) => {
     const ownerId = authenticatedOwnerId(c);

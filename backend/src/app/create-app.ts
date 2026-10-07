@@ -84,6 +84,8 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   app.use("/api/plans/*", identity.authentication);
   app.use("/api/goals", identity.authentication);
   app.use("/api/goals/*", identity.authentication);
+  app.use("/api/search", identity.authentication);
+  app.use("/api/search/*", identity.authentication);
   app.use("/api/reminders/*", identity.authentication);
   app.route("/", reminders.router);
   app.route("/", notes.router);

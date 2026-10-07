@@ -12,6 +12,7 @@ export {
   postApiIntegrationsChatgpt,
 } from "./generated/integrations/integrations";
 export * from "./generated/model";
+export type { GetApiSearchParams } from "./generated/operation/getApiSearchParams";
 export type { PostApiPlansMonthGoalsBody } from "./generated/operation/postApiPlansMonthGoalsBody";
 export type { PutApiGoalsGoalIdEntriesDateBody } from "./generated/operation/putApiGoalsGoalIdEntriesDateBody";
 export type { PutApiPlansMonthGoalsOrderBody } from "./generated/operation/putApiPlansMonthGoalsOrderBody";
@@ -39,4 +40,5 @@ export {
   useGetApiRemindersGoalsMonth,
   useGetApiRemindersSettings,
 } from "./generated/reminders/reminders";
+export { getApiSearch, getApiSearchGoals } from "./generated/search/search";
 export { PostApiPlansMonthGoalsBody as postApiPlansMonthGoalsBodySchema } from "./generated-zod/planning/planning.zod";

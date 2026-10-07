@@ -1,8 +1,9 @@
 import { Menu } from "@base-ui/react/menu";
-import { Bell, CalendarDays, Plug, Trash2 } from "lucide-react";
+import { Bell, CalendarDays, Plug, Search, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { NavLink } from "react-router";
 import { useLogout } from "@/features/authentication";
+import { usePlannerSearch } from "@/features/search";
 import type { AuthenticatedUser } from "@/shared/api";
 import { useAppRuntime } from "@/shared/lib/runtime";
 import { cn } from "@/shared/lib/utils";
@@ -55,6 +56,8 @@ function PlannerNavLink({
 }
 
 export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
+  const search = usePlannerSearch();
+  const { setOpenMobile } = useSidebar();
   const embedded = useAppRuntime() === "chatgpt";
   const logout = useLogout();
   const displayName = user.displayName ?? user.username ?? "Пользователь";
@@ -75,6 +78,28 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
       </SidebarHeader>
       <SidebarContent className="px-2">
         <SidebarMenu className="gap-1">
+          {search && (
+            <SidebarMenuItem>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpenMobile(false);
+                  search.openSearch();
+                }}
+                aria-keyshortcuts="Control+k Meta+k"
+                className={cn(
+                  "flex h-11 w-full items-center gap-2.5 rounded-lg px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                  search.isOpen
+                    ? "bg-primary-soft text-primary"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent",
+                )}
+              >
+                <Search className="size-4" aria-hidden="true" />
+                <span>Поиск</span>
+                <kbd className="ml-auto text-[10px] text-muted-foreground">⌘ K</kbd>
+              </button>
+            </SidebarMenuItem>
+          )}
           <PlannerNavLink to={`/plans/${month}`} label="План" icon={CalendarDays} />
           <PlannerNavLink to={`/plans/${month}/reminders`} label="Напоминания" icon={Bell} />
           <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />

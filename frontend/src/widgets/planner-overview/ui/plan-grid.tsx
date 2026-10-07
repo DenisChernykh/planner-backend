@@ -34,7 +34,7 @@ const russianDndPlugins = [
   PreventSelection,
 ];
 
-export function PlanGrid({ month, today, weekDates, goals, onSelect }: PlanGridProps) {
+export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }: PlanGridProps) {
   const queryClient = useQueryClient();
   const [announcement, setAnnouncement] = useState("");
   const [reordering, setReordering] = useState(false);
@@ -108,6 +108,7 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect }: PlanGridP
               weekDates={weekDates}
               goals={goals}
               onSelect={onSelect}
+              selection={selection}
             />
           ))}
         </div>
