@@ -98,8 +98,10 @@ never reuse the starter author's database binding in a derived project.
 - Set production secrets only through Wrangler's hidden `secret put` prompt.
 - A Telegram bot token is not an OIDC Client Secret and is not used for OIDC; the
   application needs it only when `TELEGRAM_BOT_MODE=webhook`.
-- Resource creation, remote migration, deployment, GitHub repository changes,
-  and push require explicit authorization and exact target verification.
+- Routine commits and pushes follow the standing authorization in `../AGENTS.md`;
+  verify the destination before pushing.
+- Resource creation, remote migration, deployment, and other GitHub repository
+  changes require explicit authorization and exact target verification.
 - Paid Cloudflare resources or plan upgrades always require a separate explicit
   decision.
 
