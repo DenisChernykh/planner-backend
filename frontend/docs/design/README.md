@@ -35,3 +35,11 @@ mobile detail/filter screens, and empty, loading, and error states.
 inside iPhone 17 Pro frames. They cover checkbox, count, scale and time tracking,
 the evening digest, postponement, corrections, account connection, reply input
 with the iOS keyboard, validation errors, and bot commands.
+
+## Goal progress and scheduled reports
+
+[Progress and Telegram report mockups](./progress/README.md) cover the weekly
+overview, a goal's statistics, report settings on desktop and mobile, and the
+Telegram message. Seven editable screens and reusable components live in the
+same `Planner.pen`, under «Прогресс». The PNG exports and their frame IDs are
+listed alongside the sample data and interaction notes.
