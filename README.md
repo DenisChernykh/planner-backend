@@ -77,6 +77,8 @@ PR объединения принимается merge-коммитом: squash/
 Документация: [API](backend/README.md), [интерфейс](frontend/README.md),
 [напоминания](backend/docs/telegram-reminders.md).
 
+Проект ТЗ: [прогресс целей и отчёты в Telegram](docs/progress-and-telegram-reports.md).
+
 Личный плагин **Ритм** для ChatGPT: [запуск и подключение](chatgpt/README.md).
 Он переиспользует React UI веб-версии, работает с целями, результатами, корзиной
 и напоминаниями. `pnpm chatgpt:build` готовит Sites Worker; `pnpm chatgpt:dev`
