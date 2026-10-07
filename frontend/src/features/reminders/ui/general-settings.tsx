@@ -22,7 +22,8 @@ export function GeneralSettings({ initial }: { initial: PutApiRemindersSettingsB
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: getGetApiRemindersSettingsQueryKey() });
       await client.invalidateQueries({
-        predicate: (query) => String(query.queryKey[0]).startsWith("/api/plans/"),
+        predicate: (query) =>
+          /\/api\/(?:progress|plans|reminders\/progress-reports)/u.test(String(query.queryKey[0])),
       });
     },
   });
@@ -42,7 +43,7 @@ export function GeneralSettings({ initial }: { initial: PutApiRemindersSettingsB
           onChange={(event) => setDraft({ ...draft, enabled: event.target.checked })}
           className="size-4 accent-primary"
         />
-        Присылать напоминания
+        Напоминания о заполнении
       </label>
       <TextField
         label="Часовой пояс"
@@ -98,7 +99,7 @@ export function GeneralSettings({ initial }: { initial: PutApiRemindersSettingsB
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        В тихие часы вопросы откладываются до их окончания. Одинаковое время начала и конца
+        В тихие часы вопросы и отчёты откладываются до их окончания. Одинаковое время начала и конца
         отключает тихие часы.
       </p>
       {save.isError && (

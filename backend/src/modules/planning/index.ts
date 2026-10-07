@@ -13,6 +13,7 @@ import { EnsureCurrentPlanUseCase } from "./application/plans/ensure-current-pla
 import { GetPlanQuery } from "./application/plans/get-plan.query";
 import { ListPlanQuery } from "./application/plans/list-plan.query";
 import { ListTrashQuery } from "./application/plans/list-trash.query";
+import { ProgressSourcesQuery } from "./application/plans/progress-sources.query";
 import { SearchPlanningQuery } from "./application/plans/search-planning.query";
 import { plannerToday } from "./domain/rules";
 import { D1PlanningRepository } from "./infrastructure/d1-planning-repository";
@@ -25,6 +26,7 @@ export function createPlanningUseCases(database: D1Database) {
   return {
     adjustEntry: new AdjustGoalEntryUseCase(repository),
     listPlan,
+    progressSources: new ProgressSourcesQuery(repository),
     search: new SearchPlanningQuery(repository),
     ensureCurrentPlan: new EnsureCurrentPlanUseCase(repository),
     getPlan: new GetPlanQuery(listPlan),
@@ -89,6 +91,8 @@ export type {
 export function createPlanningOperations(database: D1Database): PlanningOperations {
   const useCases = createPlanningUseCases(database);
   return {
+    progressSources: (ownerId, fromMonth, toMonth) =>
+      useCases.progressSources.execute(ownerId, fromMonth, toMonth),
     ensureCurrentPlan: (input) => useCases.ensureCurrentPlan.execute(input),
     list: (ownerId, month) => useCases.listPlan.execute({ ownerId, month }),
     goal: (ownerId, goalId) => useCases.findGoal.execute({ ownerId, goalId }),

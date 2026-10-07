@@ -1,13 +1,44 @@
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { useGetApiRemindersGoalsMonth, useGetApiRemindersSettings } from "@/shared/api";
 import { addPlannerMonth } from "@/shared/lib/planner-calendar";
 import { formatPlannerMonth } from "@/shared/lib/planner-month";
+import { useAppRuntime } from "@/shared/lib/runtime";
 import { Button, buttonVariants } from "@/shared/ui";
 import { GeneralSettings } from "./general-settings";
 import { GoalReminder } from "./goal-reminder";
+import { ProgressReportSettings } from "./progress-report-settings";
 import { TelegramConnection } from "./telegram-connection";
 
 export function ReminderSettings({ month }: { month: string }) {
+  const [params] = useSearchParams();
+  const web = useAppRuntime() === "web";
+  const reports = web && params.get("tab") === "reports";
+  return (
+    <>
+      <nav
+        className="flex flex-wrap gap-2 border-b bg-background px-5 pb-4 sm:px-8"
+        aria-label="Тип сообщений"
+      >
+        <Link
+          to="?tab=reminders"
+          className={buttonVariants({ variant: reports ? "outline" : "default" })}
+        >
+          Напоминания о заполнении
+        </Link>
+        {web && (
+          <Link
+            to="?tab=reports"
+            className={buttonVariants({ variant: reports ? "default" : "outline" })}
+          >
+            Отчёты о прогрессе
+          </Link>
+        )}
+      </nav>
+      {reports ? <ProgressReportSettings month={month} /> : <ReminderQuestions month={month} />}
+    </>
+  );
+}
+function ReminderQuestions({ month }: { month: string }) {
   const settings = useGetApiRemindersSettings({ query: { refetchOnWindowFocus: true } });
   const goals = useGetApiRemindersGoalsMonth({ month });
   if (settings.isPending || goals.isPending)

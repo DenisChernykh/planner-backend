@@ -2,6 +2,7 @@ import { dueGoalReminders, isRecentOccurrence } from "../../domain/jobs";
 import { afterQuietHours, localDate, nextOccurrence } from "../../domain/schedule";
 import type { DeliverReminderUseCase } from "../delivery/deliver-reminder.use-case";
 import type { ReminderRepository } from "../ports/reminder-repository";
+import type { ProgressReportsUseCases } from "../reports/progress-reports";
 import { makeJob } from "./make-job";
 import type { PrepareCurrentPlanUseCase } from "./prepare-current-plan.use-case";
 
@@ -11,6 +12,7 @@ export class RunRemindersUseCase {
     private readonly botAvailable: boolean,
     private readonly deliver: DeliverReminderUseCase,
     private readonly prepareCurrentPlan: PrepareCurrentPlanUseCase,
+    private readonly reports?: ProgressReportsUseCases,
   ) {}
 
   async execute({ now }: { now: number }): Promise<void> {
@@ -62,6 +64,10 @@ export class RunRemindersUseCase {
         );
       }
     }
-    for (const job of await this.repository.due(now)) await this.deliver.execute({ job, now });
+    await this.reports?.schedule(now);
+    for (const job of await this.repository.due(now)) {
+      if (job.kind === "weekly-progress") await this.reports?.deliver(job.id, now);
+      else await this.deliver.execute({ job, now });
+    }
   }
 }

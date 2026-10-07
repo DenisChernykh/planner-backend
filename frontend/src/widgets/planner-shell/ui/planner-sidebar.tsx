@@ -1,5 +1,5 @@
 import { Menu } from "@base-ui/react/menu";
-import { Bell, CalendarDays, Plug, Search, Trash2 } from "lucide-react";
+import { Bell, CalendarDays, ChartNoAxesCombined, Plug, Search, Trash2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { NavLink } from "react-router";
 import { useLogout } from "@/features/authentication";
@@ -101,6 +101,13 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
             </SidebarMenuItem>
           )}
           <PlannerNavLink to={`/plans/${month}`} label="План" icon={CalendarDays} />
+          {!embedded && (
+            <PlannerNavLink
+              to={`/plans/${month}/progress`}
+              label="Прогресс"
+              icon={ChartNoAxesCombined}
+            />
+          )}
           <PlannerNavLink to={`/plans/${month}/reminders`} label="Напоминания" icon={Bell} />
           <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
           {!embedded && (

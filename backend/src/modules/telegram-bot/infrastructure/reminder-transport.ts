@@ -5,7 +5,10 @@ import { DeliveryError } from "../../reminders/public-contracts";
 function inlineOptions(message: OutgoingMessage) {
   const keyboard = new InlineKeyboard();
   for (const row of message.buttons ?? []) {
-    for (const button of row) keyboard.text(button.text, button.data);
+    for (const button of row) {
+      if (button.url !== undefined) keyboard.url(button.text, button.url);
+      else keyboard.text(button.text, button.data);
+    }
     keyboard.row();
   }
   return { reply_markup: keyboard };

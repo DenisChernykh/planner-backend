@@ -26,8 +26,10 @@ import type {
   StoredEntry,
 } from "../application/ports/planning-repository";
 import type { SearchRepository, SearchScope } from "../application/ports/search-repository";
+import { EntryConflictError, GoalNotFoundError } from "../domain/errors";
 import type { GoalRecord, GoalTracking } from "../domain/model";
-import type { EntrySnapshot, RecordAnswerInput } from "../public-contracts";
+import { calculateMet } from "../domain/rules";
+import type { EntrySnapshot, ProgressPlanningSource, RecordAnswerInput } from "../public-contracts";
 
 type GoalRow = typeof planGoals.$inferSelect;
 type EntryRow = typeof goalEntries.$inferSelect;
@@ -104,6 +106,62 @@ export class D1PlanningRepository
   constructor(binding: D1Database) {
     this.binding = binding;
     this.database = drizzle(binding);
+  }
+
+  async progressSources(
+    ownerId: string,
+    fromMonth: string,
+    toMonth: string,
+  ): Promise<ProgressPlanningSource[]> {
+    const scope = and(
+      eq(planGoals.ownerId, ownerId),
+      gte(planGoals.month, fromMonth),
+      lte(planGoals.month, toMonth),
+      isNull(planGoals.deletedAt),
+    );
+    const [goals, entries, ancestry] = await Promise.all([
+      this.database
+        .select()
+        .from(planGoals)
+        .where(scope)
+        .orderBy(
+          asc(planGoals.month),
+          sql`CASE ${planGoals.cadencePeriod} WHEN 'day' THEN 0 WHEN 'week' THEN 1 ELSE 2 END`,
+          asc(planGoals.sortOrder),
+          asc(planGoals.id),
+        ),
+      this.database
+        .select({ entry: goalEntries })
+        .from(planGoals)
+        .innerJoin(goalEntries, eq(planGoals.id, goalEntries.goalId))
+        .where(scope),
+      this.binding
+        .prepare(`WITH RECURSIVE ancestry(leaf, id, parent) AS (
+        SELECT id, id, carried_from_goal_id FROM plan_goals WHERE owner_id = ? AND month >= ? AND month <= ? AND deleted_at IS NULL
+        UNION ALL SELECT a.leaf, p.id, p.carried_from_goal_id FROM ancestry a JOIN plan_goals p ON p.id = a.parent AND p.owner_id = ?
+      ) SELECT leaf, id AS root FROM ancestry WHERE parent IS NULL OR NOT EXISTS (SELECT 1 FROM plan_goals WHERE id = ancestry.parent AND owner_id = ?)`)
+        .bind(ownerId, fromMonth, toMonth, ownerId, ownerId)
+        .all<{ leaf: string; root: string }>(),
+    ]);
+    const roots = new Map(ancestry.results.map((row) => [row.leaf, row.root]));
+    const byGoal = new Map<string, EntryRow[]>();
+    for (const { entry } of entries)
+      byGoal.set(entry.goalId, [...(byGoal.get(entry.goalId) ?? []), entry]);
+    return goals.map((row) => {
+      const goal = toGoal(row);
+      return {
+        id: goal.id,
+        chainId: roots.get(goal.id) ?? goal.id,
+        month: goal.month,
+        title: goal.title,
+        tracking: goal.tracking,
+        cadence: goal.cadence,
+        entries: (byGoal.get(goal.id) ?? []).map((entry) => {
+          const value = parseJson<boolean | number | string>(entry.value);
+          return { date: entry.localDate, value, met: calculateMet(goal.tracking, value) };
+        }),
+      };
+    });
   }
 
   private searchScope(ownerId: string, scope: SearchScope) {
@@ -361,6 +419,7 @@ export class D1PlanningRepository
     ownerId: string,
     changes: GoalUpdate,
   ): Promise<GoalRecord | null> {
+    if (changes.tracking !== undefined) return this.updateGoalAndCriteria(goalId, ownerId, changes);
     const current = await this.findOwnedActiveGoal(goalId, ownerId);
     if (!current) return null;
     const sortOrder =
@@ -373,12 +432,6 @@ export class D1PlanningRepository
         updatedAt: changes.updatedAt,
         ...(changes.title === undefined ? {} : { title: changes.title }),
         ...(changes.description === undefined ? {} : { description: changes.description }),
-        ...(changes.tracking === undefined
-          ? {}
-          : {
-              trackingType: changes.tracking.type,
-              trackingConfig: JSON.stringify(changes.tracking),
-            }),
         ...(changes.cadence === undefined
           ? {}
           : {
@@ -393,6 +446,75 @@ export class D1PlanningRepository
       )
       .returning();
     return updated[0] ? toGoal(updated[0]) : null;
+  }
+
+  private async updateGoalAndCriteria(
+    goalId: string,
+    ownerId: string,
+    changes: GoalUpdate,
+  ): Promise<GoalRecord | null> {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const current = await this.findOwnedActiveGoal(goalId, ownerId);
+      if (!current) return null;
+      const rows = await this.database
+        .select()
+        .from(goalEntries)
+        .where(eq(goalEntries.goalId, goalId));
+      const calculated = rows.map((row) => ({
+        date: row.localDate,
+        previous: row.revision,
+        revision: crypto.randomUUID(),
+        met: Number(
+          calculateMet(
+            changes.tracking ?? current.tracking,
+            parseJson<boolean | number | string>(row.value),
+          ),
+        ),
+      }));
+      const sortOrder =
+        changes.cadence && changes.cadence.period !== current.cadence.period
+          ? await this.nextSortOrder(ownerId, current.month, changes.cadence.period)
+          : undefined;
+      const update = this.database
+        .update(planGoals)
+        .set({
+          updatedAt: changes.updatedAt,
+          ...(changes.title === undefined ? {} : { title: changes.title }),
+          ...(changes.description === undefined ? {} : { description: changes.description }),
+          trackingConfig: JSON.stringify(changes.tracking),
+          ...(changes.cadence
+            ? {
+                cadencePeriod: changes.cadence.period,
+                targetOccurrences:
+                  changes.cadence.period === "day" ? null : changes.cadence.targetOccurrences,
+              }
+            : {}),
+          ...(sortOrder === undefined ? {} : { sortOrder }),
+        })
+        .where(
+          and(
+            eq(planGoals.id, goalId),
+            eq(planGoals.ownerId, ownerId),
+            isNull(planGoals.deletedAt),
+            eq(planGoals.updatedAt, current.updatedAt),
+            sql`(SELECT count(*) FROM goal_entries WHERE goal_id = ${goalId}) = ${rows.length}`,
+            sql`NOT EXISTS (SELECT 1 FROM goal_entries WHERE goal_id = ${goalId} AND revision NOT IN (SELECT json_extract(value, '$.previous') FROM json_each(${JSON.stringify(calculated)})))`,
+          ),
+        )
+        .toSQL();
+      // Validate the complete entry snapshot and update the definition and criteria in one D1 transaction.
+      const result = await this.binding.batch([
+        this.binding.prepare(update.sql).bind(...update.params),
+        this.binding
+          .prepare(`UPDATE goal_entries SET
+          met = (SELECT json_extract(value, '$.met') FROM json_each(?) WHERE json_extract(value, '$.date') = goal_entries.local_date),
+          revision = (SELECT json_extract(value, '$.revision') FROM json_each(?) WHERE json_extract(value, '$.date') = goal_entries.local_date)
+          WHERE goal_id = ? AND changes() = 1`)
+          .bind(JSON.stringify(calculated), JSON.stringify(calculated), goalId),
+      ]);
+      if (result[0]?.meta.changes === 1) return this.findOwnedActiveGoal(goalId, ownerId);
+    }
+    throw new EntryConflictError();
   }
 
   async softDeleteOwnedGoal(goalId: string, ownerId: string, deletedAt: number): Promise<boolean> {
@@ -471,29 +593,37 @@ export class D1PlanningRepository
   }
 
   async upsertEntry(entry: StoredEntry): Promise<StoredEntry> {
-    await this.database
-      .insert(goalEntries)
-      .values({
-        goalId: entry.goalId,
-        localDate: entry.date,
-        value: JSON.stringify(entry.value),
-        revision: crypto.randomUUID(),
-        met: entry.met,
-        note: entry.note,
-        createdAt: entry.createdAt,
-        updatedAt: entry.updatedAt,
-      })
-      .onConflictDoUpdate({
-        target: [goalEntries.goalId, goalEntries.localDate],
-        set: {
-          value: JSON.stringify(entry.value),
-          revision: crypto.randomUUID(),
-          met: entry.met,
-          note: entry.note,
-          updatedAt: entry.updatedAt,
-        },
-      });
-    return entry;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const [goal] = await this.database
+        .select()
+        .from(planGoals)
+        .where(and(eq(planGoals.id, entry.goalId), isNull(planGoals.deletedAt)))
+        .limit(1);
+      if (!goal) throw new GoalNotFoundError();
+      const met = calculateMet(parseJson<GoalTracking>(goal.trackingConfig), entry.value);
+      // A fact validated just before a criteria edit must also match the definition at commit.
+      const result = await this.binding
+        .prepare(`INSERT INTO goal_entries
+        (goal_id, local_date, value, met, note, created_at, updated_at, revision)
+        SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM plan_goals WHERE id = ? AND deleted_at IS NULL AND updated_at = ? AND tracking_config = ?)
+        ON CONFLICT(goal_id, local_date) DO UPDATE SET value = excluded.value, met = excluded.met, note = excluded.note, updated_at = excluded.updated_at, revision = excluded.revision`)
+        .bind(
+          entry.goalId,
+          entry.date,
+          JSON.stringify(entry.value),
+          Number(met),
+          entry.note,
+          entry.createdAt,
+          entry.updatedAt,
+          crypto.randomUUID(),
+          entry.goalId,
+          goal.updatedAt,
+          goal.trackingConfig,
+        )
+        .run();
+      if (result.meta.changes === 1) return { ...entry, met };
+    }
+    throw new EntryConflictError();
   }
 
   async entrySnapshot(

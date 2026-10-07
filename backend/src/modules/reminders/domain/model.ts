@@ -29,7 +29,7 @@ export type ReminderJob = {
   ownerId: string;
   goalId: string | null;
   localDate: string;
-  kind: "question" | "input" | "correction" | "digest";
+  kind: "question" | "input" | "correction" | "digest" | "weekly-progress";
   status: "pending" | "sending" | "sent" | "answered" | "cancelled" | "unknown" | "failed";
   dueAt: number;
   expiresAt: number;

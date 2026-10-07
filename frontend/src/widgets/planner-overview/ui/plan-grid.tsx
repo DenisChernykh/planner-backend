@@ -9,7 +9,9 @@ import {
   getGetApiPlansMonthQueryKey,
   type PutApiPlansMonthGoalsOrderBody,
   putApiPlansMonthGoalsOrder,
+  useGetApiProgress,
 } from "@/shared/api";
+import { useAppRuntime } from "@/shared/lib/runtime";
 
 import { PlanGridHeader } from "./plan-grid-header";
 import { type PlanGridProps, planSections, reorderGoals } from "./plan-grid-model";
@@ -36,6 +38,11 @@ const russianDndPlugins = [
 
 export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }: PlanGridProps) {
   const queryClient = useQueryClient();
+  const embedded = useAppRuntime() === "chatgpt";
+  const progress = useGetApiProgress(
+    { period: "week", anchor: weekDates[0] ?? today },
+    { query: { enabled: !embedded } },
+  );
   const [announcement, setAnnouncement] = useState("");
   const [reordering, setReordering] = useState(false);
   const queryKey = getGetApiPlansMonthQueryKey({ month });
@@ -78,7 +85,13 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }
         setAnnouncement("Не удалось сохранить порядок. Порядок восстановлен.");
       })
       .finally(async () => {
-        await queryClient.invalidateQueries({ queryKey });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey }),
+          queryClient.invalidateQueries({
+            predicate: (query) =>
+              /\/api\/(?:progress|reminders\/progress-reports)/u.test(String(query.queryKey[0])),
+          }),
+        ]);
         setReordering(false);
       });
   };
@@ -109,6 +122,16 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }
               goals={goals}
               onSelect={onSelect}
               selection={selection}
+              progress={progress.data?.goals}
+              progressState={
+                embedded
+                  ? "embedded"
+                  : progress.isError
+                    ? "error"
+                    : progress.isPending
+                      ? "pending"
+                      : "ready"
+              }
             />
           ))}
         </div>

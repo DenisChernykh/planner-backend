@@ -1,4 +1,4 @@
-import { and, eq, exists, gt, inArray, isNull, like, lte, or, sql } from "drizzle-orm";
+import { and, eq, exists, gt, inArray, isNull, like, lte, ne, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   goalReminders,
@@ -75,7 +75,13 @@ export class D1ReminderRepository implements ReminderRepository {
       this.db
         .update(reminderJobs)
         .set({ status: "cancelled" })
-        .where(and(eq(reminderJobs.ownerId, settings.ownerId), eq(reminderJobs.status, "pending"))),
+        .where(
+          and(
+            eq(reminderJobs.ownerId, settings.ownerId),
+            eq(reminderJobs.status, "pending"),
+            ne(reminderJobs.kind, "weekly-progress"),
+          ),
+        ),
       ...reminders.map((item) =>
         this.db
           .update(goalReminders)

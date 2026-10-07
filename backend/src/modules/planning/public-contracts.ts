@@ -1,4 +1,21 @@
-import type { GoalEntry, GoalEntryInput, GoalRecord, GoalResource } from "./domain/model";
+import type {
+  GoalCadence,
+  GoalEntry,
+  GoalEntryInput,
+  GoalRecord,
+  GoalResource,
+  GoalTracking,
+} from "./domain/model";
+
+export type ProgressPlanningSource = {
+  id: string;
+  chainId: string;
+  month: string;
+  title: string;
+  tracking: GoalTracking;
+  cadence: GoalCadence;
+  entries: Pick<GoalEntry, "date" | "value" | "met">[];
+};
 
 export type EntrySnapshot = { entry: GoalEntry; revision: string };
 export type RecordAnswerInput = {
@@ -12,6 +29,11 @@ export type RecordAnswerInput = {
   timeZone: string;
 };
 export interface PlanningOperations {
+  progressSources(
+    ownerId: string,
+    fromMonth: string,
+    toMonth: string,
+  ): Promise<ProgressPlanningSource[]>;
   ensureCurrentPlan(input: {
     ownerId: string;
     now: number;

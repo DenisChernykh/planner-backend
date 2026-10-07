@@ -6,6 +6,7 @@ import {
 import type { IdentityContextVariables } from "../modules/identity-access/public-contracts";
 import { createNotesModule } from "../modules/notes";
 import { createPlanningModule } from "../modules/planning";
+import { createProgressModule } from "../modules/progress";
 import {
   createReminderOperations,
   createRemindersModule,
@@ -61,11 +62,12 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
       createReminderOperations(database, null).prepareCurrentPlan.execute(input),
   });
   const reminders = createRemindersModule(reminderTransport);
+  const progress = createProgressModule(reminderTimeZone);
   const telegramBot = createTelegramBotModule({
     ...options.telegramBot,
     createActions:
       options.telegramBot?.createActions ??
-      ((env) => createReminderOperations(env.DB, reminderTransport(env)).bot),
+      ((env) => createReminderOperations(env.DB, reminderTransport(env), env.APP_ORIGIN).bot),
   });
 
   app.use("*", requestContext);
@@ -87,6 +89,9 @@ export function createApp(options: AppOptions = {}): OpenAPIHono<AppEnv> {
   app.use("/api/search", identity.authentication);
   app.use("/api/search/*", identity.authentication);
   app.use("/api/reminders/*", identity.authentication);
+  app.use("/api/progress", identity.authentication);
+  app.use("/api/progress/*", identity.authentication);
+  app.route("/", progress.router);
   app.route("/", reminders.router);
   app.route("/", notes.router);
   app.route("/", planning.router);
@@ -164,5 +169,9 @@ export function reminderTransport(env: CloudflareBindings) {
     : null;
 }
 export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
-  await createReminderOperations(env.DB, reminderTransport(env)).runReminders.execute({ now });
+  await createReminderOperations(
+    env.DB,
+    reminderTransport(env),
+    env.APP_ORIGIN,
+  ).runReminders.execute({ now });
 }

@@ -15,6 +15,8 @@ export function PlanSection({
   weekDates,
   onSelect,
   selection,
+  progress,
+  progressState,
 }: PlanSectionProps) {
   const sectionGoals = goals.filter((goal) => goal.cadence.period === cadence);
   if (sectionGoals.length === 0) return null;
@@ -38,6 +40,8 @@ export function PlanSection({
           weekDates={weekDates}
           onSelect={onSelect}
           selection={selection}
+          progress={progress?.find((item) => item.goalIds.includes(goal.id))}
+          progressState={progressState ?? "embedded"}
         />
       ))}
     </section>

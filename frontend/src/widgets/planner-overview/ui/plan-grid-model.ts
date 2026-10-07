@@ -1,4 +1,4 @@
-import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
+import type { GetApiPlansMonth200GoalsItem, ProgressGoal } from "@/shared/api";
 
 import type { CadencePeriod } from "../model/plan-model";
 
@@ -9,6 +9,8 @@ export type PlanGridProps = {
   goals: GetApiPlansMonth200GoalsItem[];
   onSelect: (goal: GetApiPlansMonth200GoalsItem, date: string) => void;
   selection?: { goalId: string; date: string };
+  progress?: ProgressGoal[];
+  progressState?: "embedded" | "pending" | "error" | "ready";
 };
 
 export const planSections: Array<{ cadence: CadencePeriod; label: string; hint: string }> = [

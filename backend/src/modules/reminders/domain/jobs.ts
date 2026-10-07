@@ -113,6 +113,7 @@ export function canAnswerJob(
 ): job is ReminderJob {
   return (
     job !== null &&
+    job.kind !== "weekly-progress" &&
     job.ownerId === ownerId &&
     job.chatId === chatId &&
     ["sent", "answered"].includes(job.status) &&

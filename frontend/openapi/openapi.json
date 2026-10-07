@@ -82,6 +82,671 @@
         "additionalProperties": {},
         "description": "Provider-owned Telegram Bot API Update object; see https://core.telegram.org/bots/api#update."
       },
+      "ProgressSettings": {
+        "type": "object",
+        "properties": {
+          "startsOn": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        },
+        "required": ["startsOn", "revision"]
+      },
+      "ProgressOverview": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "enum": ["week", "month"]
+          },
+          "requested": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            },
+            "required": ["from", "to"]
+          },
+          "actual": {
+            "type": ["object", "null"],
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            },
+            "required": ["from", "to"]
+          },
+          "today": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "asOf": {
+            "type": "number"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "startsOn": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "partial": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["ready", "no-goals", "no-entries", "before-start", "future-start"]
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "met": {
+                "type": "number"
+              },
+              "dailyRecords": {
+                "type": "number"
+              },
+              "dailyDays": {
+                "type": "number"
+              },
+              "dailyPercent": {
+                "type": ["number", "null"]
+              },
+              "daysWithEntries": {
+                "type": "number"
+              },
+              "eligibleDays": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "met",
+              "dailyRecords",
+              "dailyDays",
+              "dailyPercent",
+              "daysWithEntries",
+              "eligibleDays"
+            ]
+          },
+          "goals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressGoal"
+            }
+          }
+        },
+        "required": [
+          "period",
+          "requested",
+          "actual",
+          "today",
+          "asOf",
+          "timeZone",
+          "startsOn",
+          "partial",
+          "state",
+          "summary",
+          "goals"
+        ]
+      },
+      "ProgressGoal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "goalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "chainId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "tracking": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["check"]
+                  }
+                },
+                "required": ["type"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["quantity"]
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "targetValue": {
+                    "type": "number"
+                  },
+                  "comparison": {
+                    "type": "string",
+                    "enum": ["atLeast", "atMost", "equal"]
+                  }
+                },
+                "required": ["type", "targetValue", "comparison"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["scale"]
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  }
+                },
+                "required": ["type", "min", "max"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["time"]
+                  },
+                  "targetStart": {
+                    "type": "string"
+                  },
+                  "targetEnd": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type"]
+              }
+            ]
+          },
+          "cadence": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "enum": ["day"]
+                  }
+                },
+                "required": ["period"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "enum": ["week", "month"]
+                  },
+                  "targetOccurrences": {
+                    "type": "number"
+                  }
+                },
+                "required": ["period", "targetOccurrences"]
+              }
+            ]
+          },
+          "interval": {
+            "type": ["object", "null"],
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            },
+            "required": ["from", "to"]
+          },
+          "measurable": {
+            "type": "boolean"
+          },
+          "eligibleDays": {
+            "type": "number"
+          },
+          "records": {
+            "type": "number"
+          },
+          "met": {
+            "type": "number"
+          },
+          "missing": {
+            "type": "number"
+          },
+          "completeness": {
+            "type": ["number", "null"]
+          },
+          "sum": {
+            "type": ["number", "null"]
+          },
+          "average": {
+            "type": ["number", "null"]
+          },
+          "minimum": {
+            "type": ["number", "null"]
+          },
+          "maximum": {
+            "type": ["number", "null"]
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                },
+                "goalId": {
+                  "type": ["string", "null"]
+                },
+                "state": {
+                  "type": "string",
+                  "enum": ["met", "below", "recorded", "missing", "excluded", "future"]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": ["date", "goalId", "state", "value"]
+            }
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressTarget"
+            }
+          },
+          "comparison": {
+            "type": ["object", "null"],
+            "properties": {
+              "interval": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "to": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  }
+                },
+                "required": ["from", "to"]
+              },
+              "records": {
+                "type": "number"
+              },
+              "met": {
+                "type": "number"
+              },
+              "sum": {
+                "type": ["number", "null"]
+              },
+              "average": {
+                "type": ["number", "null"]
+              },
+              "percent": {
+                "type": ["number", "null"]
+              },
+              "deltaPoints": {
+                "type": ["number", "null"]
+              }
+            },
+            "required": ["interval", "records", "met", "sum", "average", "percent", "deltaPoints"]
+          },
+          "comparisonReason": {
+            "type": ["string", "null"],
+            "enum": ["insufficient-history", "different-rules", null]
+          },
+          "streak": {
+            "type": ["object", "null"],
+            "properties": {
+              "current": {
+                "type": ["number", "null"]
+              },
+              "best": {
+                "type": "number"
+              }
+            },
+            "required": ["current", "best"]
+          }
+        },
+        "required": [
+          "id",
+          "goalIds",
+          "chainId",
+          "title",
+          "tracking",
+          "cadence",
+          "interval",
+          "measurable",
+          "eligibleDays",
+          "records",
+          "met",
+          "missing",
+          "completeness",
+          "sum",
+          "average",
+          "minimum",
+          "maximum",
+          "days",
+          "targets",
+          "comparison",
+          "comparisonReason",
+          "streak"
+        ]
+      },
+      "ProgressTarget": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "accounted": {
+            "type": ["object", "null"],
+            "properties": {
+              "from": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "to": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            },
+            "required": ["from", "to"]
+          },
+          "value": {
+            "type": "number"
+          },
+          "target": {
+            "type": ["number", "null"]
+          },
+          "originalTarget": {
+            "type": "number"
+          },
+          "percent": {
+            "type": ["number", "null"]
+          },
+          "overflow": {
+            "type": "number"
+          },
+          "reduced": {
+            "type": "boolean"
+          },
+          "missingPlan": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "accounted",
+          "value",
+          "target",
+          "originalTarget",
+          "percent",
+          "overflow",
+          "reduced",
+          "missingPlan"
+        ]
+      },
+      "ProgressReportState": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object",
+            "properties": {
+              "ownerId": {
+                "type": "string"
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "wednesdayTime": {
+                "type": "string",
+                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+              },
+              "sundayTime": {
+                "type": "string",
+                "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+              },
+              "nextWednesdayAt": {
+                "type": ["number", "null"]
+              },
+              "nextSundayAt": {
+                "type": ["number", "null"]
+              },
+              "revision": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ownerId",
+              "enabled",
+              "wednesdayTime",
+              "sundayTime",
+              "nextWednesdayAt",
+              "nextSundayAt",
+              "revision"
+            ]
+          },
+          "startsOn": {
+            "type": ["string", "null"]
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "quietStart": {
+            "type": "string",
+            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "quietEnd": {
+            "type": "string",
+            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "connection": {
+            "type": "string"
+          },
+          "botAvailable": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["disabled", "disconnected", "future-start", "no-goals", "ready"]
+          },
+          "nextRuns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slot": {
+                  "type": "string",
+                  "enum": ["wed", "sun"]
+                },
+                "scheduledAt": {
+                  "type": "number"
+                },
+                "sendAt": {
+                  "type": "number"
+                },
+                "reportDate": {
+                  "type": "string"
+                }
+              },
+              "required": ["slot", "scheduledAt", "sendAt", "reportDate"]
+            }
+          },
+          "goals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goalId": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "included": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["goalId", "title", "included"]
+            }
+          }
+        },
+        "required": [
+          "settings",
+          "startsOn",
+          "timeZone",
+          "quietStart",
+          "quietEnd",
+          "connection",
+          "botAvailable",
+          "state",
+          "nextRuns",
+          "goals"
+        ]
+      },
+      "ProgressReportInput": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "wednesdayTime": {
+            "type": "string",
+            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "sundayTime": {
+            "type": "string",
+            "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d$"
+          },
+          "startsOn": {
+            "type": ["string", "null"],
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          "goals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "goalId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "included": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["goalId", "included"],
+              "additionalProperties": false
+            },
+            "maxItems": 200
+          }
+        },
+        "required": ["month", "enabled", "wednesdayTime", "sundayTime", "startsOn", "goals"],
+        "additionalProperties": false
+      },
+      "ProgressReportPreview": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": ["object", "null"],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "buttons": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["text"]
+                  }
+                }
+              },
+              "forceReply": {
+                "type": "boolean"
+              }
+            },
+            "required": ["text"]
+          },
+          "reason": {
+            "type": ["string", "null"]
+          },
+          "overview": {
+            "$ref": "#/components/schemas/ProgressOverview"
+          }
+        },
+        "required": ["message", "reason", "overview"]
+      },
       "Note": {
         "type": "object",
         "properties": {
@@ -1162,6 +1827,802 @@
           },
           "500": {
             "description": "Unexpected server failure",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/progress/settings": {
+      "get": {
+        "tags": ["Progress"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shared progress start date",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSettings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Progress"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "startsOn": {
+                    "type": ["string", "null"],
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  }
+                },
+                "required": ["startsOn"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Start date saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressSettings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/progress": {
+      "get": {
+        "tags": ["Progress"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["week", "month"],
+              "default": "week"
+            },
+            "required": false,
+            "name": "period",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "required": true,
+            "name": "anchor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 7400,
+              "pattern": "^[0-9a-f-]{36}(?:,[0-9a-f-]{36})*$/iu"
+            },
+            "required": false,
+            "name": "goals",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner progress for a calendar period",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/progress/goals/{goalId}": {
+      "get": {
+        "tags": ["Progress"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "goalId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["week", "month"],
+              "default": "week"
+            },
+            "required": false,
+            "name": "period",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "required": true,
+            "name": "anchor",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 7400,
+              "pattern": "^[0-9a-f-]{36}(?:,[0-9a-f-]{36})*$/iu"
+            },
+            "required": false,
+            "name": "goals",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Goal lineage progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reminders/progress-reports": {
+      "get": {
+        "tags": ["Progress reports"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])$"
+            },
+            "required": true,
+            "name": "month",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Progress report settings and monthly selection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressReportState"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Progress reports"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressReportInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings saved atomically",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressReportState"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reminders/progress-reports/preview": {
+      "post": {
+        "tags": ["Progress reports"],
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "integrationKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ProgressReportInput"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "slot": {
+                        "type": "string",
+                        "enum": ["wed", "sun"]
+                      }
+                    },
+                    "required": ["slot"],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Read-only draft preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressReportPreview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Request failed",
             "content": {
               "application/problem+json": {
                 "schema": {

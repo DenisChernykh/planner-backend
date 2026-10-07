@@ -12,8 +12,10 @@ export {
   postApiIntegrationsChatgpt,
 } from "./generated/integrations/integrations";
 export * from "./generated/model";
+export type { GetApiProgressParams } from "./generated/operation/getApiProgressParams";
 export type { GetApiSearchParams } from "./generated/operation/getApiSearchParams";
 export type { PostApiPlansMonthGoalsBody } from "./generated/operation/postApiPlansMonthGoalsBody";
+export type { PostApiRemindersProgressReportsPreviewBody } from "./generated/operation/postApiRemindersProgressReportsPreviewBody";
 export type { PutApiGoalsGoalIdEntriesDateBody } from "./generated/operation/putApiGoalsGoalIdEntriesDateBody";
 export type { PutApiPlansMonthGoalsOrderBody } from "./generated/operation/putApiPlansMonthGoalsOrderBody";
 export type { PutApiRemindersGoalsGoalIdBody } from "./generated/operation/putApiRemindersGoalsGoalIdBody";
@@ -22,6 +24,7 @@ export {
   deleteApiGoalsGoalIdEntriesDate,
   getGetApiPlansMonthQueryKey,
   getGetApiPlansMonthTrashQueryKey,
+  patchApiGoalsGoalId,
   postApiGoalsGoalIdRestore,
   putApiGoalsGoalIdEntriesDate,
   putApiPlansMonthGoalsOrder,
@@ -30,6 +33,19 @@ export {
   usePostApiPlansMonthGoals,
   usePutApiPlansMonthGoalsOrder,
 } from "./generated/planning/planning";
+export {
+  getApiProgress,
+  getApiProgressGoalsGoalId,
+  putApiProgressSettings,
+  useGetApiProgress,
+  useGetApiProgressGoalsGoalId,
+  useGetApiProgressSettings,
+} from "./generated/progress/progress";
+export {
+  postApiRemindersProgressReportsPreview,
+  putApiRemindersProgressReports,
+  useGetApiRemindersProgressReports,
+} from "./generated/progress-reports/progress-reports";
 export {
   deleteApiRemindersTelegram,
   getGetApiRemindersGoalsMonthQueryKey,

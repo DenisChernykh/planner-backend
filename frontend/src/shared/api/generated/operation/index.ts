@@ -8,6 +8,9 @@
 
 export * from './getApiAuthTelegramCallbackParams';
 export * from './getApiNotesParams';
+export * from './getApiProgressGoalsGoalIdParams';
+export * from './getApiProgressParams';
+export * from './getApiRemindersProgressReportsParams';
 export * from './getApiSearchGoalsParams';
 export * from './getApiSearchParams';
 export * from './patchApiGoalsGoalIdBody';
@@ -16,7 +19,9 @@ export * from './postApiGoalsGoalIdEntriesDateAdjustBody';
 export * from './postApiIntegrationsChatgptBody';
 export * from './postApiNotesBody';
 export * from './postApiPlansMonthGoalsBody';
+export * from './postApiRemindersProgressReportsPreviewBody';
 export * from './putApiGoalsGoalIdEntriesDateBody';
 export * from './putApiPlansMonthGoalsOrderBody';
+export * from './putApiProgressSettingsBody';
 export * from './putApiRemindersGoalsGoalIdBody';
 export * from './putApiRemindersSettingsBody';

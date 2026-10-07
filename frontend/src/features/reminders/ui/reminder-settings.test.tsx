@@ -101,7 +101,7 @@ describe("reminder settings", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    await user.click(screen.getByRole("checkbox", { name: "Присылать напоминания" }));
+    await user.click(screen.getByRole("checkbox", { name: "Напоминания о заполнении" }));
     await user.clear(screen.getByLabelText("Часовой пояс"));
     await user.type(screen.getByLabelText("Часовой пояс"), "Europe/Moscow");
     for (const connection of ["active", "disconnected"]) {
@@ -116,7 +116,7 @@ describe("reminder settings", () => {
         ).toBeInTheDocument(),
       );
       expect(screen.getByLabelText("Часовой пояс")).toHaveValue("Europe/Moscow");
-      expect(screen.getByRole("checkbox", { name: "Присылать напоминания" })).toBeChecked();
+      expect(screen.getByRole("checkbox", { name: "Напоминания о заполнении" })).toBeChecked();
     }
   });
   it("submits the chosen timezone and times without read-only response fields", async () => {
@@ -133,7 +133,7 @@ describe("reminder settings", () => {
       />,
       { wrapper },
     );
-    await user.click(screen.getByRole("checkbox", { name: "Присылать напоминания" }));
+    await user.click(screen.getByRole("checkbox", { name: "Напоминания о заполнении" }));
     await user.clear(screen.getByLabelText("Часовой пояс"));
     await user.type(screen.getByLabelText("Часовой пояс"), "Europe/Moscow");
     await user.click(screen.getByRole("button", { name: "Сохранить настройки" }));

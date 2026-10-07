@@ -28,4 +28,7 @@ export function setFactInCache(
       };
     },
   );
+  void queryClient.invalidateQueries({
+    predicate: (query) => String(query.queryKey[0]).startsWith("/api/progress"),
+  });
 }

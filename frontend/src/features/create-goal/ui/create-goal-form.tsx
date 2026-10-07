@@ -55,7 +55,13 @@ export function CreateGoalForm({ month }: { month: string }) {
     mutation: {
       throwOnError: false,
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: getGetApiPlansMonthQueryKey({ month }) });
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: getGetApiPlansMonthQueryKey({ month }) }),
+          queryClient.invalidateQueries({
+            predicate: (query) =>
+              /\/api\/(?:progress|reminders\/progress-reports)/u.test(String(query.queryKey[0])),
+          }),
+        ]);
         void navigate(`/plans/${month}#notice=goal-created`, { replace: true });
       },
       onError: (error) => {

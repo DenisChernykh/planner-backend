@@ -39,6 +39,10 @@ function DeletedGoal({
         client.invalidateQueries({ queryKey: getGetApiPlansMonthTrashQueryKey({ month }) }),
         client.invalidateQueries({ queryKey: getGetApiPlansMonthQueryKey({ month }) }),
         client.invalidateQueries({ queryKey: getGetApiRemindersGoalsMonthQueryKey({ month }) }),
+        client.invalidateQueries({
+          predicate: (query) =>
+            /\/api\/(?:progress|reminders\/progress-reports)/u.test(String(query.queryKey[0])),
+        }),
       ]);
     },
   });

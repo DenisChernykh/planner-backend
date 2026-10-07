@@ -1,10 +1,11 @@
 import { BarChart3, Plus } from "lucide-react";
 import { Link } from "react-router";
-
+import { useAppRuntime } from "@/shared/lib/runtime";
 import { cn } from "@/shared/lib/utils";
-import { Button, buttonVariants } from "@/shared/ui";
+import { buttonVariants } from "@/shared/ui";
 
 export function PlanHeader({ month, hasGoals }: { month: string; hasGoals: boolean }) {
+  const embedded = useAppRuntime() === "chatgpt";
   const title = new Intl.DateTimeFormat("ru-RU", { month: "long", timeZone: "UTC" }).format(
     new Date(`${month}-01T00:00:00Z`),
   );
@@ -22,14 +23,17 @@ export function PlanHeader({ month, hasGoals }: { month: string; hasGoals: boole
         </p>
       </div>
       <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center">
-        <Button
-          variant="outline"
-          className="h-11 rounded-lg sm:h-8 sm:rounded-none"
-          disabled
-          title="Недоступно: отчёты ещё не подключены"
-        >
-          <BarChart3 data-icon="inline-start" /> Итоги месяца
-        </Button>
+        {!embedded && (
+          <Link
+            to={`/plans/${month}/progress?period=month&anchor=${month}-01`}
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "h-11 rounded-lg sm:h-8 sm:rounded-none",
+            )}
+          >
+            <BarChart3 data-icon="inline-start" /> Итоги месяца
+          </Link>
+        )}
         <Link
           to={`/plans/${month}/goals/new`}
           className={cn(buttonVariants(), "h-11 rounded-lg sm:h-8 sm:rounded-none")}

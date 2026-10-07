@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/react/sortable";
 import { GripVertical } from "lucide-react";
-import { useMemo } from "react";
+import type { ProgressGoal } from "@/shared/api";
 import {
   clampPlannerDate,
   getPlannerDayName,
@@ -8,14 +8,13 @@ import {
 } from "@/shared/lib/planner-calendar";
 import {
   type CadencePeriod,
-  clampProgress,
   formatEntryValue,
   getEntry,
   getGoalMeta,
-  getProgress,
   getTrackingLabel,
   type PlanGoal,
 } from "../model/plan-model";
+import { PlanTempo } from "./plan-tempo";
 import { QuickFactInput } from "./quick-fact-input";
 import { trackingIconMap } from "./tracking-presentation";
 
@@ -28,6 +27,8 @@ type GoalRowProps = {
   weekDates: string[];
   onSelect: (goal: PlanGoal, date: string) => void;
   selection?: { goalId: string; date: string };
+  progress?: ProgressGoal;
+  progressState: "embedded" | "pending" | "error" | "ready";
 };
 
 export function GoalRow({
@@ -39,6 +40,8 @@ export function GoalRow({
   weekDates,
   onSelect,
   selection,
+  progress,
+  progressState,
 }: GoalRowProps) {
   const { ref, handleRef, isDragging } = useSortable({
     id: goal.id,
@@ -48,10 +51,6 @@ export function GoalRow({
     accept: cadence,
     data: { cadence, title: goal.title },
   });
-  const progress = useMemo(
-    () => getProgress(goal, weekDates, month, today),
-    [goal, weekDates, month, today],
-  );
   const GoalIcon = trackingIconMap[goal.tracking.type];
   const factDate = clampPlannerDate(today, today, month);
   const factEntry = getEntry(goal, factDate);
@@ -114,20 +113,14 @@ export function GoalRow({
           </button>
         );
       })}
-      <div className="flex min-h-[72px] flex-col justify-center gap-1.5 border-r px-3">
-        <div className="flex items-center justify-between gap-2 text-xs font-bold text-primary">
-          <span>
-            {progress.value} / {progress.total}
-          </span>
-          <span className="text-[0.65rem] font-normal text-muted-foreground">{progress.label}</span>
-        </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary transition-[width]"
-            style={{ width: `${clampProgress(progress.value, progress.total)}%` }}
-          />
-        </div>
-      </div>
+      <PlanTempo
+        goal={goal}
+        month={month}
+        today={today}
+        weekDates={weekDates}
+        progress={progress}
+        state={progressState}
+      />
       <QuickFactInput
         key={quickFactKey}
         goal={goal}

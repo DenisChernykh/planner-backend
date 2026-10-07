@@ -1,11 +1,13 @@
 import type { PlanningOperations } from "../../../planning/public-contracts";
 import { localDate, nextOccurrence, startOfReminderDay } from "../../domain/schedule";
+import type { ProgressReportRepository } from "../ports/progress-report-repository";
 import type { ReminderRepository } from "../ports/reminder-repository";
 
 export class PrepareCurrentPlanUseCase {
   constructor(
     private readonly repository: ReminderRepository,
     private readonly planning: PlanningOperations,
+    private readonly reports?: ProgressReportRepository,
   ) {}
 
   async execute({
@@ -26,6 +28,7 @@ export class PrepareCurrentPlanUseCase {
       timeZone: settings.timeZone,
     });
     if (plan.carriedGoals.length === 0) return;
+    await this.reports?.inherit(ownerId, plan.carriedGoals);
     const reminders = new Map(
       (await this.repository.reminders(ownerId)).map((rule) => [rule.goalId, rule]),
     );

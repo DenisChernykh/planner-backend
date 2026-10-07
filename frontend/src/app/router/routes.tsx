@@ -7,6 +7,7 @@ import { CreateGoalPage } from "@/pages/create-goal";
 import { LoginPage } from "@/pages/login";
 import { NotFoundPage } from "@/pages/not-found";
 import { PlanPage } from "@/pages/plan";
+import { ProgressPage } from "@/pages/progress";
 import { RemindersPage } from "@/pages/reminders";
 import { TrashPage } from "@/pages/trash";
 import { useGetApiRemindersSettings } from "@/shared/api";
@@ -64,6 +65,7 @@ export const routes = [
           { index: true, element: <PlanPage /> },
           { path: "goals/new", element: <CreateGoalPage /> },
           { path: "reminders", element: <RemindersPage /> },
+          { path: "progress", element: <ProgressPage /> },
           { path: "connections", element: <ConnectionsPage /> },
           { path: "trash", element: <TrashPage /> },
           { path: "*", element: <NotFoundPage /> },

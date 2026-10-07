@@ -5,6 +5,7 @@ import type {
   GoalPatchInput,
   GoalRecord,
 } from "../../domain/model";
+import type { ProgressPlanningSource } from "../../public-contracts";
 
 export type GoalUpdate = GoalPatchInput & {
   updatedAt: number;
@@ -13,6 +14,11 @@ export type GoalUpdate = GoalPatchInput & {
 export type StoredEntry = GoalEntry & { goalId: string };
 
 export interface PlanningRepository {
+  progressSources(
+    ownerId: string,
+    fromMonth: string,
+    toMonth: string,
+  ): Promise<ProgressPlanningSource[]>;
   createGoal(goal: GoalRecord): Promise<GoalRecord>;
   findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null>;
   listGoals(ownerId: string, month: string, includeDeleted: boolean): Promise<GoalRecord[]>;

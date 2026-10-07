@@ -518,7 +518,7 @@ describe("planning application rules", () => {
     expect(await outside.json()).toMatchObject({ code: "ENTRY_DATE_INVALID" });
   });
 
-  it("preserves old met after goal settings change and supports replace/delete", async () => {
+  it("recalculates met after goal settings change and supports replace/delete", async () => {
     const { goal } = await createGoal();
     const first = await request(`/api/goals/${goal.id}/entries/2026-04-14`, {
       method: "PUT",
@@ -539,7 +539,7 @@ describe("planning application rules", () => {
     });
     expect(updated.status).toBe(200);
     const plan = await request("/api/plans/2026-04");
-    expect(await plan.json()).toMatchObject({ goals: [{ entries: [{ value: 10, met: false }] }] });
+    expect(await plan.json()).toMatchObject({ goals: [{ entries: [{ value: 10, met: true }] }] });
 
     const replaced = await request(`/api/goals/${goal.id}/entries/2026-04-14`, {
       method: "PUT",

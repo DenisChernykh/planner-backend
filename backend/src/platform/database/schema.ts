@@ -168,6 +168,47 @@ export const reminderSettings = sqliteTable("reminder_settings", {
   nextEveningAt: integer("next_evening_at"),
 });
 
+export const progressSettings = sqliteTable("progress_settings", {
+  ownerId: text("owner_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  startsOn: text("starts_on"),
+  revision: integer("revision").notNull().default(0),
+});
+
+export const progressReportSettings = sqliteTable(
+  "progress_report_settings",
+  {
+    ownerId: text("owner_id")
+      .primaryKey()
+      .references(() => users.id, { onDelete: "cascade" }),
+    enabled: integer("enabled", { mode: "boolean" }).notNull().default(false),
+    wednesdayTime: text("wednesday_time").notNull().default("21:00"),
+    sundayTime: text("sunday_time").notNull().default("21:00"),
+    nextWednesdayAt: integer("next_wednesday_at"),
+    nextSundayAt: integer("next_sunday_at"),
+    revision: integer("revision").notNull().default(0),
+  },
+  (table) => [
+    index("progress_reports_wednesday_idx").on(table.enabled, table.nextWednesdayAt),
+    index("progress_reports_sunday_idx").on(table.enabled, table.nextSundayAt),
+  ],
+);
+
+export const goalProgressReports = sqliteTable(
+  "goal_progress_reports",
+  {
+    goalId: text("goal_id")
+      .primaryKey()
+      .references(() => planGoals.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    included: integer("included", { mode: "boolean" }).notNull(),
+  },
+  (table) => [index("goal_progress_reports_owner_idx").on(table.ownerId, table.included)],
+);
+
 export const goalReminders = sqliteTable(
   "goal_reminders",
   {

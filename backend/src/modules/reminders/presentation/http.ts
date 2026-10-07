@@ -12,19 +12,21 @@ import {
 } from "../../identity-access/public-contracts";
 import type { ConnectTelegramUseCase } from "../application/connection/connect-telegram.use-case";
 import type { DisconnectTelegramUseCase } from "../application/connection/disconnect-telegram.use-case";
+import type { ProgressReportsUseCases } from "../application/reports/progress-reports";
 import type { PrepareCurrentPlanUseCase } from "../application/scheduling/prepare-current-plan.use-case";
 import type { GetGoalRemindersQuery } from "../application/settings/get-goal-reminders.query";
 import type { GetReminderStateQuery } from "../application/settings/get-reminder-state.query";
 import type { SaveGoalReminderUseCase } from "../application/settings/save-goal-reminder.use-case";
 import type { SaveReminderSettingsUseCase } from "../application/settings/save-reminder-settings.use-case";
-
 import {
   GoalReminderInvalidError,
   ReminderScheduleInvalidError,
   ReminderSettingsInvalidError,
 } from "../domain/errors";
+import { registerProgressReportHttp } from "./progress-reports-http";
 
 type ReminderHttpUseCases = {
+  reports: ProgressReportsUseCases;
   prepareCurrentPlan: PrepareCurrentPlanUseCase;
   getState: GetReminderStateQuery;
   getGoalReminders: GetGoalRemindersQuery;
@@ -116,7 +118,7 @@ export function createReminderHttp(
   );
   router.use("/api/reminders/*", async (c, next) => {
     if (
-      c.req.method === "PUT" &&
+      (c.req.method === "PUT" || (c.req.method === "POST" && c.req.path.endsWith("/preview"))) &&
       !/^application\/json(?:\s*;|$)/iu.test(c.req.header("Content-Type") ?? "")
     ) {
       return problem(c, {
@@ -132,6 +134,7 @@ export function createReminderHttp(
   const owner = (c: {
     get(name: "authenticatedUser"): IdentityContextVariables["authenticatedUser"];
   }) => requireAuthenticatedUser({ authenticatedUser: c.get("authenticatedUser") }).id;
+  registerProgressReportHttp(router, useCases);
   router.openapi(
     createRoute({
       method: "get",
