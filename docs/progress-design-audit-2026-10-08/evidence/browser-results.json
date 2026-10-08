@@ -1,0 +1,76 @@
+{
+  "sourceCommit": "2e5598d",
+  "data": "Synthetic fixtures from the committed design sample, browser API responses intercepted locally",
+  "checks": [
+    "overview and all widths",
+    "comparison data and omitted previous-period rows",
+    "monthly delta rounds percentages before subtraction",
+    "native date input and missing explicit success confirmation",
+    "reports preview formatting and all widths",
+    "bulk deselection changes hidden report goals",
+    "delivery issue states collapse to an aggregate banner",
+    "unbounded midnight chart differs from the design axis",
+    "empty/error/start/filter/loading states are implemented"
+  ],
+  "findings": {
+    "comparisonPresentation": {
+      "backendPreviousSum": 61,
+      "previousSumVisible": false,
+      "perDayPreviousDatesVisible": false,
+      "actualComparison": "+33 п. п. к прошлому периоду\n\n19 окт–21 окт: 3 выполнений. За 12 окт–14 окт: 2. Сравниваем одинаковые дни периода."
+    },
+    "rounding": {
+      "actual": 15,
+      "expectedFromRawFractions": 14
+    },
+    "dateDialog": {
+      "dateInputType": "date",
+      "customCalendarGridCount": 0,
+      "futureDateExplanationPresent": false,
+      "explicitSuccessPresent": false
+    },
+    "preview": {
+      "rawTextInSingleParagraph": "P",
+      "formattedGoalBlocks": false
+    },
+    "filteredBulkDeselection": {
+      "query": "Чтение",
+      "beforeSelected": [
+        "reading",
+        "water",
+        "training"
+      ],
+      "expectedRemaining": [
+        "water",
+        "training"
+      ],
+      "actualSelected": []
+    },
+    "delivery": {
+      "banner": "За последние сутки есть сообщения с ошибкой или неподтверждённой доставкой: 2. Новые отчёты будут сформированы по расписанию.",
+      "distinguishesUnknownFromRetry": false
+    },
+    "unboundedChart": {
+      "chartText": [
+        "00:00",
+        "12:00",
+        "00:00",
+        "19",
+        "23:50",
+        "20",
+        "00:10",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25"
+      ],
+      "yCoordinates": [
+        36.076388888888886,
+        188.92361111111111
+      ]
+    }
+  },
+  "consoleErrors": [],
+  "unhandled": []
+}

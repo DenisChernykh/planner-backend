@@ -1,0 +1,54 @@
+{
+  "sourceCommit": "2e5598d",
+  "data": "Synthetic fixtures from the committed design sample, browser API responses intercepted locally",
+  "checks": [
+    "daily calendar markers are hidden on phones",
+    "training detail uses generic statistics and omits past weeks",
+    "scale graph uses lines instead of the designed bars",
+    "future date draft has no explanatory state",
+    "missing goal repeats a network-error action without a return-to-goals link"
+  ],
+  "findings": {
+    "calendar": [
+      {
+        "width": 1440,
+        "markers": 3,
+        "visibleMarkers": 3,
+        "visibleResult": true
+      },
+      {
+        "width": 390,
+        "markers": 3,
+        "visibleMarkers": 0,
+        "visibleResult": false
+      },
+      {
+        "width": 320,
+        "markers": 3,
+        "visibleMarkers": 0,
+        "visibleResult": false
+      }
+    ],
+    "training": {
+      "showsRemaining": false,
+      "showsPastWeeks": false,
+      "actualSummary": "Выполнено\n\n1 из 3 за неделю · 33%\n\n2 из 3\n\nДней с записью\n\n1\n\nДней без записи\n-34 п. п. к прошлому периоду\n\n19 окт–21 окт: 1 выполнений. За 12 окт–14 окт: 2. Сравниваем одинаковые дни периода.\n\n"
+    },
+    "scale": {
+      "pointCount": 2,
+      "barCount": 0
+    },
+    "futureDateDraft": {
+      "currentDate": "2026-10-21",
+      "draft": "2026-12-12",
+      "showsExplanation": false
+    },
+    "missingGoal": {
+      "hasAllGoalsLink": false,
+      "hasNetworkErrorText": true,
+      "hasRetry": true
+    }
+  },
+  "consoleErrors": [],
+  "unhandled": []
+}
