@@ -1,0 +1,62 @@
+{
+  "source": "../Planner.pen",
+  "section": "Монетизация",
+  "exportScale": 1,
+  "sourceSha256": "d8ba4f24852bb03de37ca733266b93fdd3a0dd9120ab64231859fe9bf2935ae0",
+  "frames": [
+    {
+      "id": "a0Cs9",
+      "name": "Монетизация / 00 · Компоненты",
+      "file": "components.png",
+      "width": 1000,
+      "height": 550
+    },
+    {
+      "id": "uzjj6",
+      "name": "Монетизация / 01 · План · Компьютер",
+      "file": "plan-desktop.png",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "id": "Nnonp",
+      "name": "Монетизация / 02 · Донат · Компьютер",
+      "file": "donation-desktop.png",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "id": "hMJwg",
+      "name": "Монетизация / 03 · Меню · Телефон",
+      "file": "menu-mobile.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "lwn0o",
+      "name": "Монетизация / 04 · Донат · Телефон",
+      "file": "donation-mobile.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "mgKgR",
+      "name": "Монетизация / 05 · Донат · 320 px",
+      "file": "donation-320.png",
+      "width": 320,
+      "height": 844
+    },
+    {
+      "id": "RctBe",
+      "name": "Монетизация / 06 · Своя сумма · Телефон",
+      "file": "donation-custom-mobile.png",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "verification": {
+    "savedSourceReopened": true,
+    "nativeClippingProblems": 0,
+    "exportDimensionsMatch": true
+  }
+}

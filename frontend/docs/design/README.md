@@ -45,3 +45,12 @@ The same `Planner.pen` contains 53 editable screens and state boards, a navigati
 map, and reusable components under «Прогресс». Desktop, 390 px and 320 px exports
 are indexed with frame IDs, reproducible sample data, interaction notes, and
 coverage of the specification.
+
+## Developer services and donations
+
+[Developer card and donation mockups](./monetization/README.md) show a compact
+services card and support action in the sidebar, a desktop donation dialog,
+mobile navigation, and donation sheets at 390 and 320 px. The editable
+«Монетизация» frames and reusable components are in the existing `Planner.pen`.
+PNG exports include a custom amount example; payment and contact links are
+selected when implementing the design.
