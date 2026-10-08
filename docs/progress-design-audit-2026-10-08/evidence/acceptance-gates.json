@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "date": "2026-10-08",
+  "node": "24.18.1",
+  "pnpm": "11.15.1",
+  "checks": [
+    {
+      "command": "pnpm check",
+      "exitCode": 0,
+      "vitestSummaries": [
+        " Test Files  36 passed (36)",
+        "      Tests  127 passed (127)",
+        " Test Files  15 passed (15)",
+        "      Tests  204 passed (204)"
+      ],
+      "includes": [
+        "frontend OpenAPI, format, lint, architecture, tests, build",
+        "backend typegen, format, boundaries, typecheck, tests, Worker dry-run",
+        "ChatGPT package checks",
+        "monolith smoke"
+      ]
+    },
+    {
+      "command": "pnpm boundaries:check",
+      "exitCode": 0
+    }
+  ],
+  "limitations": [
+    "Local checks, not GitHub CI or deployment",
+    "Existing lint/architecture and bundle-size warnings remain",
+    "Acceptance diagnostics still fail: P27/P30/P37 and B04/B11/B12/B13",
+    "No production D1, real Telegram delivery or real ChatGPT client exercised"
+  ]
+}

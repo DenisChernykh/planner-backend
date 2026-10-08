@@ -1,0 +1,643 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "method": "Direct domain/formatter calls on synthetic facts; no external I/O",
+  "totals": {
+    "passed": 36,
+    "failed": 3
+  },
+  "cases": [
+    {
+      "id": "P01",
+      "requirement": "§3, §4.1, К1: включительный старт и исключённая история",
+      "expected": [
+        2,
+        2,
+        55,
+        27.5,
+        100,
+        "excluded",
+        null
+      ],
+      "actual": [
+        2,
+        2,
+        55,
+        27.5,
+        100,
+        "excluded",
+        null
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P02",
+      "requirement": "§4.1, К2: четыре выполнения, false, отсутствие записи",
+      "expected": [
+        4,
+        5,
+        6,
+        67,
+        83,
+        1,
+        "below",
+        "missing"
+      ],
+      "actual": [
+        4,
+        5,
+        6,
+        67,
+        83,
+        1,
+        "below",
+        "missing"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P03",
+      "requirement": "§4.1, К6: ноль входит в среднее, отсутствие не заменяется нулём",
+      "expected": [
+        2,
+        1,
+        10,
+        5
+      ],
+      "actual": [
+        2,
+        1,
+        10,
+        5
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P04",
+      "requirement": "§4.2, К6: atLeast, граница включительна",
+      "expected": [
+        1,
+        2,
+        2
+      ],
+      "actual": [
+        1,
+        2,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P05",
+      "requirement": "§4.2, К6: atMost, граница включительна",
+      "expected": [
+        1,
+        6,
+        2
+      ],
+      "actual": [
+        1,
+        6,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P06",
+      "requirement": "§4.2, К6: equal, граница включительна",
+      "expected": [
+        1,
+        6,
+        2
+      ],
+      "actual": [
+        1,
+        6,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P07",
+      "requirement": "§4.2, К6: условия времени, в том числе через полночь",
+      "expected": [
+        true,
+        true,
+        false
+      ],
+      "actual": [
+        true,
+        true,
+        false
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P08",
+      "requirement": "§4.2, К6: условия времени, в том числе через полночь",
+      "expected": [
+        true,
+        false
+      ],
+      "actual": [
+        true,
+        false
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P09",
+      "requirement": "§4.2, К6: условия времени, в том числе через полночь",
+      "expected": [
+        true,
+        false
+      ],
+      "actual": [
+        true,
+        false
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P10",
+      "requirement": "§4.2, К5: шкала является наблюдением",
+      "expected": [
+        3,
+        1,
+        5,
+        2,
+        false,
+        0,
+        2,
+        null
+      ],
+      "actual": [
+        3,
+        1,
+        5,
+        2,
+        false,
+        0,
+        2,
+        null
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P11",
+      "requirement": "§4.2: время без границ не имеет среднего и оценки успеха",
+      "expected": [
+        2,
+        false,
+        null,
+        0,
+        null
+      ],
+      "actual": [
+        2,
+        false,
+        null,
+        0,
+        null
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P12",
+      "requirement": "§4.3, К3: месячный план 20 → 17, исходная настройка сохранена",
+      "expected": [
+        20,
+        17,
+        true,
+        {
+          "from": "2026-10-06",
+          "to": "2026-10-31"
+        },
+        20
+      ],
+      "actual": [
+        20,
+        17,
+        true,
+        {
+          "from": "2026-10-06",
+          "to": "2026-10-31"
+        },
+        20
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P13",
+      "requirement": "§4.3, К4: в среду 2 из 3, будущие дни не пропуски",
+      "expected": [
+        2,
+        3,
+        67,
+        2,
+        0,
+        [
+          "future",
+          "future",
+          "future",
+          "future"
+        ]
+      ],
+      "actual": [
+        2,
+        3,
+        67,
+        2,
+        0,
+        [
+          "future",
+          "future",
+          "future",
+          "future"
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P14",
+      "requirement": "§4.3: превышение плана не теряется",
+      "expected": [
+        4,
+        3,
+        133,
+        1
+      ],
+      "actual": [
+        4,
+        3,
+        133,
+        1
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P15",
+      "requirement": "§4.3: недельная цель в месяце имеет строки недель и не месячный процент",
+      "expected": [
+        5,
+        null,
+        [
+          "2026-09-28",
+          "2026-10-05",
+          "2026-10-12",
+          "2026-10-19",
+          "2026-10-26"
+        ]
+      ],
+      "actual": [
+        5,
+        null,
+        [
+          "2026-09-28",
+          "2026-10-05",
+          "2026-10-12",
+          "2026-10-19",
+          "2026-10-26"
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P16",
+      "requirement": "§4.4: ΣR/ΣD и разные даты, без суммирования единиц",
+      "expected": [
+        3,
+        4,
+        75,
+        2,
+        2,
+        2
+      ],
+      "actual": [
+        3,
+        4,
+        75,
+        2,
+        2,
+        2
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P17",
+      "requirement": "§4.4: при отсутствии дневных целей нет дневной заполненности",
+      "expected": [
+        0,
+        0,
+        null
+      ],
+      "actual": [
+        0,
+        0,
+        null
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P18",
+      "requirement": "§3, К7: нет нулевых процентов вне периода",
+      "expected": [
+        "future-start",
+        null,
+        null,
+        0
+      ],
+      "actual": [
+        "future-start",
+        null,
+        null,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P19",
+      "requirement": "§3, К7: нет нулевых процентов вне периода",
+      "expected": [
+        "before-start",
+        null,
+        null,
+        0
+      ],
+      "actual": [
+        "before-start",
+        null,
+        null,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P20",
+      "requirement": "§3, К7: очистка и перенос назад возвращают историю",
+      "expected": [
+        100,
+        100
+      ],
+      "actual": [
+        100,
+        100
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P21",
+      "requirement": "§4.4, №27: сегодня пусто — подтверждённая серия до вчера",
+      "expected": {
+        "current": 2,
+        "best": 2
+      },
+      "actual": {
+        "current": 2,
+        "best": 2
+      },
+      "status": "pass"
+    },
+    {
+      "id": "P22",
+      "requirement": "§4.4, №27: явное невыполнение обрывает серию",
+      "expected": {
+        "current": 0,
+        "best": 2
+      },
+      "actual": {
+        "current": 0,
+        "best": 2
+      },
+      "status": "pass"
+    },
+    {
+      "id": "P23",
+      "requirement": "§4.4, №27: отсутствие вчера и сегодня обрывает серию",
+      "expected": {
+        "current": 0,
+        "best": 2
+      },
+      "actual": {
+        "current": 0,
+        "best": 2
+      },
+      "status": "pass"
+    },
+    {
+      "id": "P24",
+      "requirement": "§4.4: исторический период не имеет текущей серии",
+      "expected": {
+        "current": null,
+        "best": 2
+      },
+      "actual": {
+        "current": null,
+        "best": 2
+      },
+      "status": "pass"
+    },
+    {
+      "id": "P25",
+      "requirement": "§4.4: серия ограничена датой учёта",
+      "expected": {
+        "current": 1,
+        "best": 1
+      },
+      "actual": {
+        "current": 1,
+        "best": 1
+      },
+      "status": "pass"
+    },
+    {
+      "id": "P26",
+      "requirement": "§4.4, К15: сопоставимые дни недели и исходные числа",
+      "expected": [
+        {
+          "from": "2026-10-12",
+          "to": "2026-10-14"
+        },
+        1,
+        3,
+        20,
+        2,
+        3
+      ],
+      "actual": [
+        {
+          "from": "2026-10-12",
+          "to": "2026-10-14"
+        },
+        1,
+        3,
+        20,
+        2,
+        3
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P27",
+      "requirement": "§4.4, F02: 2/3 − 1/3 округляется в +33 п. п.",
+      "expected": 33,
+      "actual": 34,
+      "status": "fail"
+    },
+    {
+      "id": "P28",
+      "requirement": "§4.4, К15: первая неделя не сравнивается с исключённой",
+      "expected": [
+        null,
+        "insufficient-history"
+      ],
+      "actual": [
+        null,
+        "insufficient-history"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P29",
+      "requirement": "§4.4, №27: месяцы 18/21 и 15/21; суммы 520 и 430",
+      "expected": [
+        18,
+        21,
+        520,
+        15,
+        21,
+        430
+      ],
+      "actual": [
+        18,
+        21,
+        520,
+        15,
+        21,
+        430
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P30",
+      "requirement": "§4.4, F02: 18/21 − 15/21 округляется в +14 п. п.",
+      "expected": 14,
+      "actual": 15,
+      "status": "fail"
+    },
+    {
+      "id": "P31",
+      "requirement": "§4.4: короткий предыдущий месяц не сравнивается",
+      "expected": null,
+      "actual": null,
+      "status": "pass"
+    },
+    {
+      "id": "P32",
+      "requirement": "§4.5, К13: две части объединяются, округление один раз",
+      "expected": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "actual": [
+        1,
+        2,
+        3,
+        7
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P33",
+      "requirement": "§4.5, К13: одинаковые названия без связи не объединяются",
+      "expected": 2,
+      "actual": 2,
+      "status": "pass"
+    },
+    {
+      "id": "P34",
+      "requirement": "§4.5, №27: разные правила разделены; сравнение отсутствует",
+      "expected": [
+        2,
+        [
+          null,
+          null
+        ]
+      ],
+      "actual": [
+        2,
+        [
+          null,
+          null
+        ]
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P35",
+      "requirement": "§4.5, №27: неподготовленный ноябрь — исходный план без процента",
+      "expected": [
+        1,
+        3,
+        null,
+        null,
+        true,
+        false
+      ],
+      "actual": [
+        1,
+        3,
+        null,
+        null,
+        true,
+        false
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P36",
+      "requirement": "§4.2–4.5: поведение независимо от названия; все типы × частоты",
+      "expected": 24,
+      "actual": 24,
+      "status": "pass"
+    },
+    {
+      "id": "P37",
+      "requirement": "§7.1, F12: сводка без записей ведёт в план",
+      "expected": "Открыть план",
+      "actual": "Открыть прогресс",
+      "status": "fail"
+    },
+    {
+      "id": "P38",
+      "requirement": "§7.1, К17: длинные названия, бюджет, скрытые цели, общая сумма",
+      "expected": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "P39",
+      "requirement": "§7.1, К4: месячный план отдельно от недельного факта",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "status": "pass"
+    }
+  ]
+}
