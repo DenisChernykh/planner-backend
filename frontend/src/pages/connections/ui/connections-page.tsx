@@ -52,7 +52,7 @@ export function ConnectionsPage() {
   const pending = issue.isPending || revoke.isPending;
   return (
     <PlannerShell month={month}>
-      <main className="mx-auto max-w-3xl space-y-6 px-5 py-8 sm:px-8">
+      <div className="mx-auto max-w-3xl space-y-6 px-5 py-8 sm:px-8">
         <div>
           <h1 className="text-2xl font-bold">Подключения</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -154,7 +154,7 @@ export function ConnectionsPage() {
             </div>
           )}
         </section>
-      </main>
+      </div>
     </PlannerShell>
   );
 }

@@ -112,7 +112,7 @@ export function ProgressView({ month }: { month: string }) {
         ? "Период раньше начала учёта"
         : "В этом периоде пока нет целей";
   return (
-    <main className="min-w-0 bg-background px-5 py-7 sm:px-8">
+    <div className="min-w-0 bg-background px-5 py-7 sm:px-8">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{goal?.title ?? "Прогресс"}</h1>
@@ -373,6 +373,6 @@ export function ProgressView({ month }: { month: string }) {
           </Link>
         </div>
       )}
-    </main>
+    </div>
   );
 }

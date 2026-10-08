@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "monthly results 2026-10, width 1440, keyboard navigation",
+    "monthly results 2027-02, width 1440, keyboard navigation",
+    "monthly results 2026-10, width 390, keyboard navigation",
+    "monthly results 2027-02, width 390, keyboard navigation",
+    "connections has exactly one main",
+    "mobile goal settings keyboard, failed save preserves inputs, retry persists on reload",
+    "mobile trash and undo API failures remain retryable"
+  ],
+  "browser": "154.0.8037.98"
+}
