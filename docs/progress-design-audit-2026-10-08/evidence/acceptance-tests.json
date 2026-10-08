@@ -1,0 +1,826 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "method": "Vitest; local D1/Miniflare, fake Telegram transport, React Testing Library; no real Telegram/OIDC",
+  "totals": {
+    "passed": 102,
+    "failed": 0
+  },
+  "tests": [
+    {
+      "id": "T01",
+      "path": "backend/test/progress.spec.ts",
+      "line": 53,
+      "title": "includes the start date and excludes earlier entries without converting missing values to zero",
+      "fullName": "progress calculations includes the start date and excludes earlier entries without converting missing values to zero",
+      "status": "passed"
+    },
+    {
+      "id": "T02",
+      "path": "backend/test/progress.spec.ts",
+      "line": 76,
+      "title": "distinguishes 4 successes, a recorded failure and one missing day",
+      "fullName": "progress calculations distinguishes 4 successes, a recorded failure and one missing day",
+      "status": "passed"
+    },
+    {
+      "id": "T03",
+      "path": "backend/test/progress.spec.ts",
+      "line": 104,
+      "title": "keeps a zero in the numeric average and supports atMost and equality rules",
+      "fullName": "progress calculations keeps a zero in the numeric average and supports atMost and equality rules",
+      "status": "passed"
+    },
+    {
+      "id": "T04",
+      "path": "backend/test/progress.spec.ts",
+      "line": 113,
+      "title": "counts scales and unbounded time as observations, without adding successful completions",
+      "fullName": "progress calculations counts scales and unbounded time as observations, without adding successful completions",
+      "status": "passed"
+    },
+    {
+      "id": "T05",
+      "path": "backend/test/progress.spec.ts",
+      "line": 128,
+      "title": "uses planning's time rule for an interval across midnight",
+      "fullName": "progress calculations uses planning's time rule for an interval across midnight",
+      "status": "passed"
+    },
+    {
+      "id": "T06",
+      "path": "backend/test/progress.spec.ts",
+      "line": 139,
+      "title": "reduces a monthly plan once, while retaining the original target",
+      "fullName": "progress calculations reduces a monthly plan once, while retaining the original target",
+      "status": "passed"
+    },
+    {
+      "id": "T07",
+      "path": "backend/test/progress.spec.ts",
+      "line": 150,
+      "title": "retains a weekly plan in midweek and reports overflow without losing the numerator",
+      "fullName": "progress calculations retains a weekly plan in midweek and reports overflow without losing the numerator",
+      "status": "passed"
+    },
+    {
+      "id": "T08",
+      "path": "backend/test/progress.spec.ts",
+      "line": 172,
+      "title": "has no percentage or zero statistics for a future start and a period before the start",
+      "fullName": "progress calculations has no percentage or zero statistics for a future start and a period before the start",
+      "status": "passed"
+    },
+    {
+      "id": "T09",
+      "path": "backend/test/progress.spec.ts",
+      "line": 183,
+      "title": "restores earlier history when the start is cleared",
+      "fullName": "progress calculations restores earlier history when the start is cleared",
+      "status": "passed"
+    },
+    {
+      "id": "T10",
+      "path": "backend/test/progress.spec.ts",
+      "line": 189,
+      "title": "distinguishes an explicitly unselected future version from an unprepared month",
+      "fullName": "progress calculations distinguishes an explicitly unselected future version from an unprepared month",
+      "status": "passed"
+    },
+    {
+      "id": "T11",
+      "path": "backend/test/progress.spec.ts",
+      "line": 214,
+      "title": "merges compatible carried versions across months and rounds once",
+      "fullName": "progress calculations merges compatible carried versions across months and rounds once",
+      "status": "passed"
+    },
+    {
+      "id": "T12",
+      "path": "backend/test/progress.spec.ts",
+      "line": 249,
+      "title": "does not invent a reduced plan when the future adjacent month is missing",
+      "fullName": "progress calculations does not invent a reduced plan when the future adjacent month is missing",
+      "status": "passed"
+    },
+    {
+      "id": "T13",
+      "path": "backend/test/progress.spec.ts",
+      "line": 261,
+      "title": "compares the same elapsed weekdays and suppresses a shorter previous month",
+      "fullName": "progress calculations compares the same elapsed weekdays and suppresses a shorter previous month",
+      "status": "passed"
+    },
+    {
+      "id": "T14",
+      "path": "backend/test/progress.spec.ts",
+      "line": 291,
+      "title": "ends a confirmed streak on an empty past day, allowing today's unrecorded day",
+      "fullName": "progress calculations ends a confirmed streak on an empty past day, allowing today's unrecorded day",
+      "status": "passed"
+    },
+    {
+      "id": "T15",
+      "path": "backend/test/progress.spec.ts",
+      "line": 317,
+      "title": "defaults to all history, rejects nonexistent dates and preserves the previous setting",
+      "fullName": "progress D1 and API defaults to all history, rejects nonexistent dates and preserves the previous setting",
+      "status": "passed"
+    },
+    {
+      "id": "T16",
+      "path": "backend/test/progress.spec.ts",
+      "line": 325,
+      "title": "recalculates stored criteria atomically while preserving values and notes",
+      "fullName": "progress D1 and API recalculates stored criteria atomically while preserving values and notes",
+      "status": "passed"
+    },
+    {
+      "id": "T17",
+      "path": "backend/test/progress.spec.ts",
+      "line": 358,
+      "title": "does not disclose another owner's goal or create an unprepared future month",
+      "fullName": "progress D1 and API does not disclose another owner's goal or create an unprepared future month",
+      "status": "passed"
+    },
+    {
+      "id": "T18",
+      "path": "backend/test/progress.spec.ts",
+      "line": 391,
+      "title": "keeps a concurrent fact and threshold edit consistent without losing its note",
+      "fullName": "progress D1 and API keeps a concurrent fact and threshold edit consistent without losing its note",
+      "status": "passed"
+    },
+    {
+      "id": "T19",
+      "path": "backend/test/progress.spec.ts",
+      "line": 422,
+      "title": "uses authenticated owner and trusted Origin for settings and validates the OpenAPI query",
+      "fullName": "progress D1 and API uses authenticated owner and trusted Origin for settings and validates the OpenAPI query",
+      "status": "passed"
+    },
+    {
+      "id": "T20",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 79,
+      "title": "uses the first valid minute after a spring gap and one occurrence during fall back",
+      "fullName": "report schedules uses the first valid minute after a spring gap and one occurrence during fall back",
+      "status": "passed"
+    },
+    {
+      "id": "T21",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 87,
+      "title": "schedules strictly after saving, without replaying past slots",
+      "fullName": "report schedules schedules strictly after saving, without replaying past slots",
+      "status": "passed"
+    },
+    {
+      "id": "T22",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 96,
+      "title": "sends one report with reminders disabled and handles parallel Cron ticks",
+      "fullName": "progress reports with D1 and fake transport sends one report with reminders disabled and handles parallel Cron ticks",
+      "status": "passed"
+    },
+    {
+      "id": "T23",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 112,
+      "title": "does not resend a delivered slot after editing its time",
+      "fullName": "progress reports with D1 and fake transport does not resend a delivered slot after editing its time",
+      "status": "passed"
+    },
+    {
+      "id": "T24",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 120,
+      "title": "retains a snapshot during a confirmed retry, even if facts change",
+      "fullName": "progress reports with D1 and fake transport retains a snapshot during a confirmed retry, even if facts change",
+      "status": "passed"
+    },
+    {
+      "id": "T25",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 143,
+      "title": "rebuilds an unsent snapshot when the shared start date changes",
+      "fullName": "progress reports with D1 and fake transport rebuilds an unsent snapshot when the shared start date changes",
+      "status": "passed"
+    },
+    {
+      "id": "T26",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 152,
+      "title": "does not retry an unknown delivery result",
+      "fullName": "progress reports with D1 and fake transport does not retry an unknown delivery result",
+      "status": "passed"
+    },
+    {
+      "id": "T27",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 160,
+      "title": "skips slots older than 24 hours",
+      "fullName": "progress reports with D1 and fake transport skips slots older than 24 hours",
+      "status": "passed"
+    },
+    {
+      "id": "T28",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 166,
+      "title": "retains Sunday's original period when quiet hours delay delivery until Monday",
+      "fullName": "progress reports with D1 and fake transport retains Sunday's original period when quiet hours delay delivery until Monday",
+      "status": "passed"
+    },
+    {
+      "id": "T29",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 195,
+      "title": "rejects a stale claim if selection changes after snapshot formation",
+      "fullName": "progress reports with D1 and fake transport rejects a stale claim if selection changes after snapshot formation",
+      "status": "passed"
+    },
+    {
+      "id": "T30",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 222,
+      "title": "rebuilds a pending snapshot when a selected goal is deleted",
+      "fullName": "progress reports with D1 and fake transport rebuilds a pending snapshot when a selected goal is deleted",
+      "status": "passed"
+    },
+    {
+      "id": "T31",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 231,
+      "title": "fits long reports into one message by omitting only whole goal blocks",
+      "fullName": "progress reports with D1 and fake transport fits long reports into one message by omitting only whole goal blocks",
+      "status": "passed"
+    },
+    {
+      "id": "T32",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 258,
+      "title": "saves disabled drafts without Telegram and rejects enabling or an empty enabled selection",
+      "fullName": "progress reports with D1 and fake transport saves disabled drafts without Telegram and rejects enabling or an empty enabled selection",
+      "status": "passed"
+    },
+    {
+      "id": "T33",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 264,
+      "title": "pauses on deleted selected goals, restores their selection and never sends before a future start",
+      "fullName": "progress reports with D1 and fake transport pauses on deleted selected goals, restores their selection and never sends before a future start",
+      "status": "passed"
+    },
+    {
+      "id": "T34",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 279,
+      "title": "keeps preview read-only and applies only selected goals",
+      "fullName": "progress reports with D1 and fake transport keeps preview read-only and applies only selected goals",
+      "status": "passed"
+    },
+    {
+      "id": "T35",
+      "path": "backend/test/progress-reports.spec.ts",
+      "line": 311,
+      "title": "inherits report selection on rollover, including explicit exclusions",
+      "fullName": "progress reports with D1 and fake transport inherits report selection on rollover, including explicit exclusions",
+      "status": "passed"
+    },
+    {
+      "id": "T36",
+      "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
+      "line": 119,
+      "title": "switches calendar periods through API parameters and exposes fact editing links",
+      "fullName": "progress screen switches calendar periods through API parameters and exposes fact editing links",
+      "status": "passed"
+    },
+    {
+      "id": "T37",
+      "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
+      "line": 142,
+      "title": "explains future start without showing zero percentages or statistics",
+      "fullName": "progress screen explains future start without showing zero percentages or statistics",
+      "status": "passed"
+    },
+    {
+      "id": "T38",
+      "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
+      "line": 149,
+      "title": "retries an error without leaving a loading skeleton",
+      "fullName": "progress screen retries an error without leaving a loading skeleton",
+      "status": "passed"
+    },
+    {
+      "id": "T39",
+      "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
+      "line": 157,
+      "title": "applies a view filter only after confirmation and discards cancelled selection",
+      "fullName": "progress screen applies a view filter only after confirmation and discards cancelled selection",
+      "status": "passed"
+    },
+    {
+      "id": "T40",
+      "path": "frontend/src/features/progress-settings/ui/progress-start-date.test.tsx",
+      "line": 23,
+      "title": "keeps the draft on failure, retries explicitly and closes only after saving",
+      "fullName": "shared progress start date keeps the draft on failure, retries explicitly and closes only after saving",
+      "status": "passed"
+    },
+    {
+      "id": "T41",
+      "path": "frontend/src/features/progress-settings/ui/progress-start-date.test.tsx",
+      "line": 41,
+      "title": "cancels without writing and saves clearing as null",
+      "fullName": "shared progress start date cancels without writing and saves clearing as null",
+      "status": "passed"
+    },
+    {
+      "id": "T42",
+      "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
+      "line": 60,
+      "title": "requires a selected goal for enabling and preserves explicit exclusions when saving",
+      "fullName": "progress report settings requires a selected goal for enabling and preserves explicit exclusions when saving",
+      "status": "passed"
+    },
+    {
+      "id": "T43",
+      "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
+      "line": 81,
+      "title": "previews unsaved choices without saving and clears stale preview after a draft change",
+      "fullName": "progress report settings previews unsaved choices without saving and clears stale preview after a draft change",
+      "status": "passed"
+    },
+    {
+      "id": "T44",
+      "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
+      "line": 127,
+      "title": "keeps a failed save's draft and allows disabling after the chat disconnects",
+      "fullName": "progress report settings keeps a failed save's draft and allows disabling after the chat disconnects",
+      "status": "passed"
+    },
+    {
+      "id": "T45",
+      "path": "backend/test/domain.spec.ts",
+      "line": 48,
+      "title": "uses the supplied timezone and rejects nonexistent dates before persistence (0)",
+      "fullName": "planning domain uses the supplied timezone and rejects nonexistent dates before persistence (0)",
+      "status": "passed"
+    },
+    {
+      "id": "T46",
+      "path": "backend/test/domain.spec.ts",
+      "line": 48,
+      "title": "uses the supplied timezone and rejects nonexistent dates before persistence (1)",
+      "fullName": "planning domain uses the supplied timezone and rejects nonexistent dates before persistence (1)",
+      "status": "passed"
+    },
+    {
+      "id": "T47",
+      "path": "backend/test/domain.spec.ts",
+      "line": 60,
+      "title": "normalizes a goal and bounds monthly cadence by the actual month",
+      "fullName": "planning domain normalizes a goal and bounds monthly cadence by the actual month",
+      "status": "passed"
+    },
+    {
+      "id": "T48",
+      "path": "backend/test/domain.spec.ts",
+      "line": 74,
+      "title": "preserves tracking type and does not mutate the goal while validating a patch",
+      "fullName": "planning domain preserves tracking type and does not mutate the goal while validating a patch",
+      "status": "passed"
+    },
+    {
+      "id": "T49",
+      "path": "backend/test/domain.spec.ts",
+      "line": 99,
+      "title": "postpones scheduled delivery at night, while an explicit question bypasses quiet hours and pause",
+      "fullName": "reminder domain postpones scheduled delivery at night, while an explicit question bypasses quiet hours and pause",
+      "status": "passed"
+    },
+    {
+      "id": "T50",
+      "path": "backend/test/domain.spec.ts",
+      "line": 120,
+      "title": "allows correction of an existing entry, but never asks about another month",
+      "fullName": "reminder domain allows correction of an existing entry, but never asks about another month",
+      "status": "passed"
+    },
+    {
+      "id": "T51",
+      "path": "backend/test/domain.spec.ts",
+      "line": 128,
+      "title": "limits retries, respects a provider delay and never retries an ambiguous delivery",
+      "fullName": "reminder domain limits retries, respects a provider delay and never retries an ambiguous delivery",
+      "status": "passed"
+    },
+    {
+      "id": "T52",
+      "path": "backend/test/domain.spec.ts",
+      "line": 143,
+      "title": "keeps the seven-day answer window separate from the one-day delivery window",
+      "fullName": "reminder domain keeps the seven-day answer window separate from the one-day delivery window",
+      "status": "passed"
+    },
+    {
+      "id": "T53",
+      "path": "backend/test/domain.spec.ts",
+      "line": 156,
+      "title": "distinguishes clearing a body from an empty patch and leaves its input unchanged",
+      "fullName": "notes domain distinguishes clearing a body from an empty patch and leaves its input unchanged",
+      "status": "passed"
+    },
+    {
+      "id": "T54",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 56,
+      "title": "preserves definitions, group order and old facts; starts the new month with fresh IDs and no facts",
+      "fullName": "month rollover in D1 preserves definitions, group order and old facts; starts the new month with fresh IDs and no facts",
+      "status": "passed"
+    },
+    {
+      "id": "T55",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 115,
+      "title": "preserves visible order even when old goals have tied sort positions",
+      "fullName": "month rollover in D1 preserves visible order even when old goals have tied sort positions",
+      "status": "passed"
+    },
+    {
+      "id": "T56",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 128,
+      "title": "seals the destination exactly once under concurrent requests and never resurrects deleted copies",
+      "fullName": "month rollover in D1 seals the destination exactly once under concurrent requests and never resurrects deleted copies",
+      "status": "passed"
+    },
+    {
+      "id": "T57",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 149,
+      "title": "preserves a manually planned destination even when all its goals are in trash",
+      "fullName": "month rollover in D1 preserves a manually planned destination even when all its goals are in trash",
+      "status": "passed"
+    },
+    {
+      "id": "T58",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 163,
+      "title": "clamps monthly occurrences in 2027-02",
+      "fullName": "month rollover in D1 clamps monthly occurrences in 2027-02",
+      "status": "passed"
+    },
+    {
+      "id": "T59",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 163,
+      "title": "clamps monthly occurrences in 2028-02",
+      "fullName": "month rollover in D1 clamps monthly occurrences in 2028-02",
+      "status": "passed"
+    },
+    {
+      "id": "T60",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 163,
+      "title": "clamps monthly occurrences in 2026-04",
+      "fullName": "month rollover in D1 clamps monthly occurrences in 2026-04",
+      "status": "passed"
+    },
+    {
+      "id": "T61",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 174,
+      "title": "catches up from the latest known month without manufacturing skipped history, including December to January",
+      "fullName": "month rollover in D1 catches up from the latest known month without manufacturing skipped history, including December to January",
+      "status": "passed"
+    },
+    {
+      "id": "T62",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 184,
+      "title": "does not fall back to older goals after an empty or completely deleted latest month",
+      "fullName": "month rollover in D1 does not fall back to older goals after an empty or completely deleted latest month",
+      "status": "passed"
+    },
+    {
+      "id": "T63",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 194,
+      "title": "rechecks source definitions, order, deletion and the latest source month before committing",
+      "fullName": "month rollover in D1 rechecks source definitions, order, deletion and the latest source month before committing",
+      "status": "passed"
+    },
+    {
+      "id": "T64",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 224,
+      "title": "rolls back the receipt if a goal insert fails, then allows a successful retry",
+      "fullName": "month rollover in D1 rolls back the receipt if a goal insert fails, then allows a successful retry",
+      "status": "passed"
+    },
+    {
+      "id": "T65",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 251,
+      "title": "uses each owner's timezone at the actual month boundary",
+      "fullName": "month rollover in D1 uses each owner's timezone at the actual month boundary",
+      "status": "passed"
+    },
+    {
+      "id": "T66",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 274,
+      "title": "inherits scheduled and does not overwrite edits or reset the new schedule on repeat",
+      "fullName": "reminder inheritance and scheduled rollover inherits scheduled and does not overwrite edits or reset the new schedule on repeat",
+      "status": "passed"
+    },
+    {
+      "id": "T67",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 274,
+      "title": "inherits off and does not overwrite edits or reset the new schedule on repeat",
+      "fullName": "reminder inheritance and scheduled rollover inherits off and does not overwrite edits or reset the new schedule on repeat",
+      "status": "passed"
+    },
+    {
+      "id": "T68",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 274,
+      "title": "inherits evening and does not overwrite edits or reset the new schedule on repeat",
+      "fullName": "reminder inheritance and scheduled rollover inherits evening and does not overwrite edits or reset the new schedule on repeat",
+      "status": "passed"
+    },
+    {
+      "id": "T69",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 301,
+      "title": "repairs incomplete reminder inheritance, even after a second month transition",
+      "fullName": "reminder inheritance and scheduled rollover repairs incomplete reminder inheritance, even after a second month transition",
+      "status": "passed"
+    },
+    {
+      "id": "T70",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 313,
+      "title": "initializes through Cron without a browser and sends only new-month goals exactly once",
+      "fullName": "reminder inheritance and scheduled rollover initializes through Cron without a browser and sends only new-month goals exactly once",
+      "status": "passed"
+    },
+    {
+      "id": "T71",
+      "path": "backend/test/month-rollover.spec.ts",
+      "line": 348,
+      "title": "materializes only the owner's current month; future and historical reads stay read-only",
+      "fullName": "authenticated plan reads materializes only the owner's current month; future and historical reads stay read-only",
+      "status": "passed"
+    },
+    {
+      "id": "T72",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 100,
+      "title": "handles quiet hours across midnight and disabled quiet hours",
+      "fullName": "reminder schedules handles quiet hours across midnight and disabled quiet hours",
+      "status": "passed"
+    },
+    {
+      "id": "T73",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 109,
+      "title": "uses local weekdays and handles both DST transitions once",
+      "fullName": "reminder schedules uses local weekdays and handles both DST transitions once",
+      "status": "passed"
+    },
+    {
+      "id": "T74",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 123,
+      "title": "handles help and stop commands before interpreting a reply to a question",
+      "fullName": "Telegram reminders with D1 handles help and stop commands before interpreting a reply to a question",
+      "status": "passed"
+    },
+    {
+      "id": "T75",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 149,
+      "title": "keeps settings readable and scheduled work untouched when the bot is unavailable",
+      "fullName": "Telegram reminders with D1 keeps settings readable and scheduled work untouched when the bot is unavailable",
+      "status": "passed"
+    },
+    {
+      "id": "T76",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 167,
+      "title": "replaces an unsent scheduled job when rescheduled on the same day, but retains sent events",
+      "fullName": "Telegram reminders with D1 replaces an unsent scheduled job when rescheduled on the same day, but retains sent events",
+      "status": "passed"
+    },
+    {
+      "id": "T77",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 167,
+      "title": "replaces an unsent evening job when rescheduled on the same day, but retains sent events",
+      "fullName": "Telegram reminders with D1 replaces an unsent evening job when rescheduled on the same day, but retains sent events",
+      "status": "passed"
+    },
+    {
+      "id": "T78",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 230,
+      "title": "does not enqueue a stale question when time change during a tick",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale question when time change during a tick",
+      "status": "passed"
+    },
+    {
+      "id": "T79",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 230,
+      "title": "does not enqueue a stale question when weekdays change during a tick",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale question when weekdays change during a tick",
+      "status": "passed"
+    },
+    {
+      "id": "T80",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 230,
+      "title": "does not enqueue a stale question when mode change during a tick",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale question when mode change during a tick",
+      "status": "passed"
+    },
+    {
+      "id": "T81",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 230,
+      "title": "does not enqueue a stale question when quiet hours change during a tick",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale question when quiet hours change during a tick",
+      "status": "passed"
+    },
+    {
+      "id": "T82",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 273,
+      "title": "does not enqueue a stale digest when evening time change",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale digest when evening time change",
+      "status": "passed"
+    },
+    {
+      "id": "T83",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 273,
+      "title": "does not enqueue a stale digest when evening quiet hours change",
+      "fullName": "Telegram reminders with D1 does not enqueue a stale digest when evening quiet hours change",
+      "status": "passed"
+    },
+    {
+      "id": "T84",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 308,
+      "title": "records {\"type\":\"check\"} answers for the question date, even tomorrow",
+      "fullName": "Telegram reminders with D1 records {\"type\":\"check\"} answers for the question date, even tomorrow",
+      "status": "passed"
+    },
+    {
+      "id": "T85",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 308,
+      "title": "records {\"type\":\"quantity\",\"targetValue\":10,\"comparison\":\"atLeast\"} answers for the question date, even tomorrow",
+      "fullName": "Telegram reminders with D1 records {\"type\":\"quantity\",\"targetValue\":10,\"comparison\":\"atLeast\"} answers for the question date, even tomorrow",
+      "status": "passed"
+    },
+    {
+      "id": "T86",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 308,
+      "title": "records {\"type\":\"scale\",\"min\":1,\"max\":5} answers for the question date, even tomorrow",
+      "fullName": "Telegram reminders with D1 records {\"type\":\"scale\",\"min\":1,\"max\":5} answers for the question date, even tomorrow",
+      "status": "passed"
+    },
+    {
+      "id": "T87",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 308,
+      "title": "records {\"type\":\"time\"} answers for the question date, even tomorrow",
+      "fullName": "Telegram reminders with D1 records {\"type\":\"time\"} answers for the question date, even tomorrow",
+      "status": "passed"
+    },
+    {
+      "id": "T88",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 320,
+      "title": "does not ask for existing false values or deleted goals",
+      "fullName": "Telegram reminders with D1 does not ask for existing false values or deleted goals",
+      "status": "passed"
+    },
+    {
+      "id": "T89",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 335,
+      "title": "does not overwrite the website and requires a fresh correction after a conflict",
+      "fullName": "Telegram reminders with D1 does not overwrite the website and requires a fresh correction after a conflict",
+      "status": "passed"
+    },
+    {
+      "id": "T90",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 366,
+      "title": "atomically accepts only one concurrent answer and never reapplies a processed command",
+      "fullName": "Telegram reminders with D1 atomically accepts only one concurrent answer and never reapplies a processed command",
+      "status": "passed"
+    },
+    {
+      "id": "T91",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 392,
+      "title": "does not duplicate scheduled sends or snoozes on repeated updates",
+      "fullName": "Telegram reminders with D1 does not duplicate scheduled sends or snoozes on repeated updates",
+      "status": "passed"
+    },
+    {
+      "id": "T92",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 408,
+      "title": "sends one evening digest, preserves button identities and updates it after answers",
+      "fullName": "Telegram reminders with D1 sends one evening digest, preserves button identities and updates it after answers",
+      "status": "passed"
+    },
+    {
+      "id": "T93",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 439,
+      "title": "validates the current scale after its range changes while a question is open",
+      "fullName": "Telegram reminders with D1 validates the current scale after its range changes while a question is open",
+      "status": "passed"
+    },
+    {
+      "id": "T94",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 454,
+      "title": "retries 429, pauses blocked chats, and does not retry ambiguous sends",
+      "fullName": "Telegram reminders with D1 retries 429, pauses blocked chats, and does not retry ambiguous sends",
+      "status": "passed"
+    },
+    {
+      "id": "T95",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 480,
+      "title": "expires the permanent delivery warning after 24 hours without erasing or retrying the job",
+      "fullName": "Telegram reminders with D1 expires the permanent delivery warning after 24 hours without erasing or retrying the job",
+      "status": "passed"
+    },
+    {
+      "id": "T96",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 480,
+      "title": "expires the unknown delivery warning after 24 hours without erasing or retrying the job",
+      "fullName": "Telegram reminders with D1 expires the unknown delivery warning after 24 hours without erasing or retrying the job",
+      "status": "passed"
+    },
+    {
+      "id": "T97",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 512,
+      "title": "ignores other senders, arbitrary text, and questions after disconnect",
+      "fullName": "Telegram reminders with D1 ignores other senders, arbitrary text, and questions after disconnect",
+      "status": "passed"
+    },
+    {
+      "id": "T98",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 531,
+      "title": "requires confirmation of an expiring, one-use connection token",
+      "fullName": "Telegram reminders with D1 requires confirmation of an expiring, one-use connection token",
+      "status": "passed"
+    },
+    {
+      "id": "T99",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 558,
+      "title": "enforces owner and Origin, and uses the saved timezone for planning dates",
+      "fullName": "reminder HTTP contracts enforces owner and Origin, and uses the saved timezone for planning dates",
+      "status": "passed"
+    },
+    {
+      "id": "T100",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 631,
+      "title": "runs the Worker cron and accepts a real-shaped Telegram webhook through grammY",
+      "fullName": "reminder runtime integration runs the Worker cron and accepts a real-shaped Telegram webhook through grammY",
+      "status": "passed"
+    },
+    {
+      "id": "T101",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 705,
+      "title": "postpones quiet-hour sends with the original date and skips goals from another month",
+      "fullName": "reminder runtime integration postpones quiet-hour sends with the original date and skips goals from another month",
+      "status": "passed"
+    },
+    {
+      "id": "T102",
+      "path": "backend/test/reminders.spec.ts",
+      "line": 744,
+      "title": "recovers a crashed delivery as unknown and cancels pending work when disabled",
+      "fullName": "reminder runtime integration recovers a crashed delivery as unknown and cancels pending work when disabled",
+      "status": "passed"
+    }
+  ]
+}

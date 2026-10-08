@@ -1,0 +1,98 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "data": "Synthetic inputs from frontend/docs/design/progress/sample-data.json; November/December values reproduce frame 27.",
+  "method": "Direct calls to calculateProgress, calculateMet and reportMessage; no database or Telegram calls.",
+  "early": {
+    "expected": {
+      "met": 5,
+      "dailyRecords": 7,
+      "dailyDays": 8,
+      "dailyPercent": 88,
+      "daysWithEntries": 2,
+      "eligibleDays": 2
+    },
+    "actual": {
+      "met": 5,
+      "dailyRecords": 7,
+      "dailyDays": 8,
+      "dailyPercent": 88,
+      "daysWithEntries": 2,
+      "eligibleDays": 2
+    }
+  },
+  "month": {
+    "expected": {
+      "met": 42,
+      "dailyRecords": 54,
+      "dailyDays": 64,
+      "dailyPercent": 84,
+      "daysWithEntries": 16,
+      "eligibleDays": 16
+    },
+    "actual": {
+      "met": 42,
+      "dailyRecords": 54,
+      "dailyDays": 64,
+      "dailyPercent": 84,
+      "daysWithEntries": 16,
+      "eligibleDays": 16
+    }
+  },
+  "readingComparison": {
+    "currentMet": 3,
+    "currentSum": 79,
+    "previous": {
+      "interval": {
+        "from": "2026-10-12",
+        "to": "2026-10-14"
+      },
+      "records": 3,
+      "met": 2,
+      "sum": 61,
+      "average": 20.3,
+      "percent": 67,
+      "deltaPoints": 33
+    }
+  },
+  "monthlyComparison": {
+    "currentMet": 18,
+    "currentDays": 21,
+    "currentSum": 520,
+    "previous": {
+      "interval": {
+        "from": "2026-11-01",
+        "to": "2026-11-21"
+      },
+      "records": 21,
+      "met": 15,
+      "sum": 430,
+      "average": 20.5,
+      "percent": 71,
+      "deltaPoints": 15
+    },
+    "expectedDeltaPoints": 14,
+    "actualDeltaPoints": 15
+  },
+  "twoThirdsAgainstOneThird": {
+    "currentMet": 2,
+    "currentDays": 3,
+    "previousMet": 1,
+    "expectedDeltaPoints": 33,
+    "actualDeltaPoints": 34
+  },
+  "emptyReportButtons": [
+    [
+      {
+        "text": "Открыть прогресс",
+        "url": "http://127.0.0.1:5188/plans/2026-10/progress?period=week&anchor=2026-10-05"
+      }
+    ],
+    [
+      {
+        "text": "Настроить отчёты",
+        "url": "http://127.0.0.1:5188/plans/2026-10/reminders?tab=reports"
+      }
+    ]
+  ],
+  "goalTypesReportText": "Ритм · Прогресс недели\n19 октября – 21 октября · данные на 21 октября, 21:00\nУчитываем с 6 октября\nПодтверждено выполнений: 8\nЧтение\n3 из 3 дней · 100%\n▰▰▰▰▰▰▰▰▰▰\n79 страниц за период\n+33 п. п. к прошлой неделе\n\nВода\n2 из 3 дней · 67%\n▰▰▰▰▰▰▰▱▱▱\n4,2 л за период\nБез записи: 1 из 3 дней\n0 п. п. к прошлой неделе\n\nСон до 23:30\n2 из 3 дней · 67%\n▰▰▰▰▰▰▰▱▱▱\nБез записи: 1 из 3 дней\n+34 п. п. к прошлой неделе\n\nНастроение\nВ среднем 3,5 из 5\n2 из 3 записей · дней · 67%\n▰▰▰▰▰▰▰▱▱▱\nБез записи: 1 из 3 дней\n\nТренировки\n1 из 3 за неделю · 33%\n▰▰▰▱▱▱▱▱▱▱\n-34 п. п. к прошлой неделе\n\nВремя отхода ко сну\n2 из 3 записей · дней · 67%\n▰▰▰▰▰▰▰▱▱▱\nБез записи: 1 из 3 дней\n\nЭто снимок на момент формирования. Сегодняшние данные ещё могут дополниться."
+}

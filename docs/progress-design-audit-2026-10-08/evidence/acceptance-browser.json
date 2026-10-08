@@ -1,0 +1,145 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "method": "Local Chrome; synthetic API interception. No backend/production/Telegram integration is claimed.",
+  "totals": {
+    "passed": 9,
+    "failed": 4
+  },
+  "cases": [
+    {
+      "id": "B01",
+      "requirement": "§5, №34: график доступен с клавиатуры и связан с фактом",
+      "expected": [
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B02",
+      "requirement": "§3, №22: Escape отменяет дату без записи",
+      "expected": 0,
+      "actual": 0,
+      "status": "pass"
+    },
+    {
+      "id": "B03",
+      "requirement": "§6, №25: поиск и единичный выбор сохраняют скрытые цели",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B04",
+      "requirement": "§6, №25, F01: снять найденные сохраняет скрытый выбор",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "status": "fail"
+    },
+    {
+      "id": "B05",
+      "requirement": "§6, №25: нулевой поиск отличается от пустого выбора",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B06",
+      "requirement": "§6, №24: загрузка, ошибка и повтор чтения настроек",
+      "expected": [
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B07",
+      "requirement": "§6, №24: формирование и ошибка предпросмотра, без сохранения",
+      "expected": [
+        true,
+        true,
+        0
+      ],
+      "actual": [
+        true,
+        true,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B08",
+      "requirement": "§6, №24: ошибка сохранения оставляет черновик",
+      "expected": "22:30",
+      "actual": "22:30",
+      "status": "pass"
+    },
+    {
+      "id": "B09",
+      "requirement": "§5: шесть примеров всех пяти типов данных читаемы на 320/390/1440 без горизонтального переполнения",
+      "expected": 18,
+      "actual": 18,
+      "status": "pass"
+    },
+    {
+      "id": "B10",
+      "requirement": "§5: восемь состояний на трёх ширинах, без горизонтального переполнения",
+      "expected": 24,
+      "actual": 24,
+      "status": "pass"
+    },
+    {
+      "id": "B11",
+      "requirement": "§5, F03: мобильный календарь месяца сохраняет значки результатов",
+      "expected": true,
+      "actual": false,
+      "status": "fail"
+    },
+    {
+      "id": "B12",
+      "requirement": "§5, №19, F15: недоступная цель даёт возврат к списку",
+      "expected": true,
+      "actual": false,
+      "status": "fail"
+    },
+    {
+      "id": "B13",
+      "requirement": "№34, F16: редактор правил имеет явную отмену черновика",
+      "expected": true,
+      "actual": false,
+      "status": "fail"
+    }
+  ],
+  "pageErrors": [],
+  "unhandled": []
+}
