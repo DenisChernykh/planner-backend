@@ -4,6 +4,51 @@ import path from "node:path";
 
 const sourceRoot = path.resolve("src");
 const violations = [];
+// The schema is shared mechanically; mutations still belong to each capability.
+const tableOwners = {
+  users: "identity-access",
+  externalIdentities: "identity-access",
+  external_identities: "identity-access",
+  sessions: "identity-access",
+  chatgptConnections: "identity-access",
+  chatgpt_connections: "identity-access",
+  notes: "notes",
+  planGoals: "planning",
+  plan_goals: "planning",
+  planMonthRollovers: "planning",
+  plan_month_rollovers: "planning",
+  goalEntries: "planning",
+  goal_entries: "planning",
+  planningEntryCommands: "planning",
+  planning_entry_commands: "planning",
+  progressSettings: "progress",
+  progress_settings: "progress",
+  reminderSettings: "reminders",
+  reminder_settings: "reminders",
+  goalReminders: "reminders",
+  goal_reminders: "reminders",
+  telegramLinks: "reminders",
+  telegram_links: "reminders",
+  telegramLinkTokens: "reminders",
+  telegram_link_tokens: "reminders",
+  reminderJobs: "reminders",
+  reminder_jobs: "reminders",
+  progressReportSettings: "reminders",
+  progress_report_settings: "reminders",
+  goalProgressReports: "reminders",
+  goal_progress_reports: "reminders",
+};
+
+function canWriteTable(file, table, owner, ownModule) {
+  if (owner === ownModule) return true;
+  // Existing report configuration atomically saves the shared start date.
+  // Keep this one adapter exception explicit, rather than allowing any writer.
+  return (
+    table === "progress_settings" &&
+    path.relative(sourceRoot, file).split(path.sep).join("/") ===
+      "modules/reminders/infrastructure/d1-progress-report-repository.ts"
+  );
+}
 
 async function collectTypeScriptFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -91,6 +136,12 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
       if (importedRelative !== "index.ts" && importedRelative !== "public-contracts.ts") {
         report(file, `cross-module import must use index.ts or public-contracts.ts (${specifier})`);
       }
+      if (ownLayer === "application" && importedRelative === "index.ts") {
+        report(
+          file,
+          `application must use public-contracts.ts without module wiring (${specifier})`,
+        );
+      }
     }
 
     const sourceArea = path.relative(sourceRoot, file).split(path.sep)[0];
@@ -104,6 +155,21 @@ for (const file of await collectTypeScriptFiles(sourceRoot)) {
       if (depth.length > 2 || !["index.ts", "public-contracts.ts"].includes(depth[1])) {
         report(file, `app must use a module root or public contract (${specifier})`);
       }
+    }
+  }
+
+  // Include SQL literals and Drizzle identifiers: import paths alone cannot detect
+  // a module deleting another module's command receipts.
+  const mutations = [
+    ...source.matchAll(
+      /\b(?:INSERT(?:\s+OR\s+\w+)?\s+INTO|REPLACE\s+INTO|UPDATE|DELETE\s+FROM)\s+["`]?([a-z_]+)\b/giu,
+    ),
+    ...source.matchAll(/\.(?:insert|update|delete)\s*\(\s*(\w+)\b/gu),
+  ];
+  for (const [, table] of mutations) {
+    const owner = tableOwners[table];
+    if (ownModule && owner && !canWriteTable(file, table, owner, ownModule)) {
+      report(file, `${table} belongs to ${owner}; use its public operation`);
     }
   }
 }

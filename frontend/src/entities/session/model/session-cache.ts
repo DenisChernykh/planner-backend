@@ -2,7 +2,11 @@ import type { QueryClient } from "@tanstack/react-query";
 
 import { currentSessionQueryKey } from "../api/session";
 
-/** Removes only data for the current principal after logout. */
+/** Cancel requests before removing personal data so late responses cannot refill it. */
 export function clearCurrentSession(queryClient: QueryClient) {
-  queryClient.removeQueries({ queryKey: currentSessionQueryKey() });
+  void queryClient.cancelQueries();
+  queryClient.removeQueries({
+    predicate: (query) => query.queryKey[0] !== currentSessionQueryKey()[0],
+  });
+  queryClient.setQueryData(currentSessionQueryKey(), null);
 }

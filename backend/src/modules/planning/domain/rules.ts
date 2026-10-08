@@ -181,6 +181,18 @@ export function plannerToday(now: number, timeZone = LOCAL_TIME_ZONE): string {
   return localToday(now, timeZone);
 }
 
+export function isScaleValueValid(
+  tracking: { min: number; max: number },
+  value: unknown,
+): value is number {
+  return (
+    typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= tracking.min &&
+    value <= tracking.max
+  );
+}
+
 export function validateEntry(
   tracking: GoalTracking,
   input: GoalEntryInput,
@@ -206,12 +218,7 @@ export function validateEntry(
   if (tracking.type === "quantity") {
     if (typeof value !== "number" || !Number.isFinite(value)) throw new EntryValueInvalidError();
   } else if (tracking.type === "scale") {
-    if (
-      typeof value !== "number" ||
-      !Number.isInteger(value) ||
-      value < tracking.min ||
-      value > tracking.max
-    ) {
+    if (!isScaleValueValid(tracking, value)) {
       throw new EntryValueInvalidError();
     }
   } else if (tracking.type === "time") {

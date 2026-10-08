@@ -11,7 +11,10 @@ import {
   putApiPlansMonthGoalsOrder,
   useGetApiProgress,
 } from "@/shared/api";
+import { getPlannerMonthEnd } from "@/shared/lib/planner-calendar";
 import { useAppRuntime } from "@/shared/lib/runtime";
+import { Input } from "@/shared/ui";
+import { formatFactDate } from "../model/plan-model";
 
 import { PlanGridHeader } from "./plan-grid-header";
 import { type PlanGridProps, planSections, reorderGoals } from "./plan-grid-model";
@@ -36,7 +39,15 @@ const russianDndPlugins = [
   PreventSelection,
 ];
 
-export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }: PlanGridProps) {
+export function PlanGrid({
+  month,
+  today,
+  weekDates,
+  goals,
+  onSelect,
+  onManage,
+  selection,
+}: PlanGridProps) {
   const queryClient = useQueryClient();
   const embedded = useAppRuntime() === "chatgpt";
   const progress = useGetApiProgress(
@@ -45,6 +56,7 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }
   );
   const [announcement, setAnnouncement] = useState("");
   const [reordering, setReordering] = useState(false);
+  const [mobileDate, setMobileDate] = useState(today.startsWith(`${month}-`) ? today : "");
   const queryKey = getGetApiPlansMonthQueryKey({ month });
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -106,11 +118,30 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }
         {announcement}
       </div>
       <section
-        className="overflow-x-auto rounded-xl border bg-card shadow-sm"
+        className="rounded-xl border bg-card shadow-sm md:max-h-[70vh] md:overflow-auto"
         aria-busy={reordering}
         aria-label="Недельная таблица плана"
       >
-        <div className="min-w-[860px]" inert={reordering || undefined}>
+        <div className="space-y-2 border-b bg-primary-soft p-4 md:hidden">
+          <label htmlFor="mobile-result-date" className="text-sm font-semibold">
+            Результаты за день
+          </label>
+          <Input
+            id="mobile-result-date"
+            type="date"
+            value={mobileDate}
+            min={`${month}-01`}
+            max={getPlannerMonthEnd(month)}
+            className="h-11 min-w-0 rounded-lg text-base md:text-base"
+            onChange={(event) => setMobileDate(event.target.value)}
+          />
+          <p className="text-sm text-muted-foreground">
+            {mobileDate
+              ? formatFactDate(mobileDate)
+              : "Выберите день месяца перед изменением результата."}
+          </p>
+        </div>
+        <div className="min-w-0 md:min-w-[988px]" inert={reordering || undefined}>
           <PlanGridHeader weekDates={weekDates} today={today} />
           {planSections.map((section) => (
             <PlanSection
@@ -121,6 +152,8 @@ export function PlanGrid({ month, today, weekDates, goals, onSelect, selection }
               weekDates={weekDates}
               goals={goals}
               onSelect={onSelect}
+              onManage={onManage}
+              mobileDate={mobileDate}
               selection={selection}
               progress={progress.data?.goals}
               progressState={

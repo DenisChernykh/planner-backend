@@ -10,6 +10,7 @@
  * @nullable
  */
 export type SearchResultEntry = {
+  revision: string;
   date: string;
   value: boolean | number | string;
   met: boolean;

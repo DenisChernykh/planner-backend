@@ -38,10 +38,11 @@ export const goalPatch = z
   })
   .refine((value) => Object.keys(value).length > 0);
 const note = z.string().max(1_000).optional();
+const expectedRevision = z.string().min(1).nullable();
 export const entryInput = z.union([
-  z.strictObject({ completed: z.boolean(), note }),
-  z.strictObject({ value: z.number(), note }),
-  z.strictObject({ value: time, note }),
+  z.strictObject({ completed: z.boolean(), note, expectedRevision }),
+  z.strictObject({ value: z.number(), note, expectedRevision }),
+  z.strictObject({ value: time, note, expectedRevision }),
 ]);
 export const goalIdInput = z.strictObject({ goalId: z.uuid() });
 export const entryIdInput = goalIdInput.extend({ date: z.iso.date() });
@@ -57,6 +58,7 @@ export const accountResponse = z.object({
   }),
 });
 export const entry = z.object({
+  revision: z.string(),
   date: z.iso.date(),
   value: z.union([z.boolean(), z.number(), time]),
   met: z.boolean(),

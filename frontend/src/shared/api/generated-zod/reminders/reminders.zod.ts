@@ -102,6 +102,24 @@ export const GetApiRemindersSettings404Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
+export const getApiRemindersSettings409ResponseStatusMin = 400;
+export const getApiRemindersSettings409ResponseStatusMax = 599;
+
+export const getApiRemindersSettings409ResponseInstanceRegExp = new RegExp('^');
+export const getApiRemindersSettings409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const GetApiRemindersSettings409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(getApiRemindersSettings409ResponseStatusMin).max(getApiRemindersSettings409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(getApiRemindersSettings409ResponseInstanceRegExp),
+  "code": zod.string().regex(getApiRemindersSettings409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
 export const getApiRemindersSettings413ResponseStatusMin = 400;
 export const getApiRemindersSettings413ResponseStatusMax = 599;
 
@@ -278,6 +296,24 @@ export const PutApiRemindersSettings404Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
+export const putApiRemindersSettings409ResponseStatusMin = 400;
+export const putApiRemindersSettings409ResponseStatusMax = 599;
+
+export const putApiRemindersSettings409ResponseInstanceRegExp = new RegExp('^');
+export const putApiRemindersSettings409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiRemindersSettings409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiRemindersSettings409ResponseStatusMin).max(putApiRemindersSettings409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiRemindersSettings409ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiRemindersSettings409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
 export const putApiRemindersSettings413ResponseStatusMin = 400;
 export const putApiRemindersSettings413ResponseStatusMax = 599;
 
@@ -444,6 +480,24 @@ export const GetApiRemindersGoalsMonth404Response = zod.strictObject({
   "detail": zod.string(),
   "instance": zod.string().regex(getApiRemindersGoalsMonth404ResponseInstanceRegExp),
   "code": zod.string().regex(getApiRemindersGoalsMonth404ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const getApiRemindersGoalsMonth409ResponseStatusMin = 400;
+export const getApiRemindersGoalsMonth409ResponseStatusMax = 599;
+
+export const getApiRemindersGoalsMonth409ResponseInstanceRegExp = new RegExp('^');
+export const getApiRemindersGoalsMonth409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const GetApiRemindersGoalsMonth409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(getApiRemindersGoalsMonth409ResponseStatusMin).max(getApiRemindersGoalsMonth409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(getApiRemindersGoalsMonth409ResponseInstanceRegExp),
+  "code": zod.string().regex(getApiRemindersGoalsMonth409ResponseCodeRegExp),
   "requestId": zod.string().min(1)
 })
 
@@ -623,6 +677,24 @@ export const PutApiRemindersGoalsGoalId404Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
+export const putApiRemindersGoalsGoalId409ResponseStatusMin = 400;
+export const putApiRemindersGoalsGoalId409ResponseStatusMax = 599;
+
+export const putApiRemindersGoalsGoalId409ResponseInstanceRegExp = new RegExp('^');
+export const putApiRemindersGoalsGoalId409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiRemindersGoalsGoalId409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiRemindersGoalsGoalId409ResponseStatusMin).max(putApiRemindersGoalsGoalId409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiRemindersGoalsGoalId409ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiRemindersGoalsGoalId409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
 export const putApiRemindersGoalsGoalId413ResponseStatusMin = 400;
 export const putApiRemindersGoalsGoalId413ResponseStatusMax = 599;
 
@@ -772,6 +844,24 @@ export const PostApiRemindersTelegramConnect404Response = zod.strictObject({
   "requestId": zod.string().min(1)
 })
 
+export const postApiRemindersTelegramConnect409ResponseStatusMin = 400;
+export const postApiRemindersTelegramConnect409ResponseStatusMax = 599;
+
+export const postApiRemindersTelegramConnect409ResponseInstanceRegExp = new RegExp('^');
+export const postApiRemindersTelegramConnect409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PostApiRemindersTelegramConnect409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(postApiRemindersTelegramConnect409ResponseStatusMin).max(postApiRemindersTelegramConnect409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(postApiRemindersTelegramConnect409ResponseInstanceRegExp),
+  "code": zod.string().regex(postApiRemindersTelegramConnect409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
 export const postApiRemindersTelegramConnect413ResponseStatusMin = 400;
 export const postApiRemindersTelegramConnect413ResponseStatusMax = 599;
 
@@ -915,6 +1005,24 @@ export const DeleteApiRemindersTelegram404Response = zod.strictObject({
   "detail": zod.string(),
   "instance": zod.string().regex(deleteApiRemindersTelegram404ResponseInstanceRegExp),
   "code": zod.string().regex(deleteApiRemindersTelegram404ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
+export const deleteApiRemindersTelegram409ResponseStatusMin = 400;
+export const deleteApiRemindersTelegram409ResponseStatusMax = 599;
+
+export const deleteApiRemindersTelegram409ResponseInstanceRegExp = new RegExp('^');
+export const deleteApiRemindersTelegram409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const DeleteApiRemindersTelegram409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(deleteApiRemindersTelegram409ResponseStatusMin).max(deleteApiRemindersTelegram409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(deleteApiRemindersTelegram409ResponseInstanceRegExp),
+  "code": zod.string().regex(deleteApiRemindersTelegram409ResponseCodeRegExp),
   "requestId": zod.string().min(1)
 })
 

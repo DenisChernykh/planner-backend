@@ -17,11 +17,11 @@ type NotesHttpEnv = WorkerHttpEnv<IdentityContextVariables>;
 
 export type NotesHttpDependencies = {
   createUseCases(database: D1Database): {
-    createNote: CreateNoteUseCase;
-    deleteNote: DeleteNoteUseCase;
-    getNote: GetNoteQuery;
-    listNotes: ListNotesQuery;
-    updateNote: UpdateNoteUseCase;
+    createNote: Pick<CreateNoteUseCase, "execute">;
+    deleteNote: Pick<DeleteNoteUseCase, "execute">;
+    getNote: Pick<GetNoteQuery, "execute">;
+    listNotes: Pick<ListNotesQuery, "execute">;
+    updateNote: Pick<UpdateNoteUseCase, "execute">;
   };
 };
 

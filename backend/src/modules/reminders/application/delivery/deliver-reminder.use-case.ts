@@ -37,7 +37,7 @@ export class DeliverReminderUseCase {
       return;
     }
     let message: OutgoingMessage | null;
-    if (job.kind === "digest") message = await this.digest.build(job, settings);
+    if (job.kind === "digest") message = await this.digest.prepareDelivery(job, settings);
     else {
       const goal = job.goalId ? await this.planning.goal(job.ownerId, job.goalId) : null;
       const entry = goal ? await this.planning.entry(job.ownerId, goal.id, job.localDate) : null;

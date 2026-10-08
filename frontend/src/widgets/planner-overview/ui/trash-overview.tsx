@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 
 import {
@@ -19,10 +19,12 @@ function DeletedGoal({
   goal,
   month,
   highlighted,
+  onRestored,
 }: {
   goal: GetApiPlansMonthTrash200GoalsItem;
   month: string;
   highlighted: boolean;
+  onRestored: (goal: GetApiPlansMonthTrash200GoalsItem) => void;
 }) {
   const client = useQueryClient();
   const ref = useRef<HTMLLIElement>(null);
@@ -35,6 +37,7 @@ function DeletedGoal({
   const restore = useMutation({
     mutationFn: () => postApiGoalsGoalIdRestore({ goalId: goal.id }),
     onSuccess: async () => {
+      onRestored(goal);
       await Promise.all([
         client.invalidateQueries({ queryKey: getGetApiPlansMonthTrashQueryKey({ month }) }),
         client.invalidateQueries({ queryKey: getGetApiPlansMonthQueryKey({ month }) }),
@@ -90,6 +93,7 @@ function DeletedGoal({
 export function TrashOverview({ month }: { month: string }) {
   const trash = useGetApiPlansMonthTrash({ month });
   const [params] = useSearchParams();
+  const [restored, setRestored] = useState<GetApiPlansMonthTrash200GoalsItem | null>(null);
 
   return (
     <section className="mx-auto max-w-5xl px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
@@ -122,9 +126,21 @@ export function TrashOverview({ month }: { month: string }) {
                   goal={goal}
                   month={month}
                   highlighted={params.get("goal") === goal.id}
+                  onRestored={setRestored}
                 />
               ))}
             </ul>
+          )}
+          {restored && (
+            <div role="status" className="space-y-2 text-sm">
+              <p>Цель «{restored.title}» восстановлена вместе с результатами и заметками.</p>
+              <Link
+                to={`/plans/${month}?goal=${restored.id}`}
+                className={cn(buttonVariants({ variant: "outline" }), "rounded-lg")}
+              >
+                Открыть в плане
+              </Link>
+            </div>
           )}
           {!trash.isPending && (
             <Button variant="ghost" onClick={() => trash.refetch()}>

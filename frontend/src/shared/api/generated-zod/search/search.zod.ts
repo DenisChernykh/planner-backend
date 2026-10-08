@@ -102,6 +102,7 @@ export const GetApiSearch200Response = zod.strictObject({
 }),
   "date": zod.string().nullable(),
   "entry": zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),

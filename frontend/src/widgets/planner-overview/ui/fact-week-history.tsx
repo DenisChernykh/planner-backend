@@ -5,16 +5,17 @@ import {
   getPlannerWeekStart,
   isPlannerDateInMonth,
 } from "@/shared/lib/planner-calendar";
-import { formatEntryValue, getEntry } from "../model/plan-model";
+import { formatEntryValue, getEntry, getFactAccessibleName } from "../model/plan-model";
 
 type FactWeekHistoryProps = {
   goal: GetApiPlansMonth200GoalsItem;
   date: string;
   month: string;
+  today: string;
   onDateChange: (date: string) => void;
 };
 
-export function FactWeekHistory({ goal, date, month, onDateChange }: FactWeekHistoryProps) {
+export function FactWeekHistory({ goal, date, month, today, onDateChange }: FactWeekHistoryProps) {
   const weekDates = getPlannerWeekDates(getPlannerWeekStart(date));
   return (
     <section className="space-y-3 border-b bg-secondary p-4">
@@ -33,7 +34,9 @@ export function FactWeekHistory({ goal, date, month, onDateChange }: FactWeekHis
             key={item}
             type="button"
             disabled={!inMonth}
-            className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-left text-xs lg:min-h-0 ${selected ? "border-primary bg-primary-soft" : "bg-card"}`}
+            aria-label={getFactAccessibleName(goal, item, today, month)}
+            aria-pressed={selected}
+            className={`flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-left text-sm ${selected ? "border-primary bg-primary-soft" : "bg-card"}`}
             onClick={() => onDateChange(item)}
           >
             <span>{formatPlannerDay(item)}</span>

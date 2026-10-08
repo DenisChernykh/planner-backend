@@ -1,10 +1,14 @@
 import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "../../domain/model";
 export interface ReminderRepository {
   settings(ownerId: string): Promise<ReminderSettings>;
-  saveSettings(settings: ReminderSettings, reminders: GoalReminder[]): Promise<void>;
+  saveSettings(
+    settings: ReminderSettings,
+    reminders: GoalReminder[],
+    previous?: ReminderSettings,
+  ): Promise<boolean>;
   activeSettings(): Promise<ReminderSettings[]>;
   reminders(ownerId: string): Promise<GoalReminder[]>;
-  saveReminder(reminder: GoalReminder): Promise<void>;
+  saveReminder(reminder: GoalReminder, settings?: ReminderSettings): Promise<boolean>;
   inheritReminder(source: GoalReminder, target: GoalReminder, timeZone: string): Promise<boolean>;
   scheduledReminders(ownerId: string, month: string): Promise<GoalReminder[]>;
   link(ownerId: string): Promise<TelegramLink | null>;

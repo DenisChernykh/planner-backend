@@ -10,12 +10,27 @@ export type PutApiGoalsGoalIdEntriesDateBody = {
   completed: boolean;
   /** @maxLength 1000 */
   note?: string;
+  /**
+     * @minLength 1
+     * @nullable
+     */
+  expectedRevision: string | null;
 } | {
   value: number;
   /** @maxLength 1000 */
   note?: string;
+  /**
+     * @minLength 1
+     * @nullable
+     */
+  expectedRevision: string | null;
 } | {
   value: string;
   /** @maxLength 1000 */
   note?: string;
+  /**
+     * @minLength 1
+     * @nullable
+     */
+  expectedRevision: string | null;
 };

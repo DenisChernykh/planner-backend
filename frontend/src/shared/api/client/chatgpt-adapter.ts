@@ -53,6 +53,7 @@ export function createChatGptAdapter(callTool: CallTool): AxiosAdapter {
     );
     const body: unknown = typeof config.data === "string" ? JSON.parse(config.data) : config.data;
     if (body !== undefined) params[name === "record_entry" ? "entry" : "input"] = body;
+    if (name === "delete_entry") params.expectedRevision = config.params?.expectedRevision;
     if (name === "search_planner" || name === "get_search_goals") {
       params.query = { ...config.params, includeDeleted: config.params?.includeDeleted === "true" };
     }

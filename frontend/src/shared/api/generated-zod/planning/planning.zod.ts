@@ -74,6 +74,7 @@ export const GetApiPlansMonth200Response = zod.strictObject({
   "createdAt": zod.int().min(getApiPlansMonth200ResponseGoalsItemCreatedAtMin),
   "updatedAt": zod.int().min(getApiPlansMonth200ResponseGoalsItemUpdatedAtMin),
   "entries": zod.array(zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -236,6 +237,7 @@ export const GetApiPlansMonthTrash200Response = zod.strictObject({
   "createdAt": zod.int().min(getApiPlansMonthTrash200ResponseGoalsItemCreatedAtMin),
   "updatedAt": zod.int().min(getApiPlansMonthTrash200ResponseGoalsItemUpdatedAtMin),
   "entries": zod.array(zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -441,6 +443,7 @@ export const PostApiPlansMonthGoals201Response = zod.strictObject({
   "createdAt": zod.int().min(postApiPlansMonthGoals201ResponseGoalCreatedAtMin),
   "updatedAt": zod.int().min(postApiPlansMonthGoals201ResponseGoalUpdatedAtMin),
   "entries": zod.array(zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -874,6 +877,7 @@ export const PatchApiGoalsGoalId200Response = zod.strictObject({
   "createdAt": zod.int().min(patchApiGoalsGoalId200ResponseGoalCreatedAtMin),
   "updatedAt": zod.int().min(patchApiGoalsGoalId200ResponseGoalUpdatedAtMin),
   "entries": zod.array(zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -1289,6 +1293,7 @@ export const postApiGoalsGoalIdEntriesDateAdjust200ResponseEntryUpdatedAtMin = 0
 
 export const PostApiGoalsGoalIdEntriesDateAdjust200Response = zod.strictObject({
   "entry": zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -1468,21 +1473,27 @@ export const PutApiGoalsGoalIdEntriesDateParams = zod.strictObject({
 
 export const putApiGoalsGoalIdEntriesDateBodyOneNoteMax = 1000;
 
+
 export const putApiGoalsGoalIdEntriesDateBodyTwoNoteMax = 1000;
+
 
 export const putApiGoalsGoalIdEntriesDateBodyThreeNoteMax = 1000;
 
 
 
+
 export const PutApiGoalsGoalIdEntriesDateBody = zod.union([zod.strictObject({
   "completed": zod.boolean(),
-  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyOneNoteMax).optional()
+  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyOneNoteMax).optional(),
+  "expectedRevision": zod.string().min(1).nullable()
 }),zod.strictObject({
   "value": zod.number(),
-  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyTwoNoteMax).optional()
+  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyTwoNoteMax).optional(),
+  "expectedRevision": zod.string().min(1).nullable()
 }),zod.strictObject({
   "value": zod.string(),
-  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyThreeNoteMax).optional()
+  "note": zod.string().max(putApiGoalsGoalIdEntriesDateBodyThreeNoteMax).optional(),
+  "expectedRevision": zod.string().min(1).nullable()
 })])
 
 export const putApiGoalsGoalIdEntriesDate200ResponseEntryCreatedAtMin = 0;
@@ -1493,6 +1504,7 @@ export const putApiGoalsGoalIdEntriesDate200ResponseEntryUpdatedAtMin = 0;
 
 export const PutApiGoalsGoalIdEntriesDate200Response = zod.strictObject({
   "entry": zod.strictObject({
+  "revision": zod.string(),
   "date": zod.string(),
   "value": zod.union([zod.boolean(),zod.number(),zod.string()]),
   "met": zod.boolean(),
@@ -1590,6 +1602,24 @@ export const PutApiGoalsGoalIdEntriesDate404Response = zod.union([zod.strictObje
   "requestId": zod.string().min(1)
 })])
 
+export const putApiGoalsGoalIdEntriesDate409ResponseStatusMin = 400;
+export const putApiGoalsGoalIdEntriesDate409ResponseStatusMax = 599;
+
+export const putApiGoalsGoalIdEntriesDate409ResponseInstanceRegExp = new RegExp('^');
+export const putApiGoalsGoalIdEntriesDate409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const PutApiGoalsGoalIdEntriesDate409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(putApiGoalsGoalIdEntriesDate409ResponseStatusMin).max(putApiGoalsGoalIdEntriesDate409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(putApiGoalsGoalIdEntriesDate409ResponseInstanceRegExp),
+  "code": zod.string().regex(putApiGoalsGoalIdEntriesDate409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
+
 export const putApiGoalsGoalIdEntriesDate413ResponseStatusMin = 400;
 export const putApiGoalsGoalIdEntriesDate413ResponseStatusMax = 599;
 
@@ -1650,6 +1680,13 @@ export const deleteApiGoalsGoalIdEntriesDatePathDateRegExp = new RegExp('^\\d{4}
 export const DeleteApiGoalsGoalIdEntriesDateParams = zod.strictObject({
   "goalId": zod.uuid(),
   "date": zod.string().regex(deleteApiGoalsGoalIdEntriesDatePathDateRegExp)
+})
+
+
+
+
+export const DeleteApiGoalsGoalIdEntriesDateQueryParams = zod.strictObject({
+  "expectedRevision": zod.string().min(1)
 })
 
 export const DeleteApiGoalsGoalIdEntriesDate204Response = zod.void()
@@ -1741,6 +1778,24 @@ export const DeleteApiGoalsGoalIdEntriesDate404Response = zod.union([zod.strictO
   "code": zod.enum(['NOT_FOUND']),
   "requestId": zod.string().min(1)
 })])
+
+export const deleteApiGoalsGoalIdEntriesDate409ResponseStatusMin = 400;
+export const deleteApiGoalsGoalIdEntriesDate409ResponseStatusMax = 599;
+
+export const deleteApiGoalsGoalIdEntriesDate409ResponseInstanceRegExp = new RegExp('^');
+export const deleteApiGoalsGoalIdEntriesDate409ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const DeleteApiGoalsGoalIdEntriesDate409Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(deleteApiGoalsGoalIdEntriesDate409ResponseStatusMin).max(deleteApiGoalsGoalIdEntriesDate409ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(deleteApiGoalsGoalIdEntriesDate409ResponseInstanceRegExp),
+  "code": zod.string().regex(deleteApiGoalsGoalIdEntriesDate409ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
 
 export const deleteApiGoalsGoalIdEntriesDate500ResponseStatusMin = 400;
 export const deleteApiGoalsGoalIdEntriesDate500ResponseStatusMax = 599;

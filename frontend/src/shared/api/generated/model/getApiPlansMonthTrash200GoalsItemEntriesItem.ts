@@ -7,6 +7,7 @@
  */
 
 export type GetApiPlansMonthTrash200GoalsItemEntriesItem = {
+  revision: string;
   date: string;
   value: boolean | number | string;
   met: boolean;

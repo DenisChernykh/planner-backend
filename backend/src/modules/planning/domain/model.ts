@@ -44,6 +44,7 @@ export type GoalRecord = {
 export type GoalEntryValue = boolean | number | string;
 
 export type GoalEntry = {
+  revision: string;
   date: string;
   value: GoalEntryValue;
   met: boolean;

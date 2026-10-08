@@ -64,7 +64,12 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
   const initial = displayName.trim().charAt(0).toUpperCase() || "П";
 
   return (
-    <Sidebar className="border-r bg-sidebar" variant="sidebar">
+    <Sidebar
+      className="border-r bg-sidebar"
+      variant="sidebar"
+      role="complementary"
+      aria-label="Панель приложения"
+    >
       <SidebarHeader className="px-4 pt-7 pb-5">
         <NavLink
           to={`/plans/${month}`}
@@ -77,43 +82,45 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
         </NavLink>
       </SidebarHeader>
       <SidebarContent className="px-2">
-        <SidebarMenu className="gap-1">
-          {search && (
-            <SidebarMenuItem>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpenMobile(false);
-                  search.openSearch();
-                }}
-                aria-keyshortcuts="Control+k Meta+k"
-                className={cn(
-                  "flex h-11 w-full items-center gap-2.5 rounded-lg px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-                  search.isOpen
-                    ? "bg-primary-soft text-primary"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent",
-                )}
-              >
-                <Search className="size-4" aria-hidden="true" />
-                <span>Поиск</span>
-                <kbd className="ml-auto text-[10px] text-muted-foreground">⌘ K</kbd>
-              </button>
-            </SidebarMenuItem>
-          )}
-          <PlannerNavLink to={`/plans/${month}`} label="План" icon={CalendarDays} />
-          {!embedded && (
-            <PlannerNavLink
-              to={`/plans/${month}/progress`}
-              label="Прогресс"
-              icon={ChartNoAxesCombined}
-            />
-          )}
-          <PlannerNavLink to={`/plans/${month}/reminders`} label="Напоминания" icon={Bell} />
-          <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
-          {!embedded && (
-            <PlannerNavLink to={`/plans/${month}/connections`} label="Подключения" icon={Plug} />
-          )}
-        </SidebarMenu>
+        <nav aria-label="Основная навигация">
+          <SidebarMenu className="gap-1">
+            {search && (
+              <SidebarMenuItem>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenMobile(false);
+                    search.openSearch();
+                  }}
+                  aria-keyshortcuts="Control+k Meta+k"
+                  className={cn(
+                    "flex h-11 w-full items-center gap-2.5 rounded-lg px-3 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                    search.isOpen
+                      ? "bg-primary-soft text-primary"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent",
+                  )}
+                >
+                  <Search className="size-4" aria-hidden="true" />
+                  <span>Поиск</span>
+                  <kbd className="ml-auto text-[10px] text-muted-foreground">⌘ K</kbd>
+                </button>
+              </SidebarMenuItem>
+            )}
+            <PlannerNavLink to={`/plans/${month}`} label="План" icon={CalendarDays} />
+            {!embedded && (
+              <PlannerNavLink
+                to={`/plans/${month}/progress`}
+                label="Прогресс"
+                icon={ChartNoAxesCombined}
+              />
+            )}
+            <PlannerNavLink to={`/plans/${month}/reminders`} label="Напоминания" icon={Bell} />
+            <PlannerNavLink to={`/plans/${month}/trash`} label="Корзина" icon={Trash2} />
+            {!embedded && (
+              <PlannerNavLink to={`/plans/${month}/connections`} label="Подключения" icon={Plug} />
+            )}
+          </SidebarMenu>
+        </nav>
       </SidebarContent>
       <SidebarFooter className="border-t px-3 py-4">
         {embedded ? (

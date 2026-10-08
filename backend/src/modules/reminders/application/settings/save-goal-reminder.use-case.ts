@@ -24,17 +24,23 @@ export class SaveGoalReminderUseCase {
     validateReminder(input);
     if (!(await this.planning.goal(ownerId, goalId)))
       throw new ApplicationError("NOT_FOUND", "Вопрос или цель больше недоступны.");
-    const settings = await this.repository.settings(ownerId);
-    const reminder = {
-      ...input,
-      ownerId,
-      goalId,
-      nextRunAt:
-        input.mode === "scheduled"
-          ? nextOccurrence(now, settings.timeZone, input.time, input.weekdays)
-          : null,
-    };
-    await this.repository.saveReminder(reminder);
-    return reminder;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const settings = await this.repository.settings(ownerId);
+      const reminder = {
+        ...input,
+        ownerId,
+        goalId,
+        nextRunAt:
+          input.mode === "scheduled"
+            ? nextOccurrence(now, settings.timeZone, input.time, input.weekdays)
+            : null,
+      };
+      if (!(await this.repository.saveReminder(reminder, settings))) continue;
+      return reminder;
+    }
+    throw new ApplicationError(
+      "CONFLICT",
+      "Часовой пояс изменился. Обновите настройки и повторите сохранение.",
+    );
   }
 }

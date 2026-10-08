@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './deleteApiGoalsGoalIdEntriesDateParams';
 export * from './getApiAuthTelegramCallbackParams';
 export * from './getApiNotesParams';
 export * from './getApiProgressGoalsGoalIdParams';

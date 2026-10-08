@@ -30,6 +30,10 @@ describe("fact payloads", () => {
   ])("maps %o to the API body", (tracking, value, expected) => {
     const goal = { ...base, tracking } as GetApiPlansMonth200GoalsItem;
     const note = "note" in expected ? expected.note : "";
-    expect(buildFactPayload(goal, value, note ? ` ${note} ` : "")).toEqual(expected);
+    expect(buildFactPayload(goal, value, note ? ` ${note} ` : "")).toEqual({
+      ...expected,
+      expectedRevision: null,
+      ...("note" in expected ? { note: ` ${expected.note} ` } : {}),
+    });
   });
 });

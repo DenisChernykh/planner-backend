@@ -1,5 +1,4 @@
-import type { GoalResource } from "../../../planning";
-import type { PlanningOperations } from "../../../planning/public-contracts";
+import type { GoalResource, PlanningOperations } from "../../../planning/public-contracts";
 import { needsReminder } from "../../domain/jobs";
 import type { ReminderSettings } from "../../domain/model";
 import type { ReminderRepository } from "../ports/reminder-repository";

@@ -121,15 +121,18 @@ describe("progress reports with D1 and fake transport", () => {
     vi.mocked(transport.send).mockRejectedValueOnce(new DeliveryError("retry", 60));
     await save();
     await operations().runReminders.execute({ now: NOW });
-    await planning.upsertEntry({
-      goalId,
-      date: "2026-10-06",
-      value: 100,
-      met: true,
-      note: null,
-      createdAt: NOW,
-      updatedAt: NOW + 1,
-    });
+    await planning.upsertEntry(
+      {
+        goalId,
+        date: "2026-10-06",
+        value: 100,
+        met: true,
+        note: null,
+        createdAt: NOW,
+        updatedAt: NOW + 1,
+      },
+      (await planning.entrySnapshot(OWNER, goalId, "2026-10-06"))?.revision ?? null,
+    );
     await operations().runReminders.execute({ now: NOW + 60000 });
     expect(transport.send).toHaveBeenCalledTimes(2);
     expect(vi.mocked(transport.send).mock.calls[0]?.[1]).toEqual(

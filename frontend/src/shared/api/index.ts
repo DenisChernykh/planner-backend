@@ -21,6 +21,7 @@ export type { PutApiPlansMonthGoalsOrderBody } from "./generated/operation/putAp
 export type { PutApiRemindersGoalsGoalIdBody } from "./generated/operation/putApiRemindersGoalsGoalIdBody";
 export type { PutApiRemindersSettingsBody } from "./generated/operation/putApiRemindersSettingsBody";
 export {
+  deleteApiGoalsGoalId,
   deleteApiGoalsGoalIdEntriesDate,
   getGetApiPlansMonthQueryKey,
   getGetApiPlansMonthTrashQueryKey,

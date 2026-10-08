@@ -39,18 +39,30 @@ it("forwards search conditions and pagination to read-only tools", async () => {
 });
 
 it("runs generated HTTP calls through tools and preserves the original API response", async () => {
-  const entry = { date: "2026-10-01", value: 0, note: "Заметка", met: false };
+  const entry = { date: "2026-10-01", value: 0, note: "Заметка", met: false, revision: "next" };
   const call = vi.fn().mockResolvedValue({ structuredContent: { entry } });
   const client = axios.create({ adapter: createChatGptAdapter(call) });
   const response = await client.put(`/api/goals/${goalId}/entries/2026-10-01`, {
     value: 0,
     note: "Заметка",
+    expectedRevision: "base",
   });
   expect(call).toHaveBeenCalledWith({
     name: "record_entry",
-    arguments: { goalId, date: "2026-10-01", entry: { value: 0, note: "Заметка" } },
+    arguments: {
+      goalId,
+      date: "2026-10-01",
+      entry: { value: 0, note: "Заметка", expectedRevision: "base" },
+    },
   });
   expect(response.data).toEqual({ entry });
+  await client.delete(`/api/goals/${goalId}/entries/2026-10-01`, {
+    params: { expectedRevision: "next" },
+  });
+  expect(call).toHaveBeenLastCalledWith({
+    name: "delete_entry",
+    arguments: { goalId, date: "2026-10-01", expectedRevision: "next" },
+  });
   await client.patch(`/api/goals/${goalId}`, { description: null });
   expect(call).toHaveBeenLastCalledWith({
     name: "update_goal",

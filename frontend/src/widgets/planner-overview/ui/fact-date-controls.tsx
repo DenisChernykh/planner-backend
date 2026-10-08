@@ -44,7 +44,7 @@ export function FactDateControls({ date, month, onDateChange }: FactDateControls
           onChange={(event) => {
             if (event.target.value) onDateChange(event.target.value);
           }}
-          className="h-11 flex-1 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
+          className="h-11 flex-1 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-sm"
         />
         <Button
           variant="outline"

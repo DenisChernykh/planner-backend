@@ -48,7 +48,15 @@ async function entry(
   date: string,
   value: unknown = { completed: true, note: "Колено не болит" },
 ) {
-  expect((await request(`/api/goals/${goalId}/entries/${date}`, value, "PUT")).status).toBe(200);
+  expect(
+    (
+      await request(
+        `/api/goals/${goalId}/entries/${date}`,
+        { ...(value as object), expectedRevision: null },
+        "PUT",
+      )
+    ).status,
+  ).toBe(200);
 }
 async function search(params: Record<string, string> = {}) {
   const response = await request(`/api/search?${new URLSearchParams(params)}`);

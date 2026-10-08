@@ -12,6 +12,7 @@ export type GoalUpdate = GoalPatchInput & {
 };
 
 export type StoredEntry = GoalEntry & { goalId: string };
+export type EntryWrite = Omit<StoredEntry, "revision">;
 
 export interface PlanningRepository {
   progressSources(
@@ -37,8 +38,8 @@ export interface PlanningRepository {
     month: string,
     includeDeleted: boolean,
   ): Promise<StoredEntry[]>;
-  upsertEntry(entry: StoredEntry): Promise<StoredEntry>;
-  deleteEntry(goalId: string, date: string): Promise<boolean>;
+  upsertEntry(entry: EntryWrite, expectedRevision?: string | null): Promise<StoredEntry>;
+  deleteEntry(goalId: string, date: string, expectedRevision: string): Promise<boolean>;
 }
 
 export type { GoalEntryInput };

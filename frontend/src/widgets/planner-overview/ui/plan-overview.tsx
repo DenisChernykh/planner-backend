@@ -1,13 +1,12 @@
 import { useState } from "react";
 
-import { useGetApiPlansMonth } from "@/shared/api";
 import { useConsumedFragmentParameter } from "@/shared/lib/hooks";
 import { Alert, AlertDescription, AlertTitle, Button, Spinner } from "@/shared/ui";
-
+import { usePlanQuery } from "../model/use-plan-query";
 import { PlanOverviewContent } from "./plan-overview-content";
 
 export function PlanOverview({ month }: { month: string }) {
-  const plan = useGetApiPlansMonth({ month }, { query: { refetchOnMount: "always" } });
+  const plan = usePlanQuery(month);
   const notice = useConsumedFragmentParameter("notice");
   const [retrying, setRetrying] = useState(false);
 
@@ -18,7 +17,7 @@ export function PlanOverview({ month }: { month: string }) {
       </div>
     );
   }
-  if (plan.isError || !plan.data) {
+  if (!plan.data) {
     const retry = async () => {
       setRetrying(true);
       await plan.refetch();
@@ -42,12 +41,5 @@ export function PlanOverview({ month }: { month: string }) {
       </section>
     );
   }
-  return (
-    <PlanOverviewContent
-      key={`${month}-${plan.data.today}`}
-      month={month}
-      plan={plan.data}
-      notice={notice}
-    />
-  );
+  return <PlanOverviewContent key={month} month={month} plan={plan.data} notice={notice} />;
 }

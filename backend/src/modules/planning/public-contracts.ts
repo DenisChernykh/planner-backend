@@ -7,6 +7,10 @@ import type {
   GoalTracking,
 } from "./domain/model";
 
+export { PlanningError } from "./domain/errors";
+export type * from "./domain/model";
+export { isScaleValueValid } from "./domain/rules";
+
 export type ProgressPlanningSource = {
   id: string;
   chainId: string;

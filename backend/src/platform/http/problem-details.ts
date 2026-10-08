@@ -31,6 +31,7 @@ export function problem(c: Context, input: ProblemInput): Response {
 
 export function applicationErrorToResponse(c: Context, error: ApplicationError): Response {
   const mapping: Record<ApplicationError["code"], Omit<ProblemInput, "code" | "detail">> = {
+    CONFLICT: { status: 409, title: "Conflict", type: "urn:planner:problem:conflict" },
     DEPENDENCY_UNAVAILABLE: {
       status: 503,
       title: "Dependency unavailable",

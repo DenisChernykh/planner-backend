@@ -24,6 +24,7 @@ describe("FactValueEditor", () => {
     render(
       <FactValueEditor
         goal={scaleGoal}
+        date="2026-04-15"
         value="2.5"
         editable
         hasEntry={false}
@@ -34,10 +35,9 @@ describe("FactValueEditor", () => {
         onValueChange={vi.fn()}
         onSave={vi.fn()}
         onDelete={vi.fn()}
-        onDeleteIntent={vi.fn()}
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Сохранить факт" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Сохранить результат и заметку" })).toBeDisabled();
   });
 });

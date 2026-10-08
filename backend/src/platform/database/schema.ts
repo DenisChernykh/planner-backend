@@ -153,10 +153,14 @@ export const planningEntryCommands = sqliteTable(
     createdAt: integer("created_at").notNull(),
     goalId: text("goal_id").references(() => planGoals.id, { onDelete: "cascade" }),
   },
-  (table) => [index("planning_entry_commands_goal_idx").on(table.goalId)],
+  (table) => [
+    index("planning_entry_commands_goal_idx").on(table.goalId),
+    index("planning_entry_commands_retention_idx").on(table.createdAt).where(sql`goal_id IS NULL`),
+  ],
 );
 
 export const reminderSettings = sqliteTable("reminder_settings", {
+  revision: text("revision").notNull().default("initial"),
   ownerId: text("owner_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -212,6 +216,7 @@ export const goalProgressReports = sqliteTable(
 export const goalReminders = sqliteTable(
   "goal_reminders",
   {
+    revision: text("revision").notNull().default("initial"),
     goalId: text("goal_id")
       .primaryKey()
       .references(() => planGoals.id, { onDelete: "cascade" }),
@@ -269,5 +274,6 @@ export const reminderJobs = sqliteTable(
   (table) => [
     index("reminder_jobs_due_idx").on(table.status, table.dueAt),
     index("reminder_jobs_reply_idx").on(table.chatId, table.messageId),
+    index("reminder_jobs_retention_idx").on(table.createdAt),
   ],
 );

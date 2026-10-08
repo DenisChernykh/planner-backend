@@ -1,5 +1,5 @@
-import { type GoalRecord, PlanningError } from "../../../planning";
 import type { PlanningOperations } from "../../../planning/public-contracts";
+import { type GoalRecord, PlanningError } from "../../../planning/public-contracts";
 import type { ReminderJob, ReminderSettings } from "../../domain/model";
 import type { DigestMessages } from "../delivery/digest-messages";
 import type { OutgoingMessage } from "../delivery/outgoing-message";
@@ -53,7 +53,7 @@ export class RecordReminderAnswerUseCase {
     }
     if (result === "conflict") return conflictMessage(job);
     await this.repository.updateJob(job.id, { status: "answered" });
-    await this.digest.refresh(job, settings);
+    await this.digest.refreshAfterAnswer(job, settings);
     return {
       text: `Записал: ${job.localDate}, ${goal.title} — ${"completed" in value ? (value.completed ? "да" : "нет") : value.value}.`,
       buttons: [[{ text: "Исправить", data: `edit:${job.id}` }]],

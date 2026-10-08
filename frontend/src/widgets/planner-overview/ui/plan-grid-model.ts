@@ -8,6 +8,8 @@ export type PlanGridProps = {
   weekDates: string[];
   goals: GetApiPlansMonth200GoalsItem[];
   onSelect: (goal: GetApiPlansMonth200GoalsItem, date: string) => void;
+  onManage?: (goal: GetApiPlansMonth200GoalsItem) => void;
+  mobileDate?: string;
   selection?: { goalId: string; date: string };
   progress?: ProgressGoal[];
   progressState?: "embedded" | "pending" | "error" | "ready";

@@ -38,6 +38,29 @@ const productionBindings = {
 const app = createApp();
 
 async function request(path: string, init: RequestInit = {}): Promise<Response> {
+  // Existing scenarios model a client that has read the current revision.
+  const target = /^\/api\/goals\/([^/]+)\/entries\/(\d{4}-\d{2}-\d{2})$/u.exec(path);
+  if (target && (init.method === "PUT" || init.method === "DELETE")) {
+    const row = await env.DB.prepare(
+      "SELECT revision FROM goal_entries WHERE goal_id = ? AND local_date = ?",
+    )
+      .bind(target[1], target[2])
+      .first<{ revision: string }>();
+    if (init.method === "PUT" && typeof init.body === "string") {
+      try {
+        const value = JSON.parse(init.body);
+        if (value && typeof value === "object" && !("expectedRevision" in value))
+          init = {
+            ...init,
+            body: JSON.stringify({ ...value, expectedRevision: row?.revision ?? null }),
+          };
+      } catch {
+        /* Preserve invalid JSON scenarios. */
+      }
+    }
+    if (init.method === "DELETE")
+      path += `?expectedRevision=${encodeURIComponent(row?.revision ?? "missing")}`;
+  }
   const headers = new Headers(init.headers);
   if (init.method && !["GET", "HEAD"].includes(init.method)) {
     headers.set("Origin", ORIGIN);
@@ -69,6 +92,29 @@ async function productionRequest(
   sessionToken: string,
   init: RequestInit = {},
 ): Promise<Response> {
+  // Existing scenarios model a client that has read the current revision.
+  const target = /^\/api\/goals\/([^/]+)\/entries\/(\d{4}-\d{2}-\d{2})$/u.exec(path);
+  if (target && (init.method === "PUT" || init.method === "DELETE")) {
+    const row = await env.DB.prepare(
+      "SELECT revision FROM goal_entries WHERE goal_id = ? AND local_date = ?",
+    )
+      .bind(target[1], target[2])
+      .first<{ revision: string }>();
+    if (init.method === "PUT" && typeof init.body === "string") {
+      try {
+        const value = JSON.parse(init.body);
+        if (value && typeof value === "object" && !("expectedRevision" in value))
+          init = {
+            ...init,
+            body: JSON.stringify({ ...value, expectedRevision: row?.revision ?? null }),
+          };
+      } catch {
+        /* Preserve invalid JSON scenarios. */
+      }
+    }
+    if (init.method === "DELETE")
+      path += `?expectedRevision=${encodeURIComponent(row?.revision ?? "missing")}`;
+  }
   const headers = new Headers(init.headers);
   headers.set("Cookie", `__Host-session=${sessionToken}`);
   if (init.method && !["GET", "HEAD"].includes(init.method))
@@ -324,7 +370,7 @@ describe("planning application rules", () => {
     ]);
     expect(
       Object.keys(document.paths["/api/goals/{goalId}/entries/{date}"]?.put?.responses ?? {}),
-    ).toEqual(["200", "400", "401", "403", "404", "413", "415", "500"]);
+    ).toEqual(["200", "400", "401", "403", "404", "409", "413", "415", "500"]);
     const createBody = document.paths["/api/plans/{month}/goals"]?.post?.requestBody;
     const entryBody = document.paths["/api/goals/{goalId}/entries/{date}"]?.put?.requestBody;
     const orderBody = document.paths["/api/plans/{month}/goals/order"]?.put?.requestBody;

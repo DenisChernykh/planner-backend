@@ -1,6 +1,6 @@
 import type { GoalEntry, GoalEntryInput } from "../../domain/model";
 import { requireGoal, validateEntry, validateEntryDate } from "../../domain/rules";
-import type { PlanningRepository, StoredEntry } from "../ports/planning-repository";
+import type { EntryWrite, PlanningRepository } from "../ports/planning-repository";
 
 export class UpsertGoalEntryUseCase {
   constructor(private readonly repository: PlanningRepository) {}
@@ -11,6 +11,7 @@ export class UpsertGoalEntryUseCase {
     now: number;
     ownerId: string;
     value: GoalEntryInput;
+    expectedRevision: string | null;
     timeZone?: string;
   }): Promise<GoalEntry> {
     const goal = requireGoal(
@@ -18,7 +19,7 @@ export class UpsertGoalEntryUseCase {
     );
     validateEntryDate(input.date, goal.month, input.now, input.timeZone);
     const checked = validateEntry(goal.tracking, input.value);
-    const stored: StoredEntry = {
+    const stored: EntryWrite = {
       goalId: input.goalId,
       date: input.date,
       value: checked.value,
@@ -31,7 +32,7 @@ export class UpsertGoalEntryUseCase {
       (entry) => entry.date === input.date,
     );
     if (existing) stored.createdAt = existing.createdAt;
-    const result = await this.repository.upsertEntry(stored);
+    const result = await this.repository.upsertEntry(stored, input.expectedRevision);
     return result;
   }
 }

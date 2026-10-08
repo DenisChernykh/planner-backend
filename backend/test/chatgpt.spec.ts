@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { createApp } from "../src";
+import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
 
@@ -25,6 +26,18 @@ async function request(
   token?: string,
   trusted = true,
 ) {
+  const target = /^\/api\/goals\/([^/]+)\/entries\/(\d{4}-\d{2}-\d{2})$/u.exec(path);
+  if (target && (method === "PUT" || method === "DELETE")) {
+    const row = await env.DB.prepare(
+      "SELECT revision FROM goal_entries WHERE goal_id = ? AND local_date = ?",
+    )
+      .bind(target[1], target[2])
+      .first<{ revision: string }>();
+    if (method === "PUT" && body && typeof body === "object" && !("expectedRevision" in body))
+      body = { ...body, expectedRevision: row?.revision ?? null };
+    if (method === "DELETE")
+      path += `?expectedRevision=${encodeURIComponent(row?.revision ?? "missing")}`;
+  }
   const headers = new Headers();
   if (trusted && method !== "GET") headers.set("Origin", origin);
   if (token) headers.set("Authorization", `Bearer ${token}`);
@@ -169,7 +182,14 @@ it("adds once across replays, preserves the note, accepts zero and validates goa
   const id = await goal(token);
   const entryPath = `/api/goals/${id}/entries/${date}`;
   expect(
-    (await request(entryPath, "PUT", { value: 900, note: "После прогулки" }, token)).status,
+    (
+      await request(
+        entryPath,
+        "PUT",
+        { value: 900, note: "После прогулки", expectedRevision: null },
+        token,
+      )
+    ).status,
   ).toBe(200);
   const input = { delta: 200, operationId: crypto.randomUUID() };
   for (let count = 0; count < 2; count++) {
@@ -229,6 +249,7 @@ it("retains addition receipts after cleanup and deletes them with the account", 
     .run();
   vi.setSystemTime(Date.now() + 100 * 86_400_000);
   await new D1ReminderRepository(env.DB).recover(Date.now());
+  await new D1PlanningRepository(env.DB).pruneEntryCommands(Date.now());
   expect(
     await env.DB.prepare(
       "SELECT id FROM planning_entry_commands WHERE id = 'old-reminder'",

@@ -1,8 +1,10 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router";
 
 import type { GetApiPlansMonth200, GetApiPlansMonth200GoalsItem } from "@/shared/api";
+import { postApiGoalsGoalIdRestore } from "@/shared/api";
 import {
   clampPlannerDate,
   getPlannerMonthEnd,
@@ -12,6 +14,7 @@ import {
 import { Alert, AlertDescription, AlertTitle, Button } from "@/shared/ui";
 
 import { FactInspector } from "./fact-inspector";
+import { GoalSettings } from "./goal-settings";
 import { PlanGrid } from "./plan-grid";
 import { PlanHeader } from "./plan-header";
 import { PlanNavigation } from "./plan-navigation";
@@ -20,6 +23,27 @@ type PlanOverviewContentProps = { month: string; plan: GetApiPlansMonth200; noti
 
 export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContentProps) {
   const [params, setParams] = useSearchParams();
+  const client = useQueryClient();
+  const [trashed, setTrashed] = useState<GetApiPlansMonth200GoalsItem | null>(null);
+  const managing = plan.goals.find((goal) => goal.id === params.get("settings"));
+  const closeSettings = () =>
+    setParams(
+      (previous) => {
+        previous.delete("settings");
+        return previous;
+      },
+      { replace: true, preventScrollReset: true },
+    );
+  const restore = useMutation({
+    mutationFn: () => postApiGoalsGoalIdRestore({ goalId: trashed?.id ?? "" }),
+    onSuccess: async () => {
+      await client.invalidateQueries({
+        predicate: (query) =>
+          /\/api\/(?:plans|progress|reminders|search)/u.test(String(query.queryKey[0])),
+      });
+      setTrashed(null);
+    },
+  });
   const fromSearch = useLocation().state?.fromSearch === true;
   const initialDate = clampPlannerDate(plan.today, plan.today, month);
   const requestedDate = params.get("date") ?? initialDate;
@@ -37,6 +61,7 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
       (previous) => {
         previous.set("goal", goal.id);
         previous.set("date", date);
+        previous.delete("settings");
         return previous;
       },
       { replace: true, preventScrollReset: true },
@@ -60,13 +85,29 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
 
   return (
     <section className="flex min-h-[calc(100svh-3.5rem)] min-w-0 bg-background">
-      <main className="min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7">
+      <div className="min-w-0 flex-1 px-4 py-5 sm:px-8 sm:py-7">
         <PlanHeader month={month} hasGoals={plan.goals.length > 0} />
         <PlanNavigation month={month} weekStart={weekStart} onWeekChange={setWeekStart} />
+        {trashed && (
+          <div
+            role="status"
+            className="mb-4 space-y-2 rounded-lg border bg-primary-soft p-4 text-sm"
+          >
+            <p>Цель «{trashed.title}» перемещена в корзину. Результаты и заметки сохранены.</p>
+            <Button variant="outline" disabled={restore.isPending} onClick={() => restore.mutate()}>
+              Отменить перемещение в корзину
+            </Button>
+            {restore.isError && (
+              <p role="alert" className="text-destructive">
+                Не удалось восстановить цель. Повторите попытку или откройте корзину.
+              </p>
+            )}
+          </div>
+        )}
         {notice === "goal-created" && (
           <Alert className="mb-4 border-success/30 bg-success-soft text-success">
             <AlertTitle>Цель создана</AlertTitle>
-            <AlertDescription className="text-success/80">
+            <AlertDescription className="text-success">
               Она уже добавлена в план на выбранный месяц.
             </AlertDescription>
           </Alert>
@@ -91,6 +132,17 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
             weekDates={weekDates}
             goals={plan.goals}
             onSelect={select}
+            onManage={(goal) =>
+              setParams(
+                (previous) => {
+                  previous.delete("goal");
+                  previous.delete("date");
+                  previous.set("settings", goal.id);
+                  return previous;
+                },
+                { replace: true, preventScrollReset: true },
+              )
+            }
             selection={selectedGoalId ? { goalId: selectedGoalId, date: selectedDate } : undefined}
           />
         )}
@@ -98,7 +150,7 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
           Дни вне месяца заблокированы. Будущие даты доступны для просмотра, но не для
           редактирования.
         </p>
-      </main>
+      </div>
       {selectedGoal && (
         <FactInspector
           key={selectedGoal.id}
@@ -117,6 +169,17 @@ export function PlanOverviewContent({ month, plan, notice }: PlanOverviewContent
               { replace: true, preventScrollReset: true },
             )
           }
+        />
+      )}
+      {managing && (
+        <GoalSettings
+          key={managing.id}
+          goal={managing}
+          onClose={closeSettings}
+          onTrashed={(goal) => {
+            restore.reset();
+            setTrashed(goal);
+          }}
         />
       )}
     </section>

@@ -1,6 +1,7 @@
 import { AdjustGoalEntryUseCase } from "./application/entries/adjust-goal-entry.use-case";
 import { DeleteGoalEntryUseCase } from "./application/entries/delete-goal-entry.use-case";
 import { GetEntrySnapshotQuery } from "./application/entries/get-entry-snapshot.query";
+import { PruneEntryCommandsUseCase } from "./application/entries/prune-entry-commands.use-case";
 import { RecordAnswerUseCase } from "./application/entries/record-answer.use-case";
 import { UpsertGoalEntryUseCase } from "./application/entries/upsert-goal-entry.use-case";
 import { CreateGoalUseCase } from "./application/goals/create-goal.use-case";
@@ -24,6 +25,7 @@ export function createPlanningUseCases(database: D1Database) {
   const repository = new D1PlanningRepository(database);
   const listPlan = new ListPlanQuery(repository);
   return {
+    pruneEntryCommands: new PruneEntryCommandsUseCase(repository),
     adjustEntry: new AdjustGoalEntryUseCase(repository),
     listPlan,
     progressSources: new ProgressSourcesQuery(repository),
@@ -99,6 +101,10 @@ export function createPlanningOperations(database: D1Database): PlanningOperatio
     entry: (ownerId, goalId, date) => useCases.getEntrySnapshot.execute({ ownerId, goalId, date }),
     recordAnswer: (input) => useCases.recordAnswer.execute(input),
   };
+}
+
+export function createPlanningMaintenance(database: D1Database) {
+  return new PruneEntryCommandsUseCase(new D1PlanningRepository(database));
 }
 
 export { PlanningError } from "./domain/errors";

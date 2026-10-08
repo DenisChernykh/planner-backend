@@ -1,4 +1,5 @@
 export type ApplicationErrorCode =
+  | "CONFLICT"
   | "DEPENDENCY_UNAVAILABLE"
   | "FORBIDDEN"
   | "INVALID_REQUEST"

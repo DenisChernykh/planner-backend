@@ -1,13 +1,13 @@
 import { Trash2 } from "lucide-react";
-
+import { useId } from "react";
 import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import { Button, Input } from "@/shared/ui";
-
-import { isQuickFactValueValid } from "./quick-fact-model";
-import { trackingIconMap } from "./tracking-presentation";
+import { formatFactDate, getGoalMeta } from "../model/plan-model";
+import { getFactValueError } from "./quick-fact-model";
 
 type FactValueEditorProps = {
   goal: GetApiPlansMonth200GoalsItem;
+  date: string;
   value: string;
   editable: boolean;
   hasEntry: boolean;
@@ -18,114 +18,106 @@ type FactValueEditorProps = {
   onValueChange: (value: string) => void;
   onSave: () => void;
   onDelete: () => void;
-  onDeleteIntent: () => void;
 };
 
-export function FactValueEditor({
-  goal,
-  value,
-  editable,
-  hasEntry,
-  savePending,
-  deletePending,
-  saveError,
-  deleteError,
-  onValueChange,
-  onSave,
-  onDelete,
-  onDeleteIntent,
-}: FactValueEditorProps) {
-  const Icon = trackingIconMap[goal.tracking.type];
-  const valueValid = isQuickFactValueValid(goal, value);
+export function FactValueEditor(props: FactValueEditorProps) {
+  const {
+    goal,
+    date,
+    value,
+    editable,
+    hasEntry,
+    savePending,
+    deletePending,
+    onValueChange,
+    onSave,
+    onDelete,
+  } = props;
+  const id = useId();
+  const error = getFactValueError(goal, value);
+  const pending = savePending || deletePending;
   return (
     <section className="space-y-3 border-b bg-card p-4">
-      <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-2 text-[0.65rem] font-bold tracking-wide text-muted-foreground">
-          <Icon className="size-3.5" /> ФАКТ ЗА ДЕНЬ
-        </h3>
-        <span className="text-[0.65rem] text-muted-foreground">
-          {editable ? "доступен" : "только просмотр"}
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <h3 className="font-bold">Результат за день</h3>
+        <span className="text-muted-foreground">
+          {editable ? "Можно изменить" : "Только просмотр"}
         </span>
       </div>
-      {goal.tracking.type === "check" && (
+      <p id={`${id}-condition`} className="text-sm text-muted-foreground">
+        {getGoalMeta(goal)}
+      </p>
+      {goal.tracking.type === "check" ? (
         <Button
           variant={value === "true" ? "default" : "outline"}
-          disabled={!editable || savePending}
+          disabled={!editable || pending}
+          aria-pressed={value === "true"}
           onClick={() => onValueChange(value === "true" ? "false" : "true")}
-          className="h-11 w-full rounded-lg lg:h-8 lg:rounded-none"
+          className="h-11 w-full rounded-lg"
         >
           {value === "true" ? "✓ Выполнено" : "Отметить выполнение"}
         </Button>
+      ) : (
+        <div className="flex items-center gap-2">
+          <Input
+            aria-label={`Факт за день: ${goal.title}, ${formatFactDate(date)}`}
+            aria-describedby={`${id}-condition${error ? ` ${id}-error` : ""}`}
+            aria-invalid={Boolean(value && error)}
+            className="h-11 min-w-0 rounded-lg text-base md:text-base"
+            type={goal.tracking.type === "time" ? "time" : "number"}
+            value={value}
+            min={goal.tracking.type === "scale" ? goal.tracking.min : undefined}
+            max={goal.tracking.type === "scale" ? goal.tracking.max : undefined}
+            step={goal.tracking.type === "scale" ? 1 : "any"}
+            disabled={!editable || pending}
+            onChange={(event) => onValueChange(event.target.value)}
+            placeholder={
+              goal.tracking.type === "quantity" ? String(goal.tracking.targetValue) : undefined
+            }
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                onSave();
+              }
+            }}
+          />
+          {goal.tracking.type === "quantity" && goal.tracking.unit && (
+            <span className="max-w-24 break-words text-sm">{goal.tracking.unit}</span>
+          )}
+        </div>
       )}
-      {goal.tracking.type === "quantity" && (
-        <Input
-          aria-label="Факт за день"
-          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
-          type="number"
-          value={value}
-          disabled={!editable}
-          onChange={(event) => onValueChange(event.target.value)}
-          placeholder={`до ${goal.tracking.targetValue}`}
-        />
+      {editable && error && (
+        <p
+          id={`${id}-error`}
+          role={value ? "alert" : undefined}
+          className={`text-sm ${value ? "text-destructive" : "text-muted-foreground"}`}
+        >
+          {error}
+        </p>
       )}
-      {goal.tracking.type === "scale" && (
-        <Input
-          aria-label="Факт за день"
-          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
-          type="number"
-          min={goal.tracking.min}
-          max={goal.tracking.max}
-          value={value}
-          disabled={!editable}
-          onChange={(event) => onValueChange(event.target.value)}
-          placeholder={`${goal.tracking.min}–${goal.tracking.max}`}
-        />
-      )}
-      {goal.tracking.type === "time" && (
-        <Input
-          aria-label="Факт за день"
-          className="h-11 rounded-lg text-base md:text-base lg:h-8 lg:rounded-none lg:text-xs"
-          type="time"
-          value={value}
-          disabled={!editable}
-          onChange={(event) => onValueChange(event.target.value)}
-        />
-      )}
-      <div className="flex gap-2">
+      <div className="flex items-start gap-2">
         <Button
-          className="h-11 min-w-0 flex-1 rounded-lg lg:h-8 lg:rounded-none"
-          disabled={!editable || savePending || deletePending || !valueValid}
+          className="h-auto min-h-11 min-w-0 flex-1 whitespace-normal rounded-lg"
+          disabled={!editable || pending || Boolean(error)}
           isLoading={savePending}
           loadingLabel="Сохраняем"
           onClick={onSave}
         >
-          Сохранить факт
+          Сохранить результат и заметку
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="size-11 rounded-lg lg:size-8 lg:rounded-none"
-          disabled={!hasEntry || !editable || savePending || deletePending}
+          className="size-11 shrink-0 rounded-lg"
+          disabled={!hasEntry || !editable || pending}
           isLoading={deletePending}
           loadingLabel="Удаляем"
-          data-fact-delete
-          onPointerDown={onDeleteIntent}
           onClick={onDelete}
-          aria-label="Удалить факт"
+          aria-label={`Удалить результат и заметку: ${goal.title}, ${formatFactDate(date)}`}
         >
           <Trash2 />
         </Button>
       </div>
-      {saveError && (
-        <p className="text-xs text-destructive" role="alert">
-          Не удалось сохранить факт. Повторите попытку.
-        </p>
-      )}
-      {deleteError && (
-        <p className="text-xs text-destructive" role="alert">
-          Не удалось удалить факт. Повторите попытку.
-        </p>
-      )}
     </section>
   );
 }

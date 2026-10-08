@@ -1,4 +1,4 @@
-import { type ReactNode, type RefObject, useRef, useSyncExternalStore } from "react";
+import { type ReactNode, type RefObject, useEffect, useRef, useSyncExternalStore } from "react";
 
 import type { GetApiPlansMonth200GoalsItem } from "@/shared/api";
 import { Button, Sheet, SheetContent, SheetDescription, SheetTitle } from "@/shared/ui";
@@ -35,22 +35,14 @@ export function FactInspector(props: FactInspectorProps) {
   );
 
   const panelRef = useRef<HTMLElement>(null);
-  const entry = props.goal.entries.find((item) => item.date === props.date);
-  const draftKey = JSON.stringify([entry?.value, entry?.note, entry?.updatedAt]);
-  const closeInspector = () => {
-    const panel = panelRef.current;
-    const active = panel?.ownerDocument.activeElement;
-    if (active instanceof HTMLElement && panel?.contains(active)) active.blur();
-    props.onClose();
-  };
 
   return (
-    <FactInspectorDraft key={`${props.goal.id}-${props.date}-${draftKey}`} {...props}>
-      {(draft) => {
+    <FactInspectorDraft key={`${props.goal.id}-${props.date}`} {...props}>
+      {(draft, { requestClose }) => {
         const panel = (
           <FactInspectorPanel
             goal={props.goal}
-            onClose={closeInspector}
+            onClose={requestClose}
             overlay={overlay}
             panelRef={panelRef}
           >
@@ -62,7 +54,7 @@ export function FactInspector(props: FactInspectorProps) {
           <Sheet
             open
             onOpenChange={(open) => {
-              if (!open) closeInspector();
+              if (!open) requestClose();
             }}
           >
             <SheetContent
@@ -95,6 +87,17 @@ function FactInspectorPanel({
   children: ReactNode;
 }) {
   const Icon = trackingIconMap[goal.tracking.type];
+  useEffect(() => {
+    if (overlay) return;
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || document.querySelector('[role="alertdialog"]')) return;
+      if (!panelRef.current?.contains(document.activeElement)) return;
+      event.preventDefault();
+      onClose();
+    };
+    window.addEventListener("keydown", closeWithEscape);
+    return () => window.removeEventListener("keydown", closeWithEscape);
+  }, [overlay, onClose, panelRef]);
 
   return (
     <aside

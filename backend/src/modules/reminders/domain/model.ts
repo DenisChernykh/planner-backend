@@ -1,4 +1,5 @@
 export type ReminderSettings = {
+  revision?: string;
   ownerId: string;
   enabled: boolean;
   timeZone: string;
@@ -7,8 +8,9 @@ export type ReminderSettings = {
   eveningTime: string;
   nextEveningAt: number | null;
 };
-export type SettingsInput = Omit<ReminderSettings, "ownerId" | "nextEveningAt">;
+export type SettingsInput = Omit<ReminderSettings, "ownerId" | "nextEveningAt" | "revision">;
 export type GoalReminder = {
+  revision?: string;
   goalId: string;
   ownerId: string;
   mode: "off" | "scheduled" | "evening";

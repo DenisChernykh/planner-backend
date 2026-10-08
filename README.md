@@ -77,6 +77,10 @@ PR объединения принимается merge-коммитом: squash/
 Документация: [API](backend/README.md), [интерфейс](frontend/README.md),
 [напоминания](backend/docs/telegram-reminders.md).
 
+Правила группировки application, потребители фабрик и владение D1 описаны в
+[архитектурном решении](docs/application-architecture-decisions.md).
+Результаты исправления issues и проверок: [отчёт от 08.10.2026](docs/issue-resolution-2026-10-08/report.md).
+
 Проект ТЗ: [прогресс целей и отчёты в Telegram](docs/progress-and-telegram-reports.md).
 
 Личный плагин **Ритм** для ChatGPT: [запуск и подключение](chatgpt/README.md).

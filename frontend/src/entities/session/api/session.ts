@@ -11,18 +11,20 @@ export const currentSessionQueryKey = getGetApiAuthMeQueryKey;
 export function useCurrentSession(): SessionState {
   const query = useQuery({
     queryKey: currentSessionQueryKey(),
-    queryFn: ({ signal }) => getApiAuthMe(undefined, signal),
+    queryFn: async ({ signal }): Promise<Awaited<ReturnType<typeof getApiAuthMe>> | null> =>
+      getApiAuthMe(undefined, signal),
     retry: false,
+    refetchOnWindowFocus: "always",
   });
 
+  const knownState = classifySessionError(query.error);
+  if (knownState) return { kind: knownState };
+  if (query.data === null) return { kind: "anonymous" };
   if (query.isPending) return { kind: "loading" };
 
   if (query.data) {
     return { kind: "authenticated", user: query.data.user as AuthenticatedUser };
   }
-
-  const knownState = classifySessionError(query.error);
-  if (knownState) return { kind: knownState };
 
   return { kind: "error", error: query.error };
 }

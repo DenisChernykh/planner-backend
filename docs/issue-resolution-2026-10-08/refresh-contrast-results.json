@@ -1,0 +1,165 @@
+{
+  "checks": [
+    "visibility event on tab return reloads an external result",
+    "draft survives external update on tab return",
+    "simulated midnight keeps quick draft and original date",
+    "login loads only shared and login chunks"
+  ],
+  "contrasts": [
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "card",
+      "foregroundColor": "#186a23",
+      "backgroundColor": "#ffffff",
+      "ratio": 6.72
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "secondary",
+      "foregroundColor": "#186a23",
+      "backgroundColor": "#f4f4f5",
+      "ratio": 6.11
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "primary-soft",
+      "foregroundColor": "#186a23",
+      "backgroundColor": "#e7ecfc",
+      "ratio": 5.7
+    },
+    {
+      "mode": "light",
+      "foreground": "success",
+      "background": "success-soft",
+      "foregroundColor": "#186a23",
+      "backgroundColor": "#dbf8da",
+      "ratio": 5.9
+    },
+    {
+      "mode": "light",
+      "foreground": "muted-foreground",
+      "background": "card",
+      "foregroundColor": "#665752",
+      "backgroundColor": "#ffffff",
+      "ratio": 6.89
+    },
+    {
+      "mode": "light",
+      "foreground": "muted-foreground",
+      "background": "secondary",
+      "foregroundColor": "#665752",
+      "backgroundColor": "#f4f4f5",
+      "ratio": 6.26
+    },
+    {
+      "mode": "light",
+      "foreground": "muted-foreground",
+      "background": "primary-soft",
+      "foregroundColor": "#665752",
+      "backgroundColor": "#e7ecfc",
+      "ratio": 5.84
+    },
+    {
+      "mode": "light",
+      "foreground": "muted-foreground",
+      "background": "success-soft",
+      "foregroundColor": "#665752",
+      "backgroundColor": "#dbf8da",
+      "ratio": 6.05
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "card",
+      "foregroundColor": "#5bbe62",
+      "backgroundColor": "#1d1816",
+      "ratio": 7.52
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "secondary",
+      "foregroundColor": "#5bbe62",
+      "backgroundColor": "#27272a",
+      "ratio": 6.37
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "primary-soft",
+      "foregroundColor": "#5bbe62",
+      "backgroundColor": "#0e0f1b",
+      "ratio": 8.15
+    },
+    {
+      "mode": "dark",
+      "foreground": "success",
+      "background": "success-soft",
+      "foregroundColor": "#5bbe62",
+      "backgroundColor": "#0e3111",
+      "ratio": 6.13
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted-foreground",
+      "background": "card",
+      "foregroundColor": "#aba09c",
+      "backgroundColor": "#1d1816",
+      "ratio": 6.9
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted-foreground",
+      "background": "secondary",
+      "foregroundColor": "#aba09c",
+      "backgroundColor": "#27272a",
+      "ratio": 5.84
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted-foreground",
+      "background": "primary-soft",
+      "foregroundColor": "#aba09c",
+      "backgroundColor": "#0e0f1b",
+      "ratio": 7.47
+    },
+    {
+      "mode": "dark",
+      "foreground": "muted-foreground",
+      "background": "success-soft",
+      "foregroundColor": "#aba09c",
+      "backgroundColor": "#0e3111",
+      "ratio": 5.62
+    }
+  ],
+  "loginAssets": [
+    {
+      "file": "index-DqmdNmhc.js",
+      "bytes": 214348
+    },
+    {
+      "file": "session-CJS4Aa5o.js",
+      "bytes": 6936
+    },
+    {
+      "file": "rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694
+    },
+    {
+      "file": "ui-yuZbRq38.js",
+      "bytes": 423868
+    },
+    {
+      "file": "login-OzIrju22.js",
+      "bytes": 1389
+    },
+    {
+      "file": "runtime-BCTcCINd.js",
+      "bytes": 616
+    }
+  ],
+  "loginBytes": 647851
+}

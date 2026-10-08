@@ -76,6 +76,7 @@ describe("month rollover in D1", () => {
       goalIds: [second.id, first.id],
     });
     await useCases.upsertEntry.execute({
+      expectedRevision: null,
       ownerId: OWNER,
       goalId: first.id,
       date: "2026-09-30",
@@ -314,7 +315,7 @@ describe("reminder inheritance and scheduled rollover", () => {
     await configure(source.id);
     await reminders.saveSettings(
       { ownerId: OWNER, ...DEFAULT_SETTINGS, enabled: true, nextEveningAt: null },
-      [],
+      await reminders.reminders(OWNER),
     );
     await env.DB.prepare(
       "INSERT INTO telegram_links (owner_id, chat_id, telegram_user_id, status) VALUES (?, '123', '123', 'active')",

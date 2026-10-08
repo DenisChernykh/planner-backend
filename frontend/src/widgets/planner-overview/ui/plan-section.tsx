@@ -17,12 +17,14 @@ export function PlanSection({
   selection,
   progress,
   progressState,
+  onManage,
+  mobileDate,
 }: PlanSectionProps) {
   const sectionGoals = goals.filter((goal) => goal.cadence.period === cadence);
   if (sectionGoals.length === 0) return null;
   return (
     <section aria-labelledby={`${cadence}-section`}>
-      <div className="flex items-center gap-2 border-y bg-secondary px-3 py-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 border-y bg-secondary px-3 py-2 text-sm">
         <CalendarDays className="size-3.5 text-primary" aria-hidden="true" />
         <h2 id={`${cadence}-section`} className="font-bold">
           {label}
@@ -39,6 +41,8 @@ export function PlanSection({
           today={today}
           weekDates={weekDates}
           onSelect={onSelect}
+          onManage={onManage}
+          mobileDate={mobileDate}
           selection={selection}
           progress={progress?.find((item) => item.goalIds.includes(goal.id))}
           progressState={progressState ?? "embedded"}

@@ -2,20 +2,21 @@ import type { RouteObject } from "react-router";
 import { Navigate, Outlet, useParams } from "react-router";
 import { PlannerSearchProvider } from "@/features/search";
 import { AuthenticationDisabledPage } from "@/pages/authentication-disabled";
-import { ConnectionsPage } from "@/pages/connections";
-import { CreateGoalPage } from "@/pages/create-goal";
-import { LoginPage } from "@/pages/login";
 import { NotFoundPage } from "@/pages/not-found";
-import { PlanPage } from "@/pages/plan";
-import { ProgressPage } from "@/pages/progress";
-import { RemindersPage } from "@/pages/reminders";
-import { TrashPage } from "@/pages/trash";
 import { useGetApiRemindersSettings } from "@/shared/api";
 import { getCurrentPlannerMonth, isPlannerMonth } from "@/shared/lib/planner-month";
 import { Button } from "@/shared/ui";
 
 import { MonthRollover } from "./month-rollover";
 import { SessionGate } from "./session-gate";
+
+function RouteLoading() {
+  return (
+    <main className="p-6" role="status">
+      Загружаем страницу…
+    </main>
+  );
+}
 
 function CurrentMonthRedirect() {
   const settings = useGetApiRemindersSettings({ query: { refetchOnMount: "always" } });
@@ -52,22 +53,47 @@ function PlannerMonthRoute() {
 }
 
 export const routes = [
-  { path: "/login", element: <LoginPage /> },
+  {
+    path: "/login",
+    HydrateFallback: RouteLoading,
+    lazy: async () => ({ Component: (await import("@/pages/login")).LoginPage }),
+  },
   { path: "/authentication-disabled", element: <AuthenticationDisabledPage /> },
   {
     element: <SessionGate />,
+    HydrateFallback: RouteLoading,
     children: [
       { path: "/", element: <CurrentMonthRedirect /> },
       {
         path: "/plans/:month",
         element: <PlannerMonthRoute />,
         children: [
-          { index: true, element: <PlanPage /> },
-          { path: "goals/new", element: <CreateGoalPage /> },
-          { path: "reminders", element: <RemindersPage /> },
-          { path: "progress", element: <ProgressPage /> },
-          { path: "connections", element: <ConnectionsPage /> },
-          { path: "trash", element: <TrashPage /> },
+          {
+            index: true,
+            lazy: async () => ({ Component: (await import("@/pages/plan")).PlanPage }),
+          },
+          {
+            path: "goals/new",
+            lazy: async () => ({ Component: (await import("@/pages/create-goal")).CreateGoalPage }),
+          },
+          {
+            path: "reminders",
+            lazy: async () => ({ Component: (await import("@/pages/reminders")).RemindersPage }),
+          },
+          {
+            path: "progress",
+            lazy: async () => ({ Component: (await import("@/pages/progress")).ProgressPage }),
+          },
+          {
+            path: "connections",
+            lazy: async () => ({
+              Component: (await import("@/pages/connections")).ConnectionsPage,
+            }),
+          },
+          {
+            path: "trash",
+            lazy: async () => ({ Component: (await import("@/pages/trash")).TrashPage }),
+          },
           { path: "*", element: <NotFoundPage /> },
         ],
       },

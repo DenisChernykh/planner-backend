@@ -42,7 +42,48 @@ export function getTrackingLabel(type: TrackingType): string {
 }
 
 export function getGoalMeta(goal: PlanGoal): string {
-  return `${getTrackingLabel(goal.tracking.type)} · ${CADENCE_LABELS[goal.cadence.period]}`;
+  const { tracking, cadence } = goal;
+  const frequency =
+    cadence.period === "day"
+      ? CADENCE_LABELS.day
+      : `${cadence.targetOccurrences} раз${cadence.targetOccurrences % 10 >= 2 && cadence.targetOccurrences % 10 <= 4 && (cadence.targetOccurrences % 100 < 12 || cadence.targetOccurrences % 100 > 14) ? "а" : ""} ${cadence.period === "week" ? "в неделю" : "в месяц"}`;
+  let condition: string;
+  if (tracking.type === "check") condition = "Отметить выполнение";
+  else if (tracking.type === "quantity")
+    condition = `${{ atLeast: "Не меньше", atMost: "Не больше", equal: "Ровно" }[tracking.comparison]} ${tracking.targetValue}${tracking.unit ? ` ${tracking.unit}` : ""}`;
+  else if (tracking.type === "scale") condition = `От ${tracking.min} до ${tracking.max}`;
+  else if (tracking.targetStart && tracking.targetEnd)
+    condition = `${tracking.targetStart}–${tracking.targetEnd}${tracking.targetStart > tracking.targetEnd ? " (через полночь)" : ""}`;
+  else if (tracking.targetStart) condition = `Не раньше ${tracking.targetStart}`;
+  else if (tracking.targetEnd) condition = `Не позже ${tracking.targetEnd}`;
+  else condition = "Любое время";
+  return `${condition} · ${frequency}`;
+}
+
+export function formatFactDate(date: string): string {
+  return new Intl.DateTimeFormat("ru-RU", { dateStyle: "long", timeZone: "UTC" }).format(
+    new Date(`${date}T12:00:00Z`),
+  );
+}
+
+export function getFactAccessibleName(
+  goal: PlanGoal,
+  date: string,
+  today: string,
+  month: string,
+): string {
+  const entry = getEntry(goal, date);
+  const value = !entry
+    ? "результат не записан"
+    : typeof entry.value === "boolean"
+      ? entry.value
+        ? "отмечено"
+        : "не отмечено"
+      : formatEntryValue(goal, entry);
+  const state = entry ? (entry.met ? "условие выполнено" : "условие не выполнено") : "";
+  const action =
+    date > today || !date.startsWith(`${month}-`) ? "только просмотр" : "Изменить результат";
+  return [goal.title, formatFactDate(date), value, state, action].filter(Boolean).join(", ");
 }
 
 export function getEntry(goal: PlanGoal, date: string): PlanEntry | undefined {

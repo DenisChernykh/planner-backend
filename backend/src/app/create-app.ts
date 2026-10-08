@@ -5,7 +5,7 @@ import {
 } from "../modules/identity-access";
 import type { IdentityContextVariables } from "../modules/identity-access/public-contracts";
 import { createNotesModule } from "../modules/notes";
-import { createPlanningModule } from "../modules/planning";
+import { createPlanningMaintenance, createPlanningModule } from "../modules/planning";
 import { createProgressModule } from "../modules/progress";
 import {
   createReminderOperations,
@@ -169,6 +169,7 @@ export function reminderTransport(env: CloudflareBindings) {
     : null;
 }
 export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
+  if (Math.floor(now / 60_000) % 60 === 0) await createPlanningMaintenance(env.DB).execute(now);
   await createReminderOperations(
     env.DB,
     reminderTransport(env),

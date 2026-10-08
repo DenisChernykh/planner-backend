@@ -2,8 +2,8 @@ import { formatPlannerDay, getPlannerDayName } from "@/shared/lib/planner-calend
 
 export function PlanGridHeader({ weekDates, today }: { weekDates: string[]; today: string }) {
   return (
-    <div className="grid grid-cols-[minmax(220px,1fr)_repeat(7,56px)_120px_128px] border-b bg-secondary text-center text-[0.68rem] font-semibold text-muted-foreground">
-      <div className="flex min-h-[64px] items-center px-3 text-left">
+    <div className="sticky top-0 z-30 hidden grid-cols-[240px_repeat(7,64px)_120px_180px] md:grid border-b bg-secondary text-center text-sm font-semibold text-muted-foreground">
+      <div className="sticky left-0 z-40 flex min-h-[64px] items-center bg-secondary px-3 text-left">
         Неделя · {formatPlannerDay(weekDates[0] ?? today)} —{" "}
         {formatPlannerDay(weekDates[6] ?? today)}
       </div>

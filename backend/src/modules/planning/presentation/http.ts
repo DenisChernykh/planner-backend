@@ -69,9 +69,27 @@ const goalPatchSchema = z
   .refine((input) => Object.keys(input).length > 0, "At least one goal field is required");
 
 const entryInputSchema = z.union([
-  z.object({ completed: z.boolean(), note: z.string().max(1_000).optional() }).strict(),
-  z.object({ value: z.number().finite(), note: z.string().max(1_000).optional() }).strict(),
-  z.object({ value: z.string(), note: z.string().max(1_000).optional() }).strict(),
+  z
+    .object({
+      completed: z.boolean(),
+      note: z.string().max(1_000).optional(),
+      expectedRevision: z.string().min(1).nullable(),
+    })
+    .strict(),
+  z
+    .object({
+      value: z.number().finite(),
+      note: z.string().max(1_000).optional(),
+      expectedRevision: z.string().min(1).nullable(),
+    })
+    .strict(),
+  z
+    .object({
+      value: z.string(),
+      note: z.string().max(1_000).optional(),
+      expectedRevision: z.string().min(1).nullable(),
+    })
+    .strict(),
 ]);
 const goalOrderSchema = z
   .object({
@@ -120,6 +138,12 @@ const unsafeErrors = {
 const conflictErrors = {
   409: {
     description: "The goal tracking type cannot be changed",
+    content: { "application/problem+json": { schema: problemDetailsSchema } },
+  },
+} as const;
+const entryConflictErrors = {
+  409: {
+    description: "The entry changed since it was read; reload before saving or deleting",
     content: { "application/problem+json": { schema: problemDetailsSchema } },
   },
 } as const;
@@ -289,6 +313,7 @@ const putEntryRoute = createRoute({
     ...goalNotFoundError,
     ...unsafeErrors,
     ...jsonErrors,
+    ...entryConflictErrors,
   },
 });
 const deleteEntryRoute = createRoute({
@@ -296,12 +321,13 @@ const deleteEntryRoute = createRoute({
   path: "/api/goals/{goalId}/entries/{date}",
   tags: ["Planning"],
   security: ACCOUNT_API_SECURITY,
-  request: { params: entryParams },
+  request: { params: entryParams, query: z.object({ expectedRevision: z.string().min(1) }) },
   responses: {
     204: { description: "Entry removed" },
     ...standardErrors,
     ...goalNotFoundError,
     ...unsafeErrors,
+    ...entryConflictErrors,
   },
 });
 
@@ -488,12 +514,14 @@ export function createPlanningHttp(
   });
 
   router.openapi(putEntryRoute, async (c) => {
+    const { expectedRevision, ...value } = c.req.valid("json");
     const entry = await dependencies.createUseCases(c.env.DB).upsertEntry.execute({
       date: c.req.valid("param").date,
       goalId: c.req.valid("param").goalId,
       now: Date.now(),
       ownerId: authenticatedOwnerId(c),
-      value: c.req.valid("json"),
+      value,
+      expectedRevision,
       timeZone: await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
     });
     return c.json({ entry }, 200);
@@ -504,6 +532,7 @@ export function createPlanningHttp(
       goalId: c.req.valid("param").goalId,
       date: c.req.valid("param").date,
       now: Date.now(),
+      expectedRevision: c.req.valid("query").expectedRevision,
       timeZone: await dependencies.getTimeZone(c.env.DB, authenticatedOwnerId(c)),
     });
     return c.body(null, 204);

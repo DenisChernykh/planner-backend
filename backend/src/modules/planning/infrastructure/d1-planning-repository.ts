@@ -21,6 +21,7 @@ import type {
   MonthRolloverState,
 } from "../application/ports/month-rollover-repository";
 import type {
+  EntryWrite,
   GoalUpdate,
   PlanningRepository,
   StoredEntry,
@@ -28,7 +29,7 @@ import type {
 import type { SearchRepository, SearchScope } from "../application/ports/search-repository";
 import { EntryConflictError, GoalNotFoundError } from "../domain/errors";
 import type { GoalRecord, GoalTracking } from "../domain/model";
-import { calculateMet } from "../domain/rules";
+import { calculateMet, validateEntry } from "../domain/rules";
 import type { EntrySnapshot, ProgressPlanningSource, RecordAnswerInput } from "../public-contracts";
 
 type GoalRow = typeof planGoals.$inferSelect;
@@ -88,6 +89,7 @@ const previousMonthSql = `SELECT MAX(month) FROM (
 function toEntry(row: EntryRow): StoredEntry {
   return {
     goalId: row.goalId,
+    revision: row.revision,
     date: row.localDate,
     value: parseJson<boolean | number | string>(row.value),
     met: row.met,
@@ -592,7 +594,10 @@ export class D1PlanningRepository
     return rows.map(toEntry);
   }
 
-  async upsertEntry(entry: StoredEntry): Promise<StoredEntry> {
+  async upsertEntry(
+    entry: EntryWrite,
+    expectedRevision: string | null = null,
+  ): Promise<StoredEntry> {
     for (let attempt = 0; attempt < 3; attempt++) {
       const [goal] = await this.database
         .select()
@@ -600,13 +605,25 @@ export class D1PlanningRepository
         .where(and(eq(planGoals.id, entry.goalId), isNull(planGoals.deletedAt)))
         .limit(1);
       if (!goal) throw new GoalNotFoundError();
-      const met = calculateMet(parseJson<GoalTracking>(goal.trackingConfig), entry.value);
+      const tracking = parseJson<GoalTracking>(goal.trackingConfig);
+      const checked = validateEntry(
+        tracking,
+        typeof entry.value === "boolean"
+          ? { completed: entry.value, note: entry.note ?? undefined }
+          : typeof entry.value === "number"
+            ? { value: entry.value, note: entry.note ?? undefined }
+            : { value: entry.value, note: entry.note ?? undefined },
+      );
+      const met = checked.met;
+      const revision = crypto.randomUUID();
       // A fact validated just before a criteria edit must also match the definition at commit.
       const result = await this.binding
         .prepare(`INSERT INTO goal_entries
         (goal_id, local_date, value, met, note, created_at, updated_at, revision)
         SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM plan_goals WHERE id = ? AND deleted_at IS NULL AND updated_at = ? AND tracking_config = ?)
-        ON CONFLICT(goal_id, local_date) DO UPDATE SET value = excluded.value, met = excluded.met, note = excluded.note, updated_at = excluded.updated_at, revision = excluded.revision`)
+        AND (? IS NULL OR EXISTS (SELECT 1 FROM goal_entries WHERE goal_id = ? AND local_date = ? AND revision = ?))
+        ON CONFLICT(goal_id, local_date) DO UPDATE SET value = excluded.value, met = excluded.met, note = excluded.note, updated_at = excluded.updated_at, revision = excluded.revision
+        WHERE goal_entries.revision = ?`)
         .bind(
           entry.goalId,
           entry.date,
@@ -615,13 +632,20 @@ export class D1PlanningRepository
           entry.note,
           entry.createdAt,
           entry.updatedAt,
-          crypto.randomUUID(),
+          revision,
           entry.goalId,
           goal.updatedAt,
           goal.trackingConfig,
+          expectedRevision,
+          entry.goalId,
+          entry.date,
+          expectedRevision,
+          expectedRevision,
         )
         .run();
-      if (result.meta.changes === 1) return { ...entry, met };
+      if (result.meta.changes === 1) return { ...entry, met, revision };
+      // A non-null revision must never recreate a concurrently deleted entry.
+      if (expectedRevision !== null) throw new EntryConflictError();
     }
     throw new EntryConflictError();
   }
@@ -649,7 +673,7 @@ export class D1PlanningRepository
 
   async recordAnswer(
     input: RecordAnswerInput,
-    entry: StoredEntry,
+    entry: EntryWrite,
     goalUpdatedAt: number,
     receiptLifetime: "retry-window" | "goal" = "retry-window",
   ): Promise<"saved" | "conflict"> {
@@ -718,11 +742,28 @@ export class D1PlanningRepository
     return result === "saved" ? "saved" : "conflict";
   }
 
-  async deleteEntry(goalId: string, date: string): Promise<boolean> {
+  async deleteEntry(goalId: string, date: string, expectedRevision: string): Promise<boolean> {
     const deleted = await this.database
       .delete(goalEntries)
-      .where(and(eq(goalEntries.goalId, goalId), eq(goalEntries.localDate, date)))
+      .where(
+        and(
+          eq(goalEntries.goalId, goalId),
+          eq(goalEntries.localDate, date),
+          eq(goalEntries.revision, expectedRevision),
+        ),
+      )
       .returning({ goalId: goalEntries.goalId });
     return deleted.length === 1;
+  }
+
+  async pruneEntryCommands(now: number): Promise<void> {
+    // Without statistics SQLite can choose the goal_id index and read every recent
+    // receipt. Pin the partial expiry index used by this bounded maintenance query.
+    await this.binding
+      .prepare(
+        "DELETE FROM planning_entry_commands WHERE id IN (SELECT id FROM planning_entry_commands INDEXED BY planning_entry_commands_retention_idx WHERE goal_id IS NULL AND created_at < ? ORDER BY created_at LIMIT 25)",
+      )
+      .bind(now - 90 * 86_400_000)
+      .run();
   }
 }

@@ -38,7 +38,14 @@ test("rejects oversized requests before parsing or contacting the account", asyn
 
 function fixture(t: TestContext, upstream?: PlannerFetch) {
   const requests: Request[] = [];
-  let savedEntry = { date, value: 900 as number | boolean | string, met: false, note: null };
+  let revision = 0;
+  let savedEntry = {
+    revision: "test-revision",
+    date,
+    value: 900 as number | boolean | string,
+    met: false,
+    note: null,
+  };
   let settings = {
     ownerId: accountId,
     enabled: false,
@@ -119,12 +126,23 @@ function fixture(t: TestContext, upstream?: PlannerFetch) {
     if (path === "/api/reminders/telegram") return new Response(null, { status: 204 });
     if (path.includes("/entries/")) {
       if (request.method === "DELETE") {
+        if (new URL(request.url).searchParams.get("expectedRevision") !== savedEntry.revision)
+          return Response.json(
+            { title: "Conflict", status: 409, code: "ENTRY_CONFLICT" },
+            { status: 409 },
+          );
         goals[0].entries = [];
         return new Response(null, { status: 204 });
       }
       const body = await request.clone().json();
+      if (!path.endsWith("/adjust") && body.expectedRevision !== savedEntry.revision)
+        return Response.json(
+          { title: "Conflict", status: 409, code: "ENTRY_CONFLICT" },
+          { status: 409 },
+        );
       savedEntry = {
         ...savedEntry,
+        revision: `test-revision-${++revision}`,
         value: path.endsWith("/adjust")
           ? Number(savedEntry.value) + body.delta
           : (body.value ?? body.completed),
@@ -287,7 +305,7 @@ test("search passes encoded filters to the owner's API without any mutation", as
     assert.equal(tools.find((tool) => tool.name === name)?.annotations?.readOnlyHint, true);
 });
 
-test("200 replaces 900 and repeated PUT keeps 200; a fresh MCP client reads the saved value", async (t) => {
+test("revision-aware PUT replaces 900 with 200; stale retries conflict and a fresh client reads it", async (t) => {
   const { connect, requests } = fixture(t);
   const client = await connect();
   const initial = getPlanOutput.parse(
@@ -299,13 +317,20 @@ test("200 replaces 900 and repeated PUT keeps 200; a fresh MCP client reads the 
   assert.equal(initial.goals[0].entries[0].value, 900);
   assert.equal(initial.goals[0].ownerId, accountId);
 
+  let expectedRevision = initial.goals[0].entries[0].revision;
   for (let i = 0; i < 2; i++) {
     const result = await client.callTool({
       name: "record_entry",
-      arguments: { goalId, date, entry: { value: 200 } },
+      arguments: { goalId, date, entry: { value: 200, expectedRevision } },
     });
     assert.equal(recordEntryOutput.parse(result.structuredContent).entry.value, 200);
+    expectedRevision = recordEntryOutput.parse(result.structuredContent).entry.revision;
   }
+  const stale = await client.callTool({
+    name: "record_entry",
+    arguments: { goalId, date, entry: { value: 900, expectedRevision: "test-revision" } },
+  });
+  assert.equal(stale.isError, true);
   const freshClient = await connect();
   const saved = getPlanOutput.parse(
     (await freshClient.callTool({ name: "get_plan", arguments: { month: "2026-10" } }))
@@ -313,7 +338,7 @@ test("200 replaces 900 and repeated PUT keeps 200; a fresh MCP client reads the 
   );
   assert.equal(saved.goals[0].entries[0].value, 200);
   const writes = requests.filter((request) => request.method === "PUT");
-  assert.equal(writes.length, 2);
+  assert.equal(writes.length, 3);
   for (const request of requests) {
     assert.equal(new URL(request.url).origin, PLANNER_ORIGIN);
     assert.equal(request.headers.get("Authorization"), `Bearer ${environment.RITM_API_TOKEN}`);
@@ -322,13 +347,19 @@ test("200 replaces 900 and repeated PUT keeps 200; a fresh MCP client reads the 
     assert.equal(request.headers.has("Sec-Fetch-Site"), false);
   }
   assert.equal(writes[0].headers.get("Origin"), PLANNER_ORIGIN);
-  assert.deepEqual(await writes[0].clone().json(), { value: 200 });
+  assert.deepEqual(await writes[0].clone().json(), {
+    value: 200,
+    expectedRevision: "test-revision",
+  });
 });
 
 test("check and time results use the existing Planner entry bodies", async (t) => {
   const { connect, requests } = fixture(t);
   const client = await connect();
-  for (const entry of [{ completed: true }, { value: "10:30" }]) {
+  for (const entry of [
+    { completed: true, expectedRevision: "test-revision" },
+    { value: "10:30", expectedRevision: "test-revision-1" },
+  ]) {
     const result = await client.callTool({
       name: "record_entry",
       arguments: { goalId, date, entry },
@@ -362,10 +393,15 @@ test("invalid dates, IDs, time and injected connection settings never reach Plan
   const { connect, requests } = fixture(t);
   const client = await connect();
   for (const args of [
-    { goalId: "../auth/logout", date, entry: { value: 200 } },
-    { goalId, date: "2026-02-30", entry: { value: 200 } },
+    { goalId: "../auth/logout", date, entry: { value: 200, expectedRevision: "test-revision" } },
+    { goalId, date: "2026-02-30", entry: { value: 200, expectedRevision: "test-revision" } },
     { goalId, date, entry: { value: "10-30" } },
-    { goalId, date, entry: { value: 200 }, url: "https://other.invalid" },
+    {
+      goalId,
+      date,
+      entry: { value: 200, expectedRevision: "test-revision" },
+      url: "https://other.invalid",
+    },
   ]) {
     const result = await client.callTool({ name: "record_entry", arguments: args });
     assert.equal(result.isError, true);
@@ -404,7 +440,7 @@ test("editing, addition, trash and restore round-trip through the public tools",
     getPlanOutput.parse(await call("get_plan", { month: "2026-10" })).goals[0].entries[0].value,
     1100,
   );
-  await call("delete_entry", { goalId, date });
+  await call("delete_entry", { goalId, date, expectedRevision: added.entry.revision });
   assert.equal(
     getPlanOutput.parse(await call("get_plan", { month: "2026-10" })).goals[0].entries.length,
     0,
@@ -504,7 +540,7 @@ test("401 stops before any write and does not expose the upstream response", asy
   const client = await connect();
   const result = await client.callTool({
     name: "record_entry",
-    arguments: { goalId, date, entry: { completed: true } },
+    arguments: { goalId, date, entry: { completed: true, expectedRevision: "test-revision" } },
   });
   assert.equal(result.isError, true);
   assert.match(JSON.stringify(result), /Создайте новый ключ/u);

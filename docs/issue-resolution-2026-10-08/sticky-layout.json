@@ -1,0 +1,55 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "scroll": {
+    "left": 110,
+    "top": 600,
+    "width": 878,
+    "scrollWidth": 988
+  },
+  "header": {
+    "text": "Неделя · 5 окт — 11 окт",
+    "bounds": {
+      "x": 209,
+      "y": 203.3125,
+      "width": 240,
+      "height": 64,
+      "top": 203.3125,
+      "right": 449,
+      "bottom": 267.3125,
+      "left": 209
+    }
+  },
+  "visibleGoals": [
+    {
+      "title": "Дополнительная цель 02 с длинным названием для проверки прокрутки",
+      "bounds": {
+        "x": 297,
+        "y": 354.3125,
+        "width": 139,
+        "height": 100,
+        "top": 354.3125,
+        "right": 436,
+        "bottom": 454.3125,
+        "left": 297
+      },
+      "hitTestReturnsTitleButton": true
+    },
+    {
+      "title": "Дополнительная цель 03 с длинным названием для проверки прокрутки",
+      "bounds": {
+        "x": 297,
+        "y": 543.3125,
+        "width": 139,
+        "height": 100,
+        "top": 543.3125,
+        "right": 436,
+        "bottom": 643.3125,
+        "left": 297
+      },
+      "hitTestReturnsTitleButton": true
+    }
+  ]
+}

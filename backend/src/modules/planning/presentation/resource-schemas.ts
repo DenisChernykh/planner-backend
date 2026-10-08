@@ -53,6 +53,7 @@ export const cadenceSchema = z.discriminatedUnion("period", [
 ]);
 
 export const entrySchema = z.object({
+  revision: z.string(),
   date: z.string(),
   value: z.union([z.boolean(), z.number(), z.string()]),
   met: z.boolean(),

@@ -26,3 +26,12 @@ export function isQuickFactValueValid(goal: QuickFactGoal, value: string): boole
   }
   return TIME_VALUE_PATTERN.test(value);
 }
+
+export function getFactValueError(goal: QuickFactGoal, value: string): string | undefined {
+  if (isQuickFactValueValid(goal, value)) return undefined;
+  if (!value.trim()) return "Введите результат, чтобы сохранить его вместе с заметкой.";
+  if (goal.tracking.type === "scale")
+    return `Введите целое число от ${goal.tracking.min} до ${goal.tracking.max}.`;
+  if (goal.tracking.type === "time") return "Введите время в формате ЧЧ:ММ, например 07:40.";
+  return "Введите число.";
+}

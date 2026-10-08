@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { act } from "react";
 import { createMemoryRouter, RouterProvider } from "react-router";
@@ -62,7 +63,11 @@ function open(path: string) {
     ],
     { initialEntries: [path] },
   );
-  render(<RouterProvider router={router} />);
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>,
+  );
   return router;
 }
 describe("search navigation into a plan", () => {

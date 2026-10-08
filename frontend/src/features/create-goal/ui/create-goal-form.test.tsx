@@ -142,7 +142,7 @@ describe("CreateGoalForm", () => {
     await user.click(screen.getByRole("button", { name: "Создать цель" }));
 
     expect(await screen.findByLabelText("Текущий адрес")).toHaveTextContent("/login");
-    expect(queryClient.getQueryData(currentSessionQueryKey())).toBeUndefined();
+    expect(queryClient.getQueryData(currentSessionQueryKey())).toBeNull();
   });
 
   it("keeps the form pending until invalidation and then navigates with a one-time notice", async () => {

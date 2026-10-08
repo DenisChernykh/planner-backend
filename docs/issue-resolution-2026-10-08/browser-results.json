@@ -1,0 +1,30 @@
+{
+  "checks": [
+    "32 goals, long title, one main and named navigation",
+    "quick input today in another displayed week and retry pins its date",
+    "one save, draft guards for close, day, navigation, and conflict merge",
+    "deletion confirmation, cancellation, API failure and retry",
+    "scale errors 6 and 2.5, aria association, keyboard save and updated accessible name",
+    "edit goal, preserve history, trash undo and restore with open-in-plan",
+    "monthly results link works",
+    "desktop sticky titles and dates during both scroll directions",
+    "mobile 390 and 320, chosen full date and all tracking types",
+    "past month requires explicit date and never writes its last day implicitly"
+  ],
+  "errors": [],
+  "axe": [
+    {
+      "name": "plan-1440",
+      "violations": []
+    },
+    {
+      "name": "after-keyboard-save",
+      "violations": []
+    },
+    {
+      "name": "plan-390",
+      "violations": []
+    }
+  ],
+  "browser": "154.0.8037.98"
+}

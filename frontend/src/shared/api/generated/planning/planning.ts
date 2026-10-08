@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  DeleteApiGoalsGoalIdEntriesDateParams,
   DeleteApiGoalsGoalIdEntriesDatePathParameters,
   DeleteApiGoalsGoalIdPathParameters,
   GetApiPlansMonth200,
@@ -654,12 +655,14 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     }
     export const deleteApiGoalsGoalIdEntriesDate = (
     { goalId, date }: DeleteApiGoalsGoalIdEntriesDatePathParameters,
+    params: DeleteApiGoalsGoalIdEntriesDateParams,
  options?: SecondParameter<typeof apiMutator>,signal?: AbortSignal
 ) => {
 
 
       return apiMutator<void>(
-      {url: `/api/goals/${encodeURIComponent(String(goalId))}/entries/${encodeURIComponent(String(date))}`, method: 'DELETE', signal
+      {url: `/api/goals/${encodeURIComponent(String(goalId))}/entries/${encodeURIComponent(String(date))}`, method: 'DELETE',
+        params, signal
     },
       options);
     }
@@ -668,8 +671,8 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 export const getDeleteApiGoalsGoalIdEntriesDateMutationOptions = <TError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters}, TContext>, request?: SecondParameter<typeof apiMutator>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters;params: DeleteApiGoalsGoalIdEntriesDateParams}, TContext>, request?: SecondParameter<typeof apiMutator>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters;params: DeleteApiGoalsGoalIdEntriesDateParams}, TContext> => {
 
 const mutationKey = ['deleteApiGoalsGoalIdEntriesDate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -681,10 +684,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, {pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters}> = (props) => {
-          const {pathParams} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, {pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters;params: DeleteApiGoalsGoalIdEntriesDateParams}> = (props) => {
+          const {pathParams,params} = props ?? {};
 
-          return  deleteApiGoalsGoalIdEntriesDate(pathParams,requestOptions)
+          return  deleteApiGoalsGoalIdEntriesDate(pathParams,params,requestOptions)
         }
 
 
@@ -699,11 +702,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteApiGoalsGoalIdEntriesDateMutationError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>
 
     export const useDeleteApiGoalsGoalIdEntriesDate = <TError = ErrorType<ProblemDetails | PlanningResourceNotFoundProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters}, TContext>, request?: SecondParameter<typeof apiMutator>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>, TError,{pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters;params: DeleteApiGoalsGoalIdEntriesDateParams}, TContext>, request?: SecondParameter<typeof apiMutator>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiGoalsGoalIdEntriesDate>>,
         TError,
-        {pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters},
+        {pathParams: DeleteApiGoalsGoalIdEntriesDatePathParameters;params: DeleteApiGoalsGoalIdEntriesDateParams},
         TContext
       > => {
       return useMutation(getDeleteApiGoalsGoalIdEntriesDateMutationOptions(options), queryClient);

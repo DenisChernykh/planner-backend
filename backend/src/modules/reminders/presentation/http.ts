@@ -60,7 +60,7 @@ const rule = z
   .strict();
 const ruleOutput = rule.extend({ goalId: z.string(), nextRunAt: z.number().nullable() });
 const errors = Object.fromEntries(
-  [400, 401, 403, 404, 413, 415, 500, 503].map((status) => [
+  [400, 401, 403, 404, 409, 413, 415, 500, 503].map((status) => [
     status,
     {
       description: "Request failed",

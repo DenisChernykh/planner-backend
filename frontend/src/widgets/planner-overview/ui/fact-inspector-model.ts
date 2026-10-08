@@ -17,17 +17,18 @@ export function buildFactPayload(
   goal: GetApiPlansMonth200GoalsItem,
   value: string,
   note: string,
+  expectedRevision: string | null = null,
 ): PutApiGoalsGoalIdEntriesDateBody {
-  const cleanNote = note.trim();
+  const cleanNote = note;
   if (goal.tracking.type === "check") {
-    if (cleanNote) return { completed: value === "true", note: cleanNote };
-    return { completed: value === "true" };
+    if (cleanNote) return { completed: value === "true", note: cleanNote, expectedRevision };
+    return { completed: value === "true", expectedRevision };
   }
   if (goal.tracking.type === "time") {
-    if (cleanNote) return { value, note: cleanNote };
-    return { value };
+    if (cleanNote) return { value, note: cleanNote, expectedRevision };
+    return { value, expectedRevision };
   }
   const numericValue = Number(value);
-  if (cleanNote) return { value: numericValue, note: cleanNote };
-  return { value: numericValue };
+  if (cleanNote) return { value: numericValue, note: cleanNote, expectedRevision };
+  return { value: numericValue, expectedRevision };
 }

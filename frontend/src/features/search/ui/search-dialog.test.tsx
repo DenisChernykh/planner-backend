@@ -39,6 +39,7 @@ const results: SearchPage = {
     goal: training,
     date: `2026-09-${day}`,
     entry: {
+      revision: "test-revision",
       date: `2026-09-${day}`,
       value: true,
       met: true,

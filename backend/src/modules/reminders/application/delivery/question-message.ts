@@ -1,4 +1,4 @@
-import type { GoalRecord } from "../../../planning";
+import type { GoalRecord } from "../../../planning/public-contracts";
 import type { ReminderJob } from "../../domain/model";
 import type { Button, OutgoingMessage } from "./outgoing-message";
 

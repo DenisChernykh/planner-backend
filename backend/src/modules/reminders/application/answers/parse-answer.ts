@@ -1,4 +1,8 @@
-import type { GoalEntryInput, GoalTracking } from "../../../planning";
+import {
+  type GoalEntryInput,
+  type GoalTracking,
+  isScaleValueValid,
+} from "../../../planning/public-contracts";
 
 export function parseAnswer(
   tracking: GoalTracking,
@@ -19,10 +23,7 @@ export function parseAnswer(
     if (!/^-?\d+(?:[.,]\d+)?$/u.test(raw) || !Number.isFinite(Number(raw.replace(",", "."))))
       return { error: "Нужно число, например 25. Ответьте на исходный вопрос." };
     const number = Number(raw.replace(",", "."));
-    if (
-      tracking.type === "scale" &&
-      (!Number.isInteger(number) || number < tracking.min || number > tracking.max)
-    )
+    if (tracking.type === "scale" && !isScaleValueValid(tracking, number))
       return { error: `Введите целое число от ${tracking.min} до ${tracking.max}.` };
     value = { value: number };
   }

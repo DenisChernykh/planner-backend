@@ -19,7 +19,7 @@
     "typegen:check": "wrangler types src/worker-configuration.d.ts --env-interface CloudflareBindings --check",
     "format": "biome check --write .",
     "format:check": "biome check .",
-    "boundaries:check": "node scripts/check-module-boundaries.mjs",
+    "boundaries:check": "node --test scripts/check-module-boundaries.node.mjs && node scripts/check-module-boundaries.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

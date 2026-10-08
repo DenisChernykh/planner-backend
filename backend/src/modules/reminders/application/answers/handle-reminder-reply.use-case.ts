@@ -12,9 +12,9 @@ export class HandleReminderReplyUseCase {
   constructor(
     private readonly repository: ReminderRepository,
     private readonly planning: PlanningOperations,
-    private readonly missing: FindMissingGoalsQuery,
-    private readonly openQuestion: OpenReminderQuestionUseCase,
-    private readonly recordAnswer: RecordReminderAnswerUseCase,
+    private readonly missing: Pick<FindMissingGoalsQuery, "execute">,
+    private readonly openQuestion: Pick<OpenReminderQuestionUseCase, "execute">,
+    private readonly recordAnswer: Pick<RecordReminderAnswerUseCase, "execute">,
   ) {}
 
   async execute({

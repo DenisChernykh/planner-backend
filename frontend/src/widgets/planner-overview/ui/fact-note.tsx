@@ -1,35 +1,35 @@
-import type { FocusEvent } from "react";
-
+import { useId } from "react";
 import { Textarea } from "@/shared/ui";
 
-type FactNoteProps = {
+export function FactNote({
+  note,
+  editable,
+  pending,
+  onChange,
+}: {
   note: string;
   editable: boolean;
-  hasEntry: boolean;
+  pending: boolean;
   onChange: (note: string) => void;
-  onBlur: (event: FocusEvent<HTMLTextAreaElement>) => void;
-};
-
-export function FactNote({ note, editable, hasEntry, onChange, onBlur }: FactNoteProps) {
+}) {
+  const id = useId();
   return (
-    <section className="space-y-2 bg-card p-4">
-      <label
-        htmlFor="fact-note"
-        className="text-[0.65rem] font-bold tracking-wide text-muted-foreground"
-      >
+    <section className="space-y-2 border-b bg-card p-4">
+      <label htmlFor={id} className="text-sm font-bold text-muted-foreground">
         ЗАМЕТКА
       </label>
       <Textarea
-        id="fact-note"
-        className="text-base md:text-base lg:text-xs"
+        id={id}
+        className="text-base md:text-base"
         value={note}
-        disabled={!hasEntry || !editable}
+        disabled={!editable || pending}
         onChange={(event) => onChange(event.target.value)}
-        onBlur={onBlur}
-        placeholder="Добавьте заметку к факту"
+        placeholder="Добавьте заметку к результату"
         maxLength={1000}
       />
-      <p className="text-[0.65rem] text-muted-foreground">Сохраняется при потере фокуса.</p>
+      <p className="text-sm text-muted-foreground">
+        Результат и заметка сохраняются вместе по кнопке «Сохранить результат и заметку».
+      </p>
     </section>
   );
 }

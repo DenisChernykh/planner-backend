@@ -72,11 +72,15 @@ describe("planner routes", () => {
     const router = renderRoute("/");
     const currentMonth = getCurrentPlannerMonth();
 
-    await waitFor(() => expect(router.state.location.pathname).toBe(`/plans/${currentMonth}`));
+    await waitFor(() => expect(router.state.location.pathname).toBe(`/plans/${currentMonth}`), {
+      timeout: 10000,
+    });
     const monthName = formatPlannerMonth(currentMonth)
       .replace(/ \d{4}$/u, "")
       .toLocaleLowerCase("ru-RU");
-    expect(screen.getByRole("heading", { name: `План на ${monthName}` })).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: `План на ${monthName}` }),
+    ).toBeInTheDocument();
     await userEvent
       .setup()
       .click(screen.getByRole("button", { name: "Открыть меню пользователя" }));

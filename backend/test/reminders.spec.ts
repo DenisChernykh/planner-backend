@@ -320,6 +320,7 @@ describe("Telegram reminders with D1", () => {
   it("does not ask for existing false values or deleted goals", async () => {
     const created = await goal({ type: "check" });
     await new UpsertGoalEntryUseCase(planningRepository).execute({
+      expectedRevision: null,
       ownerId: OWNER,
       goalId: created.id,
       date: "2026-09-29",
@@ -335,8 +336,9 @@ describe("Telegram reminders with D1", () => {
     const created = await goal();
     await operations().runReminders.execute({ now });
     const job = await firstJob();
-    const website = (value: string) =>
+    const website = async (value: string) =>
       new UpsertGoalEntryUseCase(planningRepository).execute({
+        expectedRevision: (await planning.entry(OWNER, created.id, "2026-09-29"))?.revision ?? null,
         ownerId: OWNER,
         goalId: created.id,
         date: "2026-09-29",
@@ -416,8 +418,10 @@ describe("Telegram reminders with D1", () => {
       incoming({ callback: `pick:${digest.id}:${ids.indexOf(first.id)}` }),
       evening,
     );
+    vi.mocked(transport.edit).mockRejectedValueOnce(new Error("Message was deleted"));
     await operations().bot.receive(incoming({ text: "да", replyToMessageId: 2 }), evening);
     expect(transport.edit).toHaveBeenCalled();
+    expect((await planning.entry(OWNER, first.id, "2026-09-29"))?.entry.value).toBe(true);
     const updated = await repository.job(digest.id);
     expect((JSON.parse(updated?.payload ?? "[]") as string[]).indexOf(second.id)).toBe(
       ids.indexOf(second.id),
@@ -427,6 +431,25 @@ describe("Telegram reminders with D1", () => {
       evening,
     );
     expect(sent[2]?.message.text).toContain("time");
+    await operations().bot.receive(incoming({ text: "07:40", replyToMessageId: 3 }), evening);
+    expect(transport.edit).toHaveBeenLastCalledWith("123", 1, {
+      text: "Всё заполнено · 2026-09-29",
+    });
+  });
+  it("validates the current scale after its range changes while a question is open", async () => {
+    const created = await goal({ type: "scale", min: 1, max: 5 });
+    await operations().runReminders.execute({ now });
+    await env.DB.prepare("UPDATE plan_goals SET tracking_config = ? WHERE id = ?")
+      .bind(JSON.stringify({ type: "scale", min: 1, max: 3 }), created.id)
+      .run();
+    const invalid = await operations().bot.receive(
+      incoming({ text: "5", replyToMessageId: 1 }),
+      now,
+    );
+    expect(invalid?.text).toBe("Введите целое число от 1 до 3.");
+    expect(await planning.entry(OWNER, created.id, "2026-09-29")).toBeNull();
+    await operations().bot.receive(incoming({ text: "3", replyToMessageId: 1 }), now);
+    expect((await planning.entry(OWNER, created.id, "2026-09-29"))?.entry.value).toBe(3);
   });
   it("retries 429, pauses blocked chats, and does not retry ambiguous sends", async () => {
     await goal();

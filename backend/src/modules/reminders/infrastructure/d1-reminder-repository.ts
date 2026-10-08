@@ -47,6 +47,7 @@ const matchingSettings = (settings: ReminderSettings) =>
     eq(reminderSettings.quietStart, settings.quietStart),
     eq(reminderSettings.quietEnd, settings.quietEnd),
     eq(reminderSettings.eveningTime, settings.eveningTime),
+    eq(reminderSettings.revision, settings.revision ?? "initial"),
   );
 
 export class D1ReminderRepository implements ReminderRepository {
@@ -62,16 +63,63 @@ export class D1ReminderRepository implements ReminderRepository {
       .where(eq(reminderSettings.ownerId, ownerId));
     return row ?? { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null };
   }
-  async saveSettings(settings: ReminderSettings, reminders: GoalReminder[]): Promise<void> {
-    await this.db.batch([
-      this.db
-        .insert(reminderSettings)
-        .values(settings)
-        .onConflictDoUpdate({ target: reminderSettings.ownerId, set: settings }),
+  async saveSettings(
+    settings: ReminderSettings,
+    reminders: GoalReminder[],
+    expected?: ReminderSettings,
+  ): Promise<boolean> {
+    const previous = expected ?? (await this.settings(settings.ownerId));
+    const revision = crypto.randomUUID();
+    const versions = JSON.stringify(
+      reminders.map((item) => ({ goalId: item.goalId, revision: item.revision ?? "initial" })),
+    );
+    const writtenSettings = this.db
+      .select({ ownerId: reminderSettings.ownerId })
+      .from(reminderSettings)
+      .where(
+        and(
+          eq(reminderSettings.ownerId, settings.ownerId),
+          eq(reminderSettings.revision, revision),
+        ),
+      );
+    const operations = [
+      this.binding
+        .prepare(`INSERT INTO reminder_settings
+        (owner_id, enabled, time_zone, quiet_start, quiet_end, evening_time, next_evening_at, revision)
+        SELECT ?, ?, ?, ?, ?, ?, ?, ?
+        WHERE coalesce((SELECT revision FROM reminder_settings WHERE owner_id = ?), 'initial') = ?
+        AND (SELECT COUNT(*) FROM goal_reminders WHERE owner_id = ?) = json_array_length(?)
+        AND NOT EXISTS (SELECT 1 FROM goal_reminders r WHERE r.owner_id = ? AND NOT EXISTS (
+          SELECT 1 FROM json_each(?) v WHERE json_extract(v.value, '$.goalId') = r.goal_id AND json_extract(v.value, '$.revision') = r.revision))
+        ON CONFLICT(owner_id) DO UPDATE SET enabled = excluded.enabled, time_zone = excluded.time_zone,
+          quiet_start = excluded.quiet_start, quiet_end = excluded.quiet_end, evening_time = excluded.evening_time,
+          next_evening_at = excluded.next_evening_at, revision = excluded.revision`)
+        .bind(
+          settings.ownerId,
+          Number(settings.enabled),
+          settings.timeZone,
+          settings.quietStart,
+          settings.quietEnd,
+          settings.eveningTime,
+          settings.nextEveningAt,
+          revision,
+          settings.ownerId,
+          previous.revision ?? "initial",
+          settings.ownerId,
+          versions,
+          settings.ownerId,
+          versions,
+        ),
       // Release unsent automatic event keys before rebuilding the day's schedule.
       this.db
         .delete(reminderJobs)
-        .where(and(eq(reminderJobs.ownerId, settings.ownerId), replaceableAutomaticJob)),
+        .where(
+          and(
+            eq(reminderJobs.ownerId, settings.ownerId),
+            replaceableAutomaticJob,
+            exists(writtenSettings),
+          ),
+        ),
       this.db
         .update(reminderJobs)
         .set({ status: "cancelled" })
@@ -80,15 +128,23 @@ export class D1ReminderRepository implements ReminderRepository {
             eq(reminderJobs.ownerId, settings.ownerId),
             eq(reminderJobs.status, "pending"),
             ne(reminderJobs.kind, "weekly-progress"),
+            exists(writtenSettings),
           ),
         ),
       ...reminders.map((item) =>
         this.db
           .update(goalReminders)
-          .set({ nextRunAt: item.nextRunAt })
-          .where(eq(goalReminders.goalId, item.goalId)),
+          .set({ nextRunAt: item.nextRunAt, revision })
+          .where(and(eq(goalReminders.goalId, item.goalId), exists(writtenSettings))),
       ),
-    ]);
+    ];
+    const statements = operations.map((operation) => {
+      if (!("toSQL" in operation)) return operation;
+      const query = operation.toSQL();
+      return this.binding.prepare(query.sql).bind(...query.params);
+    });
+    const results = await this.binding.batch(statements);
+    return results[0]?.meta.changes === 1;
   }
   async activeSettings(): Promise<ReminderSettings[]> {
     return this.db.select().from(reminderSettings).where(eq(reminderSettings.enabled, true));
@@ -98,21 +154,57 @@ export class D1ReminderRepository implements ReminderRepository {
       await this.db.select().from(goalReminders).where(eq(goalReminders.ownerId, ownerId))
     ).map(toReminder);
   }
-  async saveReminder(item: GoalReminder): Promise<void> {
-    const values = { ...item, weekdays: JSON.stringify(item.weekdays) };
-    await this.db.batch([
-      this.db
-        .insert(goalReminders)
-        .values(values)
-        .onConflictDoUpdate({ target: goalReminders.goalId, set: values }),
+  async saveReminder(item: GoalReminder, expected?: ReminderSettings): Promise<boolean> {
+    const settings = expected ?? (await this.settings(item.ownerId));
+    const revision = crypto.randomUUID();
+    const writtenRule = this.db
+      .select({ goalId: goalReminders.goalId })
+      .from(goalReminders)
+      .where(and(eq(goalReminders.goalId, item.goalId), eq(goalReminders.revision, revision)));
+    const operations = [
+      this.binding
+        .prepare(`INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays, next_run_at, revision)
+        SELECT ?, ?, ?, ?, ?, ?, ?
+        WHERE coalesce((SELECT revision FROM reminder_settings WHERE owner_id = ?), 'initial') = ?
+        AND EXISTS (SELECT 1 FROM plan_goals WHERE id = ? AND owner_id = ? AND deleted_at IS NULL)
+        ON CONFLICT(goal_id) DO UPDATE SET mode = excluded.mode, time = excluded.time,
+          weekdays = excluded.weekdays, next_run_at = excluded.next_run_at, revision = excluded.revision`)
+        .bind(
+          item.goalId,
+          item.ownerId,
+          item.mode,
+          item.time,
+          JSON.stringify(item.weekdays),
+          item.nextRunAt,
+          revision,
+          item.ownerId,
+          settings.revision ?? "initial",
+          item.goalId,
+          item.ownerId,
+        ),
       this.db
         .delete(reminderJobs)
-        .where(and(eq(reminderJobs.goalId, item.goalId), replaceableAutomaticJob)),
+        .where(
+          and(eq(reminderJobs.goalId, item.goalId), replaceableAutomaticJob, exists(writtenRule)),
+        ),
       this.db
         .update(reminderJobs)
         .set({ status: "cancelled" })
-        .where(and(eq(reminderJobs.goalId, item.goalId), eq(reminderJobs.status, "pending"))),
-    ]);
+        .where(
+          and(
+            eq(reminderJobs.goalId, item.goalId),
+            eq(reminderJobs.status, "pending"),
+            exists(writtenRule),
+          ),
+        ),
+    ];
+    const statements = operations.map((operation) => {
+      if (!("toSQL" in operation)) return operation;
+      const query = operation.toSQL();
+      return this.binding.prepare(query.sql).bind(...query.params);
+    });
+    const results = await this.binding.batch(statements);
+    return results[0]?.meta.changes === 1;
   }
   async inheritReminder(
     source: GoalReminder,
@@ -268,6 +360,7 @@ export class D1ReminderRepository implements ReminderRepository {
           eq(goalReminders.mode, item.mode),
           eq(goalReminders.time, item.time),
           eq(goalReminders.weekdays, JSON.stringify(item.weekdays)),
+          eq(goalReminders.revision, item.revision ?? "initial"),
           exists(
             this.db
               .select({ ownerId: reminderSettings.ownerId })
@@ -375,19 +468,19 @@ export class D1ReminderRepository implements ReminderRepository {
       .update(reminderJobs)
       .set({ status: "unknown", leaseUntil: null })
       .where(and(eq(reminderJobs.status, "sending"), lte(reminderJobs.leaseUntil, now)));
+    if (Math.floor(now / 60_000) % 60 !== 0) return;
     const cutoff = now - 90 * 86_400_000;
     await this.binding.batch([
       this.binding
         .prepare(
-          "DELETE FROM reminder_jobs WHERE id IN (SELECT id FROM reminder_jobs WHERE created_at < ? LIMIT 25)",
+          "DELETE FROM reminder_jobs WHERE id IN (SELECT id FROM reminder_jobs WHERE created_at < ? ORDER BY created_at LIMIT 25)",
         )
         .bind(cutoff),
       this.binding
         .prepare(
-          "DELETE FROM planning_entry_commands WHERE id IN (SELECT id FROM planning_entry_commands WHERE goal_id IS NULL AND created_at < ? LIMIT 25)",
+          "DELETE FROM telegram_link_tokens WHERE token_hash IN (SELECT token_hash FROM telegram_link_tokens WHERE expires_at <= ? LIMIT 25)",
         )
-        .bind(cutoff),
-      this.binding.prepare("DELETE FROM telegram_link_tokens WHERE expires_at <= ?").bind(now),
+        .bind(now),
     ]);
   }
 

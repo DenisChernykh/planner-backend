@@ -66,7 +66,7 @@ export function FormChoiceGroup<T extends string>({
                   <span
                     className={cn(
                       "text-[0.65rem] font-normal text-muted-foreground",
-                      selected && "text-primary/80",
+                      selected && "text-primary",
                     )}
                   >
                     {option.hint}

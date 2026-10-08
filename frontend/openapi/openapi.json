@@ -907,6 +907,9 @@
           "entry": {
             "type": ["object", "null"],
             "properties": {
+              "revision": {
+                "type": "string"
+              },
               "date": {
                 "type": "string"
               },
@@ -938,7 +941,7 @@
                 "minimum": 0
               }
             },
-            "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+            "required": ["revision", "date", "value", "met", "note", "createdAt", "updatedAt"]
           },
           "match": {
             "type": ["string", "null"],
@@ -2749,6 +2752,16 @@
               }
             }
           },
+          "409": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Request failed",
             "content": {
@@ -2924,6 +2937,16 @@
               }
             }
           },
+          "409": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Request failed",
             "content": {
@@ -3071,6 +3094,16 @@
             }
           },
           "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
             "description": "Request failed",
             "content": {
               "application/problem+json": {
@@ -3256,6 +3289,16 @@
               }
             }
           },
+          "409": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Request failed",
             "content": {
@@ -3370,6 +3413,16 @@
               }
             }
           },
+          "409": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
           "413": {
             "description": "Request failed",
             "content": {
@@ -3459,6 +3512,16 @@
             }
           },
           "404": {
+            "description": "Request failed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
             "description": "Request failed",
             "content": {
               "application/problem+json": {
@@ -4501,6 +4564,9 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "revision": {
+                                  "type": "string"
+                                },
                                 "date": {
                                   "type": "string"
                                 },
@@ -4532,7 +4598,15 @@
                                   "minimum": 0
                                 }
                               },
-                              "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                              "required": [
+                                "revision",
+                                "date",
+                                "value",
+                                "met",
+                                "note",
+                                "createdAt",
+                                "updatedAt"
+                              ]
                             }
                           }
                         },
@@ -4792,6 +4866,9 @@
                             "items": {
                               "type": "object",
                               "properties": {
+                                "revision": {
+                                  "type": "string"
+                                },
                                 "date": {
                                   "type": "string"
                                 },
@@ -4823,7 +4900,15 @@
                                   "minimum": 0
                                 }
                               },
-                              "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                              "required": [
+                                "revision",
+                                "date",
+                                "value",
+                                "met",
+                                "note",
+                                "createdAt",
+                                "updatedAt"
+                              ]
                             }
                           }
                         },
@@ -5221,6 +5306,9 @@
                           "items": {
                             "type": "object",
                             "properties": {
+                              "revision": {
+                                "type": "string"
+                              },
                               "date": {
                                 "type": "string"
                               },
@@ -5252,7 +5340,15 @@
                                 "minimum": 0
                               }
                             },
-                            "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                            "required": [
+                              "revision",
+                              "date",
+                              "value",
+                              "met",
+                              "note",
+                              "createdAt",
+                              "updatedAt"
+                            ]
                           }
                         }
                       },
@@ -5813,6 +5909,9 @@
                           "items": {
                             "type": "object",
                             "properties": {
+                              "revision": {
+                                "type": "string"
+                              },
                               "date": {
                                 "type": "string"
                               },
@@ -5844,7 +5943,15 @@
                                 "minimum": 0
                               }
                             },
-                            "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                            "required": [
+                              "revision",
+                              "date",
+                              "value",
+                              "met",
+                              "note",
+                              "createdAt",
+                              "updatedAt"
+                            ]
                           }
                         }
                       },
@@ -6170,6 +6277,9 @@
                     "entry": {
                       "type": "object",
                       "properties": {
+                        "revision": {
+                          "type": "string"
+                        },
                         "date": {
                           "type": "string"
                         },
@@ -6201,7 +6311,15 @@
                           "minimum": 0
                         }
                       },
-                      "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                      "required": [
+                        "revision",
+                        "date",
+                        "value",
+                        "met",
+                        "note",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     }
                   },
                   "required": ["entry"]
@@ -6338,9 +6456,13 @@
                       "note": {
                         "type": "string",
                         "maxLength": 1000
+                      },
+                      "expectedRevision": {
+                        "type": ["string", "null"],
+                        "minLength": 1
                       }
                     },
-                    "required": ["completed"],
+                    "required": ["completed", "expectedRevision"],
                     "additionalProperties": false
                   },
                   {
@@ -6352,9 +6474,13 @@
                       "note": {
                         "type": "string",
                         "maxLength": 1000
+                      },
+                      "expectedRevision": {
+                        "type": ["string", "null"],
+                        "minLength": 1
                       }
                     },
-                    "required": ["value"],
+                    "required": ["value", "expectedRevision"],
                     "additionalProperties": false
                   },
                   {
@@ -6366,9 +6492,13 @@
                       "note": {
                         "type": "string",
                         "maxLength": 1000
+                      },
+                      "expectedRevision": {
+                        "type": ["string", "null"],
+                        "minLength": 1
                       }
                     },
-                    "required": ["value"],
+                    "required": ["value", "expectedRevision"],
                     "additionalProperties": false
                   }
                 ]
@@ -6387,6 +6517,9 @@
                     "entry": {
                       "type": "object",
                       "properties": {
+                        "revision": {
+                          "type": "string"
+                        },
                         "date": {
                           "type": "string"
                         },
@@ -6418,7 +6551,15 @@
                           "minimum": 0
                         }
                       },
-                      "required": ["date", "value", "met", "note", "createdAt", "updatedAt"]
+                      "required": [
+                        "revision",
+                        "date",
+                        "value",
+                        "met",
+                        "note",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     }
                   },
                   "required": ["entry"]
@@ -6462,6 +6603,16 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanningResourceNotFoundProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The entry changed since it was read; reload before saving or deleting",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -6526,6 +6677,15 @@
             "required": true,
             "name": "date",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "expectedRevision",
+            "in": "query"
           }
         ],
         "responses": {
@@ -6568,6 +6728,16 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlanningResourceNotFoundProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The entry changed since it was read; reload before saving or deleting",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

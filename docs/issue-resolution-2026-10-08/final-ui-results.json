@@ -1,0 +1,23 @@
+{
+  "checks": [
+    "meaningful values and labels >=14px at desktop",
+    "keyboard search opens a matching result",
+    "scale creation contrast and layout at desktop and mobile",
+    "mobile save works for check, quantity, scale and time"
+  ],
+  "sizes": {
+    "dateValue": "14px",
+    "quickScale": "14px",
+    "goalMeta": "14px"
+  },
+  "axe": [
+    {
+      "name": "create-scale-1440",
+      "violations": []
+    },
+    {
+      "name": "create-scale-390",
+      "violations": []
+    }
+  ]
+}

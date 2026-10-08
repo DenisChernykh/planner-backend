@@ -40,17 +40,17 @@ export function PlanTempo({
     >
       {target?.missingPlan ? (
         <>
-          <span className="text-xs font-bold text-primary">
+          <span className="text-sm font-bold text-primary">
             {target.value} / {target.originalTarget}
           </span>
-          <span className="text-[0.65rem] text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             План соседнего месяца ещё не сформирован
           </span>
         </>
       ) : value !== undefined && total != null && total > 0 ? (
         <>
           <span
-            className={`text-xs font-bold ${observations ? "text-foreground" : "text-primary"}`}
+            className={`text-sm font-bold ${observations ? "text-foreground" : "text-primary"}`}
           >
             {value} / {total}
           </span>
@@ -60,13 +60,13 @@ export function PlanTempo({
               style={{ width: `${Math.min(100, percent ?? 0)}%` }}
             />
           </div>
-          <span className="text-[0.65rem] text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {label}
             {target?.reduced ? " · план уменьшен" : ""}
           </span>
         </>
       ) : (
-        <span className="text-[0.65rem] text-muted-foreground">{unavailable}</span>
+        <span className="text-sm text-muted-foreground">{unavailable}</span>
       )}
     </section>
   );

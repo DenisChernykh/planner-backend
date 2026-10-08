@@ -19,6 +19,7 @@ function goal(cadence: PlanGoal["cadence"], entries: PlanGoal["entries"]): PlanG
 }
 
 const entry = (date: string, met: boolean): PlanGoal["entries"][number] => ({
+  revision: "test-revision",
   date,
   value: met,
   met,

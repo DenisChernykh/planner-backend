@@ -213,7 +213,7 @@ export function createServer(
     {
       title: "Записать результат",
       description:
-        "Заменяет результат за дату полным итогом. completed для галочки, value для числа или времени HH:mm, note для заметки. Для ‘ещё’ используй adjust_entry.",
+        "Заменяет результат и заметку за дату. Сначала прочитай get_plan и передай entry.expectedRevision из записи; для новой записи передай null. При конфликте перечитай план и согласуй изменения. completed для галочки, value для числа или HH:mm. Для ‘ещё’ используй adjust_entry.",
       inputSchema: recordEntryInput,
       outputSchema: recordEntryOutput,
       annotations: write,
@@ -250,14 +250,19 @@ export function createServer(
     {
       title: "Убрать результат",
       description: "Удаляет результат и заметку за выбранную дату по просьбе пользователя.",
-      inputSchema: entryIdInput,
+      inputSchema: entryIdInput.extend({ expectedRevision: z.string().min(1) }),
       outputSchema: success,
       annotations: write,
       _meta: visible,
     },
-    ({ goalId, date }) =>
+    ({ goalId, date, expectedRevision }) =>
       run((api) =>
-        api.request(`/api/goals/${goalId}/entries/${date}`, success, undefined, "DELETE"),
+        api.request(
+          `/api/goals/${goalId}/entries/${date}?expectedRevision=${encodeURIComponent(expectedRevision)}`,
+          success,
+          undefined,
+          "DELETE",
+        ),
       ),
   );
   server.registerTool(

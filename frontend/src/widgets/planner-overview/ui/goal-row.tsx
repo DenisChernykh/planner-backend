@@ -2,14 +2,11 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { GripVertical } from "lucide-react";
 import type { ProgressGoal } from "@/shared/api";
 import {
-  clampPlannerDate,
-  getPlannerDayName,
-  isPlannerDateEditable,
-} from "@/shared/lib/planner-calendar";
-import {
   type CadencePeriod,
   formatEntryValue,
+  formatFactDate,
   getEntry,
+  getFactAccessibleName,
   getGoalMeta,
   getTrackingLabel,
   type PlanGoal,
@@ -28,6 +25,8 @@ type GoalRowProps = {
   onSelect: (goal: PlanGoal, date: string) => void;
   selection?: { goalId: string; date: string };
   progress?: ProgressGoal;
+  onManage?: (goal: PlanGoal) => void;
+  mobileDate?: string;
   progressState: "embedded" | "pending" | "error" | "ready";
 };
 
@@ -42,6 +41,8 @@ export function GoalRow({
   selection,
   progress,
   progressState,
+  onManage,
+  mobileDate,
 }: GoalRowProps) {
   const { ref, handleRef, isDragging } = useSortable({
     id: goal.id,
@@ -52,17 +53,15 @@ export function GoalRow({
     data: { cadence, title: goal.title },
   });
   const GoalIcon = trackingIconMap[goal.tracking.type];
-  const factDate = clampPlannerDate(today, today, month);
-  const factEntry = getEntry(goal, factDate);
-  const quickFactKey = `${goal.id}-${factDate}-${String(factEntry?.value ?? "")}-${factEntry?.updatedAt ?? ""}`;
+  const mobileEntry = mobileDate ? getEntry(goal, mobileDate) : undefined;
 
   return (
     <div
       ref={ref}
-      className={`grid grid-cols-[minmax(220px,1fr)_repeat(7,56px)_120px_128px] border-b bg-card last:border-b-0 ${isDragging ? "z-10 opacity-60 shadow-lg" : ""}`}
+      className={`grid grid-cols-1 md:grid-cols-[240px_repeat(7,64px)_120px_180px] border-b bg-card last:border-b-0 ${isDragging ? "z-10 opacity-60 shadow-lg" : ""}`}
       data-goal-id={goal.id}
     >
-      <div className="flex min-h-[72px] items-center gap-2 border-r px-3">
+      <div className="relative flex min-h-[88px] min-w-0 items-center gap-2 bg-card px-3 py-3 md:sticky md:left-0 md:z-10 md:border-r">
         <button
           ref={handleRef}
           type="button"
@@ -77,16 +76,26 @@ export function GoalRow({
           <span className="sr-only">{getTrackingLabel(goal.tracking.type)}</span>
         </span>
         <span className="min-w-0">
-          <strong className="block truncate text-xs font-bold">{goal.title}</strong>
-          <span className="block truncate text-[0.68rem] text-muted-foreground">
+          {onManage ? (
+            <button
+              type="button"
+              className="block w-full break-words rounded text-left text-sm font-bold hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => onManage(goal)}
+              aria-label={`Изменить цель «${goal.title}»`}
+            >
+              {goal.title}
+            </button>
+          ) : (
+            <strong className="block break-words text-sm font-bold">{goal.title}</strong>
+          )}
+          <span className="mt-1 block break-words text-sm text-muted-foreground">
             {getGoalMeta(goal)}
           </span>
         </span>
       </div>
-      {weekDates.map((date, dateIndex) => {
+      {weekDates.map((date) => {
         const entry = getEntry(goal, date);
         const inMonth = date.startsWith(`${month}-`);
-        const editable = isPlannerDateEditable(date, today, month);
         return (
           <button
             key={date}
@@ -95,12 +104,12 @@ export function GoalRow({
             onClick={() => onSelect(goal, date)}
             data-entry-date={date}
             aria-pressed={selection?.goalId === goal.id && selection.date === date}
-            className={`flex min-h-[72px] flex-col items-center justify-center gap-1 border-r text-xs transition-colors ${
+            className={`hidden min-h-[88px] flex-col items-center justify-center gap-1 border-r text-sm md:flex transition-colors ${
               !inMonth
                 ? "cursor-not-allowed bg-muted/50 text-muted-foreground/60"
                 : "hover:bg-primary-soft"
             } ${date === today || (selection?.goalId === goal.id && selection.date === date) ? "bg-primary-soft" : ""} ${selection?.goalId === goal.id && selection.date === date ? "ring-2 ring-inset ring-primary" : ""}`}
-            aria-label={`${goal.title}, ${getPlannerDayName(dateIndex)} ${date.slice(8)}${editable ? "" : ", просмотр"}`}
+            aria-label={getFactAccessibleName(goal, date, today, month)}
           >
             <span className={entry?.met ? "font-bold text-success" : "text-muted-foreground"}>
               {formatEntryValue(goal, entry) || "—"}
@@ -113,21 +122,55 @@ export function GoalRow({
           </button>
         );
       })}
-      <PlanTempo
-        goal={goal}
-        month={month}
-        today={today}
-        weekDates={weekDates}
-        progress={progress}
-        state={progressState}
-      />
-      <QuickFactInput
-        key={quickFactKey}
-        goal={goal}
-        month={month}
-        today={today}
-        onOpenInspector={() => onSelect(goal, factDate)}
-      />
+      <div className="hidden md:block">
+        <PlanTempo
+          goal={goal}
+          month={month}
+          today={today}
+          weekDates={weekDates}
+          progress={progress}
+          state={progressState}
+        />
+      </div>
+      <div className="hidden md:block">
+        <QuickFactInput
+          goal={goal}
+          month={month}
+          today={today}
+          onOpenInspector={(date) => onSelect(goal, date)}
+        />
+      </div>
+      <div className="space-y-2 border-t px-4 py-3 md:hidden">
+        <p className="text-sm text-muted-foreground">
+          {mobileDate ? formatFactDate(mobileDate) : "Выберите дату над списком целей"}
+        </p>
+        {mobileDate && (
+          <p
+            className={
+              mobileEntry?.met ? "text-sm font-bold text-success" : "text-sm text-muted-foreground"
+            }
+          >
+            {mobileEntry
+              ? `${formatEntryValue(goal, mobileEntry) || "Не отмечено"} · ${mobileEntry.met ? "Условие выполнено ✓" : "Условие не выполнено"}`
+              : "Результат не записан"}
+          </p>
+        )}
+        <button
+          type="button"
+          disabled={!mobileDate}
+          onClick={() => {
+            if (mobileDate) onSelect(goal, mobileDate);
+          }}
+          className="min-h-11 w-full rounded-lg border px-3 text-sm font-semibold text-primary disabled:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={
+            mobileDate
+              ? getFactAccessibleName(goal, mobileDate, today, month)
+              : `Выберите дату для цели «${goal.title}»`
+          }
+        >
+          Открыть результат
+        </button>
+      </div>
     </div>
   );
 }
