@@ -31,6 +31,11 @@ export const GetApiRemindersProgressReports200Response = zod.strictObject({
   "nextSundayAt": zod.number().nullable(),
   "revision": zod.int()
 }),
+  "delivery": zod.strictObject({
+  "retrying": zod.number(),
+  "failed": zod.number(),
+  "unknown": zod.number()
+}),
   "startsOn": zod.string().nullable(),
   "timeZone": zod.string(),
   "quietStart": zod.string().regex(getApiRemindersProgressReports200ResponseQuietStartRegExp),
@@ -213,6 +218,11 @@ export const PutApiRemindersProgressReports200Response = zod.strictObject({
   "nextSundayAt": zod.number().nullable(),
   "revision": zod.int()
 }),
+  "delivery": zod.strictObject({
+  "retrying": zod.number(),
+  "failed": zod.number(),
+  "unknown": zod.number()
+}),
   "startsOn": zod.string().nullable(),
   "timeZone": zod.string(),
   "quietStart": zod.string().regex(putApiRemindersProgressReports200ResponseQuietStartRegExp),
@@ -393,13 +403,34 @@ export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemT
 export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonIntervalFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonIntervalToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonDaysItemDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const PostApiRemindersProgressReportsPreview200Response = zod.strictObject({
   "message": zod.strictObject({
   "text": zod.string(),
+  "html": zod.string().optional(),
+  "blocks": zod.array(zod.strictObject({
+  "id": zod.string().optional(),
+  "kind": zod.enum(['header', 'goal', 'notice']),
+  "title": zod.string().optional(),
+  "icon": zod.enum(['check', 'quantity', 'scale', 'time']).optional(),
+  "lines": zod.array(zod.strictObject({
+  "id": zod.string().optional(),
+  "text": zod.string(),
+  "bold": zod.boolean().optional()
+}))
+})).optional(),
   "buttons": zod.array(zod.array(zod.strictObject({
   "text": zod.string(),
   "url": zod.string().optional(),
@@ -468,6 +499,7 @@ export const PostApiRemindersProgressReportsPreview200Response = zod.strictObjec
   "records": zod.number(),
   "met": zod.number(),
   "missing": zod.number(),
+  "falseRecords": zod.number(),
   "completeness": zod.number().nullable(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
@@ -492,17 +524,60 @@ export const PostApiRemindersProgressReportsPreview200Response = zod.strictObjec
   "percent": zod.number().nullable(),
   "overflow": zod.number(),
   "reduced": zod.boolean(),
-  "missingPlan": zod.boolean()
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
+  "history": zod.array(zod.strictObject({
+  "from": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemFromRegExp),
+  "to": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemAccountedFromRegExp),
+  "to": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemHistoryItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
 })),
   "comparison": zod.strictObject({
   "interval": zod.strictObject({
   "from": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonIntervalFromRegExp),
   "to": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonIntervalToRegExp)
 }),
+  "eligibleDays": zod.number(),
+  "missing": zod.number(),
   "records": zod.number(),
   "met": zod.number(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
+  "minimum": zod.number().nullable(),
+  "maximum": zod.number().nullable(),
+  "days": zod.array(zod.strictObject({
+  "date": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonDaysItemDateRegExp),
+  "goalId": zod.string().nullable(),
+  "state": zod.enum(['met', 'below', 'recorded', 'missing', 'excluded', 'future']),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()])
+})),
+  "targets": zod.array(zod.strictObject({
+  "from": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemFromRegExp),
+  "to": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemAccountedFromRegExp),
+  "to": zod.string().regex(postApiRemindersProgressReportsPreview200ResponseOverviewGoalsItemComparisonTargetsItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
   "percent": zod.number().nullable(),
   "deltaPoints": zod.number().nullable()
 }).nullable(),

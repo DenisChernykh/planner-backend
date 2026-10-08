@@ -9,7 +9,12 @@ export class StartTelegramLoginUseCase {
     private readonly flowCodec: LoginFlowCodec,
   ) {}
 
-  async execute(input: { clientId: string; now: number; redirectUri: string }): Promise<{
+  async execute(input: {
+    clientId: string;
+    now: number;
+    redirectUri: string;
+    returnTo?: string;
+  }): Promise<{
     authorizationUrl: string;
     flowCookie: string;
   }> {
@@ -19,6 +24,7 @@ export class StartTelegramLoginUseCase {
       issuer: "https://oauth.telegram.org",
       clientId: input.clientId,
       redirectUri: input.redirectUri,
+      ...(input.returnTo ? { returnTo: input.returnTo } : {}),
       state: randomBase64Url(32),
       nonce: randomBase64Url(32),
       codeVerifier,

@@ -333,6 +333,51 @@ describe("public Worker contract", () => {
 });
 
 describe("Telegram session and owned Notes reference", () => {
+  it("restores the report's period after login using the encrypted flow, without changing the OIDC callback", async () => {
+    const returnTo = "/plans/2026-10/progress?period=week&anchor=2026-10-05";
+    const start = await app.request(
+      `${APP_ORIGIN}/api/auth/telegram/start?${new URLSearchParams({ returnTo })}`,
+      undefined,
+      telegramBindings,
+    );
+    expect(start.status).toBe(302);
+    const authorization = new URL(start.headers.get("Location") ?? "");
+    expect(authorization.searchParams.has("returnTo")).toBe(false);
+    const flowCookie = cookieValue(start, "__Host-telegram-flow");
+    const decoded = await new AesGcmLoginFlowCodec(FLOW_SECRET).open(flowCookie);
+    expect(decoded.returnTo).toBe(returnTo);
+    expect(decoded.redirectUri).toBe(`${APP_ORIGIN}/api/auth/telegram/callback`);
+    const callback = await app.request(
+      `${APP_ORIGIN}/api/auth/telegram/callback?${new URLSearchParams({ code: "return-period", state: authorization.searchParams.get("state") ?? "" })}`,
+      { headers: { Cookie: `__Host-telegram-flow=${flowCookie}` } },
+      telegramBindings,
+    );
+    expect(callback.status).toBe(302);
+    expect(callback.headers.get("Location")).toBe(`${APP_ORIGIN}${returnTo}`);
+    const me = await apiRequest("/api/auth/me", cookieValue(callback, "__Host-session"));
+    expect(me.status).toBe(200);
+  });
+  it("rejects external, protocol-relative, malformed and oversized login destinations without creating a flow", async () => {
+    for (const returnTo of [
+      "https://evil.example",
+      "//evil.example",
+      "/plans/2026-10/../../api/auth/me",
+      "/plans/2026-13/progress",
+      "/plans/2026-10\\evil",
+      "/plans/2026-10?\n",
+      `/plans/2026-10?${"x".repeat(1024)}`,
+    ]) {
+      const response = await app.request(
+        `${APP_ORIGIN}/api/auth/telegram/start?${new URLSearchParams({ returnTo })}`,
+        undefined,
+        telegramBindings,
+      );
+      expect(response.status).toBe(400);
+      expect(response.headers.get("Location")).toBeNull();
+      expect(response.headers.get("Set-Cookie")).toBeNull();
+      expect(await response.json()).toMatchObject({ status: 400 });
+    }
+  });
   it("rejects a mismatched callback state without consuming the flow cookie", async () => {
     const start = await app.request(
       `${APP_ORIGIN}/api/auth/telegram/start`,

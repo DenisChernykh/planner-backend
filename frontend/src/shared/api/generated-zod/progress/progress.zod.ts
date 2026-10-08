@@ -310,8 +310,17 @@ export const getApiProgress200ResponseGoalsItemTargetsItemFromRegExp = new RegEx
 export const getApiProgress200ResponseGoalsItemTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgress200ResponseGoalsItemTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgress200ResponseGoalsItemTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemHistoryItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemHistoryItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemHistoryItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemHistoryItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgress200ResponseGoalsItemComparisonIntervalFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgress200ResponseGoalsItemComparisonIntervalToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemComparisonDaysItemDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemComparisonTargetsItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemComparisonTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemComparisonTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgress200ResponseGoalsItemComparisonTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const GetApiProgress200Response = zod.strictObject({
@@ -374,6 +383,7 @@ export const GetApiProgress200Response = zod.strictObject({
   "records": zod.number(),
   "met": zod.number(),
   "missing": zod.number(),
+  "falseRecords": zod.number(),
   "completeness": zod.number().nullable(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
@@ -398,17 +408,60 @@ export const GetApiProgress200Response = zod.strictObject({
   "percent": zod.number().nullable(),
   "overflow": zod.number(),
   "reduced": zod.boolean(),
-  "missingPlan": zod.boolean()
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
+  "history": zod.array(zod.strictObject({
+  "from": zod.string().regex(getApiProgress200ResponseGoalsItemHistoryItemFromRegExp),
+  "to": zod.string().regex(getApiProgress200ResponseGoalsItemHistoryItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(getApiProgress200ResponseGoalsItemHistoryItemAccountedFromRegExp),
+  "to": zod.string().regex(getApiProgress200ResponseGoalsItemHistoryItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
 })),
   "comparison": zod.strictObject({
   "interval": zod.strictObject({
   "from": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonIntervalFromRegExp),
   "to": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonIntervalToRegExp)
 }),
+  "eligibleDays": zod.number(),
+  "missing": zod.number(),
   "records": zod.number(),
   "met": zod.number(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
+  "minimum": zod.number().nullable(),
+  "maximum": zod.number().nullable(),
+  "days": zod.array(zod.strictObject({
+  "date": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonDaysItemDateRegExp),
+  "goalId": zod.string().nullable(),
+  "state": zod.enum(['met', 'below', 'recorded', 'missing', 'excluded', 'future']),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()])
+})),
+  "targets": zod.array(zod.strictObject({
+  "from": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonTargetsItemFromRegExp),
+  "to": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonTargetsItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonTargetsItemAccountedFromRegExp),
+  "to": zod.string().regex(getApiProgress200ResponseGoalsItemComparisonTargetsItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
   "percent": zod.number().nullable(),
   "deltaPoints": zod.number().nullable()
 }).nullable(),
@@ -577,8 +630,17 @@ export const getApiProgressGoalsGoalId200ResponseGoalsItemTargetsItemFromRegExp 
 export const getApiProgressGoalsGoalId200ResponseGoalsItemTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgressGoalsGoalId200ResponseGoalsItemTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgressGoalsGoalId200ResponseGoalsItemTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonIntervalFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonIntervalToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonDaysItemDateRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemAccountedFromRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
+export const getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemAccountedToRegExp = new RegExp('^\\d{4}-\\d{2}-\\d{2}$');
 
 
 export const GetApiProgressGoalsGoalId200Response = zod.strictObject({
@@ -641,6 +703,7 @@ export const GetApiProgressGoalsGoalId200Response = zod.strictObject({
   "records": zod.number(),
   "met": zod.number(),
   "missing": zod.number(),
+  "falseRecords": zod.number(),
   "completeness": zod.number().nullable(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
@@ -665,17 +728,60 @@ export const GetApiProgressGoalsGoalId200Response = zod.strictObject({
   "percent": zod.number().nullable(),
   "overflow": zod.number(),
   "reduced": zod.boolean(),
-  "missingPlan": zod.boolean()
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
+  "history": zod.array(zod.strictObject({
+  "from": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemFromRegExp),
+  "to": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemAccountedFromRegExp),
+  "to": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemHistoryItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
 })),
   "comparison": zod.strictObject({
   "interval": zod.strictObject({
   "from": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonIntervalFromRegExp),
   "to": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonIntervalToRegExp)
 }),
+  "eligibleDays": zod.number(),
+  "missing": zod.number(),
   "records": zod.number(),
   "met": zod.number(),
   "sum": zod.number().nullable(),
   "average": zod.number().nullable(),
+  "minimum": zod.number().nullable(),
+  "maximum": zod.number().nullable(),
+  "days": zod.array(zod.strictObject({
+  "date": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonDaysItemDateRegExp),
+  "goalId": zod.string().nullable(),
+  "state": zod.enum(['met', 'below', 'recorded', 'missing', 'excluded', 'future']),
+  "value": zod.union([zod.boolean(),zod.number(),zod.string(),zod.null()])
+})),
+  "targets": zod.array(zod.strictObject({
+  "from": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemFromRegExp),
+  "to": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemToRegExp),
+  "accounted": zod.strictObject({
+  "from": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemAccountedFromRegExp),
+  "to": zod.string().regex(getApiProgressGoalsGoalId200ResponseGoalsItemComparisonTargetsItemAccountedToRegExp)
+}).nullable(),
+  "value": zod.number(),
+  "target": zod.number().nullable(),
+  "originalTarget": zod.number(),
+  "percent": zod.number().nullable(),
+  "overflow": zod.number(),
+  "reduced": zod.boolean(),
+  "missingPlan": zod.boolean(),
+  "remaining": zod.number().nullable()
+})),
   "percent": zod.number().nullable(),
   "deltaPoints": zod.number().nullable()
 }).nullable(),

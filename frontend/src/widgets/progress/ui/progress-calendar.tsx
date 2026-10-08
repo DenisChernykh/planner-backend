@@ -35,6 +35,13 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
             : "Подтверждённые записи за период"}
         </p>
       </div>
+      {data.period === "month" && (
+        <div className="grid grid-cols-7 text-center text-[10px] text-muted-foreground">
+          {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((weekday) => (
+            <span key={weekday}>{weekday}</span>
+          ))}
+        </div>
+      )}
       <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
         {["mon", "tue", "wed", "thu", "fri", "sat"].slice(0, padding).map((weekday) => (
           <span key={weekday} aria-hidden="true" />
@@ -44,9 +51,12 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
             goal.days.filter((item) => item.date === day.date),
           );
           const count = values.filter((item) => item.state === "met").length;
-          const allowed = values.filter((item) => item.state !== "excluded").length;
+          const allowed = values.filter(
+            (item) => !["excluded", "future"].includes(item.state),
+          ).length;
           const future = day.date > data.today;
-          const label = !allowed ? "Вне учёта" : future ? "Впереди" : `${count} из ${allowed}`;
+          const excluded = values.every((item) => item.state === "excluded");
+          const label = excluded ? "Вне учёта" : future ? "Впереди" : `${count} из ${allowed}`;
           const weekday = new Date(`${day.date}T12:00:00Z`).getUTCDay();
           return (
             <button
@@ -55,15 +65,22 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
               onClick={() => setSelected(day.date)}
               aria-pressed={selected === day.date}
               aria-label={`${formatPlannerDay(day.date)}: ${label}`}
-              className={`min-w-0 rounded-lg px-1 py-3 text-center outline-none focus-visible:ring-2 focus-visible:ring-primary sm:py-5 ${selected === day.date || day.date === data.today ? "bg-primary-soft text-primary" : "bg-muted/50"}`}
+              className={`min-w-0 rounded-lg px-0.5 text-center outline-none focus-visible:ring-2 focus-visible:ring-primary ${data.period === "month" ? "py-2 sm:py-3" : "py-3 sm:py-5"} ${selected === day.date || day.date === data.today ? "bg-primary-soft text-primary" : allowed > 0 && count === allowed ? "bg-success-soft" : "bg-muted/50"}`}
             >
-              <span className="block text-[10px] text-muted-foreground">
-                {getPlannerDayName((weekday + 6) % 7)}
-              </span>
+              {data.period === "week" && (
+                <span className="block text-[10px] text-muted-foreground">
+                  {getPlannerDayName((weekday + 6) % 7)}
+                </span>
+              )}
               <span className="mt-1 block text-sm font-bold">{Number(day.date.slice(8))}</span>
-              <span className="mt-2 hidden justify-center gap-1 sm:flex">
+              <span
+                className={`mt-2 justify-center gap-0.5 sm:gap-1 ${data.period === "month" ? "flex" : "hidden sm:flex"}`}
+              >
                 {values
-                  .filter((value) => value.goalId !== null)
+                  .filter(
+                    (value) =>
+                      value.goalId !== null && !["excluded", "future"].includes(value.state),
+                  )
                   .slice(0, 4)
                   .map((value) => {
                     const Icon =
@@ -75,14 +92,19 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
                     return (
                       <Icon
                         key={value.goalId}
-                        className={`size-3.5 ${value.state === "met" ? "text-success" : "text-muted-foreground"}`}
+                        className={`size-2.5 sm:size-3.5 ${value.state === "met" ? "text-success" : "text-muted-foreground"}`}
                         aria-hidden="true"
                       />
                     );
                   })}
               </span>
-              <span className="mt-2 hidden text-[10px] text-muted-foreground sm:block">
-                {label}
+              <span
+                className={`mt-2 text-[9px] text-muted-foreground sm:text-[10px] ${data.period === "month" ? "block" : "hidden sm:block"}`}
+              >
+                <span className="hidden sm:inline">{label}</span>
+                <span className="sm:hidden">
+                  {excluded ? "—" : future ? "·" : `${count}/${allowed}`}
+                </span>
               </span>
             </button>
           );
@@ -104,7 +126,7 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
             .join(". ")}
         </span>
       </p>
-      <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+      <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <CheckCircle2 className="size-3.5 text-success" />
           Выполнено
@@ -117,6 +139,7 @@ export function ProgressCalendar({ data }: { data: ProgressOverview }) {
           <Circle className="size-3.5" />
           Нет записи
         </span>
+        <span>— Вне учёта · Будущий день</span>
       </div>
     </section>
   );

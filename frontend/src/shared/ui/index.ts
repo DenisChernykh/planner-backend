@@ -25,6 +25,7 @@ export {
   CardTitle,
 } from "./card";
 export { Container } from "./container";
+export { DateField, isCivilDate } from "./date-field";
 export {
   Field,
   FieldContent,

@@ -27,6 +27,7 @@ import type {
 import type {
   GetApiAuthMe200,
   GetApiAuthTelegramCallbackParams,
+  GetApiAuthTelegramStartParams,
   ProblemDetails
 } from '../model';
 
@@ -54,13 +55,14 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
 };
 
 export const getApiAuthTelegramStart = (
-
+    params?: GetApiAuthTelegramStartParams,
  options?: SecondParameter<typeof apiMutator>,signal?: AbortSignal
 ) => {
 
 
       return apiMutator<unknown>(
-      {url: `/api/auth/telegram/start`, method: 'GET', signal
+      {url: `/api/auth/telegram/start`, method: 'GET',
+        params, signal
     },
       options);
     }
@@ -68,23 +70,23 @@ export const getApiAuthTelegramStart = (
 
 
 
-export const getGetApiAuthTelegramStartQueryKey = () => {
+export const getGetApiAuthTelegramStartQueryKey = (params?: GetApiAuthTelegramStartParams,) => {
     return [
-    `/api/auth/telegram/start`
+    `/api/auth/telegram/start`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiAuthTelegramStartQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
+export const getGetApiAuthTelegramStartQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>(params?: GetApiAuthTelegramStartParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiAuthTelegramStartQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAuthTelegramStartQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthTelegramStart>>> = ({ signal }) => getApiAuthTelegramStart(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthTelegramStart>>> = ({ signal }) => getApiAuthTelegramStart(params, requestOptions, signal);
 
 
 
@@ -98,7 +100,7 @@ export type GetApiAuthTelegramStartQueryError = ErrorType<void | ProblemDetails>
 
 
 export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>> & Pick<
+ params: undefined |  GetApiAuthTelegramStartParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuthTelegramStart>>,
           TError,
@@ -108,7 +110,7 @@ export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>> & Pick<
+ params?: GetApiAuthTelegramStartParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiAuthTelegramStart>>,
           TError,
@@ -118,16 +120,16 @@ export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
+ params?: GetApiAuthTelegramStartParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiAuthTelegramStart<TData = Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError = ErrorType<void | ProblemDetails>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
+ params?: GetApiAuthTelegramStartParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthTelegramStart>>, TError, TData>>, request?: SecondParameter<typeof apiMutator>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiAuthTelegramStartQueryOptions(options)
+  const queryOptions = getGetApiAuthTelegramStartQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

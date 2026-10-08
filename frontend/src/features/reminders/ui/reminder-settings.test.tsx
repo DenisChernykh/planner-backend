@@ -96,7 +96,7 @@ describe("reminder settings", () => {
     client.setQueryData(getGetApiRemindersGoalsMonthQueryKey({ month: "2026-09" }), { goals: [] });
     render(
       <QueryClientProvider client={client}>
-        <MemoryRouter>
+        <MemoryRouter initialEntries={["?tab=reminders"]}>
           <ReminderSettings month="2026-09" />
         </MemoryRouter>
       </QueryClientProvider>,

@@ -1,12 +1,14 @@
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 
 import { useCurrentSession } from "@/entities/session";
 import { AuthenticationDisabledPage } from "@/pages/authentication-disabled";
+import { getPlannerReturnTo } from "@/shared/lib/planner-return-to";
 import { Card, CardContent, CardHeader, CardTitle, Spinner } from "@/shared/ui";
 
 /** Blocks personal UI for anonymous, disabled, and unknown sessions. */
 export function SessionGate() {
   const session = useCurrentSession();
+  const location = useLocation();
 
   if (session.kind === "loading") {
     return (
@@ -17,7 +19,12 @@ export function SessionGate() {
   }
 
   if (session.kind === "authenticated") return <Outlet />;
-  if (session.kind === "anonymous") return <Navigate to="/login" replace />;
+  if (session.kind === "anonymous") {
+    const returnTo = getPlannerReturnTo(`${location.pathname}${location.search}${location.hash}`);
+    return (
+      <Navigate to={returnTo ? `/login?${new URLSearchParams({ returnTo })}` : "/login"} replace />
+    );
+  }
   if (session.kind === "disabled") return <AuthenticationDisabledPage />;
 
   return (

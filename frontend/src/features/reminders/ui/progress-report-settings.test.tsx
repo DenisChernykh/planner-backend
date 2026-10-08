@@ -10,6 +10,8 @@ import {
 } from "@/shared/api";
 import { ProgressReportSettings } from "./progress-report-settings";
 
+vi.mock("@/shared/lib/hooks", () => ({ useIsMobile: () => false }));
+
 let state: ProgressReportState;
 vi.mock("@/shared/api", async (original) => ({
   ...(await original<typeof import("@/shared/api")>()),
@@ -30,6 +32,7 @@ beforeEach(() => {
       nextSundayAt: null,
       revision: 0,
     },
+    delivery: { retrying: 0, failed: 0, unknown: 0 },
     startsOn: "2026-10-06",
     timeZone: "Asia/Yekaterinburg",
     quietStart: "23:00",

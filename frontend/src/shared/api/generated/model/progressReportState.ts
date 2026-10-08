@@ -5,6 +5,7 @@
  * Цели, привычки, результаты и напоминания Ритма.
  * OpenAPI spec version: 0.1.0
  */
+import type { ProgressReportStateDelivery } from './progressReportStateDelivery';
 import type { ProgressReportStateGoalsItem } from './progressReportStateGoalsItem';
 import type { ProgressReportStateNextRunsItem } from './progressReportStateNextRunsItem';
 import type { ProgressReportStateSettings } from './progressReportStateSettings';
@@ -12,6 +13,7 @@ import type { ProgressReportStateState } from './progressReportStateState';
 
 export type ProgressReportState = {
   settings: ProgressReportStateSettings;
+  delivery: ProgressReportStateDelivery;
   /** @nullable */
   startsOn: string | null;
   timeZone: string;

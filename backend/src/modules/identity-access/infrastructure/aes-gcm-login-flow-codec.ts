@@ -3,6 +3,7 @@ import { decodeBase64Url, encodeBase64Url } from "../../../platform/crypto/base6
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { LoginFlowCodec } from "../application/ports/login-flow-codec";
 import type { LoginFlow } from "../application/telegram-login/model";
+import { isPlannerReturnTo } from "../application/telegram-login/return-to";
 
 const FLOW_VERSION = "v1";
 // Keep v1 authenticated data stable so in-flight Telegram logins survive resource renames.
@@ -13,6 +14,7 @@ const loginFlowSchema = z.object({
   issuer: z.literal("https://oauth.telegram.org"),
   clientId: z.string().min(1).max(64),
   redirectUri: z.url(),
+  returnTo: z.string().max(1024).refine(isPlannerReturnTo).optional(),
   state: z.string().min(32).max(128),
   nonce: z.string().min(32).max(128),
   codeVerifier: z.string().min(43).max(128),

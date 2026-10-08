@@ -8,17 +8,19 @@ export function RemindersPage() {
   const reports = params.get("tab") === "reports";
   return (
     <PlannerShell month={month}>
-      <PlannerPageHeader
-        eyebrow="Личный план"
-        title={reports ? "Отчёты о прогрессе" : "Напоминания и отчёты"}
-        description={
-          reports
-            ? "Короткие итоги недели в Telegram — по выбранным целям."
-            : "Вопросы в подходящее время и запись ответов прямо в Telegram."
-        }
-        backTo={`/plans/${month}`}
-        backLabel="К плану"
-      />
+      {!reports && (
+        <PlannerPageHeader
+          eyebrow="Личный план"
+          title={reports ? "Отчёты о прогрессе" : "Напоминания и отчёты"}
+          description={
+            reports
+              ? "Короткие итоги недели в Telegram — по выбранным целям."
+              : "Вопросы в подходящее время и запись ответов прямо в Telegram."
+          }
+          backTo={`/plans/${month}`}
+          backLabel="К плану"
+        />
+      )}
       <ReminderSettings month={month} />
     </PlannerShell>
   );

@@ -1,7 +1,7 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { PlanningOperations } from "../../planning/public-contracts";
 import { calculateProgress } from "../domain/calculate";
-import { intervalFor, previousInterval, validProgressDate } from "../domain/calendar";
+import { intervalFor, previousInterval, shiftDate, validProgressDate } from "../domain/calendar";
 import type { ProgressOverview } from "../domain/model";
 
 export type ProgressSettings = { startsOn: string | null; revision: number };
@@ -43,7 +43,12 @@ export class ProgressUseCases {
       throw new ApplicationError("INVALID_REQUEST", "Проверьте период и дату.");
     const requested = intervalFor(input.period, input.anchor);
     const previous = previousInterval(input.period, requested, input.today);
-    const fromMonth = intervalFor("week", previous?.from ?? requested.from).from.slice(0, 7);
+    const fromMonth = [
+      intervalFor("week", previous?.from ?? requested.from).from,
+      shiftDate(requested.from, -21),
+    ]
+      .sort()[0]
+      ?.slice(0, 7) as string;
     const toMonth = intervalFor("week", requested.to).to.slice(0, 7);
     let sources = await this.planning.progressSources(input.ownerId, fromMonth, toMonth);
     const knownSources = sources;

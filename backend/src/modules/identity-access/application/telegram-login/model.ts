@@ -3,6 +3,7 @@ export type LoginFlow = {
   issuer: "https://oauth.telegram.org";
   clientId: string;
   redirectUri: string;
+  returnTo?: string;
   state: string;
   nonce: string;
   codeVerifier: string;

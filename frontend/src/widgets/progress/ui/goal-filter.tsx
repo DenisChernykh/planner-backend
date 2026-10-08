@@ -60,12 +60,20 @@ export function GoalFilter({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setDraft(unique.map((goal) => goal.id))}
+              disabled={!visible.length}
+              onClick={() => setDraft([...new Set([...draft, ...visible.map((goal) => goal.id)])])}
             >
-              Выбрать все
+              {search ? `Выбрать найденные (${visible.length})` : "Выбрать все"}
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => setDraft([])}>
-              Снять все
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={!visible.length}
+              onClick={() =>
+                setDraft(draft.filter((id) => !visible.some((goal) => goal.id === id)))
+              }
+            >
+              {search ? "Снять найденные" : "Снять все"}
             </Button>
           </div>
           <div className="space-y-2">

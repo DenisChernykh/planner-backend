@@ -34,6 +34,7 @@ export type ProgressTarget = Interval & {
   overflow: number;
   reduced: boolean;
   missingPlan: boolean;
+  remaining: number | null;
 };
 export type ProgressGoal = {
   id: string;
@@ -48,6 +49,7 @@ export type ProgressGoal = {
   records: number;
   met: number;
   missing: number;
+  falseRecords: number;
   completeness: number | null;
   sum: number | null;
   average: number | null;
@@ -55,12 +57,19 @@ export type ProgressGoal = {
   maximum: number | null;
   days: ProgressDay[];
   targets: ProgressTarget[];
+  history: ProgressTarget[];
   comparison: {
     interval: Interval;
+    eligibleDays: number;
+    missing: number;
     records: number;
     met: number;
     sum: number | null;
     average: number | null;
+    minimum: number | null;
+    maximum: number | null;
+    days: ProgressDay[];
+    targets: ProgressTarget[];
     percent: number | null;
     deltaPoints: number | null;
   } | null;

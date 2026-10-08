@@ -5,19 +5,29 @@
  * Цели, привычки, результаты и напоминания Ритма.
  * OpenAPI spec version: 0.1.0
  */
+import type { ProgressGoalComparisonDaysItem } from './progressGoalComparisonDaysItem';
 import type { ProgressGoalComparisonInterval } from './progressGoalComparisonInterval';
+import type { ProgressTarget } from './progressTarget';
 
 /**
  * @nullable
  */
 export type ProgressGoalComparison = {
   interval: ProgressGoalComparisonInterval;
+  eligibleDays: number;
+  missing: number;
   records: number;
   met: number;
   /** @nullable */
   sum: number | null;
   /** @nullable */
   average: number | null;
+  /** @nullable */
+  minimum: number | null;
+  /** @nullable */
+  maximum: number | null;
+  days: ProgressGoalComparisonDaysItem[];
+  targets: ProgressTarget[];
   /** @nullable */
   percent: number | null;
   /** @nullable */

@@ -8,7 +8,33 @@
 import * as zod from 'zod';
 
 
+export const getApiAuthTelegramStartQueryReturnToMax = 1024;
+
+
+
+export const GetApiAuthTelegramStartQueryParams = zod.strictObject({
+  "returnTo": zod.string().max(getApiAuthTelegramStartQueryReturnToMax).optional()
+})
+
 export const GetApiAuthTelegramStart302Response = zod.unknown()
+
+export const getApiAuthTelegramStart400ResponseStatusMin = 400;
+export const getApiAuthTelegramStart400ResponseStatusMax = 599;
+
+export const getApiAuthTelegramStart400ResponseInstanceRegExp = new RegExp('^');
+export const getApiAuthTelegramStart400ResponseCodeRegExp = new RegExp('^[A-Z][A-Z0-9_]*$');
+
+
+
+export const GetApiAuthTelegramStart400Response = zod.strictObject({
+  "type": zod.url(),
+  "title": zod.string(),
+  "status": zod.int().min(getApiAuthTelegramStart400ResponseStatusMin).max(getApiAuthTelegramStart400ResponseStatusMax),
+  "detail": zod.string(),
+  "instance": zod.string().regex(getApiAuthTelegramStart400ResponseInstanceRegExp),
+  "code": zod.string().regex(getApiAuthTelegramStart400ResponseCodeRegExp),
+  "requestId": zod.string().min(1)
+})
 
 export const getApiAuthTelegramStart404ResponseStatusMin = 400;
 export const getApiAuthTelegramStart404ResponseStatusMax = 599;

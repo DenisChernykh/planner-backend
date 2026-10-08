@@ -13,6 +13,7 @@ import type { ChatGptConnection } from "../application/integrations/chatgpt-conn
 import type { AuthenticateSessionQuery } from "../application/sessions/authenticate-session.query";
 import type { LogoutUseCase } from "../application/sessions/logout.use-case";
 import type { CompleteTelegramLoginUseCase } from "../application/telegram-login/complete-telegram-login.use-case";
+import { isPlannerReturnTo } from "../application/telegram-login/return-to";
 import type { StartTelegramLoginUseCase } from "../application/telegram-login/start-telegram-login.use-case";
 import type { ValidateTelegramLoginFlowQuery } from "../application/telegram-login/validate-telegram-login-flow.query";
 import {
@@ -66,8 +67,17 @@ const startRoute = createRoute({
   method: "get",
   path: "/api/auth/telegram/start",
   tags: ["Authentication"],
+  request: {
+    query: z
+      .object({ returnTo: z.string().max(1024).refine(isPlannerReturnTo).optional() })
+      .strict(),
+  },
   responses: {
     302: { description: "Redirect to Telegram authorization" },
+    400: {
+      description: "Invalid return path",
+      content: { "application/problem+json": { schema: problemDetailsSchema } },
+    },
     404: {
       description: "Telegram authentication is disabled",
       content: { "application/problem+json": { schema: problemDetailsSchema } },
@@ -345,6 +355,7 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
       clientId: config.telegramClientId,
       now: Date.now(),
       redirectUri: callbackUrl(config),
+      returnTo: c.req.valid("query").returnTo,
     });
     setPrivateResponseHeaders(c);
     setFlowCookie(c, result.flowCookie);
@@ -386,7 +397,12 @@ export function createIdentityHttp(dependencies: IdentityHttpDependencies): {
         .createCompleteLogin(config, c.env.DB)
         .execute({ code: query.code, flow, now: Date.now(), redirectUri });
       setSessionCookie(c, result.sessionToken);
-      return c.redirect(config.authSuccessRedirectUrl, 302);
+      return c.redirect(
+        flow.returnTo
+          ? new URL(flow.returnTo, config.authSuccessRedirectUrl).href
+          : config.authSuccessRedirectUrl,
+        302,
+      );
     } finally {
       clearFlowCookie(c);
     }

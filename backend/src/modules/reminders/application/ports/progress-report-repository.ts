@@ -3,6 +3,10 @@ import type { ReportSelection, ReportSettings, ReportSlot } from "../../domain/p
 export interface ProgressReportRepository {
   settings(ownerId: string): Promise<ReportSettings>;
   active(): Promise<ReportSettings[]>;
+  deliveryStatus(
+    ownerId: string,
+    since: number,
+  ): Promise<{ retrying: number; failed: number; unknown: number }>;
   upcoming(
     ownerId: string,
     now: number,

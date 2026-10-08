@@ -46,6 +46,17 @@ export class D1ProgressReportRepository implements ProgressReportRepository {
         .all<Row>()
     ).results.map(map);
   }
+  async deliveryStatus(ownerId: string, since: number) {
+    const row = await this.database
+      .prepare(`SELECT
+      coalesce(sum(CASE WHEN status = 'pending' AND attempts > 0 THEN 1 ELSE 0 END), 0) AS retrying,
+      coalesce(sum(CASE WHEN status = 'failed' THEN 1 ELSE 0 END), 0) AS failed,
+      coalesce(sum(CASE WHEN status = 'unknown' THEN 1 ELSE 0 END), 0) AS unknown
+      FROM reminder_jobs WHERE owner_id = ? AND kind = 'weekly-progress' AND created_at > ?`)
+      .bind(ownerId, since)
+      .first<{ retrying: number; failed: number; unknown: number }>();
+    return row ?? { retrying: 0, failed: 0, unknown: 0 };
+  }
   async selections(ownerId: string): Promise<ReportSelection[]> {
     const rows = await this.database
       .prepare("SELECT goal_id, included FROM goal_progress_reports WHERE owner_id = ?")

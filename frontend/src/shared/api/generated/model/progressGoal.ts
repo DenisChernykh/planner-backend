@@ -28,6 +28,7 @@ export type ProgressGoal = {
   records: number;
   met: number;
   missing: number;
+  falseRecords: number;
   /** @nullable */
   completeness: number | null;
   /** @nullable */
@@ -40,6 +41,7 @@ export type ProgressGoal = {
   maximum: number | null;
   days: ProgressGoalDaysItem[];
   targets: ProgressTarget[];
+  history: ProgressTarget[];
   /** @nullable */
   comparison: ProgressGoalComparison;
   /** @nullable */

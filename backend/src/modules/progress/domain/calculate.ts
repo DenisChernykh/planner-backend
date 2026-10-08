@@ -1,4 +1,4 @@
-import { datesBetween, intervalFor, previousInterval } from "./calendar";
+import { datesBetween, intervalFor, previousInterval, shiftDate } from "./calendar";
 import type {
   Interval,
   ProgressDay,
@@ -85,6 +85,7 @@ function targetsFor(
         overflow: 0,
         reduced: false,
         missingPlan: false,
+        remaining: Math.max(0, days.length - value),
       },
     ];
   }
@@ -133,6 +134,7 @@ function targetsFor(
       overflow: target === null ? 0 : Math.max(0, value - target),
       reduced: target !== null && target < cadence.targetOccurrences,
       missingPlan,
+      remaining: target === null ? null : Math.max(0, target - value),
     };
   });
 }
@@ -145,6 +147,7 @@ function stats(days: ProgressDay[]) {
     records: recorded.length,
     met: eligible.filter((day) => day.state === "met").length,
     missing: eligible.length - recorded.length,
+    falseRecords: recorded.filter((day) => day.value === false).length,
     completeness: percentage(recorded.length, eligible.length),
     sum: numbers.length ? numbers.reduce((sum, value) => sum + value, 0) : null,
     average: numbers.length
@@ -223,6 +226,12 @@ export function calculateProgress(input: {
         ? (oldTargets[0]?.percent ?? null)
         : null;
     const currentPercent = targets.length === 1 ? (targets[0]?.percent ?? null) : null;
+    const currentTarget = targets.length === 1 ? targets[0] : undefined;
+    const oldTarget = oldTargets.length === 1 ? oldTargets[0] : undefined;
+    const historyPeriod = {
+      from: shiftDate(requested.from, -21),
+      to: shiftDate(requested.from, -1),
+    };
     return {
       id: first.id,
       goalIds: versions.map((goal) => goal.id),
@@ -234,16 +243,31 @@ export function calculateProgress(input: {
       ...current,
       days,
       targets,
+      history:
+        first.cadence.period === "week"
+          ? targetsFor(previousSources, sources, historyPeriod, startsOn, today, input.knownSources)
+              .filter((target) => target.accounted !== null && target.to < requested.from)
+              .reverse()
+          : [],
       comparison: comparable
         ? {
+            ...old,
             interval: previous as Interval,
-            records: old.records,
-            met: old.met,
-            sum: old.sum,
-            average: old.average,
+            days: previousDays,
+            targets: oldTargets,
             percent: oldPercent,
             deltaPoints:
-              currentPercent !== null && oldPercent !== null ? currentPercent - oldPercent : null,
+              isMeasurable(first) &&
+              currentPercent !== null &&
+              oldPercent !== null &&
+              currentTarget?.target &&
+              oldTarget?.target
+                ? Math.round(
+                    100 *
+                      (currentTarget.value / currentTarget.target -
+                        oldTarget.value / oldTarget.target),
+                  )
+                : null,
           }
         : null,
       comparisonReason: comparable

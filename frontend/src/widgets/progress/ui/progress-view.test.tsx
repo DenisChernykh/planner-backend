@@ -41,6 +41,8 @@ const overview: ProgressOverview = {
       records: 1,
       met: 1,
       missing: 1,
+      falseRecords: 0,
+      history: [],
       completeness: 50,
       sum: 25,
       average: 25,
@@ -62,6 +64,7 @@ const overview: ProgressOverview = {
           overflow: 0,
           reduced: false,
           missingPlan: false,
+          remaining: 1,
         },
       ],
       comparison: null,
@@ -119,11 +122,11 @@ describe("progress screen", () => {
   it("switches calendar periods through API parameters and exposes fact editing links", async () => {
     const user = open("/plans/2026-10/progress?anchor=2026-10-07&goal=goal-a");
     expect(screen.getByRole("heading", { name: "Чтение" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Изменить" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^Изменить/ })).toHaveAttribute(
       "href",
       "/plans/2026-10?goal=goal-a&date=2026-10-06",
     );
-    expect(screen.getByRole("link", { name: "Внести" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^Внести/ })).toHaveAttribute(
       "href",
       "/plans/2026-10?goal=goal-a&date=2026-10-07",
     );

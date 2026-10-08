@@ -25,6 +25,12 @@ const cadence = z.union([
   z.object({ period: z.literal("day") }),
   z.object({ period: z.enum(["week", "month"]), targetOccurrences: z.number() }),
 ]);
+const day = z.object({
+  date: progressDate,
+  goalId: z.string().nullable(),
+  state: z.enum(["met", "below", "recorded", "missing", "excluded", "future"]),
+  value: z.union([z.boolean(), z.number(), z.string()]).nullable(),
+});
 export const progressTargetSchema = interval
   .extend({
     accounted: interval.nullable(),
@@ -35,6 +41,7 @@ export const progressTargetSchema = interval
     overflow: z.number(),
     reduced: z.boolean(),
     missingPlan: z.boolean(),
+    remaining: numeric,
   })
   .openapi("ProgressTarget");
 export const progressGoalSchema = z
@@ -51,27 +58,28 @@ export const progressGoalSchema = z
     records: z.number(),
     met: z.number(),
     missing: z.number(),
+    falseRecords: z.number(),
     completeness: numeric,
     sum: numeric,
     average: numeric,
     minimum: numeric,
     maximum: numeric,
-    days: z.array(
-      z.object({
-        date: progressDate,
-        goalId: z.string().nullable(),
-        state: z.enum(["met", "below", "recorded", "missing", "excluded", "future"]),
-        value: z.union([z.boolean(), z.number(), z.string()]).nullable(),
-      }),
-    ),
+    days: z.array(day),
     targets: z.array(progressTargetSchema),
+    history: z.array(progressTargetSchema),
     comparison: z
       .object({
         interval,
+        eligibleDays: z.number(),
+        missing: z.number(),
         records: z.number(),
         met: z.number(),
         sum: numeric,
         average: numeric,
+        minimum: numeric,
+        maximum: numeric,
+        days: z.array(day),
+        targets: z.array(progressTargetSchema),
         percent: numeric,
         deltaPoints: numeric,
       })

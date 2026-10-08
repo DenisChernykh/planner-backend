@@ -343,6 +343,9 @@
           "missing": {
             "type": "number"
           },
+          "falseRecords": {
+            "type": "number"
+          },
           "completeness": {
             "type": ["number", "null"]
           },
@@ -400,6 +403,12 @@
               "$ref": "#/components/schemas/ProgressTarget"
             }
           },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProgressTarget"
+            }
+          },
           "comparison": {
             "type": ["object", "null"],
             "properties": {
@@ -417,6 +426,12 @@
                 },
                 "required": ["from", "to"]
               },
+              "eligibleDays": {
+                "type": "number"
+              },
+              "missing": {
+                "type": "number"
+              },
               "records": {
                 "type": "number"
               },
@@ -429,6 +444,54 @@
               "average": {
                 "type": ["number", "null"]
               },
+              "minimum": {
+                "type": ["number", "null"]
+              },
+              "maximum": {
+                "type": ["number", "null"]
+              },
+              "days": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                    },
+                    "goalId": {
+                      "type": ["string", "null"]
+                    },
+                    "state": {
+                      "type": "string",
+                      "enum": ["met", "below", "recorded", "missing", "excluded", "future"]
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": ["date", "goalId", "state", "value"]
+                }
+              },
+              "targets": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProgressTarget"
+                }
+              },
               "percent": {
                 "type": ["number", "null"]
               },
@@ -436,7 +499,21 @@
                 "type": ["number", "null"]
               }
             },
-            "required": ["interval", "records", "met", "sum", "average", "percent", "deltaPoints"]
+            "required": [
+              "interval",
+              "eligibleDays",
+              "missing",
+              "records",
+              "met",
+              "sum",
+              "average",
+              "minimum",
+              "maximum",
+              "days",
+              "targets",
+              "percent",
+              "deltaPoints"
+            ]
           },
           "comparisonReason": {
             "type": ["string", "null"],
@@ -468,6 +545,7 @@
           "records",
           "met",
           "missing",
+          "falseRecords",
           "completeness",
           "sum",
           "average",
@@ -475,6 +553,7 @@
           "maximum",
           "days",
           "targets",
+          "history",
           "comparison",
           "comparisonReason",
           "streak"
@@ -525,6 +604,9 @@
           },
           "missingPlan": {
             "type": "boolean"
+          },
+          "remaining": {
+            "type": ["number", "null"]
           }
         },
         "required": [
@@ -537,7 +619,8 @@
           "percent",
           "overflow",
           "reduced",
-          "missingPlan"
+          "missingPlan",
+          "remaining"
         ]
       },
       "ProgressReportState": {
@@ -579,6 +662,21 @@
               "nextSundayAt",
               "revision"
             ]
+          },
+          "delivery": {
+            "type": "object",
+            "properties": {
+              "retrying": {
+                "type": "number"
+              },
+              "failed": {
+                "type": "number"
+              },
+              "unknown": {
+                "type": "number"
+              }
+            },
+            "required": ["retrying", "failed", "unknown"]
           },
           "startsOn": {
             "type": ["string", "null"]
@@ -647,6 +745,7 @@
         },
         "required": [
           "settings",
+          "delivery",
           "startsOn",
           "timeZone",
           "quietStart",
@@ -710,6 +809,50 @@
             "properties": {
               "text": {
                 "type": "string"
+              },
+              "html": {
+                "type": "string"
+              },
+              "blocks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["header", "goal", "notice"]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "icon": {
+                      "type": "string",
+                      "enum": ["check", "quantity", "scale", "time"]
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "text": {
+                            "type": "string"
+                          },
+                          "bold": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": ["text"]
+                      }
+                    }
+                  },
+                  "required": ["kind", "lines"]
+                }
               },
               "buttons": {
                 "type": "array",
@@ -1547,9 +1690,30 @@
     "/api/auth/telegram/start": {
       "get": {
         "tags": ["Authentication"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "required": false,
+            "name": "returnTo",
+            "in": "query"
+          }
+        ],
         "responses": {
           "302": {
             "description": "Redirect to Telegram authorization"
+          },
+          "400": {
+            "description": "Invalid return path",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           },
           "404": {
             "description": "Telegram authentication is disabled",

@@ -2,7 +2,11 @@ import { DateTime } from "luxon";
 import { ApplicationError } from "../../../../shared/application/application-error";
 import type { PlanningOperations } from "../../../planning/public-contracts";
 import type { ProgressOperations } from "../../../progress/public-contracts";
-import { failedDeliveryChanges, isRecentOccurrence } from "../../domain/jobs";
+import {
+  DELIVERY_ISSUE_WINDOW_MS,
+  failedDeliveryChanges,
+  isRecentOccurrence,
+} from "../../domain/jobs";
 import type { SettingsInput } from "../../domain/model";
 import {
   nextReportOccurrence,
@@ -68,15 +72,17 @@ export class ProgressReportsUseCases {
   }
   async get({ ownerId, month, now }: { ownerId: string; month: string; now: number }) {
     await this.prepare.execute({ ownerId, month, now });
-    const [settings, selections, shared, general, link, goals, pending] = await Promise.all([
-      this.reports.settings(ownerId),
-      this.reports.selections(ownerId),
-      this.progress.settings(ownerId),
-      this.reminders.settings(ownerId),
-      this.reminders.link(ownerId),
-      this.planning.list(ownerId, month),
-      this.reports.upcoming(ownerId, now),
-    ]);
+    const [settings, selections, shared, general, link, goals, pending, delivery] =
+      await Promise.all([
+        this.reports.settings(ownerId),
+        this.reports.selections(ownerId),
+        this.progress.settings(ownerId),
+        this.reminders.settings(ownerId),
+        this.reminders.link(ownerId),
+        this.planning.list(ownerId, month),
+        this.reports.upcoming(ownerId, now),
+        this.reports.deliveryStatus(ownerId, now - DELIVERY_ISSUE_WINDOW_MS),
+      ]);
     const selected = new Set(selections.filter((goal) => goal.included).map((goal) => goal.goalId));
     const activeSelected = (
       await this.planning.progressSources(
@@ -140,6 +146,7 @@ export class ProgressReportsUseCases {
         : [];
     return {
       settings,
+      delivery,
       startsOn: shared.startsOn,
       timeZone: general.timeZone,
       quietStart: general.quietStart,
@@ -212,6 +219,7 @@ export class ProgressReportsUseCases {
     reportDate: string,
     now: number,
     timeZone: string,
+    delivery?: { scheduledAt: number; quietDelayed: boolean },
   ) {
     const selections = new Map(
       (await this.reports.selections(ownerId)).map((goal) => [goal.goalId, goal.included]),
@@ -230,7 +238,11 @@ export class ProgressReportsUseCases {
     });
     if (["no-goals", "future-start", "before-start"].includes(overview.state))
       return { message: null, reason: overview.state, overview };
-    return { message: reportMessage(overview, slot, this.appOrigin), reason: null, overview };
+    return {
+      message: reportMessage(overview, slot, this.appOrigin, delivery),
+      reason: null,
+      overview,
+    };
   }
   async reschedule(ownerId: string, now: number, general: SettingsInput) {
     const current = await this.reports.settings(ownerId);
@@ -341,6 +353,11 @@ export class ProgressReportsUseCases {
         job.localDate,
         now,
         general.timeZone,
+        {
+          scheduledAt: job.expiresAt - 86400000,
+          quietDelayed:
+            afterQuietHours(job.expiresAt - 86400000, general) > job.expiresAt - 86400000,
+        },
       );
       if (!built.message) {
         await this.reports.cancel(job.id);

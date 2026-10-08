@@ -11,7 +11,7 @@ function inlineOptions(message: OutgoingMessage) {
     }
     keyboard.row();
   }
-  return { reply_markup: keyboard };
+  return { reply_markup: keyboard, ...(message.html ? { parse_mode: "HTML" as const } : {}) };
 }
 export function messageOptions(message: OutgoingMessage) {
   return message.forceReply
@@ -33,14 +33,21 @@ export function createReminderTransport(token: string): ReminderTransport {
   return {
     async send(chatId, message) {
       try {
-        return (await api.sendMessage(chatId, message.text, messageOptions(message))).message_id;
+        return (
+          await api.sendMessage(chatId, message.html ?? message.text, messageOptions(message))
+        ).message_id;
       } catch (error) {
         return failure(error);
       }
     },
     async edit(chatId, messageId, message) {
       try {
-        await api.editMessageText(chatId, messageId, message.text, inlineOptions(message));
+        await api.editMessageText(
+          chatId,
+          messageId,
+          message.html ?? message.text,
+          inlineOptions(message),
+        );
       } catch (error) {
         failure(error);
       }

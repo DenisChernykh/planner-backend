@@ -8,6 +8,7 @@
 
 export * from './deleteApiGoalsGoalIdEntriesDateParams';
 export * from './getApiAuthTelegramCallbackParams';
+export * from './getApiAuthTelegramStartParams';
 export * from './getApiNotesParams';
 export * from './getApiProgressGoalsGoalIdParams';
 export * from './getApiProgressParams';

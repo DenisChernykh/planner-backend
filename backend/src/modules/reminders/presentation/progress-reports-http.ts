@@ -37,6 +37,7 @@ const input = z
 const state = z
   .object({
     settings,
+    delivery: z.object({ retrying: z.number(), failed: z.number(), unknown: z.number() }),
     startsOn: z.string().nullable(),
     timeZone: z.string(),
     quietStart: time,
@@ -57,6 +58,20 @@ const state = z
   .openapi("ProgressReportState");
 const message = z.object({
   text: z.string(),
+  html: z.string().optional(),
+  blocks: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        kind: z.enum(["header", "goal", "notice"]),
+        title: z.string().optional(),
+        icon: z.enum(["check", "quantity", "scale", "time"]).optional(),
+        lines: z.array(
+          z.object({ id: z.string().optional(), text: z.string(), bold: z.boolean().optional() }),
+        ),
+      }),
+    )
+    .optional(),
   buttons: z
     .array(
       z.array(

@@ -5,6 +5,7 @@
  * Цели, привычки, результаты и напоминания Ритма.
  * OpenAPI spec version: 0.1.0
  */
+import type { ProgressReportPreviewMessageBlocksItem } from './progressReportPreviewMessageBlocksItem';
 import type { ProgressReportPreviewMessageButtonsItemItem } from './progressReportPreviewMessageButtonsItemItem';
 
 /**
@@ -12,6 +13,8 @@ import type { ProgressReportPreviewMessageButtonsItemItem } from './progressRepo
  */
 export type ProgressReportPreviewMessage = {
   text: string;
+  html?: string;
+  blocks?: ProgressReportPreviewMessageBlocksItem[];
   buttons?: ProgressReportPreviewMessageButtonsItemItem[][];
   forceReply?: boolean;
 } | null;

@@ -23,4 +23,6 @@ export type ProgressTarget = {
   overflow: number;
   reduced: boolean;
   missingPlan: boolean;
+  /** @nullable */
+  remaining: number | null;
 };

@@ -14,7 +14,7 @@ function open() {
   const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
   render(
     <QueryClientProvider client={client}>
-      <ProgressStartDate startsOn="2026-10-06" />
+      <ProgressStartDate startsOn="2026-10-06" today="2026-10-07" />
     </QueryClientProvider>,
   );
   return userEvent.setup();

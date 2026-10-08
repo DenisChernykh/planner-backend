@@ -19,11 +19,14 @@ export function TelegramConnection({ state }: { state: GetApiRemindersSettings20
       connect.reset();
       openLink.reset();
       await client.invalidateQueries({ queryKey: getGetApiRemindersSettingsQueryKey() });
+      await client.invalidateQueries({
+        predicate: (query) => String(query.queryKey[0]).includes("/api/reminders/progress-reports"),
+      });
     },
   });
   const connected = state.connection === "active";
   return (
-    <section className="space-y-4 rounded-xl border bg-card p-5 sm:p-6">
+    <section id="telegram" className="space-y-4 rounded-xl border bg-card p-5 sm:p-6">
       <h2 className="text-base font-bold">Telegram</h2>
       <p className="text-sm text-muted-foreground">
         {connected
