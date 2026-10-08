@@ -17,20 +17,23 @@ This React/Vite frontend belongs to the Planner pnpm workspace.
 
 ## UI design references
 
-Before changing the Planner plan screen or goal-creation UI, inspect
-[`docs/design/README.md`](docs/design/README.md) and open the linked PNG
-references. Treat them as the current visual source of truth; keep colours
-bound to the semantic tokens in `src/app/styles/index.css`.
+Before changing the UI, inspect [`docs/design/README.md`](docs/design/README.md)
+and the relevant frames in pen.dev. The editable `docs/design/Planner.pen` is
+the visual source of truth; keep colours bound to the semantic tokens in
+`src/app/styles/index.css`.
 
 ### Editable Pen source
 
-When Pencil MCP is available, inspect the editable source before implementing
+Use pen.dev (Pen/Pencil MCP) to inspect the editable source before implementing
 or changing these screens:
 
 - document: `docs/design/Planner.pen` (relative to this package)
 - plan screen: `h9BBT` (`Editable Plan / September`)
 - goal-creation screen: `elkpw` (`Create Goal / All Variants`)
 
-Use Pencil MCP to read and edit this document; do not attempt to parse its
-encrypted `.pen` file directly. The committed PNG exports are the fallback
-when Pencil MCP is unavailable.
+Use Pen/Pencil MCP to read and edit this document; do not attempt to parse its
+encrypted `.pen` file directly. Create and maintain mockups in pen.dev only.
+Do not generate raster mockups with Image Gen or save/commit PNG mockup exports.
+If Pen MCP is unavailable, report that limitation and work from the written
+specification until the editable design can be inspected. After design changes,
+save the `.pen` document and update the relevant frame IDs and documentation.

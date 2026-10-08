@@ -1,382 +1,327 @@
 {
   "source": "../Planner.pen",
-  "scale": 1,
   "componentFrame": "kynaE",
   "frames": [
     {
       "id": "IJar7",
-      "file": "week-desktop.png",
       "name": "Прогресс / 01 · Неделя",
       "width": 1440,
       "height": 1280
     },
     {
       "id": "iRvJs",
-      "file": "week-mobile.png",
       "name": "Прогресс / 02 · Неделя · Мобильный",
       "width": 390,
       "height": 1540
     },
     {
       "id": "VJMzK",
-      "file": "goal-desktop.png",
       "name": "Прогресс / 03 · Чтение",
       "width": 1440,
       "height": 1100
     },
     {
       "id": "OtGaJ",
-      "file": "goal-mobile.png",
       "name": "Прогресс / 04 · Чтение · Мобильный",
       "width": 390,
       "height": 1210
     },
     {
       "id": "ycerX",
-      "file": "telegram-settings-desktop.png",
       "name": "Прогресс / 05 · Отчёты Telegram",
       "width": 1440,
       "height": 1347
     },
     {
       "id": "qArpO",
-      "file": "telegram-settings-mobile.png",
       "name": "Прогресс / 06 · Отчёты · Мобильный",
       "width": 390,
       "height": 1535
     },
     {
       "id": "SZnty",
-      "file": "telegram-message.png",
       "name": "Прогресс / 07 · Telegram · Промежуточный итог",
       "width": 390,
       "height": 900
     },
     {
       "id": "NMjXR",
-      "file": "month-desktop.png",
       "name": "Прогресс / 08 · Месяц",
       "width": 1440,
       "height": 2074
     },
     {
       "id": "EWC2M",
-      "file": "month-mobile.png",
       "name": "Прогресс / 08 · Месяц · Мобильный",
       "width": 390,
       "height": 2275
     },
     {
       "id": "UZAmv",
-      "file": "comparison-desktop.png",
       "name": "Прогресс / 09 · Сравнение и серии",
       "width": 1440,
       "height": 1396
     },
     {
       "id": "hpuK2",
-      "file": "comparison-mobile.png",
       "name": "Прогресс / 09 · Сравнение и серии · Мобильный",
       "width": 390,
       "height": 1488
     },
     {
       "id": "Iedlb",
-      "file": "check-detail-desktop.png",
       "name": "Прогресс / 10 · Тренировки",
       "width": 1440,
       "height": 1245
     },
     {
       "id": "T56J5",
-      "file": "check-detail-mobile.png",
       "name": "Прогресс / 10 · Тренировки · Мобильный",
       "width": 390,
       "height": 1307
     },
     {
       "id": "KckiD",
-      "file": "scale-detail-desktop.png",
       "name": "Прогресс / 11 · Настроение",
       "width": 1440,
       "height": 1236
     },
     {
       "id": "bU1iS",
-      "file": "scale-detail-mobile.png",
       "name": "Прогресс / 11 · Настроение · Мобильный",
       "width": 390,
       "height": 1329
     },
     {
       "id": "ytHPN",
-      "file": "time-detail-desktop.png",
       "name": "Прогресс / 12 · Сон",
       "width": 1440,
       "height": 1236
     },
     {
       "id": "Z7I26",
-      "file": "time-detail-mobile.png",
       "name": "Прогресс / 12 · Сон · Мобильный",
       "width": 390,
       "height": 1311
     },
     {
       "id": "FqChd",
-      "file": "state-loading-desktop.png",
       "name": "Прогресс / 13 · Загрузка",
       "width": 1440,
       "height": 900
     },
     {
       "id": "q4keBJ",
-      "file": "state-loading-mobile.png",
       "name": "Прогресс / 13 · Загрузка · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "eqqPl",
-      "file": "state-error-desktop.png",
       "name": "Прогресс / 14 · Ошибка",
       "width": 1440,
       "height": 900
     },
     {
       "id": "OuNTP",
-      "file": "state-error-mobile.png",
       "name": "Прогресс / 14 · Ошибка · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "nBHQQ",
-      "file": "state-goals-desktop.png",
       "name": "Прогресс / 15 · Нет целей",
       "width": 1440,
       "height": 900
     },
     {
       "id": "cVdVO",
-      "file": "state-goals-mobile.png",
       "name": "Прогресс / 15 · Нет целей · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "bR2Yt",
-      "file": "state-entries-desktop.png",
       "name": "Прогресс / 16 · Нет записей",
       "width": 1440,
       "height": 900
     },
     {
       "id": "rlByB",
-      "file": "state-entries-mobile.png",
       "name": "Прогресс / 16 · Нет записей · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "Hhvij",
-      "file": "state-before-desktop.png",
       "name": "Прогресс / 17 · Период до старта",
       "width": 1440,
       "height": 900
     },
     {
       "id": "Y0iQP",
-      "file": "state-before-mobile.png",
       "name": "Прогресс / 17 · Период до старта · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "M97CZ",
-      "file": "state-future-desktop.png",
       "name": "Прогресс / 18 · Будущий старт",
       "width": 1440,
       "height": 900
     },
     {
       "id": "c1hSoY",
-      "file": "state-future-mobile.png",
       "name": "Прогресс / 18 · Будущий старт · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "Pw3fc",
-      "file": "state-missing-desktop.png",
       "name": "Прогресс / 19 · Цель недоступна",
       "width": 1440,
       "height": 900
     },
     {
       "id": "P4462y",
-      "file": "state-missing-mobile.png",
       "name": "Прогресс / 19 · Цель недоступна · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "cBImK",
-      "file": "state-filter-desktop.png",
       "name": "Прогресс / 20 · Пустой фильтр",
       "width": 1440,
       "height": 900
     },
     {
       "id": "zb04G",
-      "file": "state-filter-mobile.png",
       "name": "Прогресс / 20 · Пустой фильтр · Мобильный",
       "width": 390,
       "height": 844
     },
     {
       "id": "CaBm2",
-      "file": "start-date-desktop.png",
       "name": "Прогресс / 21 · Дата начала",
       "width": 1440,
       "height": 1024
     },
     {
       "id": "a7LzqK",
-      "file": "start-date-mobile.png",
       "name": "Прогресс / 21 · Дата начала · Мобильный",
       "width": 390,
       "height": 900
     },
     {
       "id": "iXnee",
-      "file": "start-date-states.png",
       "name": "Прогресс / 22 · Состояния даты",
       "width": 1920,
       "height": 1000
     },
     {
       "id": "ImbhQ",
-      "file": "reminders-desktop.png",
       "name": "Прогресс / 23 · Напоминания и отчёты",
       "width": 1440,
       "height": 951
     },
     {
       "id": "mz5oD",
-      "file": "reminders-mobile.png",
       "name": "Прогресс / 23 · Напоминания и отчёты · Мобильный",
       "width": 390,
       "height": 981
     },
     {
       "id": "DQbgA",
-      "file": "telegram-settings-states.png",
       "name": "Прогресс / 24 · Состояния отчётов",
       "width": 1536,
       "height": 2240
     },
     {
       "id": "cRrRV",
-      "file": "goal-selection-states.png",
       "name": "Прогресс / 25 · Выбор целей и поиск",
       "width": 1920,
       "height": 890
     },
     {
       "id": "uhwCG",
-      "file": "goal-rule-variants.png",
       "name": "Прогресс / 26 · Варианты правил",
       "width": 1920,
       "height": 2120
     },
     {
       "id": "kSgo4",
-      "file": "comparison-boundary-states.png",
       "name": "Прогресс / 27 · Границы и сравнения",
       "width": 1920,
       "height": 1140
     },
     {
       "id": "f1f4JE",
-      "file": "telegram-sunday.png",
       "name": "Прогресс / 28 · Telegram · Воскресенье",
       "width": 390,
       "height": 782
     },
     {
       "id": "E3Jt09",
-      "file": "telegram-no-entries.png",
       "name": "Прогресс / 29 · Telegram · Нет записей",
       "width": 390,
       "height": 511
     },
     {
       "id": "H3B6b",
-      "file": "telegram-truncated.png",
       "name": "Прогресс / 30 · Telegram · Длинная сводка",
       "width": 390,
       "height": 3415
     },
     {
       "id": "votHE",
-      "file": "telegram-delayed.png",
       "name": "Прогресс / 31 · Telegram · После тихих часов",
       "width": 390,
       "height": 799
     },
     {
       "id": "J1Mes1",
-      "file": "telegram-goal-types.png",
       "name": "Прогресс / 32 · Telegram · Другие типы",
       "width": 390,
       "height": 862
     },
     {
       "id": "zSjRn",
-      "file": "start-date-320.png",
       "name": "Прогресс / 33 · Дата · 320 px",
       "width": 320,
       "height": 900
     },
     {
       "id": "PENYj",
-      "file": "month-320.png",
       "name": "Прогресс / 33 · Месяц · 320 px",
       "width": 320,
       "height": 2334
     },
     {
       "id": "KkbUO",
-      "file": "settings-320.png",
       "name": "Прогресс / 33 · Настройки · 320 px",
       "width": 320,
       "height": 1613
     },
     {
       "id": "DpCbC",
-      "file": "week-320.png",
       "name": "Прогресс / 33 · Неделя · 320 px",
       "width": 320,
       "height": 1538
     },
     {
       "id": "SfULy",
-      "file": "interaction-states.png",
       "name": "Прогресс / 34 · Фильтры и действия",
       "width": 1920,
       "height": 910
     },
     {
       "id": "LNOeU",
-      "file": "goal-filter-mobile.png",
       "name": "Прогресс / 35 · Фильтр · Мобильный",
       "width": 390,
       "height": 900
     },
     {
       "id": "RHvwO",
-      "file": "overview-map.png",
       "name": "Прогресс / Карта макетов",
       "width": 1920,
       "height": 770
