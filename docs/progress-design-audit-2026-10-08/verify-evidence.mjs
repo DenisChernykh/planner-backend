@@ -10,7 +10,9 @@ const audit = dirname(fileURLToPath(import.meta.url));
 const root = resolve(audit, "../..");
 const read = (name) => JSON.parse(readFileSync(resolve(audit, name), "utf8"));
 const matrix = read("requirements.json");
-const registry = JSON.parse(readFileSync(resolve(root, "frontend/docs/design/progress/frames.json"), "utf8"));
+const registry = JSON.parse(
+  readFileSync(resolve(root, "frontend/docs/design/progress/frames.json"), "utf8"),
+);
 const pen = read("evidence/pen-inspection.json");
 const revision = matrix.sourceCommit;
 const inside = (path) => {
@@ -21,7 +23,22 @@ const inside = (path) => {
 };
 execFileSync("git", ["merge-base", "--is-ancestor", revision, "HEAD"], { cwd: root });
 execFileSync("git", ["merge-base", "--is-ancestor", "1bc9399", "a687a2c"], { cwd: root });
-const currentCode = execFileSync("git", ["diff", "--name-only", revision, "--", "frontend/src", "backend/src", "backend/test", "chatgpt", "backend/migrations", "pnpm-lock.yaml"], { cwd: root, encoding: "utf8" });
+const currentCode = execFileSync(
+  "git",
+  [
+    "diff",
+    "--name-only",
+    revision,
+    "--",
+    "frontend/src",
+    "backend/src",
+    "backend/test",
+    "chatgpt",
+    "backend/migrations",
+    "pnpm-lock.yaml",
+  ],
+  { cwd: root, encoding: "utf8" },
+);
 assert.equal(currentCode.trim(), "", "Evidence does not describe the current implementation");
 
 const unique = (rows, expected, label) => {
@@ -62,7 +79,10 @@ for (const [file, expected, key] of [
       const path = inside(item.path);
       const lines = readFileSync(path, "utf8").split("\n");
       assert(item.line > 0 && item.line <= lines.length, `Invalid line for ${item.id}`);
-      assert(lines[item.line - 1].includes(item.sourceTitle ?? item.title), `Wrong test anchor for ${item.id}`);
+      assert(
+        lines[item.line - 1].includes(item.sourceTitle ?? item.title),
+        `Wrong test anchor for ${item.id}`,
+      );
       const hash = createHash("sha256").update(readFileSync(path)).digest("hex");
       assert.equal(hash, item.sourceSha256, `Changed test source for ${item.id}`);
     }
@@ -82,6 +102,61 @@ assert.deepEqual(gates.checks[0].frontend, { files: 37, tests: 132 });
 assert.deepEqual(gates.checks[0].backend, { files: 16, tests: 227 });
 assert.equal(gates.checks[0].chatgpt.tests, 16);
 
+const release = read("evidence/release-acceptance.json");
+const http = read("evidence/production-http.json");
+assert.equal(release.implementationCommit, revision);
+assert.equal(release.publishedCommit, matrix.publishedCommit);
+assert.equal(http.revision, release.publishedCommit);
+execFileSync("git", ["merge-base", "--is-ancestor", release.publishedCommit, "HEAD"], {
+  cwd: root,
+});
+assert.equal(http.checks.length, 8);
+assert.equal(http.assets.length, 34);
+for (const check of http.checks) assert.equal(check.status, "passed", check.id);
+for (const asset of http.assets) assert(/^[a-f0-9]{64}$/u.test(asset.sha256));
+const external = new Map(release.checks.map((check) => [check.id, check]));
+for (const id of ["E01", "E02", "E03"]) {
+  assert.equal(external.get(id)?.status, "passed", id);
+  proof.add(id);
+}
+const published = external.get("E01");
+assert.equal(published.worker.revision, release.publishedCommit);
+assert.equal(published.ci.conclusion, "success");
+assert.equal(published.rootCheck.exitCode, 0);
+assert.equal(published.boundaries.exitCode, 0);
+assert.equal(published.worker.migrationAppliedByThisRelease, false);
+const telegram = external.get("E02");
+assert.equal(telegram.httpStatus, 200);
+assert.equal(telegram.messageId, 80);
+assert.equal(telegram.selectedGoals, telegram.shownGoals);
+assert.equal(telegram.selectedGoals, 2);
+assert.equal(telegram.previewDigestMatchesSentDigest, true);
+assert.equal(telegram.userConfirmation.confirmed, true);
+assert.equal(telegram.settingsUnchanged, true);
+assert.equal(telegram.temporaryPreviewStopped, true);
+assert.equal(telegram.buttons.length, 2);
+const plugin = external.get("E03");
+assert.equal(plugin.site.canonicalCommit, release.publishedCommit);
+assert.equal(plugin.site.deploymentStatus, "succeeded");
+assert.equal(plugin.site.version, 8);
+assert.equal(plugin.sameAccount, true);
+assert.equal(plugin.originalGoalsAndFactsUnchanged, true);
+assert.equal(plugin.originalGoalCountBefore, plugin.originalGoalCountAfter);
+assert.equal(plugin.localExportChecks.exitCode, 0);
+const embedded = external.get("E04");
+assert(["pending", "passed"].includes(embedded.status));
+if (embedded.status === "passed") {
+  assert(embedded.userConfirmation?.confirmed || embedded.renderedEvidence?.length);
+  for (const capture of embedded.renderedEvidence ?? []) {
+    const file = readFileSync(resolve(audit, capture.file));
+    assert.equal(file.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+    assert.equal(createHash("sha256").update(file).digest("hex"), capture.sha256);
+    assert.equal(file.readUInt32BE(16), capture.width);
+    assert.equal(file.readUInt32BE(20), capture.height);
+  }
+  proof.add("E04");
+}
+
 const ids = new Set(matrix.requirements.map((row) => row.id));
 const refs = (values, allowed, label) => {
   for (const value of values ?? []) assert(allowed.has(value), `Unknown ${label}: ${value}`);
@@ -91,14 +166,22 @@ for (const [id, code] of Object.entries(matrix.codeReferences)) {
   const lines = readFileSync(inside(code.path), "utf8").split("\n");
   assert(code.line > 0 && code.line <= lines.length, `Invalid code anchor ${id}`);
 }
-const open = new Set(["R1.02", "R1.03", "R2.03", "R2.04", "R8.29", "R10.01", "R10.02"]);
-const counts = {};
+const open = new Set(embedded.status === "passed" ? [] : ["R10.01", "R10.02"]);
+const counts = { verified: 0, partial: 0, unverified: 0 };
 for (const row of matrix.requirements) {
   counts[row.status] = (counts[row.status] ?? 0) + 1;
   assert(row.requirement && row.implementation && row.verification, `Incomplete ${row.id}`);
   assert(row.codeRefs.length, `No implementation for ${row.id}`);
   refs(row.codeRefs, codeIds, "code");
-  const checks = ["testRefs", "calculationRefs", "integrationRefs", "browserRefs", "designRefs", "gateRefs"].flatMap((key) => row[key] ?? []);
+  const checks = [
+    "testRefs",
+    "calculationRefs",
+    "integrationRefs",
+    "browserRefs",
+    "designRefs",
+    "gateRefs",
+    "externalRefs",
+  ].flatMap((key) => row[key] ?? []);
   refs(checks, proof, "proof");
   if (row.status === "verified") {
     assert(checks.length, `No retained proof for ${row.id}`);
@@ -117,7 +200,12 @@ for (const row of matrix.requirements) {
   }
 }
 assert.deepEqual(counts, matrix.statusCounts);
-assert.deepEqual(counts, { verified: 209, partial: 6, unverified: 1 });
+assert.deepEqual(
+  counts,
+  embedded.status === "passed"
+    ? { verified: 216, partial: 0, unverified: 0 }
+    : { verified: 214, partial: 2, unverified: 0 },
+);
 for (const criterion of matrix.acceptanceCriteria) {
   assert.equal(criterion.status, "verified");
   assert(criterion.level.includes("local"), "External acceptance incorrectly claimed");
@@ -137,7 +225,11 @@ for (const capture of captures.captures) {
   assert([320, 390, 1440].includes(capture.viewport.width));
   const image = readFileSync(resolve(audit, "evidence/final", capture.file));
   assert.equal(image.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
-  assert.deepEqual({ width: image.readUInt32BE(16), height: image.readUInt32BE(20) }, capture.dimensions, capture.file);
+  assert.deepEqual(
+    { width: image.readUInt32BE(16), height: image.readUInt32BE(20) },
+    capture.dimensions,
+    capture.file,
+  );
 }
 assert.equal(capturedFrames.size, 53);
 for (const frame of matrix.frames) {
@@ -156,8 +248,12 @@ for (const item of closed.items) {
 
 // Check local links, explicit row anchors and code line targets in current reports.
 for (const path of [
-  "design-qa.md", "docs/progress-and-telegram-reports.md", "frontend/docs/design/progress/README.md",
-  ...["README", "requirements", "checks", "coverage", "remaining"].map((name) => `docs/progress-design-audit-2026-10-08/${name}.md`),
+  "design-qa.md",
+  "docs/progress-and-telegram-reports.md",
+  "frontend/docs/design/progress/README.md",
+  ...["README", "requirements", "checks", "coverage", "remaining", "release"].map(
+    (name) => `docs/progress-design-audit-2026-10-08/${name}.md`,
+  ),
 ]) {
   const full = inside(path);
   const text = readFileSync(full, "utf8");
@@ -168,13 +264,35 @@ for (const path of [
     const linked = resolve(dirname(full), target);
     assert(existsSync(linked), `Broken link ${path}: ${link}`);
     if (/^L\d+$/u.test(anchor ?? "")) {
-      assert(Number(anchor.slice(1)) <= readFileSync(linked, "utf8").split("\n").length, `Invalid line ${link}`);
+      assert(
+        Number(anchor.slice(1)) <= readFileSync(linked, "utf8").split("\n").length,
+        `Invalid line ${link}`,
+      );
     } else if (/^[crtpabdgvmfq]\d/u.test(anchor ?? "")) {
-      assert(readFileSync(linked, "utf8").includes(`id="${anchor}"`), `Broken anchor ${path}: ${link}`);
+      assert(
+        readFileSync(linked, "utf8").includes(`id="${anchor}"`),
+        `Broken anchor ${path}: ${link}`,
+      );
     }
   }
 }
 assert(readFileSync(resolve(root, "design-qa.md"), "utf8").includes("final result: passed"));
-const sourcePngs = execFileSync("git", ["ls-files", "frontend/docs/design/progress/*.png", "frontend/docs/design/progress/**/*.png"], { cwd: root, encoding: "utf8" });
+const sourcePngs = execFileSync(
+  "git",
+  ["ls-files", "frontend/docs/design/progress/*.png", "frontend/docs/design/progress/**/*.png"],
+  { cwd: root, encoding: "utf8" },
+);
 assert.equal(sourcePngs.trim(), "", "Mockup PNG exports must not be tracked");
-console.log(JSON.stringify({ revision, requirements: 216, criteria: 18, penFrames: 55, appCaptures: 94, checks: proof.size, status: "passed", remaining: ["RELEASE", "V13", "V14"] }));
+console.log(
+  JSON.stringify({
+    revision,
+    publishedCommit: release.publishedCommit,
+    requirements: 216,
+    criteria: 18,
+    penFrames: 55,
+    appCaptures: 94,
+    checks: proof.size,
+    status: "passed",
+    remaining: embedded.status === "passed" ? [] : ["V14"],
+  }),
+);

@@ -1,0 +1,230 @@
+{
+  "revision": "6d48f07c9a57754c252507e4519568b59e9874c0",
+  "origin": "https://app.getplanner.workers.dev",
+  "checkedAt": "2026-10-09T08:49:51.668Z",
+  "method": "Read-only public production HTTPS and clean Chromium. Authenticated browser, real Telegram and the installed ChatGPT plugin are recorded separately.",
+  "checks": [
+    {
+      "id": "S01",
+      "status": "passed",
+      "description": "Health confirms the exact pushed release revision"
+    },
+    {
+      "id": "S02",
+      "status": "passed",
+      "pages": [
+        "/",
+        "/login",
+        "/plans/2026-10",
+        "/plans/2026-10/progress",
+        "/plans/2026-10/reminders",
+        "/plans/2026-10/reminders?tab=reports",
+        "/plans/2026-09/progress?period=month"
+      ],
+      "description": "Seven public SPA paths match the checked production build byte for byte"
+    },
+    {
+      "id": "S03",
+      "status": "passed",
+      "assetCount": 34,
+      "description": "All emitted JavaScript, CSS and fonts match the checked build SHA-256"
+    },
+    {
+      "id": "S04",
+      "status": "passed",
+      "description": "All seven progress/report operations remain authenticated in the published OpenAPI"
+    },
+    {
+      "id": "S05",
+      "status": "passed",
+      "description": "Account and every progress/report operation reject anonymous access with Problem Details"
+    },
+    {
+      "id": "S06",
+      "status": "passed",
+      "description": "Untrusted Origin is rejected before settings mutation"
+    },
+    {
+      "id": "S07",
+      "status": "passed",
+      "description": "Webhook still requires the existing secret header"
+    },
+    {
+      "id": "S08",
+      "status": "passed",
+      "description": "Real published SPA preserves the protected month/period through the login destination; cold browser has no page errors or 320px overflow"
+    }
+  ],
+  "assets": [
+    {
+      "file": "check-ClEW1DCK.js",
+      "bytes": 111,
+      "sha256": "7c86457d3c7805c18114284e62ed7bb2cd5e55288da991f9c5dceb1e97d91cf3"
+    },
+    {
+      "file": "clock-3-QelNZcdb.js",
+      "bytes": 156,
+      "sha256": "10768b5b0de02c0d2b2821ca499e041de2ccd4ab1f194b943f769d9ba5a4046c"
+    },
+    {
+      "file": "connections-Jo187wx8.js",
+      "bytes": 4155,
+      "sha256": "3a40878f3886957c781663b096941c1dd3020afa38f76f772010aaa0a4c71e10"
+    },
+    {
+      "file": "create-goal-D8Xn8U3b.js",
+      "bytes": 45397,
+      "sha256": "e811ac4f366ac909208c8a3752ae3ffd7c68a817317c0816d995db2c732b2de8"
+    },
+    {
+      "file": "hash-DZRqCR4L.js",
+      "bytes": 283,
+      "sha256": "5e3183099cb7f6e138a9ffb7e997c1b98203efe28ccaaa5592593937932d77dd"
+    },
+    {
+      "file": "hooks-DOnL75n-.js",
+      "bytes": 561,
+      "sha256": "d6278f7a5abd0e24e876f6c9a1087a7fbadfbc5340739a5749b558bcdd05f379"
+    },
+    {
+      "file": "index-C5fs6QCy.js",
+      "bytes": 194713,
+      "sha256": "6dcaf30236d005be5d2d3dda3043456b5738ab86dd9c73fda43ba3683be8b09d"
+    },
+    {
+      "file": "index-C8oEVi-J.css",
+      "bytes": 102148,
+      "sha256": "bc1f7dd4bfc036d32b0d52dce71882f9efc834d3610e0c70e1f29d52ff308a66"
+    },
+    {
+      "file": "inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2",
+      "bytes": 25960,
+      "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd"
+    },
+    {
+      "file": "inter-cyrillic-wght-normal-DqGufNeO.woff2",
+      "bytes": 18748,
+      "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075"
+    },
+    {
+      "file": "inter-greek-ext-wght-normal-DlzME5K_.woff2",
+      "bytes": 11232,
+      "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190"
+    },
+    {
+      "file": "inter-greek-wght-normal-CkhJZR-_.woff2",
+      "bytes": 18996,
+      "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6"
+    },
+    {
+      "file": "inter-latin-ext-wght-normal-DO1Apj_S.woff2",
+      "bytes": 85068,
+      "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+    },
+    {
+      "file": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+      "bytes": 48256,
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+    },
+    {
+      "file": "inter-vietnamese-wght-normal-CBcvBZtf.woff2",
+      "bytes": 10252,
+      "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2"
+    },
+    {
+      "file": "login-DzDbtxzO.js",
+      "bytes": 1454,
+      "sha256": "d8077f38268c859ed4be3b61cbebdb97ac98c40d6bc1516097a9fe714e8e019a"
+    },
+    {
+      "file": "pencil-B78_g20u.js",
+      "bytes": 263,
+      "sha256": "cfad042d187bb6ad87b873af8d853bca1b6d4fa19ee09a42a51da430b1c1f530"
+    },
+    {
+      "file": "plan-C836Sgl2.js",
+      "bytes": 267,
+      "sha256": "7deb088394b6f7cc1873f20271393bb7f765e2bf85f0f46a36695d389d4034cf"
+    },
+    {
+      "file": "planner-overview-DB3G6s-b.js",
+      "bytes": 163426,
+      "sha256": "a644c008a8d9ccf9e6bbdb0b3d64d5c21ac2908ec9e9e4c1e663ba5f83c94d52"
+    },
+    {
+      "file": "planner-return-to-C2uXCXsw.js",
+      "bytes": 26246,
+      "sha256": "e96a4be150e25d335f2a9b15144e2d1dfea247c360a7ec5fa64af5c36907fc31"
+    },
+    {
+      "file": "planner-shell-J4JTpSV1.js",
+      "bytes": 40718,
+      "sha256": "d62d95ad3e06bb147452ac38f8cff31bb5540f5915b8517137fe28f62c720645"
+    },
+    {
+      "file": "plus-KzwJ2-oh.js",
+      "bytes": 140,
+      "sha256": "26bc475ee6105c8d442b1429fc31fa967ba5ec7151fb61f1db45f54c69cc3855"
+    },
+    {
+      "file": "progress-CO0yFeO3.js",
+      "bytes": 54377,
+      "sha256": "24abac1cbe57ca08af10dd7a6c39efd7c32872c93f83a571695900823548e966"
+    },
+    {
+      "file": "reminders-Cu2O-uF8.js",
+      "bytes": 37692,
+      "sha256": "3051893d4fa8daee93c83afff21439947b526295641ed58a72a931a397ee83a5"
+    },
+    {
+      "file": "rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "sha256": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75"
+    },
+    {
+      "file": "rotate-ccw-clock-Nvkzy27b.js",
+      "bytes": 233,
+      "sha256": "79d8f48e10f6c6817fd2458ecd6245d4a2e08a5167f62985bebdad6332be48f2"
+    },
+    {
+      "file": "runtime-DnRKX3d3.js",
+      "bytes": 729,
+      "sha256": "115bf4c77f406bee546df413543ccb84e973295963412160b3d03ccd5edee42c"
+    },
+    {
+      "file": "search-dialog-Dmx8-KKd.js",
+      "bytes": 36737,
+      "sha256": "6833bd88e41396aacbdaca4659a11829ac2361239b225b374c9c2fa9e021cc87"
+    },
+    {
+      "file": "send-Djz9PLN1.js",
+      "bytes": 1539,
+      "sha256": "553560de7c7a676b6eebada78f1f13c7698bfa16fb2b3af91c01ef453aeb3006"
+    },
+    {
+      "file": "sliders-horizontal-WkY-c7gH.js",
+      "bytes": 536,
+      "sha256": "667f79f87d1059525556b09c32b2a5c37e08155ab77e802c83260885f32da013"
+    },
+    {
+      "file": "target-BiIutqEp.js",
+      "bytes": 213,
+      "sha256": "8440189bac60699d2a20c1c3fb71e8dbf0c86009a1389f0351de47773a73c510"
+    },
+    {
+      "file": "trash-2-CL5FIg6u.js",
+      "bytes": 436,
+      "sha256": "0cf8d15ffbc52e73a5aaef74bc4c0740a06e617ff861329818ab28f3d85e0db5"
+    },
+    {
+      "file": "trash-D28Sbksh.js",
+      "bytes": 538,
+      "sha256": "50bf818711dd16a33987625570d9a08edd4573af5b66785ff3f707b00dd1bfad"
+    },
+    {
+      "file": "ui-CqpVJWe6.js",
+      "bytes": 464725,
+      "sha256": "3bbc7c9852daea4e9900a7f0515e6ab625efb8b6744fdfbb14baf29370622ada"
+    }
+  ]
+}

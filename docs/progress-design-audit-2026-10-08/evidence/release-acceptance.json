@@ -1,0 +1,224 @@
+{
+  "publishedCommit": "6d48f07c9a57754c252507e4519568b59e9874c0",
+  "implementationCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246",
+  "checkedAt": "2026-10-09T08:44:54.765Z",
+  "authorization": {
+    "message": "Сделай. Разрешение даю",
+    "scope": [
+      "merge/push main",
+      "deploy existing app",
+      "real Telegram test",
+      "real installed ChatGPT plugin test/update"
+    ]
+  },
+  "checks": [
+    {
+      "id": "E01",
+      "status": "passed",
+      "method": "Manual publication after pushed source and passing root/CI checks; authenticated real browser and public production HTTP.",
+      "worker": {
+        "name": "app",
+        "origin": "https://app.getplanner.workers.dev",
+        "versionId": "5b713dbe-9020-4808-bb8c-c2189624f013",
+        "deploymentId": "e9e93efa-d974-461e-a3ee-f7b86c1eee79",
+        "revision": "6d48f07c9a57754c252507e4519568b59e9874c0",
+        "cron": "* * * * *",
+        "migrationAppliedByThisRelease": false,
+        "invocationLogs": false
+      },
+      "ci": {
+        "id": 37899781785,
+        "url": "https://github.com/DenisChernykh/planner-backend/actions/runs/37899781785",
+        "conclusion": "success",
+        "completedAt": "2026-10-09T07:38:04Z"
+      },
+      "rootCheck": {
+        "exitCode": 0,
+        "frontend": {
+          "files": 37,
+          "tests": 132
+        },
+        "backend": {
+          "files": 16,
+          "tests": 227
+        },
+        "chatgpt": {
+          "tests": 16
+        }
+      },
+      "boundaries": {
+        "exitCode": 0,
+        "existingWarnings": 4
+      },
+      "publicHttpEvidence": "production-http.json",
+      "authenticatedBrowser": {
+        "statuses": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "progressHeading": "Прогресс",
+        "startsOn": "2026-10-07",
+        "settingsRevision": 1,
+        "reportsEnabled": false,
+        "selectedGoals": 0,
+        "horizontalOverflow": false
+      },
+      "remaining": []
+    },
+    {
+      "id": "E02",
+      "status": "passed",
+      "method": "One authorized real Telegram Bot API send of the production preview using the checked domain formatter and real transport in a short-lived remote preview. No new production endpoint or scheduled report was enabled.",
+      "httpStatus": 200,
+      "messageId": 80,
+      "slot": "wed",
+      "selectedGoals": 2,
+      "shownGoals": 2,
+      "formedAt": 1791532106559,
+      "messageDigest": "cdfd0dfde2a91ba981119ff44dfe7c930eb6a697bf024fcc652ab67c66464e6e",
+      "requested": {
+        "from": "2026-10-05",
+        "to": "2026-10-11"
+      },
+      "actual": {
+        "from": "2026-10-07",
+        "to": "2026-10-07"
+      },
+      "buttons": [
+        {
+          "text": "Открыть прогресс",
+          "url": "https://app.getplanner.workers.dev/plans/2026-10/progress?period=week&anchor=2026-10-05"
+        },
+        {
+          "text": "Настроить отчёты",
+          "url": "https://app.getplanner.workers.dev/plans/2026-10/reminders?tab=reports"
+        }
+      ],
+      "ownerVerified": true,
+      "privateChat": true,
+      "previewDigestMatchesSentDigest": true,
+      "userConfirmation": {
+        "confirmed": true,
+        "confirmedAt": "2026-10-09 08:00:21 UTC",
+        "answer": "Да, пришёл и кнопки работают"
+      },
+      "settingsUnchanged": true,
+      "temporaryPreviewStopped": true,
+      "temporaryCredentialRemoved": true,
+      "scopeLimit": "Wednesday/Sunday scheduling and midnight transitions are proved by retained local integration tests. This smoke observes an actual Wednesday message and both buttons, not a later wall-clock Cron run."
+    },
+    {
+      "id": "E03",
+      "status": "passed",
+      "method": "Actual installed owner-scoped ChatGPT plugin calls. Existing Site and OAuth connection reused; tooling refreshed through the normal ChatGPT settings UI.",
+      "site": {
+        "projectId": "appgprj_6abe160dd4d08191ab9bfaacd10334f8",
+        "url": "https://planner-mcp-test.scary-rustles-7p.chatgpt.site",
+        "mcpUrl": "https://planner-mcp-test.scary-rustles-7p.chatgpt.site/mcp",
+        "pluginId": "plugin_asdk_app_sites_ba1679cfc5588191b7b2c15db7428c94",
+        "version": 8,
+        "versionId": "appgprj_6abe160dd4d08191ab9bfaacd10334f8~appgver_d18091cae70c8191a1d10b55e8019f00",
+        "deploymentId": "appgdep_6ac89fd36e5c81918bc1a714eafec487",
+        "deploymentStatus": "succeeded",
+        "envRevision": 4,
+        "sourceCommit": "cd27eb119dbe466927c8be43d5bdb959e20b2866",
+        "canonicalCommit": "6d48f07c9a57754c252507e4519568b59e9874c0",
+        "archiveSha256": "e557b626a067e6bd56a211e541622f1c133b2a4f66f513895e9822a32081ab15",
+        "audiencePreserved": true,
+        "ownerIdentityCheckPreserved": true,
+        "environmentUnchanged": true,
+        "pluginPermissionsUnchanged": true
+      },
+      "regressionFound": "Old published Site v7 did not send expectedRevision and stripped entry revisions; production rejected record_entry. Re-published the checked canonical adapter and refreshed existing plugin tools.",
+      "operations": [
+        {
+          "tool": "get_account/get_plan",
+          "result": "Connected account matches the authenticated production browser; 17 original goals."
+        },
+        {
+          "tool": "create_goal",
+          "result": "One temporary quantity goal, target 10, created in 2026-10."
+        },
+        {
+          "tool": "adjust_entry",
+          "result": "delta 12 persisted value 12, met true."
+        },
+        {
+          "tool": "adjust_entry repeated operationId",
+          "result": "The same UUID left value 12 without double addition."
+        },
+        {
+          "tool": "update_goal",
+          "result": "Temporary goal description saved and reread."
+        },
+        {
+          "tool": "record_entry with current expectedRevision",
+          "result": "Complete total 15 and test note persisted; get_plan confirmed both."
+        },
+        {
+          "tool": "record_entry with stale expectedRevision",
+          "result": "Rejected with conflict message; fresh plan retained total 15."
+        },
+        {
+          "tool": "delete_goal/get_trash/restore_goal/get_plan",
+          "result": "Trash and restoration preserved total 15 and note."
+        },
+        {
+          "tool": "delete_entry with current expectedRevision",
+          "result": "Test fact removed."
+        },
+        {
+          "tool": "delete_goal/get_plan",
+          "result": "Temporary goal removed from active plan; 17 original goals and facts unchanged. Empty temporary goal remains in the product's ordinary trash."
+        },
+        {
+          "tool": "get_reminder_settings",
+          "result": "Original reminder settings and active Telegram connection unchanged."
+        },
+        {
+          "tool": "open_ritm",
+          "result": "Entrypoint returns current plan and entry revisions from the same account."
+        }
+      ],
+      "sameAccount": true,
+      "originalGoalCountBefore": 17,
+      "originalGoalCountAfter": 17,
+      "originalGoalsAndFactsUnchanged": true,
+      "temporaryGoalId": "b8e2e7d7-355f-4bc5-84d3-1e4404454c86",
+      "localExportChecks": {
+        "exitCode": 0,
+        "tests": 16
+      },
+      "scopeLimit": "Real installed-plugin CRUD and revision protection are observed here; actual embedded October plan rendering is separately retained in E04."
+    },
+    {
+      "id": "E04",
+      "status": "passed",
+      "method": "Actual ChatGPT sidebar entrypoint and visually inspected October plan in the real Google Chrome host. Capture positively identified the owned Ritm window by its title and unique bounds; DevTools was closed before capture.",
+      "entrypoint": "https://chatgpt.com/mcp-app/asdk_app_sites_ba1679cfc5588191b7b2c15db7428c94/open_ritm",
+      "frameTitle": "Ритм — цели и привычки",
+      "renderedEvidence": [
+        {
+          "file": "evidence/production-chatgpt-plan.png",
+          "sha256": "4d0ca8de02edcdbeff3100f1913f0224f24c0c58cf93e0a4312c68914a9e843d",
+          "width": 2704,
+          "height": 1964,
+          "capturedAt": "2026-10-09T08:41:34.554Z"
+        }
+      ],
+      "observed": {
+        "month": "2026-10",
+        "today": "2026-10-09",
+        "week": "2026-10-05/2026-10-11",
+        "planHeading": "План на октябрь",
+        "frameTitle": "Ритм — цели и привычки",
+        "savedFactsVisible": true,
+        "sameAccountAsNativeTools": true
+      },
+      "scopeLimit": "Spec §10 requires existing planning and plugin scenarios to continue working; new plugin tools are outside this release. The embedded app retains existing planning/Tempo, while the new Progress screen and report settings are checked in the web app. A question asking for Progress inside ChatGPT was broader than this acceptance scope and was retracted."
+    }
+  ],
+  "remaining": []
+}
