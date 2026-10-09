@@ -1,7 +1,7 @@
 {
   "source": "../Planner.pen",
   "section": "Монетизация",
-  "sourceSha256": "d8ba4f24852bb03de37ca733266b93fdd3a0dd9120ab64231859fe9bf2935ae0",
+  "sourceSha256": "493908073efb3b042bd77dcf72faee8acac7baa6e3353b340248e325919ea57f",
   "frames": [
     {
       "id": "a0Cs9",
@@ -44,10 +44,36 @@
       "name": "Монетизация / 06 · Своя сумма · Телефон",
       "width": 390,
       "height": 844
+    },
+    {
+      "id": "LGWTc",
+      "name": "Монетизация / 07 · Об авторе · Компонент",
+      "width": 560,
+      "height": 577
+    },
+    {
+      "id": "KTUQR",
+      "name": "Монетизация / 08 · Об авторе · Компьютер",
+      "width": 1440,
+      "height": 1024
+    },
+    {
+      "id": "TuUlm",
+      "name": "Монетизация / 09 · Об авторе · Телефон",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "g7cFi",
+      "name": "Монетизация / 10 · Об авторе · 320 px",
+      "width": 320,
+      "height": 844
     }
   ],
   "verification": {
-    "savedSourceReopened": true,
-    "nativeClippingProblems": 0
+    "sourceSavedToDisk": true,
+    "nativeClippingProblems": 0,
+    "authorContactUrl": "https://t.me/ChernykDenis",
+    "authorDialogMobileWidths": [390, 320]
   }
 }
