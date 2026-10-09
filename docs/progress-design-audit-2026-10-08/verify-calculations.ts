@@ -1,4 +1,4 @@
-// Independent acceptance examples. This diagnostic deliberately reports known failures.
+// Independent acceptance examples from the specification and design boards.
 // Run from the repository root; no database, network or Telegram calls are made.
 import { deepStrictEqual } from "node:assert";
 import { writeFileSync } from "node:fs";
@@ -568,7 +568,7 @@ check("P39", "§7.1, К4: месячный план отдельно от нед
   return [text.includes("5 из 10 за месяц 2026-10"), text.includes("За эту неделю: 2")];
 });
 const result = {
-  sourceCommit: "2e5598ddf63539ee09c617050e264925cd47ee63",
+  sourceRevision: process.env.ACCEPTANCE_REVISION ?? "working-tree: fix/progress-complete",
   method: "Direct domain/formatter calls on synthetic facts; no external I/O",
   totals: {
     passed: results.filter((r) => r.status === "pass").length,

@@ -35,14 +35,14 @@ export const sources: ProgressSource[] = sample.goals.map(
     })),
   }),
 );
-export const overview = (supplied = sources, period: "week" | "month" = "week") =>
+export const overview = (supplied = sources, period: "week" | "month" = "week", options: { today?: string; anchor?: string; startsOn?: string | null } = {}) =>
   calculateProgress({
     sources: supplied,
     period,
-    anchor: "2026-10-21",
-    today: "2026-10-21",
-    startsOn: "2026-10-06",
-    asOf: Date.parse("2026-10-21T16:00:00Z"),
+    anchor: options.anchor ?? options.today ?? "2026-10-21",
+    today: options.today ?? "2026-10-21",
+    startsOn: options.startsOn === undefined ? "2026-10-06" : options.startsOn,
+    asOf: Date.parse(`${options.today ?? "2026-10-21"}T16:00:00Z`),
     timeZone: "Asia/Yekaterinburg",
   });
 export const unboundedSource: ProgressSource = {
@@ -62,7 +62,7 @@ export const fixtures = {
   expanded: overview(),
   month: overview(sources, "month"),
   empty: overview(sources.map((s) => ({ ...s, entries: [] }))),
-  report: reportMessage(overview(sources.slice(0, 2)), "wed", "http://127.0.0.1:5188"),
+  report: reportMessage(overview(sources.filter((_, i) => [0, 1, 4].includes(i))), "wed", "http://127.0.0.1:5188"),
   reportState: {
     settings: {
       ownerId: "synthetic-audit-owner",
@@ -73,6 +73,7 @@ export const fixtures = {
       nextSundayAt: null,
       revision: 0,
     },
+    delivery: { retrying: 0, failed: 0, unknown: 0 },
     startsOn: "2026-10-06",
     timeZone: "Asia/Yekaterinburg",
     quietStart: "23:00",

@@ -1,34 +1,45 @@
 {
-  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
-  "date": "2026-10-08",
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246",
+  "date": "2026-10-09",
   "node": "24.18.1",
   "pnpm": "11.15.1",
   "checks": [
     {
+      "id": "G01",
       "command": "pnpm check",
       "exitCode": 0,
-      "vitestSummaries": [
-        " Test Files  36 passed (36)",
-        "      Tests  127 passed (127)",
-        " Test Files  15 passed (15)",
-        "      Tests  204 passed (204)"
-      ],
+      "frontend": {
+        "files": 37,
+        "tests": 132
+      },
+      "backend": {
+        "files": 16,
+        "tests": 227
+      },
+      "chatgpt": {
+        "tests": 16
+      },
       "includes": [
-        "frontend OpenAPI, format, lint, architecture, tests, build",
-        "backend typegen, format, boundaries, typecheck, tests, Worker dry-run",
-        "ChatGPT package checks",
-        "monolith smoke"
+        "format/lint/typechecks/architecture",
+        "OpenAPI generation drift check",
+        "frontend production build",
+        "local D1 and workerd tests",
+        "Worker dry-run",
+        "ChatGPT package/runtime tests",
+        "SPA/assets/API/OpenAPI/health/webhook monolith smoke"
       ]
     },
     {
+      "id": "G02",
       "command": "pnpm boundaries:check",
-      "exitCode": 0
+      "exitCode": 0,
+      "existingWarnings": 4
     }
   ],
   "limitations": [
-    "Local checks, not GitHub CI or deployment",
-    "Existing lint/architecture and bundle-size warnings remain",
-    "Acceptance diagnostics still fail: P27/P30/P37 and B04/B11/B12/B13",
-    "No production D1, real Telegram delivery or real ChatGPT client exercised"
+    "Local checks are not GitHub CI or deployment.",
+    "Existing architecture and bundle-size warnings remain.",
+    "No remote migration, production mutation or real Telegram message sent.",
+    "Real ChatGPT client smoke is pending."
   ]
 }

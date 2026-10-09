@@ -1,0 +1,1322 @@
+{
+  "method": "Local Chrome with synthetic, source-backed fixtures. No real Telegram client, D1, or production claim.",
+  "captures": [
+    {
+      "penFrame": "IJar7",
+      "file": "week-desktop.png",
+      "state": "2026-10-07; overview",
+      "viewport": {
+        "width": 1440,
+        "height": 1280
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1433
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iRvJs",
+      "file": "week-mobile.png",
+      "state": "2026-10-07; overview",
+      "viewport": {
+        "width": 390,
+        "height": 1540
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1896
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DpCbC",
+      "file": "week-320.png",
+      "state": "2026-10-07; overview",
+      "viewport": {
+        "width": 320,
+        "height": 1538
+      },
+      "dimensions": {
+        "width": 320,
+        "height": 2011
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "NMjXR",
+      "file": "month-desktop.png",
+      "state": "2026-10-21; overview&period=month",
+      "viewport": {
+        "width": 1440,
+        "height": 2074
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 2074
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "EWC2M",
+      "file": "month-mobile.png",
+      "state": "2026-10-21; overview&period=month",
+      "viewport": {
+        "width": 390,
+        "height": 2275
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2513
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "PENYj",
+      "file": "month-320.png",
+      "state": "2026-10-21; overview&period=month",
+      "viewport": {
+        "width": 320,
+        "height": 2334
+      },
+      "dimensions": {
+        "width": 320,
+        "height": 2629
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "VJMzK",
+      "file": "goal-desktop.png",
+      "state": "2026-10-07; reading",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1443
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "OtGaJ",
+      "file": "goal-mobile.png",
+      "state": "2026-10-07; reading",
+      "viewport": {
+        "width": 390,
+        "height": 1210
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1716
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "UZAmv",
+      "file": "comparison-desktop.png",
+      "state": "2026-10-21; reading",
+      "viewport": {
+        "width": 1440,
+        "height": 1396
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1612
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "hpuK2",
+      "file": "comparison-mobile.png",
+      "state": "2026-10-21; reading",
+      "viewport": {
+        "width": 390,
+        "height": 1488
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1929
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "Iedlb",
+      "file": "check-detail-desktop.png",
+      "state": "2026-10-21; training",
+      "viewport": {
+        "width": 1440,
+        "height": 1245
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1512
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "T56J5",
+      "file": "check-detail-mobile.png",
+      "state": "2026-10-21; training",
+      "viewport": {
+        "width": 390,
+        "height": 1307
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1796
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "KckiD",
+      "file": "scale-detail-desktop.png",
+      "state": "2026-10-21; mood",
+      "viewport": {
+        "width": 1440,
+        "height": 1236
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1442
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "bU1iS",
+      "file": "scale-detail-mobile.png",
+      "state": "2026-10-21; mood",
+      "viewport": {
+        "width": 390,
+        "height": 1329
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1763
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "ytHPN",
+      "file": "time-detail-desktop.png",
+      "state": "2026-10-21; sleep",
+      "viewport": {
+        "width": 1440,
+        "height": 1236
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1604
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "Z7I26",
+      "file": "time-detail-mobile.png",
+      "state": "2026-10-21; sleep",
+      "viewport": {
+        "width": 390,
+        "height": 1311
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1891
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "FqChd",
+      "file": "state-loading-desktop.png",
+      "state": "loading",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "q4keBJ",
+      "file": "state-loading-mobile.png",
+      "state": "loading",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "eqqPl",
+      "file": "state-error-desktop.png",
+      "state": "error",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "OuNTP",
+      "file": "state-error-mobile.png",
+      "state": "error",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "nBHQQ",
+      "file": "state-goals-desktop.png",
+      "state": "no-goals",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cVdVO",
+      "file": "state-goals-mobile.png",
+      "state": "no-goals",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "bR2Yt",
+      "file": "state-entries-desktop.png",
+      "state": "empty",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "rlByB",
+      "file": "state-entries-mobile.png",
+      "state": "empty",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "Hhvij",
+      "file": "state-before-desktop.png",
+      "state": "before-start",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "Y0iQP",
+      "file": "state-before-mobile.png",
+      "state": "before-start",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 857
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "M97CZ",
+      "file": "state-future-desktop.png",
+      "state": "future-start",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "c1hSoY",
+      "file": "state-future-mobile.png",
+      "state": "future-start",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "Pw3fc",
+      "file": "state-missing-desktop.png",
+      "state": "missing",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "P4462y",
+      "file": "state-missing-mobile.png",
+      "state": "missing",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cBImK",
+      "file": "state-filter-desktop.png",
+      "state": "ready",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "zb04G",
+      "file": "state-filter-mobile.png",
+      "state": "ready",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "CaBm2",
+      "file": "start-date-desktop.png",
+      "state": "date dialog; 2026-10-06",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1024
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "a7LzqK",
+      "file": "start-date-mobile.png",
+      "state": "date dialog; 2026-10-06",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "zSjRn",
+      "file": "start-date-320.png",
+      "state": "date dialog; 2026-10-06",
+      "viewport": {
+        "width": 320,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 320,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-null.png",
+      "state": "null",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-future.png",
+      "state": "future",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-invalid.png",
+      "state": "invalid",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-pending.png",
+      "state": "pending",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-error.png",
+      "state": "error",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "iXnee",
+      "file": "date-success.png",
+      "state": "success",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1876
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "ycerX",
+      "file": "telegram-settings-desktop.png",
+      "state": "enabled; three selected goals; mobile preview opens separately",
+      "viewport": {
+        "width": 1440,
+        "height": 1347
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 1647
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "qArpO",
+      "file": "telegram-settings-mobile.png",
+      "state": "enabled; three selected goals; mobile preview opens separately",
+      "viewport": {
+        "width": 390,
+        "height": 1535
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2002
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "KkbUO",
+      "file": "settings-320.png",
+      "state": "enabled; three selected goals; mobile preview opens separately",
+      "viewport": {
+        "width": 320,
+        "height": 1613
+      },
+      "dimensions": {
+        "width": 320,
+        "height": 2191
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "ImbhQ",
+      "file": "reminders-desktop.png",
+      "state": "independent question/report modes",
+      "viewport": {
+        "width": 1440,
+        "height": 951
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 957
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "mz5oD",
+      "file": "reminders-mobile.png",
+      "state": "independent question/report modes",
+      "viewport": {
+        "width": 390,
+        "height": 981
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1167
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-loading.png",
+      "state": "loading",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-load-error.png",
+      "state": "load-error",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-disabled.png",
+      "state": "disabled",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1982
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-disconnected.png",
+      "state": "disconnected",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2034
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-bot-unavailable.png",
+      "state": "bot-unavailable",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2034
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-no-goals.png",
+      "state": "no-goals",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1930
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-future-start.png",
+      "state": "future-start",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2038
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-invalid-date.png",
+      "state": "invalid-date",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2046
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-invalid-time.png",
+      "state": "invalid-time",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2054
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-saving.png",
+      "state": "saving",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2002
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-save-error.png",
+      "state": "save-error",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2062
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-saved.png",
+      "state": "saved",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2042
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-preview-pending.png",
+      "state": "preview-pending",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-preview-error.png",
+      "state": "preview-error",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-retrying.png",
+      "state": "retrying",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2134
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-unknown.png",
+      "state": "unknown",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2134
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "DQbgA",
+      "file": "report-failed.png",
+      "state": "failed",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2114
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cRrRV",
+      "file": "selection-search.png",
+      "state": "search",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1910
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cRrRV",
+      "file": "selection-no-result.png",
+      "state": "no-result",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1914
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cRrRV",
+      "file": "selection-all.png",
+      "state": "all",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2002
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "cRrRV",
+      "file": "selection-empty.png",
+      "state": "empty",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2050
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "LNOeU",
+      "file": "filter-390.png",
+      "state": "filter open",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SfULy",
+      "file": "filter-1440.png",
+      "state": "filter open",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SfULy",
+      "file": "rule-draft.png",
+      "state": "rule-draft",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2152
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SfULy",
+      "file": "rule-error.png",
+      "state": "rule-error",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2228
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SfULy",
+      "file": "rule-saving.png",
+      "state": "rule-saving",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2152
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SfULy",
+      "file": "rule-cancelled.png",
+      "state": "rule-cancelled",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 2152
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-quantity-at-most.png",
+      "state": "quantity-at-most",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1898
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-quantity-equal.png",
+      "state": "quantity-equal",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1910
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-scale-ten.png",
+      "state": "scale-ten",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1779
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-time-lower.png",
+      "state": "time-lower",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1879
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-time-upper.png",
+      "state": "time-upper",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1891
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-time-midnight.png",
+      "state": "time-midnight",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1891
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-time-unbounded.png",
+      "state": "time-unbounded",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1780
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-check-daily.png",
+      "state": "check-daily",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1847
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "uhwCG",
+      "file": "variant-monthly-plan.png",
+      "state": "monthly-plan",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1714
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-month-comparison.png",
+      "state": "month-comparison",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 1440,
+        "height": 2854
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-different-rules.png",
+      "state": "different-rules",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1342
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-missing-neighbor.png",
+      "state": "missing-neighbor",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1824
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-streak-no-today.png",
+      "state": "streak-no-today",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1847
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-streak-false-today.png",
+      "state": "streak-false-today",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1847
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "kSgo4",
+      "file": "boundary-streak-two-missing.png",
+      "state": "streak-two-missing",
+      "viewport": {
+        "width": 390,
+        "height": 1000
+      },
+      "dimensions": {
+        "width": 390,
+        "height": 1847
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "SZnty",
+      "file": "telegram-message.png",
+      "state": "Full preview content of server formatter; wed; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 942
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "f1f4JE",
+      "file": "telegram-sunday.png",
+      "state": "Full preview content of server formatter; sun; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 987
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "E3Jt09",
+      "file": "telegram-no-entries.png",
+      "state": "Full preview content of server formatter; empty; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 603
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "H3B6b",
+      "file": "telegram-truncated.png",
+      "state": "Full preview content of server formatter; long; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 3786
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "votHE",
+      "file": "telegram-delayed.png",
+      "state": "Full preview content of server formatter; quiet; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 1078
+      },
+      "overflow": true
+    },
+    {
+      "penFrame": "J1Mes1",
+      "file": "telegram-goal-types.png",
+      "state": "Full preview content of server formatter; types; capture-only scroll expansion. Telegram client is external.",
+      "viewport": {
+        "width": 390,
+        "height": 1100
+      },
+      "dimensions": {
+        "width": 348,
+        "height": 1056
+      },
+      "overflow": true
+    }
+  ],
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246"
+}

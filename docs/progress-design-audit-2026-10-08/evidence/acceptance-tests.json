@@ -1,8 +1,8 @@
 {
-  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
-  "method": "Vitest; local D1/Miniflare, fake Telegram transport, React Testing Library; no real Telegram/OIDC",
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246",
+  "method": "Tests listed by exact source title, all included in the final passing root pnpm check. D1 is local; transport/OIDC are synthetic.",
   "totals": {
-    "passed": 102,
+    "passed": 105,
     "failed": 0
   },
   "tests": [
@@ -12,7 +12,9 @@
       "line": 53,
       "title": "includes the start date and excludes earlier entries without converting missing values to zero",
       "fullName": "progress calculations includes the start date and excludes earlier entries without converting missing values to zero",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "includes the start date and excludes earlier entries without converting missing values to zero",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T02",
@@ -20,7 +22,9 @@
       "line": 76,
       "title": "distinguishes 4 successes, a recorded failure and one missing day",
       "fullName": "progress calculations distinguishes 4 successes, a recorded failure and one missing day",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "distinguishes 4 successes, a recorded failure and one missing day",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T03",
@@ -28,7 +32,9 @@
       "line": 104,
       "title": "keeps a zero in the numeric average and supports atMost and equality rules",
       "fullName": "progress calculations keeps a zero in the numeric average and supports atMost and equality rules",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps a zero in the numeric average and supports atMost and equality rules",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T04",
@@ -36,7 +42,9 @@
       "line": 113,
       "title": "counts scales and unbounded time as observations, without adding successful completions",
       "fullName": "progress calculations counts scales and unbounded time as observations, without adding successful completions",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "counts scales and unbounded time as observations, without adding successful completions",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T05",
@@ -44,7 +52,9 @@
       "line": 128,
       "title": "uses planning's time rule for an interval across midnight",
       "fullName": "progress calculations uses planning's time rule for an interval across midnight",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses planning's time rule for an interval across midnight",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T06",
@@ -52,7 +62,9 @@
       "line": 139,
       "title": "reduces a monthly plan once, while retaining the original target",
       "fullName": "progress calculations reduces a monthly plan once, while retaining the original target",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "reduces a monthly plan once, while retaining the original target",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T07",
@@ -60,7 +72,9 @@
       "line": 150,
       "title": "retains a weekly plan in midweek and reports overflow without losing the numerator",
       "fullName": "progress calculations retains a weekly plan in midweek and reports overflow without losing the numerator",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "retains a weekly plan in midweek and reports overflow without losing the numerator",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T08",
@@ -68,7 +82,9 @@
       "line": 172,
       "title": "has no percentage or zero statistics for a future start and a period before the start",
       "fullName": "progress calculations has no percentage or zero statistics for a future start and a period before the start",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "has no percentage or zero statistics for a future start and a period before the start",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T09",
@@ -76,7 +92,9 @@
       "line": 183,
       "title": "restores earlier history when the start is cleared",
       "fullName": "progress calculations restores earlier history when the start is cleared",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "restores earlier history when the start is cleared",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T10",
@@ -84,7 +102,9 @@
       "line": 189,
       "title": "distinguishes an explicitly unselected future version from an unprepared month",
       "fullName": "progress calculations distinguishes an explicitly unselected future version from an unprepared month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "distinguishes an explicitly unselected future version from an unprepared month",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T11",
@@ -92,7 +112,9 @@
       "line": 214,
       "title": "merges compatible carried versions across months and rounds once",
       "fullName": "progress calculations merges compatible carried versions across months and rounds once",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "merges compatible carried versions across months and rounds once",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T12",
@@ -100,7 +122,9 @@
       "line": 249,
       "title": "does not invent a reduced plan when the future adjacent month is missing",
       "fullName": "progress calculations does not invent a reduced plan when the future adjacent month is missing",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not invent a reduced plan when the future adjacent month is missing",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T13",
@@ -108,7 +132,9 @@
       "line": 261,
       "title": "compares the same elapsed weekdays and suppresses a shorter previous month",
       "fullName": "progress calculations compares the same elapsed weekdays and suppresses a shorter previous month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "compares the same elapsed weekdays and suppresses a shorter previous month",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T14",
@@ -116,7 +142,9 @@
       "line": 291,
       "title": "ends a confirmed streak on an empty past day, allowing today's unrecorded day",
       "fullName": "progress calculations ends a confirmed streak on an empty past day, allowing today's unrecorded day",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "ends a confirmed streak on an empty past day, allowing today's unrecorded day",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T15",
@@ -124,7 +152,9 @@
       "line": 317,
       "title": "defaults to all history, rejects nonexistent dates and preserves the previous setting",
       "fullName": "progress D1 and API defaults to all history, rejects nonexistent dates and preserves the previous setting",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "defaults to all history, rejects nonexistent dates and preserves the previous setting",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T16",
@@ -132,7 +162,9 @@
       "line": 325,
       "title": "recalculates stored criteria atomically while preserving values and notes",
       "fullName": "progress D1 and API recalculates stored criteria atomically while preserving values and notes",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "recalculates stored criteria atomically while preserving values and notes",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T17",
@@ -140,7 +172,9 @@
       "line": 358,
       "title": "does not disclose another owner's goal or create an unprepared future month",
       "fullName": "progress D1 and API does not disclose another owner's goal or create an unprepared future month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not disclose another owner's goal or create an unprepared future month",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T18",
@@ -148,7 +182,9 @@
       "line": 391,
       "title": "keeps a concurrent fact and threshold edit consistent without losing its note",
       "fullName": "progress D1 and API keeps a concurrent fact and threshold edit consistent without losing its note",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps a concurrent fact and threshold edit consistent without losing its note",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T19",
@@ -156,7 +192,9 @@
       "line": 422,
       "title": "uses authenticated owner and trusted Origin for settings and validates the OpenAPI query",
       "fullName": "progress D1 and API uses authenticated owner and trusted Origin for settings and validates the OpenAPI query",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses authenticated owner and trusted Origin for settings and validates the OpenAPI query",
+      "sourceSha256": "d368fb5740e79f6b534b240008974106a48b2991f017944a6bd7fc82f7808d40"
     },
     {
       "id": "T20",
@@ -164,7 +202,9 @@
       "line": 79,
       "title": "uses the first valid minute after a spring gap and one occurrence during fall back",
       "fullName": "report schedules uses the first valid minute after a spring gap and one occurrence during fall back",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses the first valid minute after a spring gap and one occurrence during fall back",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T21",
@@ -172,7 +212,9 @@
       "line": 87,
       "title": "schedules strictly after saving, without replaying past slots",
       "fullName": "report schedules schedules strictly after saving, without replaying past slots",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "schedules strictly after saving, without replaying past slots",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T22",
@@ -180,7 +222,9 @@
       "line": 96,
       "title": "sends one report with reminders disabled and handles parallel Cron ticks",
       "fullName": "progress reports with D1 and fake transport sends one report with reminders disabled and handles parallel Cron ticks",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "sends one report with reminders disabled and handles parallel Cron ticks",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T23",
@@ -188,7 +232,9 @@
       "line": 112,
       "title": "does not resend a delivered slot after editing its time",
       "fullName": "progress reports with D1 and fake transport does not resend a delivered slot after editing its time",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not resend a delivered slot after editing its time",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T24",
@@ -196,7 +242,9 @@
       "line": 120,
       "title": "retains a snapshot during a confirmed retry, even if facts change",
       "fullName": "progress reports with D1 and fake transport retains a snapshot during a confirmed retry, even if facts change",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "retains a snapshot during a confirmed retry, even if facts change",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T25",
@@ -204,7 +252,9 @@
       "line": 143,
       "title": "rebuilds an unsent snapshot when the shared start date changes",
       "fullName": "progress reports with D1 and fake transport rebuilds an unsent snapshot when the shared start date changes",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "rebuilds an unsent snapshot when the shared start date changes",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T26",
@@ -212,7 +262,9 @@
       "line": 152,
       "title": "does not retry an unknown delivery result",
       "fullName": "progress reports with D1 and fake transport does not retry an unknown delivery result",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not retry an unknown delivery result",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T27",
@@ -220,7 +272,9 @@
       "line": 160,
       "title": "skips slots older than 24 hours",
       "fullName": "progress reports with D1 and fake transport skips slots older than 24 hours",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "skips slots older than 24 hours",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T28",
@@ -228,7 +282,9 @@
       "line": 166,
       "title": "retains Sunday's original period when quiet hours delay delivery until Monday",
       "fullName": "progress reports with D1 and fake transport retains Sunday's original period when quiet hours delay delivery until Monday",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "retains Sunday's original period when quiet hours delay delivery until Monday",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T29",
@@ -236,7 +292,9 @@
       "line": 195,
       "title": "rejects a stale claim if selection changes after snapshot formation",
       "fullName": "progress reports with D1 and fake transport rejects a stale claim if selection changes after snapshot formation",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "rejects a stale claim if selection changes after snapshot formation",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T30",
@@ -244,7 +302,9 @@
       "line": 222,
       "title": "rebuilds a pending snapshot when a selected goal is deleted",
       "fullName": "progress reports with D1 and fake transport rebuilds a pending snapshot when a selected goal is deleted",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "rebuilds a pending snapshot when a selected goal is deleted",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T31",
@@ -252,7 +312,9 @@
       "line": 231,
       "title": "fits long reports into one message by omitting only whole goal blocks",
       "fullName": "progress reports with D1 and fake transport fits long reports into one message by omitting only whole goal blocks",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "fits long reports into one message by omitting only whole goal blocks",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T32",
@@ -260,7 +322,9 @@
       "line": 258,
       "title": "saves disabled drafts without Telegram and rejects enabling or an empty enabled selection",
       "fullName": "progress reports with D1 and fake transport saves disabled drafts without Telegram and rejects enabling or an empty enabled selection",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "saves disabled drafts without Telegram and rejects enabling or an empty enabled selection",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T33",
@@ -268,7 +332,9 @@
       "line": 264,
       "title": "pauses on deleted selected goals, restores their selection and never sends before a future start",
       "fullName": "progress reports with D1 and fake transport pauses on deleted selected goals, restores their selection and never sends before a future start",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "pauses on deleted selected goals, restores their selection and never sends before a future start",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T34",
@@ -276,7 +342,9 @@
       "line": 279,
       "title": "keeps preview read-only and applies only selected goals",
       "fullName": "progress reports with D1 and fake transport keeps preview read-only and applies only selected goals",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps preview read-only and applies only selected goals",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T35",
@@ -284,39 +352,49 @@
       "line": 311,
       "title": "inherits report selection on rollover, including explicit exclusions",
       "fullName": "progress reports with D1 and fake transport inherits report selection on rollover, including explicit exclusions",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "inherits report selection on rollover, including explicit exclusions",
+      "sourceSha256": "4a6805fb30360f9ff8871dff6a440ec4ec6f983c2043e445a683d347a4291a32"
     },
     {
       "id": "T36",
       "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
-      "line": 119,
+      "line": 122,
       "title": "switches calendar periods through API parameters and exposes fact editing links",
       "fullName": "progress screen switches calendar periods through API parameters and exposes fact editing links",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "switches calendar periods through API parameters and exposes fact editing links",
+      "sourceSha256": "e4375880e66c62bd5a43f13cfb18a7abdd9bd9e4541eceb073e04de50963b5fa"
     },
     {
       "id": "T37",
       "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
-      "line": 142,
+      "line": 145,
       "title": "explains future start without showing zero percentages or statistics",
       "fullName": "progress screen explains future start without showing zero percentages or statistics",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "explains future start without showing zero percentages or statistics",
+      "sourceSha256": "e4375880e66c62bd5a43f13cfb18a7abdd9bd9e4541eceb073e04de50963b5fa"
     },
     {
       "id": "T38",
       "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
-      "line": 149,
+      "line": 152,
       "title": "retries an error without leaving a loading skeleton",
       "fullName": "progress screen retries an error without leaving a loading skeleton",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "retries an error without leaving a loading skeleton",
+      "sourceSha256": "e4375880e66c62bd5a43f13cfb18a7abdd9bd9e4541eceb073e04de50963b5fa"
     },
     {
       "id": "T39",
       "path": "frontend/src/widgets/progress/ui/progress-view.test.tsx",
-      "line": 157,
+      "line": 160,
       "title": "applies a view filter only after confirmation and discards cancelled selection",
       "fullName": "progress screen applies a view filter only after confirmation and discards cancelled selection",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "applies a view filter only after confirmation and discards cancelled selection",
+      "sourceSha256": "e4375880e66c62bd5a43f13cfb18a7abdd9bd9e4541eceb073e04de50963b5fa"
     },
     {
       "id": "T40",
@@ -324,7 +402,9 @@
       "line": 23,
       "title": "keeps the draft on failure, retries explicitly and closes only after saving",
       "fullName": "shared progress start date keeps the draft on failure, retries explicitly and closes only after saving",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps the draft on failure, retries explicitly and closes only after saving",
+      "sourceSha256": "d53913dfb7c00a78186b7ba739912f9fa3ffec8097a263f0b52cd42fdabdbd86"
     },
     {
       "id": "T41",
@@ -332,31 +412,39 @@
       "line": 41,
       "title": "cancels without writing and saves clearing as null",
       "fullName": "shared progress start date cancels without writing and saves clearing as null",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "cancels without writing and saves clearing as null",
+      "sourceSha256": "d53913dfb7c00a78186b7ba739912f9fa3ffec8097a263f0b52cd42fdabdbd86"
     },
     {
       "id": "T42",
       "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
-      "line": 60,
+      "line": 63,
       "title": "requires a selected goal for enabling and preserves explicit exclusions when saving",
       "fullName": "progress report settings requires a selected goal for enabling and preserves explicit exclusions when saving",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "requires a selected goal for enabling and preserves explicit exclusions when saving",
+      "sourceSha256": "1b1f4280e2cb7c07add7a921abe59ac6525953e363ddd666a466afc5320e8c9b"
     },
     {
       "id": "T43",
       "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
-      "line": 81,
+      "line": 84,
       "title": "previews unsaved choices without saving and clears stale preview after a draft change",
       "fullName": "progress report settings previews unsaved choices without saving and clears stale preview after a draft change",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "previews unsaved choices without saving and clears stale preview after a draft change",
+      "sourceSha256": "1b1f4280e2cb7c07add7a921abe59ac6525953e363ddd666a466afc5320e8c9b"
     },
     {
       "id": "T44",
       "path": "frontend/src/features/reminders/ui/progress-report-settings.test.tsx",
-      "line": 127,
+      "line": 130,
       "title": "keeps a failed save's draft and allows disabling after the chat disconnects",
       "fullName": "progress report settings keeps a failed save's draft and allows disabling after the chat disconnects",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps a failed save's draft and allows disabling after the chat disconnects",
+      "sourceSha256": "1b1f4280e2cb7c07add7a921abe59ac6525953e363ddd666a466afc5320e8c9b"
     },
     {
       "id": "T45",
@@ -364,7 +452,9 @@
       "line": 48,
       "title": "uses the supplied timezone and rejects nonexistent dates before persistence (0)",
       "fullName": "planning domain uses the supplied timezone and rejects nonexistent dates before persistence (0)",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses the supplied timezone and rejects nonexistent dates before persistence (%#)",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T46",
@@ -372,7 +462,9 @@
       "line": 48,
       "title": "uses the supplied timezone and rejects nonexistent dates before persistence (1)",
       "fullName": "planning domain uses the supplied timezone and rejects nonexistent dates before persistence (1)",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses the supplied timezone and rejects nonexistent dates before persistence (%#)",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T47",
@@ -380,7 +472,9 @@
       "line": 60,
       "title": "normalizes a goal and bounds monthly cadence by the actual month",
       "fullName": "planning domain normalizes a goal and bounds monthly cadence by the actual month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "normalizes a goal and bounds monthly cadence by the actual month",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T48",
@@ -388,7 +482,9 @@
       "line": 74,
       "title": "preserves tracking type and does not mutate the goal while validating a patch",
       "fullName": "planning domain preserves tracking type and does not mutate the goal while validating a patch",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "preserves tracking type and does not mutate the goal while validating a patch",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T49",
@@ -396,7 +492,9 @@
       "line": 99,
       "title": "postpones scheduled delivery at night, while an explicit question bypasses quiet hours and pause",
       "fullName": "reminder domain postpones scheduled delivery at night, while an explicit question bypasses quiet hours and pause",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "postpones scheduled delivery at night, while an explicit question bypasses quiet hours and pause",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T50",
@@ -404,7 +502,9 @@
       "line": 120,
       "title": "allows correction of an existing entry, but never asks about another month",
       "fullName": "reminder domain allows correction of an existing entry, but never asks about another month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "allows correction of an existing entry, but never asks about another month",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T51",
@@ -412,7 +512,9 @@
       "line": 128,
       "title": "limits retries, respects a provider delay and never retries an ambiguous delivery",
       "fullName": "reminder domain limits retries, respects a provider delay and never retries an ambiguous delivery",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "limits retries, respects a provider delay and never retries an ambiguous delivery",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T52",
@@ -420,7 +522,9 @@
       "line": 143,
       "title": "keeps the seven-day answer window separate from the one-day delivery window",
       "fullName": "reminder domain keeps the seven-day answer window separate from the one-day delivery window",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps the seven-day answer window separate from the one-day delivery window",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T53",
@@ -428,7 +532,9 @@
       "line": 156,
       "title": "distinguishes clearing a body from an empty patch and leaves its input unchanged",
       "fullName": "notes domain distinguishes clearing a body from an empty patch and leaves its input unchanged",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "distinguishes clearing a body from an empty patch and leaves its input unchanged",
+      "sourceSha256": "0bfd77d48d4afd8e9c72955264e0b450a81cacf880db07be49490867d80c8070"
     },
     {
       "id": "T54",
@@ -436,7 +542,9 @@
       "line": 56,
       "title": "preserves definitions, group order and old facts; starts the new month with fresh IDs and no facts",
       "fullName": "month rollover in D1 preserves definitions, group order and old facts; starts the new month with fresh IDs and no facts",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "preserves definitions, group order and old facts; starts the new month with fresh IDs and no facts",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T55",
@@ -444,7 +552,9 @@
       "line": 115,
       "title": "preserves visible order even when old goals have tied sort positions",
       "fullName": "month rollover in D1 preserves visible order even when old goals have tied sort positions",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "preserves visible order even when old goals have tied sort positions",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T56",
@@ -452,7 +562,9 @@
       "line": 128,
       "title": "seals the destination exactly once under concurrent requests and never resurrects deleted copies",
       "fullName": "month rollover in D1 seals the destination exactly once under concurrent requests and never resurrects deleted copies",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "seals the destination exactly once under concurrent requests and never resurrects deleted copies",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T57",
@@ -460,7 +572,9 @@
       "line": 149,
       "title": "preserves a manually planned destination even when all its goals are in trash",
       "fullName": "month rollover in D1 preserves a manually planned destination even when all its goals are in trash",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "preserves a manually planned destination even when all its goals are in trash",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T58",
@@ -468,7 +582,9 @@
       "line": 163,
       "title": "clamps monthly occurrences in 2027-02",
       "fullName": "month rollover in D1 clamps monthly occurrences in 2027-02",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "clamps monthly occurrences in %s",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T59",
@@ -476,7 +592,9 @@
       "line": 163,
       "title": "clamps monthly occurrences in 2028-02",
       "fullName": "month rollover in D1 clamps monthly occurrences in 2028-02",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "clamps monthly occurrences in %s",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T60",
@@ -484,7 +602,9 @@
       "line": 163,
       "title": "clamps monthly occurrences in 2026-04",
       "fullName": "month rollover in D1 clamps monthly occurrences in 2026-04",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "clamps monthly occurrences in %s",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T61",
@@ -492,7 +612,9 @@
       "line": 174,
       "title": "catches up from the latest known month without manufacturing skipped history, including December to January",
       "fullName": "month rollover in D1 catches up from the latest known month without manufacturing skipped history, including December to January",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "catches up from the latest known month without manufacturing skipped history, including December to January",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T62",
@@ -500,7 +622,9 @@
       "line": 184,
       "title": "does not fall back to older goals after an empty or completely deleted latest month",
       "fullName": "month rollover in D1 does not fall back to older goals after an empty or completely deleted latest month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not fall back to older goals after an empty or completely deleted latest month",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T63",
@@ -508,7 +632,9 @@
       "line": 194,
       "title": "rechecks source definitions, order, deletion and the latest source month before committing",
       "fullName": "month rollover in D1 rechecks source definitions, order, deletion and the latest source month before committing",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "rechecks source definitions, order, deletion and the latest source month before committing",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T64",
@@ -516,7 +642,9 @@
       "line": 224,
       "title": "rolls back the receipt if a goal insert fails, then allows a successful retry",
       "fullName": "month rollover in D1 rolls back the receipt if a goal insert fails, then allows a successful retry",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "rolls back the receipt if a goal insert fails, then allows a successful retry",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T65",
@@ -524,7 +652,9 @@
       "line": 251,
       "title": "uses each owner's timezone at the actual month boundary",
       "fullName": "month rollover in D1 uses each owner's timezone at the actual month boundary",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses each owner's timezone at the actual month boundary",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T66",
@@ -532,7 +662,9 @@
       "line": 274,
       "title": "inherits scheduled and does not overwrite edits or reset the new schedule on repeat",
       "fullName": "reminder inheritance and scheduled rollover inherits scheduled and does not overwrite edits or reset the new schedule on repeat",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "inherits %s and does not overwrite edits or reset the new schedule on repeat",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T67",
@@ -540,7 +672,9 @@
       "line": 274,
       "title": "inherits off and does not overwrite edits or reset the new schedule on repeat",
       "fullName": "reminder inheritance and scheduled rollover inherits off and does not overwrite edits or reset the new schedule on repeat",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "inherits %s and does not overwrite edits or reset the new schedule on repeat",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T68",
@@ -548,7 +682,9 @@
       "line": 274,
       "title": "inherits evening and does not overwrite edits or reset the new schedule on repeat",
       "fullName": "reminder inheritance and scheduled rollover inherits evening and does not overwrite edits or reset the new schedule on repeat",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "inherits %s and does not overwrite edits or reset the new schedule on repeat",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T69",
@@ -556,7 +692,9 @@
       "line": 301,
       "title": "repairs incomplete reminder inheritance, even after a second month transition",
       "fullName": "reminder inheritance and scheduled rollover repairs incomplete reminder inheritance, even after a second month transition",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "repairs incomplete reminder inheritance, even after a second month transition",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T70",
@@ -564,7 +702,9 @@
       "line": 313,
       "title": "initializes through Cron without a browser and sends only new-month goals exactly once",
       "fullName": "reminder inheritance and scheduled rollover initializes through Cron without a browser and sends only new-month goals exactly once",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "initializes through Cron without a browser and sends only new-month goals exactly once",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T71",
@@ -572,7 +712,9 @@
       "line": 348,
       "title": "materializes only the owner's current month; future and historical reads stay read-only",
       "fullName": "authenticated plan reads materializes only the owner's current month; future and historical reads stay read-only",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "materializes only the owner's current month; future and historical reads stay read-only",
+      "sourceSha256": "5f476b37508365b33dad029a2d9483713dce4fea48ed2d71d51196dda71e502b"
     },
     {
       "id": "T72",
@@ -580,7 +722,9 @@
       "line": 100,
       "title": "handles quiet hours across midnight and disabled quiet hours",
       "fullName": "reminder schedules handles quiet hours across midnight and disabled quiet hours",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "handles quiet hours across midnight and disabled quiet hours",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T73",
@@ -588,7 +732,9 @@
       "line": 109,
       "title": "uses local weekdays and handles both DST transitions once",
       "fullName": "reminder schedules uses local weekdays and handles both DST transitions once",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "uses local weekdays and handles both DST transitions once",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T74",
@@ -596,7 +742,9 @@
       "line": 123,
       "title": "handles help and stop commands before interpreting a reply to a question",
       "fullName": "Telegram reminders with D1 handles help and stop commands before interpreting a reply to a question",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "handles help and stop commands before interpreting a reply to a question",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T75",
@@ -604,7 +752,9 @@
       "line": 149,
       "title": "keeps settings readable and scheduled work untouched when the bot is unavailable",
       "fullName": "Telegram reminders with D1 keeps settings readable and scheduled work untouched when the bot is unavailable",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "keeps settings readable and scheduled work untouched when the bot is unavailable",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T76",
@@ -612,7 +762,9 @@
       "line": 167,
       "title": "replaces an unsent scheduled job when rescheduled on the same day, but retains sent events",
       "fullName": "Telegram reminders with D1 replaces an unsent scheduled job when rescheduled on the same day, but retains sent events",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "replaces an unsent %s job when rescheduled on the same day, but retains sent events",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T77",
@@ -620,7 +772,9 @@
       "line": 167,
       "title": "replaces an unsent evening job when rescheduled on the same day, but retains sent events",
       "fullName": "Telegram reminders with D1 replaces an unsent evening job when rescheduled on the same day, but retains sent events",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "replaces an unsent %s job when rescheduled on the same day, but retains sent events",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T78",
@@ -628,7 +782,9 @@
       "line": 230,
       "title": "does not enqueue a stale question when time change during a tick",
       "fullName": "Telegram reminders with D1 does not enqueue a stale question when time change during a tick",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale question when %s change during a tick",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T79",
@@ -636,7 +792,9 @@
       "line": 230,
       "title": "does not enqueue a stale question when weekdays change during a tick",
       "fullName": "Telegram reminders with D1 does not enqueue a stale question when weekdays change during a tick",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale question when %s change during a tick",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T80",
@@ -644,7 +802,9 @@
       "line": 230,
       "title": "does not enqueue a stale question when mode change during a tick",
       "fullName": "Telegram reminders with D1 does not enqueue a stale question when mode change during a tick",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale question when %s change during a tick",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T81",
@@ -652,7 +812,9 @@
       "line": 230,
       "title": "does not enqueue a stale question when quiet hours change during a tick",
       "fullName": "Telegram reminders with D1 does not enqueue a stale question when quiet hours change during a tick",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale question when %s change during a tick",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T82",
@@ -660,7 +822,9 @@
       "line": 273,
       "title": "does not enqueue a stale digest when evening time change",
       "fullName": "Telegram reminders with D1 does not enqueue a stale digest when evening time change",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale digest when evening %s change",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T83",
@@ -668,7 +832,9 @@
       "line": 273,
       "title": "does not enqueue a stale digest when evening quiet hours change",
       "fullName": "Telegram reminders with D1 does not enqueue a stale digest when evening quiet hours change",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not enqueue a stale digest when evening %s change",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T84",
@@ -676,7 +842,9 @@
       "line": 308,
       "title": "records {\"type\":\"check\"} answers for the question date, even tomorrow",
       "fullName": "Telegram reminders with D1 records {\"type\":\"check\"} answers for the question date, even tomorrow",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "records %j answers for the question date, even tomorrow",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T85",
@@ -684,7 +852,9 @@
       "line": 308,
       "title": "records {\"type\":\"quantity\",\"targetValue\":10,\"comparison\":\"atLeast\"} answers for the question date, even tomorrow",
       "fullName": "Telegram reminders with D1 records {\"type\":\"quantity\",\"targetValue\":10,\"comparison\":\"atLeast\"} answers for the question date, even tomorrow",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "records %j answers for the question date, even tomorrow",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T86",
@@ -692,7 +862,9 @@
       "line": 308,
       "title": "records {\"type\":\"scale\",\"min\":1,\"max\":5} answers for the question date, even tomorrow",
       "fullName": "Telegram reminders with D1 records {\"type\":\"scale\",\"min\":1,\"max\":5} answers for the question date, even tomorrow",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "records %j answers for the question date, even tomorrow",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T87",
@@ -700,7 +872,9 @@
       "line": 308,
       "title": "records {\"type\":\"time\"} answers for the question date, even tomorrow",
       "fullName": "Telegram reminders with D1 records {\"type\":\"time\"} answers for the question date, even tomorrow",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "records %j answers for the question date, even tomorrow",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T88",
@@ -708,7 +882,9 @@
       "line": 320,
       "title": "does not ask for existing false values or deleted goals",
       "fullName": "Telegram reminders with D1 does not ask for existing false values or deleted goals",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not ask for existing false values or deleted goals",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T89",
@@ -716,7 +892,9 @@
       "line": 335,
       "title": "does not overwrite the website and requires a fresh correction after a conflict",
       "fullName": "Telegram reminders with D1 does not overwrite the website and requires a fresh correction after a conflict",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not overwrite the website and requires a fresh correction after a conflict",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T90",
@@ -724,7 +902,9 @@
       "line": 366,
       "title": "atomically accepts only one concurrent answer and never reapplies a processed command",
       "fullName": "Telegram reminders with D1 atomically accepts only one concurrent answer and never reapplies a processed command",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "atomically accepts only one concurrent answer and never reapplies a processed command",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T91",
@@ -732,7 +912,9 @@
       "line": 392,
       "title": "does not duplicate scheduled sends or snoozes on repeated updates",
       "fullName": "Telegram reminders with D1 does not duplicate scheduled sends or snoozes on repeated updates",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "does not duplicate scheduled sends or snoozes on repeated updates",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T92",
@@ -740,7 +922,9 @@
       "line": 408,
       "title": "sends one evening digest, preserves button identities and updates it after answers",
       "fullName": "Telegram reminders with D1 sends one evening digest, preserves button identities and updates it after answers",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "sends one evening digest, preserves button identities and updates it after answers",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T93",
@@ -748,7 +932,9 @@
       "line": 439,
       "title": "validates the current scale after its range changes while a question is open",
       "fullName": "Telegram reminders with D1 validates the current scale after its range changes while a question is open",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "validates the current scale after its range changes while a question is open",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T94",
@@ -756,7 +942,9 @@
       "line": 454,
       "title": "retries 429, pauses blocked chats, and does not retry ambiguous sends",
       "fullName": "Telegram reminders with D1 retries 429, pauses blocked chats, and does not retry ambiguous sends",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "retries 429, pauses blocked chats, and does not retry ambiguous sends",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T95",
@@ -764,7 +952,9 @@
       "line": 480,
       "title": "expires the permanent delivery warning after 24 hours without erasing or retrying the job",
       "fullName": "Telegram reminders with D1 expires the permanent delivery warning after 24 hours without erasing or retrying the job",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "expires the %s delivery warning after 24 hours without erasing or retrying the job",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T96",
@@ -772,7 +962,9 @@
       "line": 480,
       "title": "expires the unknown delivery warning after 24 hours without erasing or retrying the job",
       "fullName": "Telegram reminders with D1 expires the unknown delivery warning after 24 hours without erasing or retrying the job",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "expires the %s delivery warning after 24 hours without erasing or retrying the job",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T97",
@@ -780,7 +972,9 @@
       "line": 512,
       "title": "ignores other senders, arbitrary text, and questions after disconnect",
       "fullName": "Telegram reminders with D1 ignores other senders, arbitrary text, and questions after disconnect",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "ignores other senders, arbitrary text, and questions after disconnect",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T98",
@@ -788,7 +982,9 @@
       "line": 531,
       "title": "requires confirmation of an expiring, one-use connection token",
       "fullName": "Telegram reminders with D1 requires confirmation of an expiring, one-use connection token",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "requires confirmation of an expiring, one-use connection token",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T99",
@@ -796,7 +992,9 @@
       "line": 558,
       "title": "enforces owner and Origin, and uses the saved timezone for planning dates",
       "fullName": "reminder HTTP contracts enforces owner and Origin, and uses the saved timezone for planning dates",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "enforces owner and Origin, and uses the saved timezone for planning dates",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T100",
@@ -804,7 +1002,9 @@
       "line": 631,
       "title": "runs the Worker cron and accepts a real-shaped Telegram webhook through grammY",
       "fullName": "reminder runtime integration runs the Worker cron and accepts a real-shaped Telegram webhook through grammY",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "runs the Worker cron and accepts a real-shaped Telegram webhook through grammY",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T101",
@@ -812,7 +1012,9 @@
       "line": 705,
       "title": "postpones quiet-hour sends with the original date and skips goals from another month",
       "fullName": "reminder runtime integration postpones quiet-hour sends with the original date and skips goals from another month",
-      "status": "passed"
+      "status": "passed",
+      "sourceTitle": "postpones quiet-hour sends with the original date and skips goals from another month",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
     },
     {
       "id": "T102",
@@ -820,6 +1022,38 @@
       "line": 744,
       "title": "recovers a crashed delivery as unknown and cancels pending work when disabled",
       "fullName": "reminder runtime integration recovers a crashed delivery as unknown and cancels pending work when disabled",
+      "status": "passed",
+      "sourceTitle": "recovers a crashed delivery as unknown and cancels pending work when disabled",
+      "sourceSha256": "4ad884aa842d60fe71a810fff9ef674ca6f27dafd81a22f5e02d84211b3a4958"
+    },
+    {
+      "id": "T103",
+      "path": "frontend/src/widgets/progress/model/time-axis.test.ts",
+      "line": 5,
+      "title": "places 23:50 and 00:10 twenty minutes apart without an average or success criterion",
+      "fullName": "clock chart coordinates places 23:50 and 00:10 twenty minutes apart without an average or success criterion",
+      "sourceTitle": "places 23:50 and 00:10 twenty minutes apart without an average or success criterion",
+      "sourceSha256": "45206fdc6fbdd3ddf02f47bd0b20ec40746a84490eef792078c8cd4018e58ab5",
+      "status": "passed"
+    },
+    {
+      "id": "T104",
+      "path": "frontend/src/widgets/progress/model/time-axis.test.ts",
+      "line": 11,
+      "title": "keeps a midnight-crossing interval continuous and clips target bands to the visible clock",
+      "fullName": "clock chart coordinates keeps a midnight-crossing interval continuous and clips target bands to the visible clock",
+      "sourceTitle": "keeps a midnight-crossing interval continuous and clips target bands to the visible clock",
+      "sourceSha256": "45206fdc6fbdd3ddf02f47bd0b20ec40746a84490eef792078c8cd4018e58ab5",
+      "status": "passed"
+    },
+    {
+      "id": "T105",
+      "path": "frontend/src/widgets/progress/model/time-axis.test.ts",
+      "line": 19,
+      "title": "preserves the meaning of a one-sided limit on both sides of midnight",
+      "fullName": "clock chart coordinates preserves the meaning of a one-sided limit on both sides of midnight",
+      "sourceTitle": "preserves the meaning of a one-sided limit on both sides of midnight",
+      "sourceSha256": "45206fdc6fbdd3ddf02f47bd0b20ec40746a84490eef792078c8cd4018e58ab5",
       "status": "passed"
     }
   ]

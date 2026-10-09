@@ -1,0 +1,6781 @@
+{
+  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
+  "date": "2026-10-08",
+  "specVersion": "1.0",
+  "scope": "Requirements traceability; local evidence, static inspection and explicit remaining work. Application code is unchanged.",
+  "statusCounts": {
+    "partial": 63,
+    "verified": 130,
+    "unverified": 10,
+    "failed": 12,
+    "decision": 1
+  },
+  "acceptanceCounts": {
+    "partial": 9,
+    "verified": 9
+  },
+  "codeReferences": {
+    "C01": {
+      "path": "backend/src/modules/progress/domain/calculate.ts",
+      "line": 19
+    },
+    "C02": {
+      "path": "backend/src/modules/progress/domain/calendar.ts",
+      "line": 4
+    },
+    "C03": {
+      "path": "backend/src/modules/progress/application/progress.ts",
+      "line": 25
+    },
+    "C04": {
+      "path": "backend/src/modules/progress/infrastructure/d1-progress-repository.ts",
+      "line": 3
+    },
+    "C05": {
+      "path": "backend/src/modules/progress/presentation/http.ts",
+      "line": 37
+    },
+    "C06": {
+      "path": "backend/src/modules/planning/domain/rules.ts",
+      "line": 28
+    },
+    "C07": {
+      "path": "backend/src/modules/planning/infrastructure/d1-planning-repository.ts",
+      "line": 102
+    },
+    "C08": {
+      "path": "backend/src/modules/reminders/application/reports/progress-reports.ts",
+      "line": 37
+    },
+    "C09": {
+      "path": "backend/src/modules/reminders/application/reports/report-message.ts",
+      "line": 55
+    },
+    "C10": {
+      "path": "backend/src/modules/reminders/infrastructure/d1-progress-report-repository.ts",
+      "line": 23
+    },
+    "C11": {
+      "path": "backend/src/modules/reminders/domain/progress-reports.ts",
+      "line": 21
+    },
+    "C12": {
+      "path": "backend/src/modules/reminders/domain/schedule.ts",
+      "line": 10
+    },
+    "C13": {
+      "path": "backend/src/modules/reminders/application/scheduling/run-reminders.use-case.ts",
+      "line": 9
+    },
+    "C14": {
+      "path": "backend/src/modules/reminders/application/scheduling/prepare-current-plan.use-case.ts",
+      "line": 6
+    },
+    "C15": {
+      "path": "backend/src/modules/reminders/presentation/progress-reports-http.ts",
+      "line": 87
+    },
+    "C16": {
+      "path": "frontend/src/widgets/progress/ui/progress-view.tsx",
+      "line": 60
+    },
+    "C17": {
+      "path": "frontend/src/widgets/progress/ui/progress-calendar.tsx",
+      "line": 6
+    },
+    "C18": {
+      "path": "frontend/src/widgets/progress/ui/goal-detail.tsx",
+      "line": 11
+    },
+    "C19": {
+      "path": "frontend/src/widgets/progress/ui/goal-chart.tsx",
+      "line": 9
+    },
+    "C20": {
+      "path": "frontend/src/widgets/progress/ui/progress-meter.tsx",
+      "line": 5
+    },
+    "C21": {
+      "path": "frontend/src/widgets/progress/ui/goal-filter.tsx",
+      "line": 7
+    },
+    "C22": {
+      "path": "frontend/src/widgets/progress/ui/goal-rule-editor.tsx",
+      "line": 7
+    },
+    "C23": {
+      "path": "frontend/src/features/progress-settings/ui/progress-start-date.tsx",
+      "line": 9
+    },
+    "C24": {
+      "path": "frontend/src/features/reminders/ui/progress-report-settings.tsx",
+      "line": 18
+    },
+    "C25": {
+      "path": "frontend/src/features/reminders/ui/reminder-settings.tsx",
+      "line": 12
+    },
+    "C26": {
+      "path": "frontend/src/widgets/planner-overview/ui/plan-grid.tsx",
+      "line": 42
+    },
+    "C27": {
+      "path": "frontend/src/widgets/planner-overview/ui/plan-tempo.tsx",
+      "line": 4
+    },
+    "C28": {
+      "path": "backend/migrations/0007_lean_stardust.sql",
+      "line": 1
+    },
+    "C29": {
+      "path": "backend/src/app/create-app.ts",
+      "line": 55
+    },
+    "C30": {
+      "path": "backend/wrangler.jsonc",
+      "line": 1
+    },
+    "C31": {
+      "path": "frontend/src/app/styles/index.css",
+      "line": 1
+    },
+    "C32": {
+      "path": "frontend/src/app/router/routes.tsx",
+      "line": 1
+    },
+    "C33": {
+      "path": "frontend/src/widgets/planner-shell/ui/planner-sidebar.tsx",
+      "line": 58
+    },
+    "C34": {
+      "path": "frontend/src/widgets/planner-overview/ui/plan-header.tsx",
+      "line": 7
+    },
+    "C35": {
+      "path": "backend/src/modules/planning/application/plans/ensure-current-plan.use-case.ts",
+      "line": 5
+    },
+    "C36": {
+      "path": "frontend/src/features/reminders/ui/general-settings.tsx",
+      "line": 11
+    },
+    "C37": {
+      "path": "backend/src/modules/reminders/infrastructure/d1-reminder-repository.ts",
+      "line": 53
+    },
+    "C38": {
+      "path": "backend/src/modules/telegram-bot/infrastructure/reminder-transport.ts",
+      "line": 16
+    },
+    "C39": {
+      "path": "backend/src/modules/reminders/domain/jobs.ts",
+      "line": 7
+    },
+    "C40": {
+      "path": "backend/src/modules/progress/public-contracts.ts",
+      "line": 1
+    },
+    "C41": {
+      "path": "backend/src/index.ts",
+      "line": 1
+    },
+    "C42": {
+      "path": "backend/src/modules/reminders/application/answers/handle-reminder-reply.use-case.ts",
+      "line": 11
+    },
+    "C43": {
+      "path": ".github/workflows/check.yml",
+      "line": 1
+    }
+  },
+  "requirements": [
+    {
+      "id": "R1.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 20
+      },
+      "requirement": "Понятный красивый экран статистики с графиками.",
+      "implementation": "C16/C18/C19 базовый UI.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C19"
+      ],
+      "verification": "Трассировка §5 и M14–M27; сохранённые PNG браузера.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F03/F04/F05/F06/F07/F11/F15/F16 и V10.",
+      "remainingRefs": [
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F11",
+        "F15",
+        "F16",
+        "V10"
+      ]
+    },
+    {
+      "id": "R1.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 21
+      },
+      "requirement": "Промежуточный отчёт понедельник–среда.",
+      "implementation": "C08/C09/C11.",
+      "codeRefs": [
+        "C08",
+        "C09",
+        "C11"
+      ],
+      "verification": "T22; R7.1.01–R7.1.04. Реальная доставка отдельно.",
+      "testRefs": [
+        "T22"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V13: настоящий Telegram smoke.",
+      "remainingRefs": [
+        "V13"
+      ]
+    },
+    {
+      "id": "R1.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 22
+      },
+      "requirement": "Итоговый отчёт понедельник–воскресенье.",
+      "implementation": "C08/C09/C11.",
+      "codeRefs": [
+        "C08",
+        "C09",
+        "C11"
+      ],
+      "verification": "T28; R7.2.02–R7.2.03. Реальная доставка отдельно.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F13: пояснение переноса; V13: настоящий Telegram smoke.",
+      "remainingRefs": [
+        "F13",
+        "V13"
+      ]
+    },
+    {
+      "id": "R1.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 23
+      },
+      "requirement": "Пользователь выбирает цели сводки.",
+      "implementation": "C24 UI; C08 selection.",
+      "codeRefs": [
+        "C24",
+        "C08"
+      ],
+      "verification": "T32/T34/T42, B03/B04.",
+      "testRefs": [
+        "T32",
+        "T34",
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B03",
+        "B04"
+      ],
+      "status": "partial",
+      "remaining": "F01: массовый выбор при поиске; V06: точный сценарий 2 из 5.",
+      "remainingRefs": [
+        "F01",
+        "V06"
+      ]
+    },
+    {
+      "id": "R1.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 24
+      },
+      "requirement": "Одна дата действует на всю статистику и сводки.",
+      "implementation": "C04/C08/C23/C24/C26.",
+      "codeRefs": [
+        "C04",
+        "C08",
+        "C23",
+        "C24",
+        "C26"
+      ],
+      "verification": "T01/T25; R3.01–R3.15.",
+      "testRefs": [
+        "T01",
+        "T25"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V01: полный путь пересчёта Темпа; F08: дата UI.",
+      "remainingRefs": [
+        "V01",
+        "F08"
+      ]
+    },
+    {
+      "id": "R1.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 25
+      },
+      "requirement": "Время отправки настраивается; два независимых default 21:00.",
+      "implementation": "C10/C11/C24.",
+      "codeRefs": [
+        "C10",
+        "C11",
+        "C24"
+      ],
+      "verification": "T23/T28/T42; R6.03.",
+      "testRefs": [
+        "T23",
+        "T28",
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R2.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 33
+      },
+      "requirement": "Открыть неделю/месяц: выполнение, заполненность и сопоставимая динамика.",
+      "implementation": "C16/C18/C01.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C01"
+      ],
+      "verification": "T36, P01/P02/P26/P29; B09.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [
+        "P01",
+        "P02",
+        "P26",
+        "P29"
+      ],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F02/F03/F04: динамика и мобильный календарь; V04: полный путь периодов.",
+      "remainingRefs": [
+        "F02",
+        "F03",
+        "F04",
+        "V04"
+      ]
+    },
+    {
+      "id": "R2.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 35
+      },
+      "requirement": "Старт 6 октября исключает 1–5 из %, сумм, средних, серий, сравнения, сохраняя записи в плане.",
+      "implementation": "C01/C04/C23/C26.",
+      "codeRefs": [
+        "C01",
+        "C04",
+        "C23",
+        "C26"
+      ],
+      "verification": "T01/T09/T14; P01/P20/P25/P28.",
+      "testRefs": [
+        "T01",
+        "T09",
+        "T14"
+      ],
+      "calculationRefs": [
+        "P01",
+        "P20",
+        "P25",
+        "P28"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V01/V02: целиком проверить сохранение, Темп и неизменность фактов/заданий.",
+      "remainingRefs": [
+        "V01",
+        "V02"
+      ]
+    },
+    {
+      "id": "R2.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 37
+      },
+      "requirement": "Выбрать цели/времена, посмотреть черновой отчёт, включить рассылку.",
+      "implementation": "C24/C08/C10.",
+      "codeRefs": [
+        "C24",
+        "C08",
+        "C10"
+      ],
+      "verification": "T32/T34/T42/T43; B03–B08.",
+      "testRefs": [
+        "T32",
+        "T34",
+        "T42",
+        "T43"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08"
+      ],
+      "status": "partial",
+      "remaining": "F01/F10/F14; V09: ближайшие даты и доставка; V13: реальная отправка.",
+      "remainingRefs": [
+        "F01",
+        "F10",
+        "F14",
+        "V09",
+        "V13"
+      ]
+    },
+    {
+      "id": "R2.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 39
+      },
+      "requirement": "Получить одну выбранную сводку и открыть подробности.",
+      "implementation": "C08/C09/C38/C32.",
+      "codeRefs": [
+        "C08",
+        "C09",
+        "C38",
+        "C32"
+      ],
+      "verification": "T22/T31, B01; ссылки/formatter локально.",
+      "testRefs": [
+        "T22",
+        "T31"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01"
+      ],
+      "status": "partial",
+      "remaining": "F10/F11/F12/F13; V07: ссылки/auth; V13: доставка.",
+      "remainingRefs": [
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "V07",
+        "V13"
+      ]
+    },
+    {
+      "id": "R2.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 40
+      },
+      "requirement": "В новом месяце сохраняются starts_on/расписание и inherited выбор целей.",
+      "implementation": "C04/C10/C14/C35.",
+      "codeRefs": [
+        "C04",
+        "C10",
+        "C14",
+        "C35"
+      ],
+      "verification": "T35, T54/T70; чтение отдельной owner-настройки.",
+      "testRefs": [
+        "T35",
+        "T54",
+        "T70"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 45
+      },
+      "requirement": "Одна настройка аккаунта доступна в прогрессе и отчётах.",
+      "implementation": "C04 settings/save; C23 ProgressStartDate; C24 ReportForm.",
+      "codeRefs": [
+        "C04",
+        "C23",
+        "C24"
+      ],
+      "verification": "T15, T34; чтение общего owner_id/starts_on.",
+      "testRefs": [
+        "T15",
+        "T34"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 47
+      },
+      "requirement": "Подпись объясняет сохранность ранних фактов и их исключение из статистики.",
+      "implementation": "C23 Dialog.Description; C24 описание поля.",
+      "codeRefs": [
+        "C23",
+        "C24"
+      ],
+      "verification": "Чтение текстов обоих компонентов.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 49
+      },
+      "requirement": "Сохранённая локальная дата YYYY-MM-DD; несуществующая дата отклоняется.",
+      "implementation": "C02 validProgressDate; C03 saveSettings; C04 save.",
+      "codeRefs": [
+        "C02",
+        "C03",
+        "C04"
+      ],
+      "verification": "T15, T19.",
+      "testRefs": [
+        "T15",
+        "T19"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 50
+      },
+      "requirement": "Начальная дата включается в расчёт.",
+      "implementation": "C01 dayData.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T01, P01.",
+      "testRefs": [
+        "T01"
+      ],
+      "calculationRefs": [
+        "P01"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 51
+      },
+      "requirement": "Пустое значение — вся история; миграция не назначает дату старым аккаунтам.",
+      "implementation": "C04 settings; C28 starts_on nullable без default.",
+      "codeRefs": [
+        "C04",
+        "C28"
+      ],
+      "verification": "T15, T41; чтение SQL миграции.",
+      "testRefs": [
+        "T15",
+        "T41"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 53
+      },
+      "requirement": "Перенос вперёд/назад и очистка пересчитывают прогресс, Темп и ещё не отправленные отчёты.",
+      "implementation": "C03 saveSettings; C23 invalidation; C26/C27 серверный Темп; C08 revision/snapshot.",
+      "codeRefs": [
+        "C03",
+        "C23",
+        "C26",
+        "C27",
+        "C08"
+      ],
+      "verification": "P20, T09, T25, T41; связка Темпа проверена только чтением кода.",
+      "testRefs": [
+        "T09",
+        "T25",
+        "T41"
+      ],
+      "calculationRefs": [
+        "P20"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V01: проверить весь путь обеих форм → D1 → Темп → ожидающая сводка.",
+      "remainingRefs": [
+        "V01"
+      ]
+    },
+    {
+      "id": "R3.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 55
+      },
+      "requirement": "Смена даты не меняет факты и не отменяет вопросы о заполнении.",
+      "implementation": "C04 меняет только progress_settings; C08 сравнение ревизий; C13 отдельные задания.",
+      "codeRefs": [
+        "C04",
+        "C08",
+        "C13"
+      ],
+      "verification": "Чтение SQL; P01/P20 проверяют только расчёт, не сохранность заданий в D1.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P01",
+        "P20"
+      ],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V02: тест до/после с сохранёнными фактами, заметками и pending question/digest.",
+      "remainingRefs": [
+        "V02"
+      ]
+    },
+    {
+      "id": "R3.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 56
+      },
+      "requirement": "Выбор для Telegram не скрывает цели в плане и веб-статистике.",
+      "implementation": "C26 запрос без report selection; C03 overview; C08 explicitGoalIds только для сводки.",
+      "codeRefs": [
+        "C26",
+        "C03",
+        "C08"
+      ],
+      "verification": "T34; чтение разных путей запросов; B09 все пять целей доступны.",
+      "testRefs": [
+        "T34"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 57
+      },
+      "requirement": "Исключённые дни не пропуски, не знаменатели; график подписывает Вне периода учёта.",
+      "implementation": "C01 dayData/stats; C18 список; C19 пропускает точки.",
+      "codeRefs": [
+        "C01",
+        "C18",
+        "C19"
+      ],
+      "verification": "T01/P01 подтверждают формулу; чтение SVG и PNG деталей показывают пробелы графика.",
+      "testRefs": [
+        "T01"
+      ],
+      "calculationRefs": [
+        "P01"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F06: состояния должны быть видны на самом графике.",
+      "remainingRefs": [
+        "F06"
+      ]
+    },
+    {
+      "id": "R3.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 59
+      },
+      "requirement": "Будущий старт объяснён без 0%; автоматическая сводка до старта не приходит.",
+      "implementation": "C16 emptyMessage; C08 deliver/preview.",
+      "codeRefs": [
+        "C16",
+        "C08"
+      ],
+      "verification": "T08, T33, T37, P18; browser-results: future-start.",
+      "testRefs": [
+        "T08",
+        "T33",
+        "T37"
+      ],
+      "calculationRefs": [
+        "P18"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 61
+      },
+      "requirement": "Исторический период до старта имеет отдельное состояние без нулевого графика.",
+      "implementation": "C01 state; C16 emptyMessage.",
+      "codeRefs": [
+        "C01",
+        "C16"
+      ],
+      "verification": "T08, P19, B10.",
+      "testRefs": [
+        "T08"
+      ],
+      "calculationRefs": [
+        "P19"
+      ],
+      "browserRefs": [
+        "B10"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 63
+      },
+      "requirement": "Успех сохранения даты явно подтверждается.",
+      "implementation": "C23 onSuccess сразу закрывает диалог.",
+      "codeRefs": [
+        "C23"
+      ],
+      "verification": "T40 подтверждает закрытие; browser-results.dateDialog.explicitSuccessPresent=false.",
+      "testRefs": [
+        "T40"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F08: добавить видимое подтверждение сохранённой даты.",
+      "remainingRefs": [
+        "F08"
+      ]
+    },
+    {
+      "id": "R3.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 63
+      },
+      "requirement": "Ошибка оставляет прежнюю дату и черновик; повтор и отмена без записи.",
+      "implementation": "C23 mutation/onOpenChange.",
+      "codeRefs": [
+        "C23"
+      ],
+      "verification": "T15, T40, T41, B02.",
+      "testRefs": [
+        "T15",
+        "T40",
+        "T41"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B02"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 67
+      },
+      "requirement": "Границы в поясе аккаунта; default Asia/Yekaterinburg.",
+      "implementation": "C29 reminderTimeZone; C03 вход today; C12 localDate; C37 defaultSettings.",
+      "codeRefs": [
+        "C29",
+        "C03",
+        "C12",
+        "C37"
+      ],
+      "verification": "T45/T46, T65, T99; чтение композиции.",
+      "testRefs": [
+        "T45",
+        "T46",
+        "T65",
+        "T99"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R3.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 68
+      },
+      "requirement": "Смена пояса не сдвигает сохранённые факты и starts_on.",
+      "implementation": "C04 гражданская дата; C37 saveSettings меняет настройки расписания.",
+      "codeRefs": [
+        "C04",
+        "C37"
+      ],
+      "verification": "Чтение SQL; T99 проверяет дату нового факта, не неизменность старых.",
+      "testRefs": [
+        "T99"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V03: сменить пояс и проверить прежние даты в D1 и прогрессе.",
+      "remainingRefs": [
+        "V03"
+      ]
+    },
+    {
+      "id": "R4.1.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 74
+      },
+      "requirement": "Неделя понедельник–воскресенье; календарный месяц.",
+      "implementation": "C02 intervalFor.",
+      "codeRefs": [
+        "C02"
+      ],
+      "verification": "T01, T11, T13, P15/P26/P32.",
+      "testRefs": [
+        "T01",
+        "T11",
+        "T13"
+      ],
+      "calculationRefs": [
+        "P15",
+        "P26",
+        "P32"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 75
+      },
+      "requirement": "Предыдущий/следующий период, возврат к текущему.",
+      "implementation": "C16 move/update и кнопка текущего периода.",
+      "codeRefs": [
+        "C16"
+      ],
+      "verification": "T36 проверяет смену периода; стрелки/возврат подтверждены чтением кода.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V04: прогнать стрелки, возврат и восстановление URL вместе.",
+      "remainingRefs": [
+        "V04"
+      ]
+    },
+    {
+      "id": "R4.1.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 75
+      },
+      "requirement": "Будущее исключено; сегодня включено и помечено День ещё идёт.",
+      "implementation": "C01 dayData; C17 подпись выбранного дня.",
+      "codeRefs": [
+        "C01",
+        "C17"
+      ],
+      "verification": "T01, T36, P13; browser-results: overview.",
+      "testRefs": [
+        "T01",
+        "T36"
+      ],
+      "calculationRefs": [
+        "P13"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 78
+      },
+      "requirement": "Пересечение периода, месячной версии, старта и сегодня/даты отчёта.",
+      "implementation": "C01 dayData; C03 диапазон; C08 preview/deliver reportDate.",
+      "codeRefs": [
+        "C01",
+        "C03",
+        "C08"
+      ],
+      "verification": "T01, T11, T28, P01/P32.",
+      "testRefs": [
+        "T01",
+        "T11",
+        "T28"
+      ],
+      "calculationRefs": [
+        "P01",
+        "P32"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 81
+      },
+      "requirement": "createdAt не ограничивает историю месячной цели; нет отдельного старта цели.",
+      "implementation": "C07 progressSources не передаёт createdAt; C01 тип источника.",
+      "codeRefs": [
+        "C07",
+        "C01"
+      ],
+      "verification": "Чтение projection; T01/P01 проверяют пересечение без createdAt.",
+      "testRefs": [
+        "T01"
+      ],
+      "calculationRefs": [
+        "P01"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 89
+      },
+      "requirement": "Выполнено, внесено ниже цели и отсутствие записи — разные состояния.",
+      "implementation": "C01 dayData; C17 и C18 иконки/текст.",
+      "codeRefs": [
+        "C01",
+        "C17",
+        "C18"
+      ],
+      "verification": "T02, P02; browser-supplement.calendar: на телефоне маркеры скрыты.",
+      "testRefs": [
+        "T02"
+      ],
+      "calculationRefs": [
+        "P02"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F03: восстановить результаты мобильного календаря месяца; F06: маркеры графика.",
+      "remainingRefs": [
+        "F03",
+        "F06"
+      ]
+    },
+    {
+      "id": "R4.1.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 93
+      },
+      "requirement": "false и 0 — записи; ноль входит в сумму/среднее, отсутствие не входит.",
+      "implementation": "C01 stats; C06 calculateMet.",
+      "codeRefs": [
+        "C01",
+        "C06"
+      ],
+      "verification": "T02, T03, P02–P06.",
+      "testRefs": [
+        "T02",
+        "T03"
+      ],
+      "calculationRefs": [
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 95
+      },
+      "requirement": "Факт считается по local_date, а не времени внесения на сайте/в боте.",
+      "implementation": "C07 entry.localDate; C06 validateAnswerDate; C37 данные вопросов.",
+      "codeRefs": [
+        "C07",
+        "C06",
+        "C37"
+      ],
+      "verification": "T84–T87, T99; чтение progressSources.",
+      "testRefs": [
+        "T84",
+        "T85",
+        "T86",
+        "T87",
+        "T99"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 96
+      },
+      "requirement": "Заметки не входят в формулы и сводку.",
+      "implementation": "C07 progressSources projection; C09 goalBlock.",
+      "codeRefs": [
+        "C07",
+        "C09"
+      ],
+      "verification": "T22 проверяет отсутствие private note; чтение входа C01.",
+      "testRefs": [
+        "T22"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 98
+      },
+      "requirement": "Дневная заполненность R/D; измеримый прогресс M/D.",
+      "implementation": "C01 stats/targetsFor.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T02, P02/P16.",
+      "testRefs": [
+        "T02"
+      ],
+      "calculationRefs": [
+        "P02",
+        "P16"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.1.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 100
+      },
+      "requirement": "Рядом видны R и D−R; отсутствие не выглядит неудачей.",
+      "implementation": "C16 строка внесено/без записи; C18 список; C17 иконки.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C17"
+      ],
+      "verification": "T36; чтение строк и нейтральных токенов; browser-supplement.calendar.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F03: эти данные скрыты в мобильных ячейках календаря месяца.",
+      "remainingRefs": [
+        "F03"
+      ]
+    },
+    {
+      "id": "R4.1.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 102
+      },
+      "requirement": "D=0 означает Нет периода, процент отсутствует.",
+      "implementation": "C01 percentage/targetsFor; C16 пустые состояния; C18 Нет периода.",
+      "codeRefs": [
+        "C01",
+        "C16",
+        "C18"
+      ],
+      "verification": "T08, P18/P19, B10.",
+      "testRefs": [
+        "T08"
+      ],
+      "calculationRefs": [
+        "P18",
+        "P19"
+      ],
+      "browserRefs": [
+        "B10"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 108
+      },
+      "requirement": "Отметка: true относительно плана, отдельные false/без записи, дневные серии.",
+      "implementation": "C01 met/missing/streak; C18 generic detail.",
+      "codeRefs": [
+        "C01",
+        "C18"
+      ],
+      "verification": "T02/T14, P02/P21–P25; browser-supplement.training.",
+      "testRefs": [
+        "T02",
+        "T14"
+      ],
+      "calculationRefs": [
+        "P02",
+        "P21",
+        "P22",
+        "P23",
+        "P24",
+        "P25"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F05: отдельного количества false в деталях нет.",
+      "remainingRefs": [
+        "F05"
+      ]
+    },
+    {
+      "id": "R4.2.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 109
+      },
+      "requirement": "Количество: ≥, ≤, =; сумма и среднее по записанным значениям.",
+      "implementation": "C06 calculateMet; C01 stats; C18 numeric.",
+      "codeRefs": [
+        "C06",
+        "C01",
+        "C18"
+      ],
+      "verification": "T03, P03–P06; calculation-results: ранний и месячный примеры.",
+      "testRefs": [
+        "T03"
+      ],
+      "calculationRefs": [
+        "P03",
+        "P04",
+        "P05",
+        "P06"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 109
+      },
+      "requirement": "Количество: график, порог, единица измерения.",
+      "implementation": "C19 threshold/axis/unit.",
+      "codeRefs": [
+        "C19"
+      ],
+      "verification": "B01/B09; чтение SVG; comparison-1440.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 110
+      },
+      "requirement": "Шкала: количество записей, среднее, min/max, ось диапазона шкалы.",
+      "implementation": "C01 stats/isMeasurable; C18; C19 min/max.",
+      "codeRefs": [
+        "C01",
+        "C18",
+        "C19"
+      ],
+      "verification": "T04, P10, B09; browser-supplement.scale.",
+      "testRefs": [
+        "T04"
+      ],
+      "calculationRefs": [
+        "P10"
+      ],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 111
+      },
+      "requirement": "Время с условием: попадания, дневные значения и целевой диапазон.",
+      "implementation": "C06 calculateMet; C01 isMeasurable; C19 rect/timeValue.",
+      "codeRefs": [
+        "C06",
+        "C01",
+        "C19"
+      ],
+      "verification": "T05, P07–P09, B09; чтение диапазона SVG.",
+      "testRefs": [
+        "T05"
+      ],
+      "calculationRefs": [
+        "P07",
+        "P08",
+        "P09"
+      ],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 112
+      },
+      "requirement": "Время без условий: наблюдения, без оценки успеха и среднего часов.",
+      "implementation": "C01 isMeasurable/stats; C18; C19 подпись; C09.",
+      "codeRefs": [
+        "C01",
+        "C18",
+        "C19",
+        "C09"
+      ],
+      "verification": "T04, P11; browser-results.unboundedChart.",
+      "testRefs": [
+        "T04"
+      ],
+      "calculationRefs": [
+        "P11"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 114
+      },
+      "requirement": "Оценка шкалы не процент успеха; высокая оценка не называется улучшением.",
+      "implementation": "C01 met=0 для recorded; C18 comparison; C09 scale.",
+      "codeRefs": [
+        "C01",
+        "C18",
+        "C09"
+      ],
+      "verification": "T04, P10; чтение формулировок.",
+      "testRefs": [
+        "T04"
+      ],
+      "calculationRefs": [
+        "P10"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 117
+      },
+      "requirement": "Временной интервал через полночь использует правило planning.",
+      "implementation": "C06 calculateMet; C07 пересчёт источников; C01 принимает met.",
+      "codeRefs": [
+        "C06",
+        "C07",
+        "C01"
+      ],
+      "verification": "T05, P07.",
+      "testRefs": [
+        "T05"
+      ],
+      "calculationRefs": [
+        "P07"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 119
+      },
+      "requirement": "Изменение порога атомарно пересчитывает met, сохраняя значение, дату и заметку.",
+      "implementation": "C07 updateGoalAndCriteria.",
+      "codeRefs": [
+        "C07"
+      ],
+      "verification": "T16, T18.",
+      "testRefs": [
+        "T16",
+        "T18"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 122
+      },
+      "requirement": "Новое правило действует только на выбранную месячную версию.",
+      "implementation": "C07 updateGoalAndCriteria WHERE goal_id; C22 goal.id.",
+      "codeRefs": [
+        "C07",
+        "C22"
+      ],
+      "verification": "Чтение ограниченного UPDATE; T16 проверяет одну версию, не две перенесённые.",
+      "testRefs": [
+        "T16"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V05: тест двух месячных версий, изменения порога/частоты и сохранности соседней.",
+      "remainingRefs": [
+        "V05"
+      ]
+    },
+    {
+      "id": "R4.2.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 123
+      },
+      "requirement": "Конкурентное сохранение факта использует актуальное правило и согласованный met.",
+      "implementation": "C07 upsertEntry CAS tracking_config/updated_at.",
+      "codeRefs": [
+        "C07"
+      ],
+      "verification": "T18.",
+      "testRefs": [
+        "T18"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.2.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 124
+      },
+      "requirement": "Смена частоты пересчитывает план версии; UI предупреждает о пересчёте.",
+      "implementation": "C01 targetsFor; C07 patch cadence; C22 предупреждение.",
+      "codeRefs": [
+        "C01",
+        "C07",
+        "C22"
+      ],
+      "verification": "Чтение кода; T48 валидирует patch, не полный пересчёт частоты.",
+      "testRefs": [
+        "T48"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V05: сохранить новую частоту, проверить план и предупреждение.",
+      "remainingRefs": [
+        "V05"
+      ]
+    },
+    {
+      "id": "R4.3.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 128
+      },
+      "requirement": "Для ежедневной цели план фактического интервала равен D.",
+      "implementation": "C01 targetsFor day.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T01/T02, P01/P02.",
+      "testRefs": [
+        "T01",
+        "T02"
+      ],
+      "calculationRefs": [
+        "P01",
+        "P02"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 128
+      },
+      "requirement": "N в неделю/месяц относится к естественному календарному периоду.",
+      "implementation": "C01 targetsFor intervals.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T06/T07/T11, P12–P15/P39.",
+      "testRefs": [
+        "T06",
+        "T07",
+        "T11"
+      ],
+      "calculationRefs": [
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 130
+      },
+      "requirement": "В среду 2 из 3 за неделю; наступление среды не уменьшает план.",
+      "implementation": "C01 included считает будущие дни периода; C20.",
+      "codeRefs": [
+        "C01",
+        "C20"
+      ],
+      "verification": "P13; T07 проверяет превышение, а не этот точный пример.",
+      "testRefs": [
+        "T07"
+      ],
+      "calculationRefs": [
+        "P13"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 131
+      },
+      "requirement": "Месячная цель в сводке: недельный факт отдельно, месяц к дате отдельно.",
+      "implementation": "C01 monthly targets; C09 месячная строка/За эту неделю.",
+      "codeRefs": [
+        "C01",
+        "C09"
+      ],
+      "verification": "P39; чтение C08 reportDate; telegram-goal-types.png.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 140
+      },
+      "requirement": "Отсечённый план ceil(N×d/L), при d=0 нет результата.",
+      "implementation": "C01 targetsFor.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T06/T08/T11, P12/P18/P19.",
+      "testRefs": [
+        "T06",
+        "T08",
+        "T11"
+      ],
+      "calculationRefs": [
+        "P12",
+        "P18",
+        "P19"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 143
+      },
+      "requirement": "d включает будущие допустимые дни; округление один раз после объединения.",
+      "implementation": "C01 compatible/included/target.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T11, P12/P13/P32.",
+      "testRefs": [
+        "T11"
+      ],
+      "calculationRefs": [
+        "P12",
+        "P13",
+        "P32"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 146
+      },
+      "requirement": "Исходный N не меняется; видимое объяснение уменьшения с границами.",
+      "implementation": "C01 originalTarget; C20 reduced; C09 reduced.",
+      "codeRefs": [
+        "C01",
+        "C20",
+        "C09"
+      ],
+      "verification": "T06, P12; чтение двух форматтеров.",
+      "testRefs": [
+        "T06"
+      ],
+      "calculationRefs": [
+        "P12"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 149
+      },
+      "requirement": "В месячном обзоре недельные цели разделены по неделям; нет общего месячного %.",
+      "implementation": "C01 targetsFor week; C16 rows; C20 natural dates.",
+      "codeRefs": [
+        "C01",
+        "C16",
+        "C20"
+      ],
+      "verification": "P15; browser-results: month; чтение C16.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P15"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 150
+      },
+      "requirement": "Полоса ограничена 100%; 4 из 3 и +1 сохраняются.",
+      "implementation": "C01 overflow/percent; C20 Math.min; C09 text bar.",
+      "codeRefs": [
+        "C01",
+        "C20",
+        "C09"
+      ],
+      "verification": "T07, P14; чтение обоих ограничителей полос.",
+      "testRefs": [
+        "T07"
+      ],
+      "calculationRefs": [
+        "P14"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.3.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 152
+      },
+      "requirement": "Шкала и время без условия считают записи в тех же периодах.",
+      "implementation": "C01 targetsFor measurable; C20/C09 подпись записей.",
+      "codeRefs": [
+        "C01",
+        "C20",
+        "C09"
+      ],
+      "verification": "T04, P10/P11/P36; чтение подписей.",
+      "testRefs": [
+        "T04"
+      ],
+      "calculationRefs": [
+        "P10",
+        "P11",
+        "P36"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 158
+      },
+      "requirement": "Сводное число выполнений — сумма M только измеримых целей.",
+      "implementation": "C01 summary.met/isMeasurable.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T04, P10/P11/P16.",
+      "testRefs": [
+        "T04"
+      ],
+      "calculationRefs": [
+        "P10",
+        "P11",
+        "P16"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 160
+      },
+      "requirement": "Заполненность ΣR/ΣD с числами и %; скрыта без дневных целей.",
+      "implementation": "C01 summary.daily; C16 Summary conditional.",
+      "codeRefs": [
+        "C01",
+        "C16"
+      ],
+      "verification": "P16/P17; чтение условия C16.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P16",
+        "P17"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 162
+      },
+      "requirement": "Свободные дни недельных целей не объявляются обязательными пропусками.",
+      "implementation": "C09 вывод missing только для day; C18 выводит generic Дней без записи.",
+      "codeRefs": [
+        "C09",
+        "C18"
+      ],
+      "verification": "P13 подтверждает исключение будущего; browser-supplement.training и макет №10.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P13"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F05: недельные детали должны объяснять свободные дни и показывать оставшийся план.",
+      "remainingRefs": [
+        "F05"
+      ]
+    },
+    {
+      "id": "R4.4.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 164
+      },
+      "requirement": "Дни с записями — уникальные даты относительно объединения допустимых дат.",
+      "implementation": "C01 eligibleDates/recordedDates.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "P16; calculation-results ранний/месячный примеры.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P16"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 167
+      },
+      "requirement": "Нет общего % для смеси частот; проценты цели подписаны периодом/формулой.",
+      "implementation": "C01 summary без общего progress%; C20 target label.",
+      "codeRefs": [
+        "C01",
+        "C20"
+      ],
+      "verification": "P15/P17/P39; чтение DTO и UI.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P15",
+        "P17",
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 169
+      },
+      "requirement": "Проценты округляются в конце; средние до 0,1; исходные значения не округляются.",
+      "implementation": "C01 percentage/rounded, но deltaPoints вычитает округлённые %.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T03/P03/P10 — средние; P27/P30 — ошибки разности процентов.",
+      "testRefs": [
+        "T03"
+      ],
+      "calculationRefs": [
+        "P03",
+        "P10",
+        "P27",
+        "P30"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F02: разность считать по исходным дробям; затем округлять.",
+      "remainingRefs": [
+        "F02"
+      ]
+    },
+    {
+      "id": "R4.4.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 170
+      },
+      "requirement": "Не суммировать несовместимые единицы.",
+      "implementation": "C01 summary содержит количество выполнений; суммы только в goals; C09.",
+      "codeRefs": [
+        "C01",
+        "C09"
+      ],
+      "verification": "P16; чтение структуры ответа/форматтера.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P16"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 172
+      },
+      "requirement": "Неделя до сегодня сравнивается с теми же днями прошлой; полная — с полной.",
+      "implementation": "C02 previousInterval.",
+      "codeRefs": [
+        "C02"
+      ],
+      "verification": "T13, P26; чтение full-week ветки.",
+      "testRefs": [
+        "T13"
+      ],
+      "calculationRefs": [
+        "P26"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 174
+      },
+      "requirement": "Месяцы сравниваются по одинаковым номерам дней; короткий прошлый месяц скрывает сравнение.",
+      "implementation": "C02 previousInterval; C01 comparable.",
+      "codeRefs": [
+        "C02",
+        "C01"
+      ],
+      "verification": "T13, P29/P31.",
+      "testRefs": [
+        "T13"
+      ],
+      "calculationRefs": [
+        "P29",
+        "P31"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 175
+      },
+      "requirement": "Сегодняшний неполный день обозначен в подписи сравнения.",
+      "implementation": "C17 отмечает текущий день; C18 строка сравнения содержит только Сравниваем одинаковые дни.",
+      "codeRefs": [
+        "C17",
+        "C18"
+      ],
+      "verification": "Чтение C18; browser-results.comparisonPresentation.actualComparison.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F04: добавить актуальность/неполный сегодняшний день в сравнение.",
+      "remainingRefs": [
+        "F04"
+      ]
+    },
+    {
+      "id": "R4.4.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 176
+      },
+      "requirement": "Разность процентов выражается в процентных пунктах.",
+      "implementation": "C18/C09 текст п. п.; C01 deltaPoints.",
+      "codeRefs": [
+        "C18",
+        "C09",
+        "C01"
+      ],
+      "verification": "P27/P30; сравнение в браузере.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P27",
+        "P30"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F02: единица верная, число округляется неверно.",
+      "remainingRefs": [
+        "F02"
+      ]
+    },
+    {
+      "id": "R4.4.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 178
+      },
+      "requirement": "Сравнение только одной цепочки, одинаковых правил/единиц, при полном покрытии обоих интервалов.",
+      "implementation": "C01 signature/chainId/comparable.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T01/T11/T13, P28/P33/P34; чтение signature включает unit/cadence.",
+      "testRefs": [
+        "T01",
+        "T11",
+        "T13"
+      ],
+      "calculationRefs": [
+        "P28",
+        "P33",
+        "P34"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 181
+      },
+      "requirement": "Недостаточно истории — понятная подпись; нет общей динамики разных наборов целей.",
+      "implementation": "C18 comparisonReason; C01 per-goal comparison.",
+      "codeRefs": [
+        "C18",
+        "C01"
+      ],
+      "verification": "T01/T36, P28; чтение DTO/подписей.",
+      "testRefs": [
+        "T01",
+        "T36"
+      ],
+      "calculationRefs": [
+        "P28"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 184
+      },
+      "requirement": "Серии только ежедневных измеримых; лучшая в выбранном интервале.",
+      "implementation": "C01 streak guard/best; C18 Ваш ритм.",
+      "codeRefs": [
+        "C01",
+        "C18"
+      ],
+      "verification": "T14, P10/P11/P21–P25; чтение guard.",
+      "testRefs": [
+        "T14"
+      ],
+      "calculationRefs": [
+        "P10",
+        "P11",
+        "P21",
+        "P22",
+        "P23",
+        "P24",
+        "P25"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 185
+      },
+      "requirement": "Сегодня выполнено — считать от сегодня; сегодня пусто — от вчера; явное невыполнение — 0.",
+      "implementation": "C01 streak.",
+      "codeRefs": [
+        "C01"
+      ],
+      "verification": "T14, P21/P22.",
+      "testRefs": [
+        "T14"
+      ],
+      "calculationRefs": [
+        "P21",
+        "P22"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.16",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 187
+      },
+      "requirement": "Прошлый пустой день прерывает серию без обвинения; границы периода/старта подписаны.",
+      "implementation": "C01 streak; C18 подпись серий.",
+      "codeRefs": [
+        "C01",
+        "C18"
+      ],
+      "verification": "T14, P23/P25; чтение текста.",
+      "testRefs": [
+        "T14"
+      ],
+      "calculationRefs": [
+        "P23",
+        "P25"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.4.17",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 185
+      },
+      "requirement": "Исторический период не показывает текущую серию.",
+      "implementation": "C01 current=null; C18 выводит тире.",
+      "codeRefs": [
+        "C01",
+        "C18"
+      ],
+      "verification": "P24; чтение C18.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P24"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 191
+      },
+      "requirement": "Неделя двух месяцев загружает обе части, независимо от месяца маршрута; факт один раз.",
+      "implementation": "C03 overview months; C07 progressSources; C01 dayData.",
+      "codeRefs": [
+        "C03",
+        "C07",
+        "C01"
+      ],
+      "verification": "T11, P32; T17 ограниченность чтения.",
+      "testRefs": [
+        "T11",
+        "T17"
+      ],
+      "calculationRefs": [
+        "P32"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 193
+      },
+      "requirement": "Цепочка только carried_from_goal_id; совпадение названий не объединяет.",
+      "implementation": "C07 ancestry; C01 groups by chainId/signature.",
+      "codeRefs": [
+        "C07",
+        "C01"
+      ],
+      "verification": "T11, P33/P36.",
+      "testRefs": [
+        "T11"
+      ],
+      "calculationRefs": [
+        "P33",
+        "P36"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 195
+      },
+      "requirement": "Совместимые версии объединены; разные правила разделены и подписаны датами; нет сравнения разных правил.",
+      "implementation": "C01 groups/comparable; C16 changed-chain date range.",
+      "codeRefs": [
+        "C01",
+        "C16"
+      ],
+      "verification": "T11, P34; чтение C16.",
+      "testRefs": [
+        "T11"
+      ],
+      "calculationRefs": [
+        "P34"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 198
+      },
+      "requirement": "Месячные планы остаются раздельными; сводка на границе показывает оба результата.",
+      "implementation": "C01 monthly intervals; C09 цикл targets.",
+      "codeRefs": [
+        "C01",
+        "C09"
+      ],
+      "verification": "Чтение C01/C09; P39 проверяет только один месячный результат.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V06: два выбранных месячных плана на одной пограничной неделе в вебе/предпросмотре/снимке.",
+      "remainingRefs": [
+        "V06"
+      ]
+    },
+    {
+      "id": "R4.5.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 200
+      },
+      "requirement": "Неподготовленный будущий месяц: факт + исходный недельный план, подпись, без % и выдуманного уменьшения.",
+      "implementation": "C01 missingPlan; C20; C09.",
+      "codeRefs": [
+        "C01",
+        "C20",
+        "C09"
+      ],
+      "verification": "T10/T12, P35.",
+      "testRefs": [
+        "T10",
+        "T12"
+      ],
+      "calculationRefs": [
+        "P35"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 204
+      },
+      "requirement": "Чтение прогресса не создаёт будущие/пропущенные месяцы.",
+      "implementation": "C03 вызывает readProgress, не ensureCurrentPlan.",
+      "codeRefs": [
+        "C03"
+      ],
+      "verification": "T17, T34, T71.",
+      "testRefs": [
+        "T17",
+        "T34",
+        "T71"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 205
+      },
+      "requirement": "Удалённые цели исключены; восстановление возвращает данные и сохранённый выбор.",
+      "implementation": "C07 deleted_at scope; C10 selections; C08 get/deliver.",
+      "codeRefs": [
+        "C07",
+        "C10",
+        "C08"
+      ],
+      "verification": "T30/T33; T16 сохраняет факты при критерии.",
+      "testRefs": [
+        "T30",
+        "T33",
+        "T16"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R4.5.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 207
+      },
+      "requirement": "Отправленное сообщение неизменно; коррекция факта меняет статистику/будущие отчёты, не вызывает рассылку старых.",
+      "implementation": "C08 только pending; C37 sent jobs; C09 снимок.",
+      "codeRefs": [
+        "C08",
+        "C37",
+        "C09"
+      ],
+      "verification": "T23/T24; чтение отсутствия resend/edit для weekly-progress.",
+      "testRefs": [
+        "T23",
+        "T24"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 213
+      },
+      "requirement": "Пункт Прогресс в навигации и маршрут /plans/:month/progress.",
+      "implementation": "C32 route; C33 sidebar.",
+      "codeRefs": [
+        "C32",
+        "C33"
+      ],
+      "verification": "browser-results: страницы прогресса; чтение пути sidebar.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 214
+      },
+      "requirement": "Итоги месяца открывают месячный прогресс.",
+      "implementation": "C34 ссылка period=month и anchor=month-01.",
+      "codeRefs": [
+        "C34"
+      ],
+      "verification": "Чтение адреса ссылки; T36 проверяет поддержку month.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 215
+      },
+      "requirement": "Период сохраняется в URL и восстанавливается при открытии ссылки.",
+      "implementation": "C16 useSearchParams/period/anchor; C32 route.",
+      "codeRefs": [
+        "C16",
+        "C32"
+      ],
+      "verification": "T36; browser-results: прямые week/month ссылки. Обратный переход/стрелки отдельно не проверены.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V04: полный круг URL → переключение/стрелки → reload/back → текущий период.",
+      "remainingRefs": [
+        "V04"
+      ]
+    },
+    {
+      "id": "R5.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 219
+      },
+      "requirement": "Порядок: заголовок/период → дата → сводка → календарь → цели → отчёты.",
+      "implementation": "C16 JSX order.",
+      "codeRefs": [
+        "C16"
+      ],
+      "verification": "browser-results: overview; чтение порядка блоков.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 220
+      },
+      "requirement": "Редактирование общей даты рядом с периодом.",
+      "implementation": "C16 ProgressStartDate; C23 dialog.",
+      "codeRefs": [
+        "C16",
+        "C23"
+      ],
+      "verification": "T40/T41, B02.",
+      "testRefs": [
+        "T40",
+        "T41"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B02"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 221
+      },
+      "requirement": "Компактные сводные карточки с показателями §4.4.",
+      "implementation": "C16 Summary; C01 summary.",
+      "codeRefs": [
+        "C16",
+        "C01"
+      ],
+      "verification": "calculation-results: early/month; browser-results: overview; B09.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 222
+      },
+      "requirement": "Календарь только ежедневных измеримых; скрыт без них.",
+      "implementation": "C17 daily/measurable guard.",
+      "codeRefs": [
+        "C17"
+      ],
+      "verification": "Чтение guard; P17 проверяет только заполненность, не скрытие календаря.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P17"
+      ],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V08: UI-набор только weekly/monthly, шкала и время без условия — календарь скрыт.",
+      "remainingRefs": [
+        "V08"
+      ]
+    },
+    {
+      "id": "R5.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 222
+      },
+      "requirement": "Календарь показывает выполнено/ниже цели/нет записи.",
+      "implementation": "C17 icons/state text, hidden sm:flex/block.",
+      "codeRefs": [
+        "C17"
+      ],
+      "verification": "P02 — модель; browser-supplement.calendar; B11 — мобильный месяц.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P02"
+      ],
+      "browserRefs": [
+        "B11"
+      ],
+      "status": "partial",
+      "remaining": "F03: мобильный месяц скрывает маркеры и числа.",
+      "remainingRefs": [
+        "F03"
+      ]
+    },
+    {
+      "id": "R5.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 224
+      },
+      "requirement": "Все цели: название, правило/план, факт, полоса и заполненность.",
+      "implementation": "C16 rows; C20 ProgressMeter; C18.",
+      "codeRefs": [
+        "C16",
+        "C20",
+        "C18"
+      ],
+      "verification": "T36, B09; browser-results: overview. Текущий факт количества в строке упрощён.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F11: вернуть предусмотренные макетом подписи текущих значений; V10: сверить композицию.",
+      "remainingRefs": [
+        "F11",
+        "V10"
+      ]
+    },
+    {
+      "id": "R5.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 225
+      },
+      "requirement": "В каждой обзорной карточке небольшой график по типу данных.",
+      "implementation": "C16 графика нет; C19 вызывается только C18.",
+      "codeRefs": [
+        "C16",
+        "C19",
+        "C18"
+      ],
+      "verification": "Чтение JSX C16/C18 и PNG week/month: мини-графиков нет и в макетах.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "decision",
+      "remaining": "Q01: разрешить противоречие ТЗ ↔ макеты; затем реализовать либо явно изменить контракт.",
+      "remainingRefs": [
+        "Q01"
+      ]
+    },
+    {
+      "id": "R5.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 228
+      },
+      "requirement": "Нажатие открывает детали: дневные значения, статистику типа, сравнение, редактор факта.",
+      "implementation": "C16 goal URL; C18 список/сравнение; C19 ссылки.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C19"
+      ],
+      "verification": "T36, B01/B09; browser-results.comparisonPresentation.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F04/F05/F11: детали и сравнение неполные; базовые переходы работают.",
+      "remainingRefs": [
+        "F04",
+        "F05",
+        "F11"
+      ]
+    },
+    {
+      "id": "R5.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 230
+      },
+      "requirement": "Невключённые в Telegram цели доступны в вебе; временный фильтр не сохраняет рассылку.",
+      "implementation": "C03 goals vs goalIds; C21 local draft; C24 отдельный save.",
+      "codeRefs": [
+        "C03",
+        "C21",
+        "C24"
+      ],
+      "verification": "T34/T39, B09; чтение раздельных mutations.",
+      "testRefs": [
+        "T34",
+        "T39"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 233
+      },
+      "requirement": "Inter, светлые поверхности, синий акцент, семантические токены и компоненты проекта.",
+      "implementation": "C31 шрифт/токены; C16–C24 semantic classes.",
+      "codeRefs": [
+        "C31",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "C22",
+        "C23",
+        "C24"
+      ],
+      "verification": "Статический просмотр CSS/импортов и сохранённых PNG браузера.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 234
+      },
+      "requirement": "Крупные числа, короткие подписи, свободное пространство согласно утверждённым макетам.",
+      "implementation": "C16/C18/C24 общий каркас; размеры/композиция отличаются.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C24"
+      ],
+      "verification": "Сохранённые PNG и исходники; точного сравнения каждого фрейма нет.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V10: приёмка композиции, отступов, чисел и иконок всех групп макетов на 1440/390/320.",
+      "remainingRefs": [
+        "V10"
+      ]
+    },
+    {
+      "id": "R5.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 236
+      },
+      "requirement": "Оси и единицы подписаны; график подходит типу данных.",
+      "implementation": "C19 generic SVG.",
+      "codeRefs": [
+        "C19"
+      ],
+      "verification": "B01/B09; browser-supplement.scale и browser-results.unboundedChart.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F06: типы/маркеры/подписи; F07: корректная ось времени через полночь.",
+      "remainingRefs": [
+        "F06",
+        "F07"
+      ]
+    },
+    {
+      "id": "R5.16",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 237
+      },
+      "requirement": "Состояния различимы по значку/тексту, ниже цели не оформляется как ошибка.",
+      "implementation": "C17/C18 icons/state labels; C31 neutral/success tokens.",
+      "codeRefs": [
+        "C17",
+        "C18",
+        "C31"
+      ],
+      "verification": "P02, B09; чтение C17/C18; на мобильном месяце результаты скрыты.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P02"
+      ],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F03/F06: сохранить текстовые и знаковые обозначения во всех представлениях.",
+      "remainingRefs": [
+        "F03",
+        "F06"
+      ]
+    },
+    {
+      "id": "R5.17",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 238
+      },
+      "requirement": "Основные блоки/карточки целей в одну колонку на телефоне; нет горизонтальной прокрутки ≥320.",
+      "implementation": "C16/C18/C24 responsive classes.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C24"
+      ],
+      "verification": "browser-results: week/month/reports/date, B09 (18 деталей), B10 (24 состояния). Сводки в PNG допустимо имеют три компактных числа.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09",
+        "B10"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.18",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 240
+      },
+      "requirement": "Загрузка и ошибка с повтором.",
+      "implementation": "C16 Skeleton/error/refetch.",
+      "codeRefs": [
+        "C16"
+      ],
+      "verification": "T38, B10; browser-results: loading/error.",
+      "testRefs": [
+        "T38"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B10"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.19",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 240
+      },
+      "requirement": "Пустые состояния: нет целей, нет записей, до учёта, будущий старт.",
+      "implementation": "C16 state cards.",
+      "codeRefs": [
+        "C16"
+      ],
+      "verification": "T37, P18/P19, B10; browser-results: пять состояний.",
+      "testRefs": [
+        "T37"
+      ],
+      "calculationRefs": [
+        "P18",
+        "P19"
+      ],
+      "browserRefs": [
+        "B10"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.20",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 242
+      },
+      "requirement": "Числа графика доступны текстовым списком.",
+      "implementation": "C18 days list; C19 aria/title/links.",
+      "codeRefs": [
+        "C18",
+        "C19"
+      ],
+      "verification": "T36, B01/B09.",
+      "testRefs": [
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R5.21",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 242
+      },
+      "requirement": "Интерактивные элементы работают с клавиатуры.",
+      "implementation": "C19 TooltipTrigger anchor; C21/C23 Dialog; C24 native controls.",
+      "codeRefs": [
+        "C19",
+        "C21",
+        "C23",
+        "C24"
+      ],
+      "verification": "B01 (фокус/tooltip), B02 (Escape), T39/T40; полного клавиатурного пути всех форм нет.",
+      "testRefs": [
+        "T39",
+        "T40"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B02"
+      ],
+      "status": "partial",
+      "remaining": "V04: пройти клавиатурой периоды, фильтр, правила, дату и настройки отчётов.",
+      "remainingRefs": [
+        "V04"
+      ]
+    },
+    {
+      "id": "R5.22",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 243
+      },
+      "requirement": "Перед UI подготовлены week/month/details/mobile/settings макеты.",
+      "implementation": "frontend/docs/design/progress/frames.json; design 1bc9399 → implementation a687a2c.",
+      "codeRefs": [],
+      "verification": "История Git; реестр/размеры 54 PNG в coverage.md.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 249
+      },
+      "requirement": "Отдельный блок Отчёты о прогрессе на странице напоминаний и переход из прогресса.",
+      "implementation": "C25 две вкладки; C16 reportUrl.",
+      "codeRefs": [
+        "C25",
+        "C16"
+      ],
+      "verification": "browser-results: reports; чтение C25; reminders-desktop.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F09: двухкарточный обзор и краткие состояния не реализованы.",
+      "remainingRefs": [
+        "F09"
+      ]
+    },
+    {
+      "id": "R6.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 256
+      },
+      "requirement": "Отдельное enabled, default false; фиксированные среда и воскресенье.",
+      "implementation": "C10 settings default; C11 slot; C24 controls.",
+      "codeRefs": [
+        "C10",
+        "C11",
+        "C24"
+      ],
+      "verification": "T21/T22/T32; чтение defaults C28.",
+      "testRefs": [
+        "T21",
+        "T22",
+        "T32"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 257
+      },
+      "requirement": "Два времени HH:mm, независимо; оба default 21:00.",
+      "implementation": "C10/C11 defaults/validate; C24 time inputs.",
+      "codeRefs": [
+        "C10",
+        "C11",
+        "C24"
+      ],
+      "verification": "T23/T28 сохраняют разные времена; T42 save; чтение defaults.",
+      "testRefs": [
+        "T23",
+        "T28",
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 259
+      },
+      "requirement": "Пояс аккаунта без дублирования, переход к изменению; общие тихие часы.",
+      "implementation": "C08 reminder settings; C24 ссылка/quiet caption.",
+      "codeRefs": [
+        "C08",
+        "C24"
+      ],
+      "verification": "T28; чтение C24 и схемы.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 260
+      },
+      "requirement": "Чекбоксы, массовый выбор/снятие, поиск длинного списка.",
+      "implementation": "C24 ReportForm search/filter/change.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "T42, B03/B04/B05; browser-results.filteredBulkDeselection.",
+      "testRefs": [
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B03",
+        "B04",
+        "B05"
+      ],
+      "status": "partial",
+      "remaining": "F01: при поиске массовое действие нарушает сохранность скрытого выбора.",
+      "remainingRefs": [
+        "F01"
+      ]
+    },
+    {
+      "id": "R6.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 261
+      },
+      "requirement": "Дата в форме отчётов — та же дата аккаунта.",
+      "implementation": "C24 payload.startsOn; C08 save; C10 batch progress_settings.",
+      "codeRefs": [
+        "C24",
+        "C08",
+        "C10"
+      ],
+      "verification": "T25/T34; чтение C10 batch и C04.",
+      "testRefs": [
+        "T25",
+        "T34"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 262
+      },
+      "requirement": "Предпросмотр на сайте без сохранения/Telegram, использует черновик.",
+      "implementation": "C24 preview mutation; C08 preview.",
+      "codeRefs": [
+        "C24",
+        "C08"
+      ],
+      "verification": "T34/T43, B07.",
+      "testRefs": [
+        "T34",
+        "T43"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B07"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 264
+      },
+      "requirement": "Показать две ближайшие реальные даты с тихими часами, по сохранённым настройкам.",
+      "implementation": "C08 get nextRuns pending+future sorted slice(0,2); C24 savedRuns.",
+      "codeRefs": [
+        "C08",
+        "C24"
+      ],
+      "verification": "T28 подтверждает воскресный перенос; чтение второго запуска. Полного теста двух дат после сохранения нет.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: проверить обе даты, сохранение черновика и pending Sunday рядом с next Wed.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R6.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 265
+      },
+      "requirement": "Явное сохранение всего черновика; видимые успех/ошибка; повтор недоступен во время сохранения.",
+      "implementation": "C24 save mutation/status/error/button disabled.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "T42/T44, B08; чтение isPending.",
+      "testRefs": [
+        "T42",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B08"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 270
+      },
+      "requirement": "Выбор сводки независим от reminder-mode цели; цель с выключенными вопросами допускается.",
+      "implementation": "C08 validate только own goal/selection; C13 reports.schedule отдельно.",
+      "codeRefs": [
+        "C08",
+        "C13"
+      ],
+      "verification": "T22 — все reminders выключены, отчёт доставляется через fake transport.",
+      "testRefs": [
+        "T22"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 271
+      },
+      "requirement": "Общий выключатель называется Напоминания о заполнении.",
+      "implementation": "C25/C24 тексты; C36 GeneralSettings labels.",
+      "codeRefs": [
+        "C25",
+        "C24",
+        "C36"
+      ],
+      "verification": "Чтение подписей UI.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 273
+      },
+      "requirement": "Отключение Telegram-чата останавливает вопросы и отчёты; прогресс доступен.",
+      "implementation": "C08 active link; C13 check link; C03 не требует чат.",
+      "codeRefs": [
+        "C08",
+        "C13",
+        "C03"
+      ],
+      "verification": "T44/T97; чтение C08. Одновременная проверка двух видов заданий и веба не выполнена.",
+      "testRefs": [
+        "T44",
+        "T97"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: pending question + weekly-progress → disconnect → нет отправки обоих, веб работает.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R6.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 275
+      },
+      "requirement": "Список активных целей выбранного месячного плана.",
+      "implementation": "C08 get planning.list(month); C24 month nav/goals.",
+      "codeRefs": [
+        "C08",
+        "C24"
+      ],
+      "verification": "T33/T35, B03; чтение monthly list.",
+      "testRefs": [
+        "T33",
+        "T35"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B03"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 275
+      },
+      "requirement": "Начальный выбор пуст; включение требует ≥1 цели.",
+      "implementation": "C10 selections empty; C08 validate; C24 disabled/selected.",
+      "codeRefs": [
+        "C10",
+        "C08",
+        "C24"
+      ],
+      "verification": "T32/T42; чтение отсутствующей selection → false.",
+      "testRefs": [
+        "T32",
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 277
+      },
+      "requirement": "Вручную созданные цели не включаются автоматически.",
+      "implementation": "C08 selections.get(id) ?? false; C14 inherit только carriedGoals.",
+      "codeRefs": [
+        "C08",
+        "C14"
+      ],
+      "verification": "Чтение get/inherit; отдельного теста create после включения нет.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V06: создать новую цель после enabled-сохранения и проверить исключение.",
+      "remainingRefs": [
+        "V06"
+      ]
+    },
+    {
+      "id": "R6.16",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 278
+      },
+      "requirement": "Перенос наследует включение; явный false новой версии важнее.",
+      "implementation": "C14 prepareCurrentPlan; C10 inherit ON CONFLICT DO NOTHING.",
+      "codeRefs": [
+        "C14",
+        "C10"
+      ],
+      "verification": "T35.",
+      "testRefs": [
+        "T35"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.17",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 279
+      },
+      "requirement": "На границе месяцев только выбранные версии обеих частей; объединение только совместимых частей.",
+      "implementation": "C08 strict goalIds; C03 input.goalIds; C01 compatible/knownSources.",
+      "codeRefs": [
+        "C08",
+        "C03",
+        "C01"
+      ],
+      "verification": "T10/T11/T34, P32/P34; нет одного D1-теста выбора обеих месячных частей.",
+      "testRefs": [
+        "T10",
+        "T11",
+        "T34"
+      ],
+      "calculationRefs": [
+        "P32",
+        "P34"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V06: сквозной тест выбранных/исключённых версий двух месяцев.",
+      "remainingRefs": [
+        "V06"
+      ]
+    },
+    {
+      "id": "R6.18",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 282
+      },
+      "requirement": "Удаление последней выбранной цели приостанавливает отправку, сохраняя расписание; Выберите цели для отчёта.",
+      "implementation": "C08 get.state/deliver; C24 state.state.",
+      "codeRefs": [
+        "C08",
+        "C24"
+      ],
+      "verification": "T33; чтение C24 подписи.",
+      "testRefs": [
+        "T33"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R6.19",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 284
+      },
+      "requirement": "Без Telegram можно сохранить выключенный черновик; включение ведёт к подключению.",
+      "implementation": "C08 validate; C24 connected guard/link.",
+      "codeRefs": [
+        "C08",
+        "C24"
+      ],
+      "verification": "T32/T44; чтение connection link.",
+      "testRefs": [
+        "T32",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 289
+      },
+      "requirement": "Заголовок: тип сводки, календарные даты, фактический момент актуальности.",
+      "implementation": "C09 header/asOf; C08 reportDate/form snapshot.",
+      "codeRefs": [
+        "C09",
+        "C08"
+      ],
+      "verification": "T22/T28; calculation-results.goalTypesReportText; чтение header.",
+      "testRefs": [
+        "T22",
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 290
+      },
+      "requirement": "При отсечении недели отдельная строка начала учёта.",
+      "implementation": "C09 header startsOn.",
+      "codeRefs": [
+        "C09"
+      ],
+      "verification": "P01; calculation-results.goalTypesReportText; чтение formatter.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P01"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 291
+      },
+      "requirement": "Среда Прогресс недели, воскресенье Итоги недели; понедельник–дата слота.",
+      "implementation": "C09 slot/header; C08 schedule/localDate.",
+      "codeRefs": [
+        "C09",
+        "C08"
+      ],
+      "verification": "T22/T28, P39; чтение slot.",
+      "testRefs": [
+        "T22",
+        "T28"
+      ],
+      "calculationRefs": [
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 292
+      },
+      "requirement": "Снимок на момент формирования; день ещё может дополняться.",
+      "implementation": "C08 snapshot; C09 footer.",
+      "codeRefs": [
+        "C08",
+        "C09"
+      ],
+      "verification": "T24; calculation-results.goalTypesReportText.",
+      "testRefs": [
+        "T24"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 294
+      },
+      "requirement": "Для каждой выбранной цели короткий результат с единицей, полосой и недостающими данными.",
+      "implementation": "C09 goalBlock targets/sum/missing.",
+      "codeRefs": [
+        "C09"
+      ],
+      "verification": "T22/T34, P38/P39; calculation-results.goalTypesReportText.",
+      "testRefs": [
+        "T22",
+        "T34"
+      ],
+      "calculationRefs": [
+        "P38",
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F11: недостающие типовые показатели из макетов; базовый результат и полосы есть.",
+      "remainingRefs": [
+        "F11"
+      ]
+    },
+    {
+      "id": "R7.1.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 296
+      },
+      "requirement": "Сравнение сводки следует правилам §4.4.",
+      "implementation": "C01 comparison; C09 deltaPoints.",
+      "codeRefs": [
+        "C01",
+        "C09"
+      ],
+      "verification": "T13; P27/P30 подтверждают неверное округление.",
+      "testRefs": [
+        "T13"
+      ],
+      "calculationRefs": [
+        "P27",
+        "P30"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F02: исправить общую формулу разницы.",
+      "remainingRefs": [
+        "F02"
+      ]
+    },
+    {
+      "id": "R7.1.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 296
+      },
+      "requirement": "Кнопки Открыть прогресс и Настроить отчёты сохраняют период.",
+      "implementation": "C09 buttons/requested.from; C32 protected route.",
+      "codeRefs": [
+        "C09",
+        "C32"
+      ],
+      "verification": "T22, P38; чтение URL.",
+      "testRefs": [
+        "T22"
+      ],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 298
+      },
+      "requirement": "Ссылка требует вход; не обходит авторизацию и владельца.",
+      "implementation": "C29 authentication; C32 protected routes; C05 owner.",
+      "codeRefs": [
+        "C29",
+        "C32",
+        "C05"
+      ],
+      "verification": "T17/T19; тест ссылки без сессии и чужого периода отдельно не выполнен.",
+      "testRefs": [
+        "T17",
+        "T19"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V07: unauthenticated/другой owner для ссылок и всех семи новых API.",
+      "remainingRefs": [
+        "V07"
+      ]
+    },
+    {
+      "id": "R7.1.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 325
+      },
+      "requirement": "Короткие блоки, умеренные emoji, выделение текста и простые текстовые полосы.",
+      "implementation": "C09 plain text; C38 transport не задаёт parse_mode; C24 один p для preview.",
+      "codeRefs": [
+        "C09",
+        "C38",
+        "C24"
+      ],
+      "verification": "browser-results.preview; comparison с telegram-message/goal-types PNG; чтение transport.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F10: оформить блоки и числа, сохранив безопасное отображение названий.",
+      "remainingRefs": [
+        "F10"
+      ]
+    },
+    {
+      "id": "R7.1.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 327
+      },
+      "requirement": "Без изображений/PDF и оценок личности; спокойный тон.",
+      "implementation": "C09 текстовый formatter; C38 sendMessage.",
+      "codeRefs": [
+        "C09",
+        "C38"
+      ],
+      "verification": "Статический просмотр текста/транспорта; P38.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 330
+      },
+      "requirement": "Предпочтительно одно сообщение; внутренний бюджет 3500; целые блоки в порядке плана.",
+      "implementation": "C09 цикл goalBlock; C07 orderBy cadence/order/id.",
+      "codeRefs": [
+        "C09",
+        "C07"
+      ],
+      "verification": "T31, P38; чтение сортировки источников.",
+      "testRefs": [
+        "T31"
+      ],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 332
+      },
+      "requirement": "При сокращении Ещё N целей и ссылка; сводные показатели учитывают весь выбор.",
+      "implementation": "C09 included/hidden/header summary.",
+      "codeRefs": [
+        "C09"
+      ],
+      "verification": "T31, P38.",
+      "testRefs": [
+        "T31"
+      ],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 334
+      },
+      "requirement": "Предпросмотр сокращается тем же алгоритмом, что автоматический отчёт.",
+      "implementation": "C08 preview/deliver вызывают C09 reportMessage.",
+      "codeRefs": [
+        "C08",
+        "C09"
+      ],
+      "verification": "T34/T43/P38; чтение общей функции.",
+      "testRefs": [
+        "T34",
+        "T43"
+      ],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 334
+      },
+      "requirement": "Пользовательские названия безопасны, разметка не интерпретируется.",
+      "implementation": "C09 сохраняет текст; C38 нет parse_mode; C24 React text.",
+      "codeRefs": [
+        "C09",
+        "C38",
+        "C24"
+      ],
+      "verification": "T22/T31, P38; чтение transport. Безопасность достигнута plain text; это не доказывает будущий HTML formatter.",
+      "testRefs": [
+        "T22",
+        "T31"
+      ],
+      "calculationRefs": [
+        "P38"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.1.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 336
+      },
+      "requirement": "При выбранных целях без записей одна краткая сводка с переходом в план.",
+      "implementation": "C09 no-entries branch, но общие кнопки.",
+      "codeRefs": [
+        "C09"
+      ],
+      "verification": "T25 — краткий текст; P37 — кнопка Открыть прогресс вместо плана.",
+      "testRefs": [
+        "T25"
+      ],
+      "calculationRefs": [
+        "P37"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F12: кнопка Открыть план для no-entries.",
+      "remainingRefs": [
+        "F12"
+      ]
+    },
+    {
+      "id": "R7.1.16",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 337
+      },
+      "requirement": "Нет сообщения при пустом выборе или будущем старте.",
+      "implementation": "C08 preview/deliver guard.",
+      "codeRefs": [
+        "C08"
+      ],
+      "verification": "T32/T33/T34.",
+      "testRefs": [
+        "T32",
+        "T33",
+        "T34"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 340
+      },
+      "requirement": "Локальное время аккаунта; первый минутный Cron после слота.",
+      "implementation": "C11 nextReportOccurrence; C08 schedule; C30 cron; C41 scheduled handler.",
+      "codeRefs": [
+        "C11",
+        "C08",
+        "C30",
+        "C41"
+      ],
+      "verification": "T20/T22/T100; чтение crons=одна минута.",
+      "testRefs": [
+        "T20",
+        "T22",
+        "T100"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 342
+      },
+      "requirement": "Общие тихие часы откладывают до их конца, в том числе на следующий день.",
+      "implementation": "C12 afterQuietHours; C08 due/postpone.",
+      "codeRefs": [
+        "C12",
+        "C08"
+      ],
+      "verification": "T28/T72/T101.",
+      "testRefs": [
+        "T28",
+        "T72",
+        "T101"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 343
+      },
+      "requirement": "После воскресного переноса исходная неделя/воскресенье сохранены; понедельник не входит.",
+      "implementation": "C08 job.localDate/reportDate; C09 header.",
+      "codeRefs": [
+        "C08",
+        "C09"
+      ],
+      "verification": "T28 — понедельничный факт 999 не попадает; browser/PNG Telegram. Пояснения переноса нет.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F13: объяснить задержку, исходное время и исключение понедельника.",
+      "remainingRefs": [
+        "F13"
+      ]
+    },
+    {
+      "id": "R7.2.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 345
+      },
+      "requirement": "DST: отсутствующее время — первый допустимый момент; повторное — один раз.",
+      "implementation": "C11 nextReportOccurrence; C12 local wall-time helpers.",
+      "codeRefs": [
+        "C11",
+        "C12"
+      ],
+      "verification": "T20/T73.",
+      "testRefs": [
+        "T20",
+        "T73"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 347
+      },
+      "requirement": "После включения/смены времени следующий запуск строго позже Save; нет рассылки прошлых дней.",
+      "implementation": "C08 save; C11 nextReportOccurrence(now).",
+      "codeRefs": [
+        "C08",
+        "C11"
+      ],
+      "verification": "T21/T23.",
+      "testRefs": [
+        "T21",
+        "T23"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 348
+      },
+      "requirement": "Отправленный слот не дублируется после изменения времени или пояса.",
+      "implementation": "C08 eventKey owner+Monday+slot; C10 advance unique; C08 reschedule.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T23 проверяет время; по коду пояс не входит в ключ, отдельного теста смены пояса нет.",
+      "testRefs": [
+        "T23"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V03: отправить слот, сменить пояс и проверить отсутствие повторного события.",
+      "remainingRefs": [
+        "V03"
+      ]
+    },
+    {
+      "id": "R7.2.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 350
+      },
+      "requirement": "Догонять ≤24 часа; старые слоты пропускать без пачки сообщений.",
+      "implementation": "C08 expiresAt/original; C10 job expiry.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T27; чтение сравнения границы 24h.",
+      "testRefs": [
+        "T27"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 352
+      },
+      "requirement": "Первый снимок фиксирует период, цели, starts_on, версию расчёта, formedAt, текст.",
+      "implementation": "C08 ReportSnapshot; C11 ReportSnapshot type; C10 setSnapshot.",
+      "codeRefs": [
+        "C08",
+        "C11",
+        "C10"
+      ],
+      "verification": "T24/T25/T29; чтение состава payload.",
+      "testRefs": [
+        "T24",
+        "T25",
+        "T29"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 354
+      },
+      "requirement": "Повтор использует снимок; новые/исправленные факты попадут в будущие отчёты.",
+      "implementation": "C08 не пересобирает по фактам; C10 payload CAS.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T24 — факт изменён между попытками, текст неизменен.",
+      "testRefs": [
+        "T24"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 355
+      },
+      "requirement": "Позднее первое формирование использует доступные факты исходного периода и фактический asOf.",
+      "implementation": "C08 deliver asOf=now, today=job date; C09 header.",
+      "codeRefs": [
+        "C08",
+        "C09"
+      ],
+      "verification": "T28 — задержка и исходная дата; нет отдельного late-first теста внесённого факта.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: внести факт после слота, до первого формирования, проверить текст/formedAt.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R7.2.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 358
+      },
+      "requirement": "Перед отправкой перепроверить чат, enabled и актуальность настроек.",
+      "implementation": "C08 deliver; C10 claim SQL/revisions/active chat/selection.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T29 — stale selection claim; T30 — удаление; чтение SQL chat/enabled.",
+      "testRefs": [
+        "T29",
+        "T30"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 359
+      },
+      "requirement": "До отправки смена даты/выбора отменяет старый снимок и допускает пересборку непосроченного события.",
+      "implementation": "C08 needsRebuild; C10 save/setSnapshot/claim.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T25/T29/T30.",
+      "testRefs": [
+        "T25",
+        "T29",
+        "T30"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 361
+      },
+      "requirement": "Смена расписания отменяет pending и назначает будущий запуск.",
+      "implementation": "C08 save/reschedule; C10 batch cancels pending.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T21/T23 подтверждают будущий запуск/недублирование; pending+schedule-change у отчёта отдельно не проверен.",
+      "testRefs": [
+        "T21",
+        "T23"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: создать ожидающий weekly-progress, изменить время/тихие часы и проверить отмену/новый слот.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R7.2.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 362
+      },
+      "requirement": "Повторный/параллельный Cron не создаёт вторую обычную отправку.",
+      "implementation": "C10 advance CAS/event key; C10 claim lease; C08 schedule/deliver.",
+      "codeRefs": [
+        "C10",
+        "C08"
+      ],
+      "verification": "T22 — parallel Promise.all; T23.",
+      "testRefs": [
+        "T22",
+        "T23"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R7.2.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 364
+      },
+      "requirement": "При неизвестном результате сохранить unknown, не повторять; не обещать внешнее exactly-once.",
+      "implementation": "C08 catch; C39 failedDeliveryChanges; C37 recover.",
+      "codeRefs": [
+        "C08",
+        "C39",
+        "C37"
+      ],
+      "verification": "T26/T51/T102; чтение unknown recovery.",
+      "testRefs": [
+        "T26",
+        "T51",
+        "T102"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 369
+      },
+      "requirement": "Один Worker app, существующие Static Assets/D1, один минутный Cron; без новых платных ресурсов.",
+      "implementation": "C30 wrangler assets/d1/crons; C41 Worker.",
+      "codeRefs": [
+        "C30",
+        "C41"
+      ],
+      "verification": "T100; чтение конфигурации; корневой monolith smoke.",
+      "testRefs": [
+        "T100"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 377
+      },
+      "requirement": "planning отвечает за цели/факты/правила/диапазон/цепочки; progress — общую дату и чистые формулы.",
+      "implementation": "C06/C07; C01–C05; C40 public contracts.",
+      "codeRefs": [
+        "C06",
+        "C07",
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C40"
+      ],
+      "verification": "T01–T19; boundaries gate и чтение контрактов.",
+      "testRefs": [
+        "T01",
+        "T02",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.03",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 379
+      },
+      "requirement": "reminders — настройки/наследование/задания; telegram-bot — существующий транспорт; frontend форматирует серверные результаты.",
+      "implementation": "C08–C15/C38; C16–C27.",
+      "codeRefs": [
+        "C08",
+        "C09",
+        "C10",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C38",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "C22",
+        "C23",
+        "C24",
+        "C25",
+        "C26",
+        "C27"
+      ],
+      "verification": "T20–T44; статический просмотр импортов и DTO.",
+      "testRefs": [
+        "T20",
+        "T21",
+        "T22",
+        "T23",
+        "T24",
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T29",
+        "T30",
+        "T31",
+        "T32",
+        "T33",
+        "T34",
+        "T35",
+        "T36",
+        "T37",
+        "T38",
+        "T39",
+        "T40",
+        "T41",
+        "T42",
+        "T43",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.04",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 383
+      },
+      "requirement": "Веб, preview, Telegram и Темп используют публичный progress; нет повторения формул в frontend.",
+      "implementation": "C26 useGetApiProgress; C27; C08 progress.overview; C40.",
+      "codeRefs": [
+        "C26",
+        "C27",
+        "C08",
+        "C40"
+      ],
+      "verification": "Чтение вызовов; P01–P39 подтверждают общий domain. Полный путь Темпа не проверен.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07",
+        "P08",
+        "P09",
+        "P10",
+        "P11",
+        "P12",
+        "P13",
+        "P14",
+        "P15",
+        "P16",
+        "P17",
+        "P18",
+        "P19",
+        "P20",
+        "P21",
+        "P22",
+        "P23",
+        "P24",
+        "P25",
+        "P26",
+        "P27",
+        "P28",
+        "P29",
+        "P30",
+        "P31",
+        "P32",
+        "P33",
+        "P34",
+        "P35",
+        "P36",
+        "P37",
+        "P38",
+        "P39"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V01: проверить свежий Темп после изменения даты/факта/правила.",
+      "remainingRefs": [
+        "V01"
+      ]
+    },
+    {
+      "id": "R8.05",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 385
+      },
+      "requirement": "progress читает planning через публичный контракт/порт; часы переданы явно; композиция даёт пояс; нет цикла.",
+      "implementation": "C03 constructor/ProgressQuery; C29; C40.",
+      "codeRefs": [
+        "C03",
+        "C29",
+        "C40"
+      ],
+      "verification": "T01/T17; статическое чтение импортов; boundaries gate.",
+      "testRefs": [
+        "T01",
+        "T17"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.06",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 392
+      },
+      "requirement": "progress_settings: owner, nullable starts_on, revision.",
+      "implementation": "C28 таблица; C04 D1 repository.",
+      "codeRefs": [
+        "C28",
+        "C04"
+      ],
+      "verification": "T15/T25; чтение миграции.",
+      "testRefs": [
+        "T15",
+        "T25"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.07",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 393
+      },
+      "requirement": "progress_report_settings: owner, enabled, 2 локальных времени, ближайшие UTC, revision; пояс/quiet не дублируются.",
+      "implementation": "C28 таблица; C10 settings; C08 general settings.",
+      "codeRefs": [
+        "C28",
+        "C10",
+        "C08"
+      ],
+      "verification": "T21/T23/T28; чтение миграции.",
+      "testRefs": [
+        "T21",
+        "T23",
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.08",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 395
+      },
+      "requirement": "goal_progress_reports: owner/monthly goal/included; false отличается от отсутствия.",
+      "implementation": "C28 таблица; C10 selections/inherit.",
+      "codeRefs": [
+        "C28",
+        "C10"
+      ],
+      "verification": "T35; T42 явные exclusions.",
+      "testRefs": [
+        "T35",
+        "T42"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.09",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 397
+      },
+      "requirement": "weekly-progress использует существующие задания, снимок и состояние доставки.",
+      "implementation": "C11 ReportSnapshot; C37 jobs; C08 schedule/deliver.",
+      "codeRefs": [
+        "C11",
+        "C37",
+        "C08"
+      ],
+      "verification": "T22/T24/T26.",
+      "testRefs": [
+        "T22",
+        "T24",
+        "T26"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.10",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 398
+      },
+      "requirement": "Уникальное событие owner+Monday+wed/sun; время и revision не в ключе.",
+      "implementation": "C08 eventKey; C10 advance unique.",
+      "codeRefs": [
+        "C08",
+        "C10"
+      ],
+      "verification": "T22/T23; чтение string key и ON CONFLICT.",
+      "testRefs": [
+        "T22",
+        "T23"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.11",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 401
+      },
+      "requirement": "Cron обрабатывает reminders OR reports; текущий план и наследование обеим группам.",
+      "implementation": "C13 reports.schedule независимо от activeSettings; C08 schedule; C14/C35.",
+      "codeRefs": [
+        "C13",
+        "C08",
+        "C14",
+        "C35"
+      ],
+      "verification": "T22/T35/T70.",
+      "testRefs": [
+        "T22",
+        "T35",
+        "T70"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.12",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 404
+      },
+      "requirement": "weekly-progress не открывает ввод факта и не проходит вечерний digest/answers.",
+      "implementation": "C13 dispatch; C37 question lookup; C42 reply handler.",
+      "codeRefs": [
+        "C13",
+        "C37",
+        "C42"
+      ],
+      "verification": "Чтение routing/queries; T22 создаёт weekly job, но ответ на него отдельно не проверен.",
+      "testRefs": [
+        "T22"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: ответ/callback на report message не открывает факт и не меняет digest.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R8.13",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 405
+      },
+      "requirement": "Атомарный захват, ограниченные повторы, retry_after, blocked.",
+      "implementation": "C10 claim; C39 failedDeliveryChanges; C08 catch; C38 transport error mapping.",
+      "codeRefs": [
+        "C10",
+        "C39",
+        "C08",
+        "C38"
+      ],
+      "verification": "T22/T24/T26/T51/T94. blocked/429 проверены для вопросов, не полный weekly-progress путь.",
+      "testRefs": [
+        "T22",
+        "T24",
+        "T26",
+        "T51",
+        "T94"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: weekly-progress retry_after/403/lease recovery и максимальный retry count.",
+      "remainingRefs": [
+        "V09"
+      ]
+    },
+    {
+      "id": "R8.14",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 407
+      },
+      "requirement": "Сбои отчётов последних 24 часов входят в состояние доставки.",
+      "implementation": "C37 deliveryIssues(owner,since), без фильтра вида задания; C24 общий счётчик.",
+      "codeRefs": [
+        "C37",
+        "C24"
+      ],
+      "verification": "T95/T96 для общих jobs; browser-results.delivery — общий UI. Вид weekly-progress отдельно не подтверждён.",
+      "testRefs": [
+        "T95",
+        "T96"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V09: проверить weekly job в deliveryIssues; F14: показать разные исходы пользователю.",
+      "remainingRefs": [
+        "V09",
+        "F14"
+      ]
+    },
+    {
+      "id": "R8.15",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 412
+      },
+      "requirement": "GET/PUT /api/progress/settings — общая дата и очистка.",
+      "implementation": "C05 settings routes; C04; C29 authenticated mount.",
+      "codeRefs": [
+        "C05",
+        "C04",
+        "C29"
+      ],
+      "verification": "T15/T19/T41.",
+      "testRefs": [
+        "T15",
+        "T19",
+        "T41"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.16",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 414
+      },
+      "requirement": "GET /api/progress?period=week/month&anchor — обзор.",
+      "implementation": "C05 overview route; C03 overview; generated OpenAPI client.",
+      "codeRefs": [
+        "C05",
+        "C03"
+      ],
+      "verification": "T19/T36; B09; API contract gate.",
+      "testRefs": [
+        "T19",
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.17",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 415
+      },
+      "requirement": "GET /api/progress/goals/:goalId — цель/цепочка.",
+      "implementation": "C05 detail route; C03 input.goalId/chain.",
+      "codeRefs": [
+        "C05",
+        "C03"
+      ],
+      "verification": "T17/T36; B01/B09.",
+      "testRefs": [
+        "T17",
+        "T36"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B09"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.18",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 416
+      },
+      "requirement": "GET /api/reminders/progress-reports?month — настройки/выбор/состояние/запуски.",
+      "implementation": "C15 get; C08 get; C24 query.",
+      "codeRefs": [
+        "C15",
+        "C08",
+        "C24"
+      ],
+      "verification": "T28/T33/T35; B06; OpenAPI gate.",
+      "testRefs": [
+        "T28",
+        "T33",
+        "T35"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B06"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.19",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 417
+      },
+      "requirement": "PUT /api/reminders/progress-reports — атомарно настройки и явные выборы.",
+      "implementation": "C15 put; C08 validate/save; C10 database.batch.",
+      "codeRefs": [
+        "C15",
+        "C08",
+        "C10"
+      ],
+      "verification": "T32/T42/T44 проверяют сохранение/валидацию; rollback всей транзакции не проверен.",
+      "testRefs": [
+        "T32",
+        "T42",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V11: ошибка одной операции batch не оставляет частично обновлённые настройки/starts_on/selection.",
+      "remainingRefs": [
+        "V11"
+      ]
+    },
+    {
+      "id": "R8.20",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 418
+      },
+      "requirement": "POST preview — черновик, без сохранения, заданий или Telegram.",
+      "implementation": "C15 preview; C08 preview без prepareCurrentPlan.",
+      "codeRefs": [
+        "C15",
+        "C08"
+      ],
+      "verification": "T34/T43, B07.",
+      "testRefs": [
+        "T34",
+        "T43"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B07"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.21",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 420
+      },
+      "requirement": "Сохранение выбранного месяца не удаляет настройки других месяцев.",
+      "implementation": "C10 upsert переданных goals, нет DELETE selection.",
+      "codeRefs": [
+        "C10"
+      ],
+      "verification": "T35 — перенос/false; чтение SQL. Явного теста сохранности двух месяцев нет.",
+      "testRefs": [
+        "T35"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V11: сохранить второй месяц и проверить выбор первого.",
+      "remainingRefs": [
+        "V11"
+      ]
+    },
+    {
+      "id": "R8.22",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 420
+      },
+      "requirement": "Ответ: requested/actual, asOf, timeZone, partial, raw counters/denominators и comparison reason.",
+      "implementation": "C01 return DTO; C05 schema; C40 public types.",
+      "codeRefs": [
+        "C01",
+        "C05",
+        "C40"
+      ],
+      "verification": "T01/T08/T13, P01/P18/P19/P26/P28; статический просмотр схемы.",
+      "testRefs": [
+        "T01",
+        "T08",
+        "T13"
+      ],
+      "calculationRefs": [
+        "P01",
+        "P18",
+        "P19",
+        "P26",
+        "P28"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.23",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 423
+      },
+      "requirement": "Сервер валидирует фильтры и берёт owner из сессии.",
+      "implementation": "C05 query schema; C03 owner/goalIds; C15 body; C29 auth.",
+      "codeRefs": [
+        "C05",
+        "C03",
+        "C15",
+        "C29"
+      ],
+      "verification": "T17/T19 проверяют progress; весь report HTTP набор не покрыт.",
+      "testRefs": [
+        "T17",
+        "T19"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V07: проверить каждый report endpoint, чужие IDs/некорректные month/time/dates/selection.",
+      "remainingRefs": [
+        "V07"
+      ]
+    },
+    {
+      "id": "R8.24",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 424
+      },
+      "requirement": "Чужая и отсутствующая цель одинаково 404; unsafe Origin; Problem Details.",
+      "implementation": "C05 handlers; C29 origin/auth; C15 schema/errors.",
+      "codeRefs": [
+        "C05",
+        "C29",
+        "C15"
+      ],
+      "verification": "T17/T19/T99; report HTTP чужие цели/preview не прогнаны.",
+      "testRefs": [
+        "T17",
+        "T19",
+        "T99"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V07: все новые пути, origin/auth/404/Problem Details.",
+      "remainingRefs": [
+        "V07"
+      ]
+    },
+    {
+      "id": "R8.25",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 427
+      },
+      "requirement": "Новая миграция; прежние не переписаны; default enabled=false, starts=null, selection=empty.",
+      "implementation": "C28 additive tables/defaults; C10/C04 defaults.",
+      "codeRefs": [
+        "C28",
+        "C10",
+        "C04"
+      ],
+      "verification": "T15/T32; история implementation a687a2c: новая 0007; чтение SQL.",
+      "testRefs": [
+        "T15",
+        "T32"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.26",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 429
+      },
+      "requirement": "Чтение ограничено владельцем/нужными месяцами, без запроса на каждый факт.",
+      "implementation": "C03 load range; C07 3 bulk reads: goals/entries/ancestry.",
+      "codeRefs": [
+        "C03",
+        "C07"
+      ],
+      "verification": "T17/T71; статический просмотр scope/Promise.all и SQL.",
+      "testRefs": [
+        "T17",
+        "T71"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.27",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 430
+      },
+      "requirement": "Расписания используют индексы; достаточно существующей D1 для личной нагрузки.",
+      "implementation": "C28 enabled+next indexes; C10 active WHERE enabled=1.",
+      "codeRefs": [
+        "C28",
+        "C10"
+      ],
+      "verification": "Индексы есть по коду; query plan/нагрузка не измерялись.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V12: EXPLAIN QUERY PLAN и небольшой локальный профиль Cron/запросов при согласованной личной нагрузке.",
+      "remainingRefs": [
+        "V12"
+      ]
+    },
+    {
+      "id": "R8.28",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 454
+      },
+      "requirement": "Обязательные root pnpm check и boundaries после новых импортов; проверки домена/D1/UI/OpenAPI.",
+      "implementation": "package.json check/boundaries; C43 CI check-only.",
+      "codeRefs": [
+        "C43"
+      ],
+      "verification": "Новый локальный полный gate и boundaries; evidence/acceptance-tests.json (102 tests).",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "R8.29",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 458
+      },
+      "requirement": "Реальная Telegram-доставка проверяется отдельно после разрешённой публикации и явной авторизации теста.",
+      "implementation": "C38 настоящий транспорт; C09 formatter; историческая публикация a687a2c не равна delivery smoke.",
+      "codeRefs": [
+        "C38",
+        "C09"
+      ],
+      "verification": "Во всех местных тестах fake transport; настоящего Telegram smoke в той сессии и этом аудите нет.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "unverified",
+      "remaining": "V13: отдельная разрешённая реальная проверка среды/воскресенья и кнопок; до неё нельзя заявлять реальную доставку проверенной.",
+      "remainingRefs": [
+        "V13"
+      ]
+    },
+    {
+      "id": "R10.01",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 463
+      },
+      "requirement": "Дизайн → расчёты/дата/API/Темп → UI/preview → Cron и приёмка.",
+      "implementation": "design 1bc9399; implementation a687a2c; C01–C30.",
+      "codeRefs": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "C11",
+        "C12",
+        "C13",
+        "C14",
+        "C15",
+        "C16",
+        "C17",
+        "C18",
+        "C19",
+        "C20",
+        "C21",
+        "C22",
+        "C23",
+        "C24",
+        "C25",
+        "C26",
+        "C27",
+        "C28",
+        "C29",
+        "C30"
+      ],
+      "verification": "Git подтверждает дизайн раньше реализации; этот отчёт впервые связывает требования и доказательства.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "Закрыть остаток F01–F16, Q01 и V01–V14 до повторного заявления полной готовности.",
+      "remainingRefs": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "Q01",
+        "V01",
+        "V02",
+        "V03",
+        "V04",
+        "V05",
+        "V06",
+        "V07",
+        "V08",
+        "V09",
+        "V10",
+        "V11",
+        "V12",
+        "V13",
+        "V14"
+      ]
+    },
+    {
+      "id": "R10.02",
+      "source": {
+        "path": "docs/progress-and-telegram-reports.md",
+        "line": 472
+      },
+      "requirement": "Старое планирование и ChatGPT plugin продолжают работать.",
+      "implementation": "C26 web server progress; C27 embedded legacy; пакеты backend/frontend/chatgpt.",
+      "codeRefs": [
+        "C26",
+        "C27"
+      ],
+      "verification": "Полный root gate, существующие planning/plugin tests и monolith smoke; реальный ChatGPT-host flow не проверен.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "V14: smoke прежнего планирования и встроенного плагина в настоящем клиенте; не добавлять новые инструменты.",
+      "remainingRefs": [
+        "V14"
+      ]
+    },
+    {
+      "id": "M01",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№21/33: календарная сетка диалога даты, навигация по месяцам.",
+      "implementation": "C23 только native input type=date.",
+      "codeRefs": [
+        "C23"
+      ],
+      "verification": "browser-results.dateDialog.customCalendarGridCount=0; start-date-desktop/mobile/320 PNG.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F08: реализовать календарь по макету.",
+      "remainingRefs": [
+        "F08"
+      ]
+    },
+    {
+      "id": "M02",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№22: будущая дата в черновике объясняет день старта и отсутствие рассылки до него.",
+      "implementation": "C23 нет ветки future-draft; C24 только поле.",
+      "codeRefs": [
+        "C23",
+        "C24"
+      ],
+      "verification": "browser-supplement.futureDateDraft; date-future-draft.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F08: добавить подсказку до сохранения.",
+      "remainingRefs": [
+        "F08"
+      ]
+    },
+    {
+      "id": "M03",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№22: вся история, сохранение, отмена, ошибка/повтор, сохранено и неверная дата — шесть различимых вариантов.",
+      "implementation": "C23 pending/error/null/cancel; отдельного saved/invalid состояния нет.",
+      "codeRefs": [
+        "C23"
+      ],
+      "verification": "T15/T40/T41, B02; browser-results.dateDialog.",
+      "testRefs": [
+        "T15",
+        "T40",
+        "T41"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B02"
+      ],
+      "status": "partial",
+      "remaining": "F08: подтверждение и отдельная ошибка даты по макету; функциональная серверная валидация работает.",
+      "remainingRefs": [
+        "F08"
+      ]
+    },
+    {
+      "id": "M04",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№23: обзор двух независимых режимов с кратким статусом, количеством целей и ближайшей отправкой.",
+      "implementation": "C25 вкладки вместо двух карточек.",
+      "codeRefs": [
+        "C25"
+      ],
+      "verification": "Чтение JSX C25; reminders-desktop/mobile PNG.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F09: собрать обзор напоминаний и отчётов.",
+      "remainingRefs": [
+        "F09"
+      ]
+    },
+    {
+      "id": "M05",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: выключено / нет подключения / пустой выбор / приостановлено.",
+      "implementation": "C24 connected/selected/state.state.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "T32/T33/T42/T44; чтение UI. Логика есть, карточки состояния упрощены.",
+      "testRefs": [
+        "T32",
+        "T33",
+        "T42",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F09/F14: оформление и действия этих вариантов согласно таблице состояний.",
+      "remainingRefs": [
+        "F09",
+        "F14"
+      ]
+    },
+    {
+      "id": "M06",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: saving/saved/save-error с прежними действующими настройками и сохранённым черновиком.",
+      "implementation": "C24 mutation states.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "T42/T44, B08; чтение pending disabled.",
+      "testRefs": [
+        "T42",
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B08"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "M07",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: тихие часы — реальные дата отправки и исходный период; неверное время — понятная отдельная ошибка.",
+      "implementation": "C24 nextRuns/quiet caption/native time; специального invalid-time пояснения нет.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "T28, B06; чтение time controls и таблицы №24.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B06"
+      ],
+      "status": "partial",
+      "remaining": "F14: сообщение неверного времени; V09: проверить две ближайшие даты и перенос целиком.",
+      "remainingRefs": [
+        "F14",
+        "V09"
+      ]
+    },
+    {
+      "id": "M08",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: loading/load-error/retry, preview-pending/preview-error/retry без отправки.",
+      "implementation": "C24 query/preview states.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "B06/B07, T43.",
+      "testRefs": [
+        "T43"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B06",
+        "B07"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "M09",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: временная ошибка и unknown имеют разные объяснения, будет ли повтор.",
+      "implementation": "C24 один deliveryIssues banner; API отдаёт только общий счётчик.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "browser-results.delivery.distinguishesUnknownFromRetry=false; delivery-aggregate.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F14: отдельные состояния и данные API для них.",
+      "remainingRefs": [
+        "F14"
+      ]
+    },
+    {
+      "id": "M10",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№24: отключённый чат объясняет остановку обоих режимов и ведёт к подключению.",
+      "implementation": "C24 connected banner/link; C25 TelegramConnection.",
+      "codeRefs": [
+        "C24",
+        "C25"
+      ],
+      "verification": "T44; чтение link; полного обоих режимов прогон нет.",
+      "testRefs": [
+        "T44"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F14: состояние/пояснение по макету; V09: оба вида доставки после disconnect.",
+      "remainingRefs": [
+        "F14",
+        "V09"
+      ]
+    },
+    {
+      "id": "M11",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№25: поиск меняет видимые строки; выбранные вне поиска сохраняются.",
+      "implementation": "C24 search/individual checkbox.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "B03/B05.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B03",
+        "B05"
+      ],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    },
+    {
+      "id": "M12",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№25: массовые действия только по найденным; подпись Выбрать/снять найденные и число результатов.",
+      "implementation": "C24 all/none map(state.goals), неизменные подписи.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "B04; browser-results.filteredBulkDeselection.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B04"
+      ],
+      "status": "failed",
+      "remaining": "F01: логика видимых результатов, подписи и счётчики.",
+      "remainingRefs": [
+        "F01"
+      ]
+    },
+    {
+      "id": "M13",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№25: пустой поиск отличается от пустого выбора, сохраняет скрытые цели; кнопка очистки поиска.",
+      "implementation": "C24 сообщение поиска есть; отдельной кнопки очистки нет.",
+      "codeRefs": [
+        "C24"
+      ],
+      "verification": "B05; чтение JSX C24; goal-selection-states.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B05"
+      ],
+      "status": "partial",
+      "remaining": "F01: дополнить поиск действием очистки и пояснением скрытого выбора.",
+      "remainingRefs": [
+        "F01"
+      ]
+    },
+    {
+      "id": "M14",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№03/04/09–12/26: графики различаются по типу; шкала — столбцы; подписи по единицам/типу.",
+      "implementation": "C19 quantity/check bars, scale/time points; общий заголовок.",
+      "codeRefs": [
+        "C19"
+      ],
+      "verification": "browser-supplement.scale; B09; scale-detail.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F06: график шкалы и заголовки по типу; не привязывать к названию цели.",
+      "remainingRefs": [
+        "F06"
+      ]
+    },
+    {
+      "id": "M15",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№03/04/09–12/26: график обозначает missing, excluded, future и ноль.",
+      "implementation": "C19 numeric=null пропускается; ноль рисуется минимум 2px; C18 список состояний.",
+      "codeRefs": [
+        "C19",
+        "C18"
+      ],
+      "verification": "T01/P03, B09; чтение SVG; PNG деталей.",
+      "testRefs": [
+        "T01"
+      ],
+      "calculationRefs": [
+        "P03"
+      ],
+      "browserRefs": [
+        "B09"
+      ],
+      "status": "partial",
+      "remaining": "F06: видимые маркеры/подписи пустых, исключённых и будущих дней на самом графике.",
+      "remainingRefs": [
+        "F06"
+      ]
+    },
+    {
+      "id": "M16",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№26: время без границ корректно изображает 23:50 рядом с 00:10 через полночь.",
+      "implementation": "C19 unwrap только при явном targetStart>targetEnd.",
+      "codeRefs": [
+        "C19"
+      ],
+      "verification": "browser-results.unboundedChart, unbounded-time-chart.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F07: ось времени без условия и перенос через полночь.",
+      "remainingRefs": [
+        "F07"
+      ]
+    },
+    {
+      "id": "M17",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№09/27: текущий и прошлый период полностью — M/D, %, суммы, сравнимые дни.",
+      "implementation": "C18 короткая строка met; C01 comparison sum доступна, старые targets/denominators в DTO неполные.",
+      "codeRefs": [
+        "C18",
+        "C01"
+      ],
+      "verification": "browser-results.comparisonPresentation, comparison-1440/monthly-comparison PNG.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F04: полноценные показатели обоих периодов и подписи актуальности; F02: верная разность.",
+      "remainingRefs": [
+        "F04",
+        "F02"
+      ]
+    },
+    {
+      "id": "M18",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№09: попарные дневные значения сейчас/прошлая неделя.",
+      "implementation": "C18 список только текущих дней; C03 отдаёт comparison aggregate.",
+      "codeRefs": [
+        "C18",
+        "C03"
+      ],
+      "verification": "browser-results.comparisonPresentation.perDayPreviousDatesVisible=false.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F04: данные и вид списка сравнения по дням.",
+      "remainingRefs": [
+        "F04"
+      ]
+    },
+    {
+      "id": "M19",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№10: у любой недельной цели Осталось N, места недельного плана, прошлые недели; у check отдельное число false.",
+      "implementation": "C18 generic detail, история недель только в overview month C16.",
+      "codeRefs": [
+        "C18",
+        "C16"
+      ],
+      "verification": "browser-supplement.training; training-detail.png; P36 независимость от названия.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P36"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F05: универсальные недельные детали и история; false считать только для check.",
+      "remainingRefs": [
+        "F05"
+      ]
+    },
+    {
+      "id": "M20",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№26/32: последнее записанное время без условия — основной показатель; шкала в TG имеет диапазон оценок; недельная сводка — оставшийся план.",
+      "implementation": "C18 нет latest time; C09 scale average без min/max и generic weekly targets.",
+      "codeRefs": [
+        "C18",
+        "C09"
+      ],
+      "verification": "calculation-results.goalTypesReportText; unbounded-time-chart.png; чтение C18/C09.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F11: показатели выводить по tracking/cadence независимо от текста названия.",
+      "remainingRefs": [
+        "F11"
+      ]
+    },
+    {
+      "id": "M21",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№01/02/05–08/32: у количественной цели предусмотрена подпись текущего факта, включая пример воды 1,5 л.",
+      "implementation": "C16/C09 выводят агрегат суммы, текущий факт не выделен.",
+      "codeRefs": [
+        "C16",
+        "C09"
+      ],
+      "verification": "browser-results: overview/reports; calculation-results.goalTypesReportText; PNG образцов.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F11: восстановить предусмотренные типовые подписи; значения брать из фактов, не из названия.",
+      "remainingRefs": [
+        "F11"
+      ]
+    },
+    {
+      "id": "M22",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№08 mobile/33 month-320: в ячейках видны числа и значки результатов, excluded/future различимы.",
+      "implementation": "C17 hidden sm:block/flex, без полного различия фона результата.",
+      "codeRefs": [
+        "C17"
+      ],
+      "verification": "browser-supplement.calendar; B11; month-320.png аудит/эталон.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B11"
+      ],
+      "status": "failed",
+      "remaining": "F03: восстановить мобильный календарь месяца. Недельный mobile PNG намеренно показывает компактную строку дат — он не требует этих же значков.",
+      "remainingRefs": [
+        "F03"
+      ]
+    },
+    {
+      "id": "M23",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№16/17/18/19/27: пустые/недоступные состояния имеют пояснения и целевые действия.",
+      "implementation": "C16 общие state cards/network retry; C20 missingPlan без Open plan.",
+      "codeRefs": [
+        "C16",
+        "C20"
+      ],
+      "verification": "B10 — состояния есть; B12 — нет возврата; state-missing.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B10",
+        "B12"
+      ],
+      "status": "partial",
+      "remaining": "F15: действия Открыть план/К списку, полноценные подписи до/после старта и соседнего плана.",
+      "remainingRefs": [
+        "F15"
+      ]
+    },
+    {
+      "id": "M24",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№05–07/28–32: TG и preview имеют выделенные названия/числа, иконки, отдельные блоки.",
+      "implementation": "C09 plain text; C24 один p.",
+      "codeRefs": [
+        "C09",
+        "C24"
+      ],
+      "verification": "browser-results.preview; reports-1440.png.",
+      "testRefs": [],
+      "calculationRefs": [],
+      "browserRefs": [],
+      "status": "failed",
+      "remaining": "F10: одинаковое оформление preview/Telegram с безопасным пользовательским текстом.",
+      "remainingRefs": [
+        "F10"
+      ]
+    },
+    {
+      "id": "M25",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№29: no-entries ведёт в план; №31: перенос тихими часами объяснён, понедельник исключён.",
+      "implementation": "C09 общие buttons/footer без delayed reason.",
+      "codeRefs": [
+        "C09"
+      ],
+      "verification": "P37, T28; comparison с telegram-no-entries/delayed PNG.",
+      "testRefs": [
+        "T28"
+      ],
+      "calculationRefs": [
+        "P37"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F12/F13: кнопка и пояснение; расчёт периода уже работает.",
+      "remainingRefs": [
+        "F12",
+        "F13"
+      ]
+    },
+    {
+      "id": "M26",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№34/35: временный фильтр с черновиком, подтверждением/отменой, показать все; focus/tooltip и редактирование факта/правила.",
+      "implementation": "C21 dialog/sheet; C19 focus; C18 edit links; C22 rule editor.",
+      "codeRefs": [
+        "C21",
+        "C19",
+        "C18",
+        "C22"
+      ],
+      "verification": "T36/T39, B01/B02/B13; в C22 нет кнопки Отмена/reset; полный keyboard flow не прогнан.",
+      "testRefs": [
+        "T36",
+        "T39"
+      ],
+      "calculationRefs": [],
+      "browserRefs": [
+        "B01",
+        "B02",
+        "B13"
+      ],
+      "status": "partial",
+      "remaining": "F16: отмена черновика правил; V04/V05: действия/сохранение; V10: визуальный фокус/мобильная панель.",
+      "remainingRefs": [
+        "F16",
+        "V04",
+        "V05",
+        "V10"
+      ]
+    },
+    {
+      "id": "M27",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "№27: месячные сравнения, разные правила, отсутствующий соседний план и три состояния серии проявляются в обычных экранах.",
+      "implementation": "C01/C03; C16/C18/C20.",
+      "codeRefs": [
+        "C01",
+        "C03",
+        "C16",
+        "C18",
+        "C20"
+      ],
+      "verification": "P21–P35, T11–T14; browser-results: monthly comparison.",
+      "testRefs": [
+        "T11",
+        "T12",
+        "T13",
+        "T14"
+      ],
+      "calculationRefs": [
+        "P21",
+        "P22",
+        "P23",
+        "P24",
+        "P25",
+        "P26",
+        "P27",
+        "P28",
+        "P29",
+        "P30",
+        "P31",
+        "P32",
+        "P33",
+        "P34",
+        "P35"
+      ],
+      "browserRefs": [],
+      "status": "partial",
+      "remaining": "F02/F04/F15: числа сравнения и представление; отдельная страница из четырёх карточек не нужна.",
+      "remainingRefs": [
+        "F02",
+        "F04",
+        "F15"
+      ]
+    },
+    {
+      "id": "M28",
+      "source": {
+        "path": "frontend/docs/design/progress/README.md",
+        "line": 1
+      },
+      "requirement": "Все названия из sample-data — примеры; поведение определяется tracking и cadence.",
+      "implementation": "C01 signature/isMeasurable/targetsFor; C16/C18/C19/C09 ветвятся по типу/частоте.",
+      "codeRefs": [
+        "C01",
+        "C16",
+        "C18",
+        "C19",
+        "C09"
+      ],
+      "verification": "P36: переименование не меняет результат всех 24 комбинаций типа и частоты; чтение UI/formatter.",
+      "testRefs": [],
+      "calculationRefs": [
+        "P36"
+      ],
+      "browserRefs": [],
+      "status": "verified",
+      "remaining": "—",
+      "remainingRefs": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": 1,
+      "requirement": "Старт 6 октября: 2/2, 100%; 1–5 октября сохранены в плане",
+      "requirementRefs": [
+        "R3.04",
+        "R3.07",
+        "R4.1.10"
+      ],
+      "checkRefs": [
+        "T01",
+        "P01"
+      ],
+      "status": "partial",
+      "note": "Формула проверена. Сохранность фактов и заданий при реальном PUT требует V02."
+    },
+    {
+      "id": 2,
+      "requirement": "4/6=67%, заполненность 5/6=83%, три состояния календаря",
+      "requirementRefs": [
+        "R4.1.06",
+        "R4.1.10",
+        "M22"
+      ],
+      "checkRefs": [
+        "T02",
+        "P02",
+        "B11"
+      ],
+      "status": "partial",
+      "note": "Расчёт верный; мобильный календарь месяца не принят: F03."
+    },
+    {
+      "id": 3,
+      "requirement": "Месячный план 20 → 17, исходный 20 и объяснение",
+      "requirementRefs": [
+        "R4.3.05",
+        "R4.3.07"
+      ],
+      "checkRefs": [
+        "T06",
+        "P12"
+      ],
+      "status": "verified",
+      "note": "Расчёт и исходный план проверены; пояснение присутствует в UI/formatter по коду."
+    },
+    {
+      "id": 4,
+      "requirement": "В среду 2/3 за неделю; будущее не пропуск; месячный итог отдельно",
+      "requirementRefs": [
+        "R4.3.03",
+        "R4.3.04"
+      ],
+      "checkRefs": [
+        "P13",
+        "P39"
+      ],
+      "status": "verified",
+      "note": "Проверены точные примеры и подписи периодов."
+    },
+    {
+      "id": 5,
+      "requirement": "Шкала 1 и 5 → среднее 3, две записи, без оценки успеха",
+      "requirementRefs": [
+        "R4.2.04",
+        "R4.2.07"
+      ],
+      "checkRefs": [
+        "T04",
+        "P10",
+        "B09"
+      ],
+      "status": "verified",
+      "note": "Домен/тексты подтверждены; столбцы макета отдельно остаются F06."
+    },
+    {
+      "id": 6,
+      "requirement": "Ноль, отсутствие записи, ≤/= и интервал через полночь",
+      "requirementRefs": [
+        "R4.1.07",
+        "R4.2.02",
+        "R4.2.08"
+      ],
+      "checkRefs": [
+        "T03",
+        "T05",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "P07"
+      ],
+      "status": "verified",
+      "note": "Все перечисленные формулы подтверждены."
+    },
+    {
+      "id": 7,
+      "requirement": "Очистка/сдвиг возвращают историю; будущий старт/до старта без 0%",
+      "requirementRefs": [
+        "R3.11",
+        "R4.1.12",
+        "R3.13"
+      ],
+      "checkRefs": [
+        "T08",
+        "T09",
+        "T41",
+        "P18",
+        "P19",
+        "P20",
+        "B10"
+      ],
+      "status": "verified",
+      "note": "Формулы, сохранение null и базовые пустые состояния проверены. Полный путь Темпа отдельно V01."
+    },
+    {
+      "id": 8,
+      "requirement": "Среда/воскресенье и два времени, снимок при формировании",
+      "requirementRefs": [
+        "R6.03",
+        "R7.1.01",
+        "R7.1.03",
+        "R7.2.08"
+      ],
+      "checkRefs": [
+        "T22",
+        "T23",
+        "T28"
+      ],
+      "status": "verified",
+      "note": "Проверено с локальной D1 и fake transport; настоящая доставка отдельно V13."
+    },
+    {
+      "id": 9,
+      "requirement": "Выбраны 2 из 5: preview/TG только две, веб все пять; пустой выбор без сообщения",
+      "requirementRefs": [
+        "R6.05",
+        "R6.14",
+        "R5.12"
+      ],
+      "checkRefs": [
+        "T32",
+        "T34",
+        "B03",
+        "B04",
+        "B09"
+      ],
+      "status": "partial",
+      "note": "T34 проверяет 1 из 2, B09 доступность пяти. Точный D1/Cron пример 2 из 5 ещё V06; поиск сломан F01."
+    },
+    {
+      "id": 10,
+      "requirement": "Независимые отчёты/вопросы; disconnect блокирует оба, веб доступен",
+      "requirementRefs": [
+        "R6.10",
+        "R6.12"
+      ],
+      "checkRefs": [
+        "T22",
+        "T44",
+        "T97"
+      ],
+      "status": "partial",
+      "note": "Независимость подтверждена; совместный pending/disconnect сценарий V09."
+    },
+    {
+      "id": 11,
+      "requirement": "Quiet hours/пояс не сдвигают исходный период; DST gap/fold",
+      "requirementRefs": [
+        "R7.2.02",
+        "R7.2.04",
+        "R3.15",
+        "R7.2.06"
+      ],
+      "checkRefs": [
+        "T20",
+        "T28",
+        "T73"
+      ],
+      "status": "partial",
+      "note": "Quiet hours и DST подтверждены; смена пояса/сохранность дат и sent-slot требуют V03."
+    },
+    {
+      "id": 12,
+      "requirement": "Parallel Cron, нет дубля после времени, retry/unknown/expiry",
+      "requirementRefs": [
+        "R7.2.05",
+        "R7.2.07",
+        "R7.2.09",
+        "R7.2.14",
+        "R7.2.15"
+      ],
+      "checkRefs": [
+        "T22",
+        "T23",
+        "T24",
+        "T26",
+        "T27"
+      ],
+      "status": "verified",
+      "note": "Перечисленные исходы подтверждены для weekly-progress."
+    },
+    {
+      "id": 13,
+      "requirement": "Перенос выбора без браузера; две части недели один раз; не объединять по имени",
+      "requirementRefs": [
+        "R6.16",
+        "R4.5.01",
+        "R4.5.02",
+        "R8.11"
+      ],
+      "checkRefs": [
+        "T11",
+        "T35",
+        "T70",
+        "P32",
+        "P33"
+      ],
+      "status": "verified",
+      "note": "Наследование, Cron-вызов подготовки и формулы границ проверены по слоям; выбор обеих частей отдельно V06."
+    },
+    {
+      "id": 14,
+      "requirement": "Корзина/восстановление/порог обновляют текущее; старые сообщения неизменны",
+      "requirementRefs": [
+        "R4.5.07",
+        "R4.5.08",
+        "R4.2.09",
+        "R4.2.10"
+      ],
+      "checkRefs": [
+        "T16",
+        "T24",
+        "T30",
+        "T33"
+      ],
+      "status": "partial",
+      "note": "Базовые механизмы подтверждены; правило только одной из двух месячных версий требует V05."
+    },
+    {
+      "id": 15,
+      "requirement": "Первую неделю не сравнивать с исключённой; последующая среда по одинаковым правилам/дням",
+      "requirementRefs": [
+        "R4.4.06",
+        "R4.4.08",
+        "R4.4.12"
+      ],
+      "checkRefs": [
+        "T13",
+        "P26",
+        "P27",
+        "P28",
+        "P30"
+      ],
+      "status": "partial",
+      "note": "Интервалы верные, но числовая динамика F02 ещё не принята."
+    },
+    {
+      "id": 16,
+      "requirement": "320/390/1440, клавиатура, текст графиков, loading/error/все empty",
+      "requirementRefs": [
+        "R5.08",
+        "R5.14",
+        "R5.17",
+        "R5.18",
+        "R5.19",
+        "R5.20",
+        "R5.21",
+        "M26"
+      ],
+      "checkRefs": [
+        "T36",
+        "T37",
+        "T38",
+        "T39",
+        "B01",
+        "B02",
+        "B09",
+        "B10",
+        "B11",
+        "B12",
+        "B13"
+      ],
+      "status": "partial",
+      "note": "Нет overflow на проверенных ширинах; маркеры/действия/отмена и полная визуальная/keyboard приёмка не закрыты."
+    },
+    {
+      "id": 17,
+      "requirement": "Большой отчёт ≤3500, скрытое число/ссылка, названия безопасны",
+      "requirementRefs": [
+        "R7.1.11",
+        "R7.1.12",
+        "R7.1.14"
+      ],
+      "checkRefs": [
+        "T31",
+        "P38"
+      ],
+      "status": "verified",
+      "note": "Проверено в текущем plain-text formatter. После форматирования F10 проверку нужно повторить."
+    },
+    {
+      "id": 18,
+      "requirement": "Чужие данные/настройки недоступны; preview без jobs и Telegram",
+      "requirementRefs": [
+        "R8.20",
+        "R8.23",
+        "R8.24"
+      ],
+      "checkRefs": [
+        "T17",
+        "T19",
+        "T34"
+      ],
+      "status": "partial",
+      "note": "Preview read-only подтверждён; полная HTTP-матрица report endpoints требует V07."
+    }
+  ],
+  "frames": [
+    {
+      "id": "IJar7",
+      "file": "week-desktop.png",
+      "name": "Прогресс / 01 · Неделя",
+      "width": 1440,
+      "height": 1280,
+      "requirementRefs": [
+        "R5.04",
+        "R5.06",
+        "M21",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "iRvJs",
+      "file": "week-mobile.png",
+      "name": "Прогресс / 02 · Неделя · Мобильный",
+      "width": 390,
+      "height": 1540,
+      "requirementRefs": [
+        "R5.04",
+        "R5.06",
+        "M21",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "VJMzK",
+      "file": "goal-desktop.png",
+      "name": "Прогресс / 03 · Чтение",
+      "width": 1440,
+      "height": 1100,
+      "requirementRefs": [
+        "R4.2.02",
+        "M14",
+        "M15",
+        "R5.20",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "OtGaJ",
+      "file": "goal-mobile.png",
+      "name": "Прогресс / 04 · Чтение · Мобильный",
+      "width": 390,
+      "height": 1210,
+      "requirementRefs": [
+        "R4.2.02",
+        "M14",
+        "M15",
+        "R5.20",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "ycerX",
+      "file": "telegram-settings-desktop.png",
+      "name": "Прогресс / 05 · Отчёты Telegram",
+      "width": 1440,
+      "height": 1347,
+      "requirementRefs": [
+        "R6.03",
+        "R6.07",
+        "R6.09",
+        "M24",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "qArpO",
+      "file": "telegram-settings-mobile.png",
+      "name": "Прогресс / 06 · Отчёты · Мобильный",
+      "width": 390,
+      "height": 1535,
+      "requirementRefs": [
+        "R6.03",
+        "R6.07",
+        "R6.09",
+        "M24",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "SZnty",
+      "file": "telegram-message.png",
+      "name": "Прогресс / 07 · Telegram · Промежуточный итог",
+      "width": 390,
+      "height": 900,
+      "requirementRefs": [
+        "R7.1.01",
+        "R7.1.03",
+        "R7.1.05",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "NMjXR",
+      "file": "month-desktop.png",
+      "name": "Прогресс / 08 · Месяц",
+      "width": 1440,
+      "height": 2074,
+      "requirementRefs": [
+        "R4.3.08",
+        "R5.08",
+        "R5.14",
+        "M22"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "EWC2M",
+      "file": "month-mobile.png",
+      "name": "Прогресс / 08 · Месяц · Мобильный",
+      "width": 390,
+      "height": 2275,
+      "requirementRefs": [
+        "R4.3.08",
+        "R5.08",
+        "R5.14",
+        "M22"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "UZAmv",
+      "file": "comparison-desktop.png",
+      "name": "Прогресс / 09 · Сравнение и серии",
+      "width": 1440,
+      "height": 1396,
+      "requirementRefs": [
+        "M17",
+        "M18",
+        "R4.4.12",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "hpuK2",
+      "file": "comparison-mobile.png",
+      "name": "Прогресс / 09 · Сравнение и серии · Мобильный",
+      "width": 390,
+      "height": 1488,
+      "requirementRefs": [
+        "M17",
+        "M18",
+        "R4.4.12",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "Iedlb",
+      "file": "check-detail-desktop.png",
+      "name": "Прогресс / 10 · Тренировки",
+      "width": 1440,
+      "height": 1245,
+      "requirementRefs": [
+        "R4.2.01",
+        "M19",
+        "M28",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "T56J5",
+      "file": "check-detail-mobile.png",
+      "name": "Прогресс / 10 · Тренировки · Мобильный",
+      "width": 390,
+      "height": 1307,
+      "requirementRefs": [
+        "R4.2.01",
+        "M19",
+        "M28",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "KckiD",
+      "file": "scale-detail-desktop.png",
+      "name": "Прогресс / 11 · Настроение",
+      "width": 1440,
+      "height": 1236,
+      "requirementRefs": [
+        "R4.2.04",
+        "M14",
+        "M15",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "bU1iS",
+      "file": "scale-detail-mobile.png",
+      "name": "Прогресс / 11 · Настроение · Мобильный",
+      "width": 390,
+      "height": 1329,
+      "requirementRefs": [
+        "R4.2.04",
+        "M14",
+        "M15",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "ytHPN",
+      "file": "time-detail-desktop.png",
+      "name": "Прогресс / 12 · Сон",
+      "width": 1440,
+      "height": 1236,
+      "requirementRefs": [
+        "R4.2.05",
+        "M14",
+        "M15",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "Z7I26",
+      "file": "time-detail-mobile.png",
+      "name": "Прогресс / 12 · Сон · Мобильный",
+      "width": 390,
+      "height": 1311,
+      "requirementRefs": [
+        "R4.2.05",
+        "M14",
+        "M15",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "FqChd",
+      "file": "state-loading-desktop.png",
+      "name": "Прогресс / 13 · Загрузка",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.18",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "q4keBJ",
+      "file": "state-loading-mobile.png",
+      "name": "Прогресс / 13 · Загрузка · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.18",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "eqqPl",
+      "file": "state-error-desktop.png",
+      "name": "Прогресс / 14 · Ошибка",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.18",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "OuNTP",
+      "file": "state-error-mobile.png",
+      "name": "Прогресс / 14 · Ошибка · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.18",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "nBHQQ",
+      "file": "state-goals-desktop.png",
+      "name": "Прогресс / 15 · Нет целей",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "cVdVO",
+      "file": "state-goals-mobile.png",
+      "name": "Прогресс / 15 · Нет целей · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "bR2Yt",
+      "file": "state-entries-desktop.png",
+      "name": "Прогресс / 16 · Нет записей",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "rlByB",
+      "file": "state-entries-mobile.png",
+      "name": "Прогресс / 16 · Нет записей · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "Hhvij",
+      "file": "state-before-desktop.png",
+      "name": "Прогресс / 17 · Период до старта",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "Y0iQP",
+      "file": "state-before-mobile.png",
+      "name": "Прогресс / 17 · Период до старта · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "M97CZ",
+      "file": "state-future-desktop.png",
+      "name": "Прогресс / 18 · Будущий старт",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "c1hSoY",
+      "file": "state-future-mobile.png",
+      "name": "Прогресс / 18 · Будущий старт · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "Pw3fc",
+      "file": "state-missing-desktop.png",
+      "name": "Прогресс / 19 · Цель недоступна",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "P4462y",
+      "file": "state-missing-mobile.png",
+      "name": "Прогресс / 19 · Цель недоступна · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.19",
+        "M23",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "cBImK",
+      "file": "state-filter-desktop.png",
+      "name": "Прогресс / 20 · Пустой фильтр",
+      "width": 1440,
+      "height": 900,
+      "requirementRefs": [
+        "R5.12",
+        "M26",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "zb04G",
+      "file": "state-filter-mobile.png",
+      "name": "Прогресс / 20 · Пустой фильтр · Мобильный",
+      "width": 390,
+      "height": 844,
+      "requirementRefs": [
+        "R5.12",
+        "M26",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "CaBm2",
+      "file": "start-date-desktop.png",
+      "name": "Прогресс / 21 · Дата начала",
+      "width": 1440,
+      "height": 1024,
+      "requirementRefs": [
+        "M01",
+        "R3.01",
+        "R3.13",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "a7LzqK",
+      "file": "start-date-mobile.png",
+      "name": "Прогресс / 21 · Дата начала · Мобильный",
+      "width": 390,
+      "height": 900,
+      "requirementRefs": [
+        "M01",
+        "R3.01",
+        "R3.13",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "iXnee",
+      "file": "start-date-states.png",
+      "name": "Прогресс / 22 · Состояния даты",
+      "width": 1920,
+      "height": 1000,
+      "requirementRefs": [
+        "M02",
+        "M03",
+        "R3.12",
+        "R3.13"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "ImbhQ",
+      "file": "reminders-desktop.png",
+      "name": "Прогресс / 23 · Напоминания и отчёты",
+      "width": 1440,
+      "height": 951,
+      "requirementRefs": [
+        "M04",
+        "R6.01"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "mz5oD",
+      "file": "reminders-mobile.png",
+      "name": "Прогресс / 23 · Напоминания и отчёты · Мобильный",
+      "width": 390,
+      "height": 981,
+      "requirementRefs": [
+        "M04",
+        "R6.01"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "DQbgA",
+      "file": "telegram-settings-states.png",
+      "name": "Прогресс / 24 · Состояния отчётов",
+      "width": 1536,
+      "height": 2240,
+      "requirementRefs": [
+        "M05",
+        "M06",
+        "M07",
+        "M08",
+        "M09",
+        "M10"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "cRrRV",
+      "file": "goal-selection-states.png",
+      "name": "Прогресс / 25 · Выбор целей и поиск",
+      "width": 1920,
+      "height": 890,
+      "requirementRefs": [
+        "M11",
+        "M12",
+        "M13"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "uhwCG",
+      "file": "goal-rule-variants.png",
+      "name": "Прогресс / 26 · Варианты правил",
+      "width": 1920,
+      "height": 2120,
+      "requirementRefs": [
+        "M14",
+        "M15",
+        "M16",
+        "M20",
+        "M28"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "kSgo4",
+      "file": "comparison-boundary-states.png",
+      "name": "Прогресс / 27 · Границы и сравнения",
+      "width": 1920,
+      "height": 1140,
+      "requirementRefs": [
+        "M17",
+        "M27",
+        "R4.5.05",
+        "R4.4.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "f1f4JE",
+      "file": "telegram-sunday.png",
+      "name": "Прогресс / 28 · Telegram · Воскресенье",
+      "width": 390,
+      "height": 782,
+      "requirementRefs": [
+        "R7.1.01",
+        "R7.1.03",
+        "R7.1.05",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "E3Jt09",
+      "file": "telegram-no-entries.png",
+      "name": "Прогресс / 29 · Telegram · Нет записей",
+      "width": 390,
+      "height": 511,
+      "requirementRefs": [
+        "R7.1.15",
+        "M25",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "H3B6b",
+      "file": "telegram-truncated.png",
+      "name": "Прогресс / 30 · Telegram · Длинная сводка",
+      "width": 390,
+      "height": 3415,
+      "requirementRefs": [
+        "R7.1.11",
+        "R7.1.12",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "votHE",
+      "file": "telegram-delayed.png",
+      "name": "Прогресс / 31 · Telegram · После тихих часов",
+      "width": 390,
+      "height": 799,
+      "requirementRefs": [
+        "R7.2.03",
+        "M25",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "J1Mes1",
+      "file": "telegram-goal-types.png",
+      "name": "Прогресс / 32 · Telegram · Другие типы",
+      "width": 390,
+      "height": 862,
+      "requirementRefs": [
+        "R4.3.04",
+        "M20",
+        "M21",
+        "M24"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "zSjRn",
+      "file": "start-date-320.png",
+      "name": "Прогресс / 33 · Дата · 320 px",
+      "width": 320,
+      "height": 900,
+      "requirementRefs": [
+        "M01",
+        "R3.01",
+        "R3.13",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "PENYj",
+      "file": "month-320.png",
+      "name": "Прогресс / 33 · Месяц · 320 px",
+      "width": 320,
+      "height": 2334,
+      "requirementRefs": [
+        "R4.3.08",
+        "R5.08",
+        "R5.14",
+        "M22"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "KkbUO",
+      "file": "settings-320.png",
+      "name": "Прогресс / 33 · Настройки · 320 px",
+      "width": 320,
+      "height": 1613,
+      "requirementRefs": [
+        "R6.03",
+        "R6.07",
+        "R6.09",
+        "M24",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "DpCbC",
+      "file": "week-320.png",
+      "name": "Прогресс / 33 · Неделя · 320 px",
+      "width": 320,
+      "height": 1538,
+      "requirementRefs": [
+        "R5.04",
+        "R5.06",
+        "M21",
+        "R5.14"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "SfULy",
+      "file": "interaction-states.png",
+      "name": "Прогресс / 34 · Фильтры и действия",
+      "width": 1920,
+      "height": 910,
+      "requirementRefs": [
+        "M26",
+        "R4.2.09",
+        "R4.2.12"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "LNOeU",
+      "file": "goal-filter-mobile.png",
+      "name": "Прогресс / 35 · Фильтр · Мобильный",
+      "width": 390,
+      "height": 900,
+      "requirementRefs": [
+        "M26",
+        "R5.12"
+      ],
+      "pixelComparison": "not-complete"
+    },
+    {
+      "id": "RHvwO",
+      "file": "overview-map.png",
+      "name": "Прогресс / Карта макетов",
+      "width": 1920,
+      "height": 770,
+      "requirementRefs": [
+        "R5.22"
+      ],
+      "pixelComparison": "not-complete"
+    }
+  ]
+}

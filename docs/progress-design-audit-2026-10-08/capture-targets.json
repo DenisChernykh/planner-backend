@@ -1,0 +1,221 @@
+{
+  "description": "Implementation screenshot names mapped to editable Pen frame IDs; these are not mockup exports.",
+  "targets": [
+    {
+      "id": "IJar7",
+      "render": "week-desktop.png"
+    },
+    {
+      "id": "iRvJs",
+      "render": "week-mobile.png"
+    },
+    {
+      "id": "VJMzK",
+      "render": "goal-desktop.png"
+    },
+    {
+      "id": "OtGaJ",
+      "render": "goal-mobile.png"
+    },
+    {
+      "id": "ycerX",
+      "render": "telegram-settings-desktop.png"
+    },
+    {
+      "id": "qArpO",
+      "render": "telegram-settings-mobile.png"
+    },
+    {
+      "id": "SZnty",
+      "render": "telegram-message.png"
+    },
+    {
+      "id": "NMjXR",
+      "render": "month-desktop.png"
+    },
+    {
+      "id": "EWC2M",
+      "render": "month-mobile.png"
+    },
+    {
+      "id": "UZAmv",
+      "render": "comparison-desktop.png"
+    },
+    {
+      "id": "hpuK2",
+      "render": "comparison-mobile.png"
+    },
+    {
+      "id": "Iedlb",
+      "render": "check-detail-desktop.png"
+    },
+    {
+      "id": "T56J5",
+      "render": "check-detail-mobile.png"
+    },
+    {
+      "id": "KckiD",
+      "render": "scale-detail-desktop.png"
+    },
+    {
+      "id": "bU1iS",
+      "render": "scale-detail-mobile.png"
+    },
+    {
+      "id": "ytHPN",
+      "render": "time-detail-desktop.png"
+    },
+    {
+      "id": "Z7I26",
+      "render": "time-detail-mobile.png"
+    },
+    {
+      "id": "FqChd",
+      "render": "state-loading-desktop.png"
+    },
+    {
+      "id": "q4keBJ",
+      "render": "state-loading-mobile.png"
+    },
+    {
+      "id": "eqqPl",
+      "render": "state-error-desktop.png"
+    },
+    {
+      "id": "OuNTP",
+      "render": "state-error-mobile.png"
+    },
+    {
+      "id": "nBHQQ",
+      "render": "state-goals-desktop.png"
+    },
+    {
+      "id": "cVdVO",
+      "render": "state-goals-mobile.png"
+    },
+    {
+      "id": "bR2Yt",
+      "render": "state-entries-desktop.png"
+    },
+    {
+      "id": "rlByB",
+      "render": "state-entries-mobile.png"
+    },
+    {
+      "id": "Hhvij",
+      "render": "state-before-desktop.png"
+    },
+    {
+      "id": "Y0iQP",
+      "render": "state-before-mobile.png"
+    },
+    {
+      "id": "M97CZ",
+      "render": "state-future-desktop.png"
+    },
+    {
+      "id": "c1hSoY",
+      "render": "state-future-mobile.png"
+    },
+    {
+      "id": "Pw3fc",
+      "render": "state-missing-desktop.png"
+    },
+    {
+      "id": "P4462y",
+      "render": "state-missing-mobile.png"
+    },
+    {
+      "id": "cBImK",
+      "render": "state-filter-desktop.png"
+    },
+    {
+      "id": "zb04G",
+      "render": "state-filter-mobile.png"
+    },
+    {
+      "id": "CaBm2",
+      "render": "start-date-desktop.png"
+    },
+    {
+      "id": "a7LzqK",
+      "render": "start-date-mobile.png"
+    },
+    {
+      "id": "iXnee",
+      "render": "start-date-states.png"
+    },
+    {
+      "id": "ImbhQ",
+      "render": "reminders-desktop.png"
+    },
+    {
+      "id": "mz5oD",
+      "render": "reminders-mobile.png"
+    },
+    {
+      "id": "DQbgA",
+      "render": "telegram-settings-states.png"
+    },
+    {
+      "id": "cRrRV",
+      "render": "goal-selection-states.png"
+    },
+    {
+      "id": "uhwCG",
+      "render": "goal-rule-variants.png"
+    },
+    {
+      "id": "kSgo4",
+      "render": "comparison-boundary-states.png"
+    },
+    {
+      "id": "f1f4JE",
+      "render": "telegram-sunday.png"
+    },
+    {
+      "id": "E3Jt09",
+      "render": "telegram-no-entries.png"
+    },
+    {
+      "id": "H3B6b",
+      "render": "telegram-truncated.png"
+    },
+    {
+      "id": "votHE",
+      "render": "telegram-delayed.png"
+    },
+    {
+      "id": "J1Mes1",
+      "render": "telegram-goal-types.png"
+    },
+    {
+      "id": "zSjRn",
+      "render": "start-date-320.png"
+    },
+    {
+      "id": "PENYj",
+      "render": "month-320.png"
+    },
+    {
+      "id": "KkbUO",
+      "render": "settings-320.png"
+    },
+    {
+      "id": "DpCbC",
+      "render": "week-320.png"
+    },
+    {
+      "id": "SfULy",
+      "render": "interaction-states.png"
+    },
+    {
+      "id": "LNOeU",
+      "render": "goal-filter-mobile.png"
+    },
+    {
+      "id": "RHvwO",
+      "render": "overview-map.png"
+    }
+  ]
+}

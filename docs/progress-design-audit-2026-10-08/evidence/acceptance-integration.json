@@ -1,0 +1,252 @@
+{
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246",
+  "date": "2026-10-09",
+  "method": "Local workerd/D1 HTTP, Cron and transport integration. Focused run: 35 passed; the final root gate revalidates the same source files. No production, real OIDC or Telegram client claim.",
+  "totals": {
+    "passed": 23,
+    "failed": 0
+  },
+  "focusedRunTotals": {
+    "passed": 35,
+    "failed": 0
+  },
+  "profile": {
+    "goals": 30,
+    "entries": 206,
+    "bulkReads": 3,
+    "indexedPlanCount": 5,
+    "evidence": "Counts and index use are derived from passing runtime assertions in A19. Console timing/EXPLAIN row text was not retained by the reporter; no latency or production SLA is claimed."
+  },
+  "tests": [
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 148,
+      "sourceTitle": "changes one saved date through both HTTP forms and restores history for all consumers",
+      "title": "changes one saved date through both HTTP forms and restores history for all consumers",
+      "fullName": "shared start date acceptance changes one saved date through both HTTP forms and restores history for all consumers",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A01"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 176,
+      "sourceTitle": "preserves facts, civil dates, notes, questions and digests when the start changes",
+      "title": "preserves facts, civil dates, notes, questions and digests when the start changes",
+      "fullName": "shared start date acceptance preserves facts, civil dates, notes, questions and digests when the start changes",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A02"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 199,
+      "sourceTitle": "preserves local dates and a sent slot after changing the account timezone",
+      "title": "preserves local dates and a sent slot after changing the account timezone",
+      "fullName": "shared start date acceptance preserves local dates and a sent slot after changing the account timezone",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A03"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 216,
+      "sourceTitle": "edits only one carried monthly version and recalculates its cadence and criterion",
+      "title": "edits only one carried monthly version and recalculates its cadence and criterion",
+      "fullName": "shared start date acceptance edits only one carried monthly version and recalculates its cadence and criterion",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A04"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 241,
+      "sourceTitle": "selects exactly two of five for preview and Cron while web retains five and manual additions stay excluded",
+      "title": "selects exactly two of five for preview and Cron while web retains five and manual additions stay excluded",
+      "fullName": "selection, formatting and atomic persistence acceptance selects exactly two of five for preview and Cron while web retains five and manual additions stay excluded",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A05"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 271,
+      "sourceTitle": "uses safe HTML, literal user text and the same complete blocks in preview and transport",
+      "title": "uses safe HTML, literal user text and the same complete blocks in preview and transport",
+      "fullName": "selection, formatting and atomic persistence acceptance uses safe HTML, literal user text and the same complete blocks in preview and transport",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A06"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 291,
+      "sourceTitle": "rolls back settings, selections and start date if the last batch statement fails",
+      "title": "rolls back settings, selections and start date if the last batch statement fails",
+      "fullName": "selection, formatting and atomic persistence acceptance rolls back settings, selections and start date if the last batch statement fails",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A07"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 323,
+      "sourceTitle": "preserves an explicit selection in another month",
+      "title": "preserves an explicit selection in another month",
+      "fullName": "selection, formatting and atomic persistence acceptance preserves an explicit selection in another month",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A08"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 337,
+      "sourceTitle": "shows pending Sunday and next Wednesday, includes late original-period facts and labels the quiet-hour delay",
+      "title": "shows pending Sunday and next Wednesday, includes late original-period facts and labels the quiet-hour delay",
+      "fullName": "schedule and delivery acceptance shows pending Sunday and next Wednesday, includes late original-period facts and labels the quiet-hour delay",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A09"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 358,
+      "sourceTitle": "cancels unsent jobs after a %s change and recalculates both next runs",
+      "title": "cancels unsent jobs after a schedule change and recalculates both next runs",
+      "fullName": "schedule and delivery acceptance cancels unsent jobs after a schedule change and recalculates both next runs",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A10"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 358,
+      "sourceTitle": "cancels unsent jobs after a %s change and recalculates both next runs",
+      "title": "cancels unsent jobs after a quiet change and recalculates both next runs",
+      "fullName": "schedule and delivery acceptance cancels unsent jobs after a quiet change and recalculates both next runs",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A11"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 377,
+      "sourceTitle": "honours retry_after, limits confirmed retries and scopes the 24-hour warning to reports and owner",
+      "title": "honours retry_after, limits confirmed retries and scopes the 24-hour warning to reports and owner",
+      "fullName": "schedule and delivery acceptance honours retry_after, limits confirmed retries and scopes the 24-hour warning to reports and owner",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A12"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 406,
+      "sourceTitle": "blocks both kinds after Telegram 403 and cancels both kinds after disconnect",
+      "title": "blocks both kinds after Telegram 403 and cancels both kinds after disconnect",
+      "fullName": "schedule and delivery acceptance blocks both kinds after Telegram 403 and cancels both kinds after disconnect",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A13"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 439,
+      "sourceTitle": "never turns a reply to a report into a fact or question",
+      "title": "never turns a reply to a report into a fact or question",
+      "fullName": "schedule and delivery acceptance never turns a reply to a report into a fact or question",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A14"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 454,
+      "sourceTitle": "protects all seven API paths and returns Problem Details on untrusted mutations",
+      "title": "protects all seven API paths and returns Problem Details on untrusted mutations",
+      "fullName": "new HTTP route acceptance protects all seven API paths and returns Problem Details on untrusted mutations",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A15"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 480,
+      "sourceTitle": "keeps foreign and missing IDs indistinguishable for details, filters and report selection",
+      "title": "keeps foreign and missing IDs indistinguishable for details, filters and report selection",
+      "fullName": "new HTTP route acceptance keeps foreign and missing IDs indistinguishable for details, filters and report selection",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A16"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 513,
+      "sourceTitle": "rejects invalid civil dates, month, times and filters without writing or sending",
+      "title": "rejects invalid civil dates, month, times and filters without writing or sending",
+      "fullName": "new HTTP route acceptance rejects invalid civil dates, month, times and filters without writing or sending",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A17"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 544,
+      "sourceTitle": "makes HTTP preview read-only across settings, selection, jobs and month preparation",
+      "title": "makes HTTP preview read-only across settings, selection, jobs and month preparation",
+      "fullName": "new HTTP route acceptance makes HTTP preview read-only across settings, selection, jobs and month preparation",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A18"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 569,
+      "sourceTitle": "uses indexed bulk reads for a personal plan without one query per goal",
+      "title": "uses indexed bulk reads for a personal plan without one query per goal",
+      "fullName": "bounded D1 profile uses indexed bulk reads for a personal plan without one query per goal",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A19"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 642,
+      "sourceTitle": "counts selected monthly versions once and keeps two monthly plans separate",
+      "title": "counts selected monthly versions once and keeps two monthly plans separate",
+      "fullName": "monthly boundary and report leases counts selected monthly versions once and keeps two monthly plans separate",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A20"
+    },
+    {
+      "path": "backend/test/progress-acceptance.spec.ts",
+      "line": 724,
+      "sourceTitle": "claims a weekly delivery with one 60-second lease and never reclaims the delivered slot",
+      "title": "claims a weekly delivery with one 60-second lease and never reclaims the delivered slot",
+      "fullName": "monthly boundary and report leases claims a weekly delivery with one 60-second lease and never reclaims the delivered slot",
+      "status": "passed",
+      "sourceSha256": "fb7d0c0d6457e3534726c396622818a5866d8a534854a73ccb5b73c58f6d9c11",
+      "id": "A21"
+    },
+    {
+      "path": "backend/test/app.spec.ts",
+      "line": 336,
+      "sourceTitle": "restores the report's period after login using the encrypted flow, without changing the OIDC callback",
+      "title": "restores the report's period after login using the encrypted flow, without changing the OIDC callback",
+      "fullName": "Telegram session and owned Notes reference restores the report's period after login using the encrypted flow, without changing the OIDC callback",
+      "status": "passed",
+      "sourceSha256": "6a817f69d25a05bd89e23d30da31920062d1f8f2b89e8d72eb40be2b4f9366d9",
+      "id": "A22"
+    },
+    {
+      "path": "backend/test/app.spec.ts",
+      "line": 360,
+      "sourceTitle": "rejects external, protocol-relative, malformed and oversized login destinations without creating a flow",
+      "title": "rejects external, protocol-relative, malformed and oversized login destinations without creating a flow",
+      "fullName": "Telegram session and owned Notes reference rejects external, protocol-relative, malformed and oversized login destinations without creating a flow",
+      "status": "passed",
+      "sourceSha256": "6a817f69d25a05bd89e23d30da31920062d1f8f2b89e8d72eb40be2b4f9366d9",
+      "id": "A23"
+    }
+  ]
+}

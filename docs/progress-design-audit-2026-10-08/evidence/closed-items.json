@@ -1,0 +1,469 @@
+{
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246",
+  "date": "2026-10-09",
+  "items": [
+    {
+      "id": "F01",
+      "status": "closed-local",
+      "implementation": "Массовый выбор меняет только найденные строки; скрытый выбор сохраняется; доступна очистка поиска.",
+      "codeRefs": [
+        "C24"
+      ],
+      "checkRefs": [
+        "B03",
+        "B04",
+        "B05",
+        "A05"
+      ]
+    },
+    {
+      "id": "F02",
+      "status": "closed-local",
+      "implementation": "deltaPoints округляет разность исходных долей один раз; веб и Telegram получают один расчёт.",
+      "codeRefs": [
+        "C01",
+        "C09"
+      ],
+      "checkRefs": [
+        "P27",
+        "P30"
+      ]
+    },
+    {
+      "id": "F03",
+      "status": "closed-local",
+      "implementation": "Календарь месяца сохраняет числитель, значки и отдельные excluded/future на 320 и 390 px.",
+      "codeRefs": [
+        "C17"
+      ],
+      "checkRefs": [
+        "B09",
+        "B11",
+        "D01"
+      ]
+    },
+    {
+      "id": "F04",
+      "status": "closed-local",
+      "implementation": "Сравнение содержит оба M/D, проценты, суммы/средние, пары дней и подпись незавершённого дня.",
+      "codeRefs": [
+        "C01",
+        "C03",
+        "C18"
+      ],
+      "checkRefs": [
+        "P26",
+        "P29",
+        "P30",
+        "B09",
+        "D01"
+      ]
+    },
+    {
+      "id": "F05",
+      "status": "closed-local",
+      "implementation": "Недельные детали показывают остаток, места плана, false и историю прежних недель; месяц остаётся набором недель.",
+      "codeRefs": [
+        "C01",
+        "C03",
+        "C18"
+      ],
+      "checkRefs": [
+        "P13",
+        "P15",
+        "P36",
+        "B28",
+        "A04",
+        "D01"
+      ]
+    },
+    {
+      "id": "F06",
+      "status": "closed-local",
+      "implementation": "Графики используют столбцы для количества/шкалы, точки для времени, оси/порог и текстовые состояния; записанные наблюдения имеют отдельные значки.",
+      "codeRefs": [
+        "C19",
+        "C18",
+        "C17"
+      ],
+      "checkRefs": [
+        "B01",
+        "B09",
+        "D01"
+      ]
+    },
+    {
+      "id": "F07",
+      "status": "closed-local",
+      "implementation": "Круговая ось времени разрывается в самом большом промежутке: 23:50 и 00:10 соседствуют; среднее часов не вводится.",
+      "codeRefs": [
+        "C45",
+        "C19"
+      ],
+      "checkRefs": [
+        "T103",
+        "T104",
+        "T105",
+        "D01"
+      ]
+    },
+    {
+      "id": "F08",
+      "status": "closed-local",
+      "implementation": "Общий календарь даты поддерживает месяц/клавиатуру, future/null/invalid, cancel, pending, error/retry и явный успех.",
+      "codeRefs": [
+        "C44",
+        "C23",
+        "C24"
+      ],
+      "checkRefs": [
+        "B02",
+        "B16",
+        "B17",
+        "B27",
+        "D01"
+      ]
+    },
+    {
+      "id": "F09",
+      "status": "closed-local",
+      "implementation": "Обзор содержит две карточки независимых режимов, переключатели, статус/выбор/следующий запуск и переходы.",
+      "codeRefs": [
+        "C25",
+        "C24"
+      ],
+      "checkRefs": [
+        "B21",
+        "A13",
+        "D01"
+      ]
+    },
+    {
+      "id": "F10",
+      "status": "closed-local",
+      "implementation": "Структурированные блоки preview и безопасный HTML Telegram выделяют заголовки/основные числа и используют иконки типа.",
+      "codeRefs": [
+        "C09",
+        "C24",
+        "C38"
+      ],
+      "checkRefs": [
+        "A06",
+        "P38",
+        "B20",
+        "D01"
+      ]
+    },
+    {
+      "id": "F11",
+      "status": "closed-local",
+      "implementation": "Количество показывает сегодняшний факт, шкала — диапазон, время без условия — последнюю запись, недельный план — остаток. Ветви определяются tracking/cadence.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C09"
+      ],
+      "checkRefs": [
+        "P11",
+        "P36",
+        "P39",
+        "B09",
+        "D01"
+      ]
+    },
+    {
+      "id": "F12",
+      "status": "closed-local",
+      "implementation": "Сводка без записей ведёт в план; защищённый вход восстанавливает исходный адрес и период.",
+      "codeRefs": [
+        "C09",
+        "C46",
+        "C47",
+        "C48",
+        "C49",
+        "C50"
+      ],
+      "checkRefs": [
+        "P37",
+        "A22",
+        "A23",
+        "B26"
+      ]
+    },
+    {
+      "id": "F13",
+      "status": "closed-local",
+      "implementation": "Перенесённый отчёт объясняет тихие часы и исходное время воскресенья; понедельник явно исключён.",
+      "codeRefs": [
+        "C09",
+        "C08"
+      ],
+      "checkRefs": [
+        "T28",
+        "A09",
+        "D01"
+      ]
+    },
+    {
+      "id": "F14",
+      "status": "closed-local",
+      "implementation": "retrying/unknown/failed имеют отдельные пояснения; предупреждения ограничены владельцем и 24 часами; invalid time и disconnected различимы.",
+      "codeRefs": [
+        "C08",
+        "C10",
+        "C15",
+        "C24"
+      ],
+      "checkRefs": [
+        "A12",
+        "A13",
+        "B25",
+        "D01"
+      ]
+    },
+    {
+      "id": "F15",
+      "status": "closed-local",
+      "implementation": "Все пустые состояния выделены отдельно: без нулевой сводки при отсутствии записей, с иконкой/пояснением и подходящим действием.",
+      "codeRefs": [
+        "C16",
+        "C20",
+        "C23"
+      ],
+      "checkRefs": [
+        "B10",
+        "B12",
+        "D01"
+      ]
+    },
+    {
+      "id": "F16",
+      "status": "closed-local",
+      "implementation": "Отмена правила восстанавливает исходные значения без PATCH; сохранение/error/retry/pending и предупреждение доступны.",
+      "codeRefs": [
+        "C22"
+      ],
+      "checkRefs": [
+        "B13",
+        "B22"
+      ]
+    },
+    {
+      "id": "Q01",
+      "status": "closed-local",
+      "implementation": "Мини-график реализован по прямому требованию §5.5. Обзорные кадры Pen его не содержат, но не запрещают; дополнение и отличие явно записаны в ТЗ и design-qa.md, без заявления о согласовании изменения Pen.",
+      "codeRefs": [
+        "C16",
+        "C19"
+      ],
+      "checkRefs": [
+        "B09",
+        "D01"
+      ]
+    },
+    {
+      "id": "V01",
+      "status": "closed-local",
+      "implementation": "Обе HTTP-формы сохраняют один старт в D1; все потребители пересчитываются, Темп получает тот же знаменатель.",
+      "codeRefs": [
+        "C03",
+        "C04",
+        "C08",
+        "C26",
+        "C27"
+      ],
+      "checkRefs": [
+        "A01",
+        "A02",
+        "B17",
+        "B23"
+      ]
+    },
+    {
+      "id": "V02",
+      "status": "closed-local",
+      "implementation": "PUT старта сохраняет civil dates, значения, заметки и pending вопросы/digest; ранние факты остаются доступными.",
+      "codeRefs": [
+        "C04",
+        "C07",
+        "C13"
+      ],
+      "checkRefs": [
+        "A02"
+      ]
+    },
+    {
+      "id": "V03",
+      "status": "closed-local",
+      "implementation": "Смена пояса сохраняет даты фактов/старта и не повторяет уже отправленный слот.",
+      "codeRefs": [
+        "C37",
+        "C08",
+        "C10"
+      ],
+      "checkRefs": [
+        "A03"
+      ]
+    },
+    {
+      "id": "V04",
+      "status": "closed-local",
+      "implementation": "URL/reload/back/forward/current, клавиатура, cancel и возврат фокуса проверены в работающем интерфейсе.",
+      "codeRefs": [
+        "C16",
+        "C19",
+        "C21",
+        "C22",
+        "C23",
+        "C24"
+      ],
+      "checkRefs": [
+        "B01",
+        "B02",
+        "B14",
+        "B15",
+        "B16",
+        "B18",
+        "B19",
+        "B20",
+        "B22",
+        "B27"
+      ]
+    },
+    {
+      "id": "V05",
+      "status": "closed-local",
+      "implementation": "Порог/cadence пересчитываются только у выбранной месячной версии; соседняя сохраняется; UI предупреждает и поддерживает cancel/retry.",
+      "codeRefs": [
+        "C07",
+        "C01",
+        "C22"
+      ],
+      "checkRefs": [
+        "A04",
+        "B13",
+        "B22"
+      ]
+    },
+    {
+      "id": "V06",
+      "status": "closed-local",
+      "implementation": "Точный набор 2 из 5 проходит HTTP preview/Cron при 5 в вебе; manual additions исключены; месячные части считаются один раз.",
+      "codeRefs": [
+        "C08",
+        "C03",
+        "C01"
+      ],
+      "checkRefs": [
+        "A05",
+        "A20"
+      ]
+    },
+    {
+      "id": "V07",
+      "status": "closed-local",
+      "implementation": "Семь HTTP-путей проверены без сессии, с чужими ID/Origin и неверными данными; preview read-only; вход восстанавливает безопасный адрес.",
+      "codeRefs": [
+        "C05",
+        "C15",
+        "C29",
+        "C46",
+        "C47",
+        "C48",
+        "C49",
+        "C50"
+      ],
+      "checkRefs": [
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A22",
+        "A23",
+        "B26"
+      ]
+    },
+    {
+      "id": "V08",
+      "status": "closed-local",
+      "implementation": "Без ежедневных измеримых целей календарь скрыт; без ежедневных целей скрыта ежедневная заполненность.",
+      "codeRefs": [
+        "C16",
+        "C17"
+      ],
+      "checkRefs": [
+        "B24"
+      ]
+    },
+    {
+      "id": "V09",
+      "status": "closed-local",
+      "implementation": "Pending Sunday/Wednesday, поздний снимок, schedule/quiet cancellation, retry_after/лимит/lease, unknown, 403/disconnect и ответ на report проверены локально.",
+      "codeRefs": [
+        "C08",
+        "C10",
+        "C13",
+        "C38",
+        "C39",
+        "C42"
+      ],
+      "checkRefs": [
+        "A09",
+        "A10",
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A21",
+        "B19",
+        "B25"
+      ]
+    },
+    {
+      "id": "V10",
+      "status": "closed-local",
+      "implementation": "Редактируемые 53 UI/таблицы сверены с локальным интерфейсом и состояниями; расхождения, итерации и допустимые добавления указаны в design-qa.md.",
+      "codeRefs": [
+        "C16",
+        "C18",
+        "C19",
+        "C23",
+        "C24",
+        "C25",
+        "C31"
+      ],
+      "checkRefs": [
+        "D01",
+        "D02",
+        "B09"
+      ]
+    },
+    {
+      "id": "V11",
+      "status": "closed-local",
+      "implementation": "Ошибка последней команды batch откатывает настройки, дату и выбор; выбор другого месяца сохраняется.",
+      "codeRefs": [
+        "C10",
+        "C08"
+      ],
+      "checkRefs": [
+        "A07",
+        "A08",
+        "B19"
+      ]
+    },
+    {
+      "id": "V12",
+      "status": "closed-local",
+      "implementation": "Локальный профиль: 30 целей, 206 фактов, три bulk-read; пять EXPLAIN используют индексы; один существующий Cron.",
+      "codeRefs": [
+        "C07",
+        "C10",
+        "C30"
+      ],
+      "checkRefs": [
+        "A19"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,763 @@
+{
+  "source": "live Pen MCP captures; saved PNGs compared only to establish freshness",
+  "equal": 53,
+  "total": 54,
+  "frames": [
+    {
+      "id": "IJar7",
+      "file": "week-desktop.png",
+      "savedPngSize": [
+        1440,
+        1280
+      ],
+      "livePenSize": [
+        1440,
+        1280
+      ],
+      "bytesEqual": false,
+      "liveSha256": "e621a0be543cb9779f9656d5f0e00d544dfd67b336b5c1fa893c27b8c0fbbdbd"
+    },
+    {
+      "id": "iRvJs",
+      "file": "week-mobile.png",
+      "savedPngSize": [
+        390,
+        1540
+      ],
+      "livePenSize": [
+        390,
+        1540
+      ],
+      "bytesEqual": true,
+      "liveSha256": "013c4100a853b12a4de7621738993e655d5a256b088c7b276fb18b0071b2ed31"
+    },
+    {
+      "id": "VJMzK",
+      "file": "goal-desktop.png",
+      "savedPngSize": [
+        1440,
+        1100
+      ],
+      "livePenSize": [
+        1440,
+        1100
+      ],
+      "bytesEqual": true,
+      "liveSha256": "ce8505325cbde7f81ccfefede5201bce7e436b385ad34b33303ce61c2b13503e"
+    },
+    {
+      "id": "OtGaJ",
+      "file": "goal-mobile.png",
+      "savedPngSize": [
+        390,
+        1210
+      ],
+      "livePenSize": [
+        390,
+        1210
+      ],
+      "bytesEqual": true,
+      "liveSha256": "616c5ad6eb4b322e6ab318c878c43b226a0f06f929cded8fe8694f7f6764ee6e"
+    },
+    {
+      "id": "ycerX",
+      "file": "telegram-settings-desktop.png",
+      "savedPngSize": [
+        1440,
+        1347
+      ],
+      "livePenSize": [
+        1440,
+        1347
+      ],
+      "bytesEqual": true,
+      "liveSha256": "923378c3507fb6dff268223ea610c5f2c49744b5505eed98e728c44b9b64504b"
+    },
+    {
+      "id": "qArpO",
+      "file": "telegram-settings-mobile.png",
+      "savedPngSize": [
+        390,
+        1535
+      ],
+      "livePenSize": [
+        390,
+        1535
+      ],
+      "bytesEqual": true,
+      "liveSha256": "530175e2a8c35c4dc0a59a3b770a1c63b1973dcc9a3d697e8a1d546deeda0d8a"
+    },
+    {
+      "id": "SZnty",
+      "file": "telegram-message.png",
+      "savedPngSize": [
+        390,
+        900
+      ],
+      "livePenSize": [
+        390,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "c2a3c19faa8ba5df3d24bc9425b2dacc81ad9ad3e57b13445ec17ed8d9a94d41"
+    },
+    {
+      "id": "NMjXR",
+      "file": "month-desktop.png",
+      "savedPngSize": [
+        1440,
+        2074
+      ],
+      "livePenSize": [
+        1440,
+        2074
+      ],
+      "bytesEqual": true,
+      "liveSha256": "c147d8729993200f5412747610d45f6f12a87492baf89d8809d639bf3efe78bf"
+    },
+    {
+      "id": "EWC2M",
+      "file": "month-mobile.png",
+      "savedPngSize": [
+        390,
+        2275
+      ],
+      "livePenSize": [
+        390,
+        2275
+      ],
+      "bytesEqual": true,
+      "liveSha256": "ff623baa8d232cff4db9e4d2026da48a75f08d4876e466077a95f0d5410465d1"
+    },
+    {
+      "id": "UZAmv",
+      "file": "comparison-desktop.png",
+      "savedPngSize": [
+        1440,
+        1396
+      ],
+      "livePenSize": [
+        1440,
+        1396
+      ],
+      "bytesEqual": true,
+      "liveSha256": "aac89e7f8d5794c9db8f0d59842b93a3fc94250f2688bca03cb6e6d928794e7b"
+    },
+    {
+      "id": "hpuK2",
+      "file": "comparison-mobile.png",
+      "savedPngSize": [
+        390,
+        1488
+      ],
+      "livePenSize": [
+        390,
+        1488
+      ],
+      "bytesEqual": true,
+      "liveSha256": "4fa9b05e3adbd7827b5b4855dcc4dd6218a5e5347893a3c2a7657d8520285202"
+    },
+    {
+      "id": "Iedlb",
+      "file": "check-detail-desktop.png",
+      "savedPngSize": [
+        1440,
+        1245
+      ],
+      "livePenSize": [
+        1440,
+        1245
+      ],
+      "bytesEqual": true,
+      "liveSha256": "739b448428b34718206e6529c45dd6a242d2331a57cd09be0e137d8b7056bc12"
+    },
+    {
+      "id": "T56J5",
+      "file": "check-detail-mobile.png",
+      "savedPngSize": [
+        390,
+        1307
+      ],
+      "livePenSize": [
+        390,
+        1307
+      ],
+      "bytesEqual": true,
+      "liveSha256": "0e9ce0284109cb1407ac8cf8ebd14ea9db1faf0471a58c7d2469a9d9260eeed1"
+    },
+    {
+      "id": "KckiD",
+      "file": "scale-detail-desktop.png",
+      "savedPngSize": [
+        1440,
+        1236
+      ],
+      "livePenSize": [
+        1440,
+        1236
+      ],
+      "bytesEqual": true,
+      "liveSha256": "d41f9761140c5af96ffb28591627b0ce19c0f668c2858e0baed6e7d60e7eea4c"
+    },
+    {
+      "id": "bU1iS",
+      "file": "scale-detail-mobile.png",
+      "savedPngSize": [
+        390,
+        1329
+      ],
+      "livePenSize": [
+        390,
+        1329
+      ],
+      "bytesEqual": true,
+      "liveSha256": "c3267e14e620a76caa98560d31b70e97db347c1a181ba31f3d23b0fcf2cd44fc"
+    },
+    {
+      "id": "ytHPN",
+      "file": "time-detail-desktop.png",
+      "savedPngSize": [
+        1440,
+        1236
+      ],
+      "livePenSize": [
+        1440,
+        1236
+      ],
+      "bytesEqual": true,
+      "liveSha256": "df2a8fa48b4c2b069611f9b9fb6eb944c65dc28d0715307d02244b36c74604df"
+    },
+    {
+      "id": "Z7I26",
+      "file": "time-detail-mobile.png",
+      "savedPngSize": [
+        390,
+        1311
+      ],
+      "livePenSize": [
+        390,
+        1311
+      ],
+      "bytesEqual": true,
+      "liveSha256": "24914e355c1167e5d70efffe378850fb152a4ddf7501570f87a37bd8ca7668f0"
+    },
+    {
+      "id": "FqChd",
+      "file": "state-loading-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "4559905dafeb4a85e401c2c430e29fcf1947535e0edc48d79be299ad21c95260"
+    },
+    {
+      "id": "q4keBJ",
+      "file": "state-loading-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "d6f31a8a932033f51e24ca1653dc492d5f8cb7e6f7f7e3e25be5c052c3d4af36"
+    },
+    {
+      "id": "eqqPl",
+      "file": "state-error-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "f9bdebd7541ed0acf99016c673def4b8c58dae4c790d214f72788a33be1c3328"
+    },
+    {
+      "id": "OuNTP",
+      "file": "state-error-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "fea78e29d832b4982fd76cf63fe7c8a89b0917b4fdab01977fa3479fe1f5de72"
+    },
+    {
+      "id": "nBHQQ",
+      "file": "state-goals-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "e6dfb6e3cd35c831acd5895a71a968106d3438627599c27f5940d33de88c6a91"
+    },
+    {
+      "id": "cVdVO",
+      "file": "state-goals-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "de37d11658a3bb1ad5270b8c76ba7b26dddb56811dc53b7332490ce9e3f457b7"
+    },
+    {
+      "id": "bR2Yt",
+      "file": "state-entries-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "1d31b760d61f224d8dafe0970901c5d78aee5f4593e913f6a311890c41741d75"
+    },
+    {
+      "id": "rlByB",
+      "file": "state-entries-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "29ebd28c8ff4beeb0dd776e199d8bde06718ea8c6d3771d2446a2c13bbd48db4"
+    },
+    {
+      "id": "Hhvij",
+      "file": "state-before-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "31219e4365db237442ceefabd591b1b395fade899f1d36d4860c20d4c76092de"
+    },
+    {
+      "id": "Y0iQP",
+      "file": "state-before-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "cb2d5e1bf8461a8355053f876d7be318574d517ae6a5d3089cdc894187b836c6"
+    },
+    {
+      "id": "M97CZ",
+      "file": "state-future-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "b79020e5c5481244a1f7587dc56980828e2fc9af71697cea6fc77ec70f56269b"
+    },
+    {
+      "id": "c1hSoY",
+      "file": "state-future-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "c1b45e4cac49080b9513385df9b4c0da2924b2965f3380a5317d6974850639ae"
+    },
+    {
+      "id": "Pw3fc",
+      "file": "state-missing-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "5c9c4717e37d32bd22afffa547d85d1929f1c095f108d00d33640a64af7daaf9"
+    },
+    {
+      "id": "P4462y",
+      "file": "state-missing-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "5e4cecaef3203fc29524c7407c2c71c9ae017e4ecc0d0fbfbf230436fe6b4970"
+    },
+    {
+      "id": "cBImK",
+      "file": "state-filter-desktop.png",
+      "savedPngSize": [
+        1440,
+        900
+      ],
+      "livePenSize": [
+        1440,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "862a36ce8944943f649913df54c6945ba2e5fb6c6c8a8016a4346736fde9f952"
+    },
+    {
+      "id": "zb04G",
+      "file": "state-filter-mobile.png",
+      "savedPngSize": [
+        390,
+        844
+      ],
+      "livePenSize": [
+        390,
+        844
+      ],
+      "bytesEqual": true,
+      "liveSha256": "48893cf889fae4e98032d02f940b605a1ef6a3300d64cde61f43730ba8351abc"
+    },
+    {
+      "id": "CaBm2",
+      "file": "start-date-desktop.png",
+      "savedPngSize": [
+        1440,
+        1024
+      ],
+      "livePenSize": [
+        1440,
+        1024
+      ],
+      "bytesEqual": true,
+      "liveSha256": "0f14bd3e531d4ad16ac7e964f3879f9e8cd5e0d7b7ec08ade0b4559bb00820b2"
+    },
+    {
+      "id": "a7LzqK",
+      "file": "start-date-mobile.png",
+      "savedPngSize": [
+        390,
+        900
+      ],
+      "livePenSize": [
+        390,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "3b0863f9473841585292dccc5bef3ebef712dd7f8aacaa9296b8389393f8d833"
+    },
+    {
+      "id": "iXnee",
+      "file": "start-date-states.png",
+      "savedPngSize": [
+        1920,
+        1000
+      ],
+      "livePenSize": [
+        1920,
+        1000
+      ],
+      "bytesEqual": true,
+      "liveSha256": "b7e3f70f6c94f250ad3bb998577677c3a0093609366b255349067bbea9551bee"
+    },
+    {
+      "id": "ImbhQ",
+      "file": "reminders-desktop.png",
+      "savedPngSize": [
+        1440,
+        951
+      ],
+      "livePenSize": [
+        1440,
+        951
+      ],
+      "bytesEqual": true,
+      "liveSha256": "380ee1ad1462e51e5e44a7a3b8937664deef4ac7427dc9a6a8ae95a373fcc93e"
+    },
+    {
+      "id": "mz5oD",
+      "file": "reminders-mobile.png",
+      "savedPngSize": [
+        390,
+        981
+      ],
+      "livePenSize": [
+        390,
+        981
+      ],
+      "bytesEqual": true,
+      "liveSha256": "0a531a83a4df785bb13f412e9a25ed70b727765b30649d5ab98a0ec680eee419"
+    },
+    {
+      "id": "DQbgA",
+      "file": "telegram-settings-states.png",
+      "savedPngSize": [
+        1536,
+        2240
+      ],
+      "livePenSize": [
+        1536,
+        2240
+      ],
+      "bytesEqual": true,
+      "liveSha256": "f61f93ff04cc31c7d1678d700272a7e1c59455309766dd9add44e7e3ea25f5a3"
+    },
+    {
+      "id": "cRrRV",
+      "file": "goal-selection-states.png",
+      "savedPngSize": [
+        1920,
+        890
+      ],
+      "livePenSize": [
+        1920,
+        890
+      ],
+      "bytesEqual": true,
+      "liveSha256": "790b8fdc05ac2684c96bfae5c4755397450c9f8c8d08961ffa6465440386e480"
+    },
+    {
+      "id": "uhwCG",
+      "file": "goal-rule-variants.png",
+      "savedPngSize": [
+        1920,
+        2120
+      ],
+      "livePenSize": [
+        1920,
+        2120
+      ],
+      "bytesEqual": true,
+      "liveSha256": "1f4c7a6b9d69c5206b65a59d73bd2ac82f24d76cbfaaa09b0ae9f81d3e85d06e"
+    },
+    {
+      "id": "kSgo4",
+      "file": "comparison-boundary-states.png",
+      "savedPngSize": [
+        1920,
+        1140
+      ],
+      "livePenSize": [
+        1920,
+        1140
+      ],
+      "bytesEqual": true,
+      "liveSha256": "2707ac639233fb48107fa842587923598c09689119fbc3a31edf6db5214edb06"
+    },
+    {
+      "id": "f1f4JE",
+      "file": "telegram-sunday.png",
+      "savedPngSize": [
+        390,
+        782
+      ],
+      "livePenSize": [
+        390,
+        782
+      ],
+      "bytesEqual": true,
+      "liveSha256": "5091703632a8f75fbe7212a1166c3737f3db1bb0d8faf5484f254fbf83b7e853"
+    },
+    {
+      "id": "E3Jt09",
+      "file": "telegram-no-entries.png",
+      "savedPngSize": [
+        390,
+        511
+      ],
+      "livePenSize": [
+        390,
+        511
+      ],
+      "bytesEqual": true,
+      "liveSha256": "3102081f4260711d38288929ee4ed7c8dc042756f576a602ea8822bd2a77c571"
+    },
+    {
+      "id": "H3B6b",
+      "file": "telegram-truncated.png",
+      "savedPngSize": [
+        390,
+        3415
+      ],
+      "livePenSize": [
+        390,
+        3415
+      ],
+      "bytesEqual": true,
+      "liveSha256": "748dc2adf0e8830f5c4d3c5c205ca68d77a4e4ac5450fcbc68275807526b8ffd"
+    },
+    {
+      "id": "votHE",
+      "file": "telegram-delayed.png",
+      "savedPngSize": [
+        390,
+        799
+      ],
+      "livePenSize": [
+        390,
+        799
+      ],
+      "bytesEqual": true,
+      "liveSha256": "009b92ec6b97e959fe51d4e9c2a40c9762045bae2d45034773066a7b2a25d016"
+    },
+    {
+      "id": "J1Mes1",
+      "file": "telegram-goal-types.png",
+      "savedPngSize": [
+        390,
+        862
+      ],
+      "livePenSize": [
+        390,
+        862
+      ],
+      "bytesEqual": true,
+      "liveSha256": "02b629b88cea844ce028c6190499063b9a473ef447c30725f0d61f1cf9b6974a"
+    },
+    {
+      "id": "zSjRn",
+      "file": "start-date-320.png",
+      "savedPngSize": [
+        320,
+        900
+      ],
+      "livePenSize": [
+        320,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "ccb3ff10dd77f7ff2a18848ee3bebd9f7b84e7148b125ea761a922ef16134aff"
+    },
+    {
+      "id": "PENYj",
+      "file": "month-320.png",
+      "savedPngSize": [
+        320,
+        2334
+      ],
+      "livePenSize": [
+        320,
+        2334
+      ],
+      "bytesEqual": true,
+      "liveSha256": "41d0f853caad4aa76693f09249c7e55908d7d562ee56ebcff7fdc00bcc3c1d53"
+    },
+    {
+      "id": "KkbUO",
+      "file": "settings-320.png",
+      "savedPngSize": [
+        320,
+        1613
+      ],
+      "livePenSize": [
+        320,
+        1613
+      ],
+      "bytesEqual": true,
+      "liveSha256": "67f8b0850a52e99635cba7258b4bf0f79efbefc5e601e902d4e3db39c6fd60b6"
+    },
+    {
+      "id": "DpCbC",
+      "file": "week-320.png",
+      "savedPngSize": [
+        320,
+        1538
+      ],
+      "livePenSize": [
+        320,
+        1538
+      ],
+      "bytesEqual": true,
+      "liveSha256": "6a543773179ed89fd41f020d8f3e125b09d0f61ffaafdb35f5c3fd2d2a69b9d2"
+    },
+    {
+      "id": "SfULy",
+      "file": "interaction-states.png",
+      "savedPngSize": [
+        1920,
+        910
+      ],
+      "livePenSize": [
+        1920,
+        910
+      ],
+      "bytesEqual": true,
+      "liveSha256": "8082275af9f05a5e061c4031029da7d98e838b23ffcf90d00b8d24b3a7b3061b"
+    },
+    {
+      "id": "LNOeU",
+      "file": "goal-filter-mobile.png",
+      "savedPngSize": [
+        390,
+        900
+      ],
+      "livePenSize": [
+        390,
+        900
+      ],
+      "bytesEqual": true,
+      "liveSha256": "dc6eac36a9a243f822ba8df0c89675d38a717e597b47e2052e02ff6ce48a8c07"
+    },
+    {
+      "id": "RHvwO",
+      "file": "overview-map.png",
+      "savedPngSize": [
+        1920,
+        770
+      ],
+      "livePenSize": [
+        1920,
+        770
+      ],
+      "bytesEqual": true,
+      "liveSha256": "e7a3db34fbd4ef4ef3dc721d674a1c28663c01991071578328f96541ff9128f6"
+    }
+  ]
+}

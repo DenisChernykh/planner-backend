@@ -1,9 +1,8 @@
 {
-  "sourceCommit": "2e5598ddf63539ee09c617050e264925cd47ee63",
   "method": "Local Chrome; synthetic API interception. No backend/production/Telegram integration is claimed.",
   "totals": {
-    "passed": 9,
-    "failed": 4
+    "passed": 28,
+    "failed": 0
   },
   "cases": [
     {
@@ -49,10 +48,10 @@
         true
       ],
       "actual": [
-        false,
-        false
+        true,
+        true
       ],
-      "status": "fail"
+      "status": "pass"
     },
     {
       "id": "B05",
@@ -122,24 +121,284 @@
       "id": "B11",
       "requirement": "§5, F03: мобильный календарь месяца сохраняет значки результатов",
       "expected": true,
-      "actual": false,
-      "status": "fail"
+      "actual": true,
+      "status": "pass"
     },
     {
       "id": "B12",
       "requirement": "§5, №19, F15: недоступная цель даёт возврат к списку",
       "expected": true,
-      "actual": false,
-      "status": "fail"
+      "actual": true,
+      "status": "pass"
     },
     {
       "id": "B13",
-      "requirement": "№34, F16: редактор правил имеет явную отмену черновика",
+      "requirement": "№34, F16: отмена правила сбрасывает черновик без PATCH",
+      "expected": [
+        "20",
+        0
+      ],
+      "actual": [
+        "20",
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B14",
+      "requirement": "V04: периоды восстанавливаются из URL после reload/back/forward",
+      "expected": [
+        "2026-10-12",
+        "2026-10-12",
+        "2026-10-12",
+        "2026-10-21",
+        "month",
+        "week",
+        "month"
+      ],
+      "actual": [
+        "2026-10-12",
+        "2026-10-12",
+        "2026-10-12",
+        "2026-10-21",
+        "month",
+        "week",
+        "month"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B15",
+      "requirement": "V04: фильтр с клавиатуры, cancel/фокус/пустой выбор; состав отчёта не меняется",
+      "expected": [
+        true,
+        true,
+        true,
+        0,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        0,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B16",
+      "requirement": "№21–22, V04: неверная дата, переход клавишей через месяц, будущий черновик и cancel",
+      "expected": [
+        true,
+        "2026-11-01",
+        true,
+        0,
+        true
+      ],
+      "actual": [
+        true,
+        "2026-11-01",
+        true,
+        0,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B17",
+      "requirement": "V01/V04: ошибка даты сохраняет прежнее значение; retry/pending/Escape, общий старт в двух формах",
+      "expected": [
+        true,
+        true,
+        true,
+        true,
+        "2026-10-07"
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true,
+        "2026-10-07"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B18",
+      "requirement": "№24–25: отмена формы восстанавливает выбор/дату/время, без сохранения",
+      "expected": [
+        "21:00",
+        "2026-10-06",
+        3,
+        0
+      ],
+      "actual": [
+        "21:00",
+        "2026-10-06",
+        3,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B19",
+      "requirement": "№24, V11: повтор ошибки формы, pending блокирует поля; успех и новое расписание",
+      "expected": [
+        true,
+        true,
+        true,
+        true,
+        "22:30"
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true,
+        "22:30"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B20",
+      "requirement": "№24: переключение слота, сброс устаревшего preview, буквальные имена безопасны",
+      "expected": [
+        true,
+        true,
+        true,
+        0
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B21",
+      "requirement": "№23: переключатели вопросов и отчётов независимы; переходы в формы",
+      "expected": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B22",
+      "requirement": "V05: сохранение правила с ошибкой/retry/pending пересчитывает текущую версию; факты открываются в плане",
+      "expected": [
+        true,
+        true,
+        true,
+        "30",
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        "30",
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B23",
+      "requirement": "V01: Темп плана использует ту же общую дату и серверный знаменатель",
+      "expected": [
+        "3 / 3",
+        "2 / 2"
+      ],
+      "actual": [
+        "3 / 3",
+        "2 / 2"
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B24",
+      "requirement": "V08: наблюдения/недневные цели скрывают неприменимые сводки и календарь",
+      "expected": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B25",
+      "requirement": "№24: invalid time, paused/deleted, retry/unknown/failed объясняются отдельно",
+      "expected": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B27",
+      "requirement": "pen.dev №06/33: отдельный mobile preview с клавиатуры, возврат фокуса, без сохранения",
+      "expected": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        0
+      ],
+      "actual": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        0
+      ],
+      "status": "pass"
+    },
+    {
+      "id": "B28",
+      "requirement": "§4.3/5: недельная цель в месячных деталях имеет подписи отдельных недель без общего месячного процента",
+      "expected": 3,
+      "actual": 3,
+      "status": "pass"
+    },
+    {
+      "id": "B26",
+      "requirement": "V07: ссылки отчёта требуют входа и сохраняют исходный адрес",
       "expected": true,
-      "actual": false,
-      "status": "fail"
+      "actual": true,
+      "status": "pass"
     }
   ],
   "pageErrors": [],
-  "unhandled": []
+  "unhandled": [],
+  "sourceCommit": "6c4d95b257b3e1d7a919dd06ccf6e74931af4246"
 }
