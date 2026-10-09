@@ -8,7 +8,7 @@ import { GoalFilter } from "./goal-filter";
 import { ProgressView } from "./progress-view";
 
 const refetch = vi.fn();
-let mode: "ready" | "future" | "error";
+let mode: "ready" | "future" | "error" | "no-entries" | "no-goals" | "one-entry";
 const overview: ProgressOverview = {
   period: "week",
   requested: { from: "2026-10-05", to: "2026-10-11" },
@@ -73,6 +73,54 @@ const overview: ProgressOverview = {
     },
   ],
 };
+const unrecordedGoals: ProgressOverview["goals"] = ["Чтение", "Прогулки"].map((title, index) => {
+  const goal = overview.goals[0];
+  if (!goal) throw new Error("Missing test goal");
+  const id = `unrecorded-${index}`;
+  return {
+    ...goal,
+    id,
+    goalIds: [id],
+    chainId: id,
+    title,
+    records: 0,
+    met: 0,
+    missing: goal.eligibleDays,
+    completeness: 0,
+    sum: null,
+    average: null,
+    minimum: null,
+    maximum: null,
+    days: goal.days.map((day) => ({ ...day, goalId: id, state: "missing", value: null })),
+    targets: goal.targets.map((target) => ({
+      ...target,
+      value: 0,
+      percent: 0,
+      remaining: target.target,
+    })),
+    streak: { current: 0, best: 0 },
+  };
+});
+function currentOverview(): ProgressOverview {
+  if (mode === "future") return { ...overview, startsOn: "2026-12-12", state: "future-start" };
+  if (mode === "one-entry")
+    return { ...overview, goals: [...overview.goals, ...unrecordedGoals.slice(1)] };
+  if (mode === "no-entries" || mode === "no-goals")
+    return {
+      ...overview,
+      state: mode,
+      goals: mode === "no-goals" ? [] : unrecordedGoals,
+      summary: {
+        ...overview.summary,
+        met: 0,
+        dailyRecords: 0,
+        dailyDays: mode === "no-goals" ? 0 : 4,
+        dailyPercent: 0,
+        daysWithEntries: 0,
+      },
+    };
+  return overview;
+}
 vi.mock("@/shared/api", async (original) => ({
   ...(await original<typeof import("@/shared/api")>()),
   useGetApiRemindersSettings: () => ({
@@ -84,12 +132,7 @@ vi.mock("@/shared/api", async (original) => ({
   useGetApiProgress: vi.fn(() => ({
     isPending: false,
     isError: mode === "error",
-    data:
-      mode === "error"
-        ? undefined
-        : mode === "future"
-          ? { ...overview, startsOn: "2026-12-12", state: "future-start" }
-          : overview,
+    data: mode === "error" ? undefined : currentOverview(),
     refetch,
   })),
   useGetApiProgressGoalsGoalId: () => ({ isPending: false, data: overview, refetch }),
@@ -119,6 +162,42 @@ function open(path = "/plans/2026-10/progress?anchor=2026-10-07") {
   return userEvent.setup();
 }
 describe("progress screen", () => {
+  it.each(["week", "month"])(
+    "keeps all goals visible before the first record in a %s",
+    (period) => {
+      mode = "no-entries";
+      open(`/plans/2026-10/progress?anchor=2026-10-07&period=${period}`);
+      expect(screen.getByRole("status")).toHaveTextContent("Результаты ещё не внесены");
+      expect(screen.getByRole("link", { name: "Открыть план" })).toHaveAttribute(
+        "href",
+        "/plans/2026-10",
+      );
+      expect(screen.getByText("Чтение").closest("a")).toBeInTheDocument();
+      expect(screen.getByText("Прогулки").closest("a")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Все цели" })).toBeInTheDocument();
+      expect(screen.getByRole("region", { name: "Активность по дням" })).toHaveTextContent(
+        "нет записи",
+      );
+      expect(screen.getAllByText("Внесено 0 из 2 · 2 дн. без записи")).toHaveLength(2);
+      expect(screen.getByText("Ежедневных записей · 0 из 4")).toBeInTheDocument();
+    },
+  );
+  it("keeps unrecorded goals visible after recording another goal", () => {
+    mode = "one-entry";
+    open();
+    expect(screen.getByText("Чтение").closest("a")).toBeInTheDocument();
+    expect(screen.getByText("Прогулки").closest("a")).toBeInTheDocument();
+    expect(screen.queryByText("Результаты ещё не внесены")).not.toBeInTheDocument();
+  });
+  it("reserves the no-goals screen for periods without goals", () => {
+    mode = "no-goals";
+    open();
+    expect(
+      screen.getByRole("heading", { name: "В этом периоде пока нет целей" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Добавить цель" })).toBeInTheDocument();
+    expect(screen.queryByText("Подтверждённых выполнений")).not.toBeInTheDocument();
+  });
   it("switches calendar periods through API parameters and exposes fact editing links", async () => {
     const user = open("/plans/2026-10/progress?anchor=2026-10-07&goal=goal-a");
     expect(screen.getByRole("heading", { name: "Чтение" })).toBeInTheDocument();

@@ -343,21 +343,6 @@ export function ProgressView({ month }: { month: string }) {
                 Показать все цели
               </Button>
             </section>
-          ) : data.state === "no-entries" && !goalId ? (
-            <section role="status" className={emptyStateClass}>
-              <NotebookPen className={stateIconClass} />
-              <h2 className="mt-5 text-xl font-bold">Пока нет записей</h2>
-              <p className="mt-3 max-w-md text-sm text-muted-foreground">
-                За этот период пока нет записей. Внесите первый результат в плане, чтобы увидеть
-                статистику.
-              </p>
-              <Link
-                to={`/plans/${month}`}
-                className={cn(buttonVariants(), "mt-5 h-11 w-full max-w-sm rounded-lg")}
-              >
-                Открыть план
-              </Link>
-            </section>
           ) : goalId ? (
             <div className="space-y-5">
               {data.goals.map((item) => (
@@ -366,6 +351,26 @@ export function ProgressView({ month }: { month: string }) {
             </div>
           ) : (
             <>
+              {data.state === "no-entries" && (
+                <section
+                  role="status"
+                  className="flex flex-wrap items-center gap-3 rounded-xl border bg-card p-4 sm:p-5"
+                >
+                  <NotebookPen className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                  <div className="min-w-0 flex-1 basis-48">
+                    <h2 className="text-sm font-semibold">Результаты ещё не внесены</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Цели уже в плане. За этот период пока нет записей — внесите первый результат.
+                    </p>
+                  </div>
+                  <Link
+                    to={`/plans/${month}`}
+                    className={cn(buttonVariants({ variant: "outline" }), "h-11 rounded-lg")}
+                  >
+                    Открыть план
+                  </Link>
+                </section>
+              )}
               <Summary data={data} />
               <ProgressCalendar key={`${data.requested.from}-${data.requested.to}`} data={data} />
               <div className="flex items-center justify-between gap-3">
