@@ -4,9 +4,20 @@ import { CalendarDays, Check, History, Pencil, X } from "lucide-react";
 import { useState } from "react";
 import { putApiProgressSettings } from "@/shared/api";
 import { formatPlannerDay } from "@/shared/lib/planner-calendar";
+import { cn } from "@/shared/lib/utils";
 import { Button, DateField, isCivilDate } from "@/shared/ui";
 
-export function ProgressStartDate({ startsOn, today }: { startsOn: string | null; today: string }) {
+export function ProgressStartDate({
+  startsOn,
+  today,
+  triggerLabel,
+  triggerVariant = "default",
+}: {
+  startsOn: string | null;
+  today: string;
+  triggerLabel?: string;
+  triggerVariant?: "default" | "outline";
+}) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(startsOn ?? "");
   const [saved, setSaved] = useState(false);
@@ -35,20 +46,34 @@ export function ProgressStartDate({ startsOn, today }: { startsOn: string | null
         }
       }}
     >
-      <Dialog.Trigger className="flex w-full items-center gap-3 rounded-xl bg-primary-soft px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary sm:w-auto">
-        <CalendarDays className="size-4 shrink-0 text-primary" />
-        <span className="min-w-0 flex-1">
-          <strong className="block text-xs">
-            {startsOn
-              ? `Учитываем с ${formatPlannerDay(startsOn)} ${startsOn.slice(0, 4)}`
-              : "Учитываем всю историю"}
-          </strong>
-          <span className="mt-1 block text-xs text-muted-foreground" aria-live="polite">
-            {saved ? "Дата сохранена · статистика обновлена" : "Ранние записи сохранены в плане"}
+      {triggerLabel ? (
+        <Dialog.Trigger
+          className={cn(
+            "flex min-h-11 w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+            triggerVariant === "outline"
+              ? "border bg-card text-primary"
+              : "bg-primary text-primary-foreground",
+          )}
+        >
+          {triggerLabel}
+          <CalendarDays className="size-4" />
+        </Dialog.Trigger>
+      ) : (
+        <Dialog.Trigger className="flex w-full items-center gap-3 rounded-xl bg-primary-soft px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-primary sm:w-auto">
+          <CalendarDays className="size-4 shrink-0 text-primary" />
+          <span className="min-w-0 flex-1">
+            <strong className="block text-xs">
+              {startsOn
+                ? `Учитываем с ${formatPlannerDay(startsOn)} ${startsOn.slice(0, 4)}`
+                : "Учитываем всю историю"}
+            </strong>
+            <span className="mt-1 block text-xs text-muted-foreground" aria-live="polite">
+              {saved ? "Дата сохранена · статистика обновлена" : "Ранние записи сохранены в плане"}
+            </span>
           </span>
-        </span>
-        <Pencil className="size-4 shrink-0 text-primary" />
-      </Dialog.Trigger>
+          <Pencil className="size-4 shrink-0 text-primary" />
+        </Dialog.Trigger>
+      )}
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-foreground/20" />
         <Dialog.Popup className="fixed inset-x-0 bottom-0 z-50 max-h-[95svh] overflow-y-auto rounded-t-2xl border bg-card p-5 shadow-xl sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:max-h-[calc(100svh-2rem)] sm:w-[520px] sm:max-w-[calc(100%-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:p-6">

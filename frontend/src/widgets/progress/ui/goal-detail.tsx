@@ -1,7 +1,8 @@
-import { CheckCircle2, Circle, MinusCircle, Pencil } from "lucide-react";
+import { CheckCircle2, Circle, Clock3, MinusCircle, Pencil, SlidersHorizontal } from "lucide-react";
 import { Link } from "react-router";
 import type { ProgressGoal } from "@/shared/api";
 import { formatPlannerDay } from "@/shared/lib/planner-calendar";
+import { cn } from "@/shared/lib/utils";
 import { buttonVariants } from "@/shared/ui";
 import { formatNumber, valueLabel } from "../model/presentation";
 import { GoalChart } from "./goal-chart";
@@ -158,7 +159,7 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
           </h2>
         </section>
       </div>
-      {!flexible && comparisonPanel}
+      {!flexible && goal.measurable && comparisonPanel}
       {flexible && target && (
         <section className="space-y-4 rounded-xl border bg-card p-4 sm:p-5">
           <h2 className="font-bold">План {goal.cadence.period === "week" ? "недели" : "месяца"}</h2>
@@ -196,6 +197,7 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
         </section>
       )}
       {!(goal.tracking.type === "check" && flexible) && <GoalChart goal={goal} />}
+      {!flexible && !goal.measurable && comparisonPanel}
       {goal.comparison && streakPanel}
       <section className="rounded-xl border bg-card p-4 sm:p-5">
         <h2 className="font-bold">
@@ -215,14 +217,27 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
             .reverse()
             .map((day) => {
               const Icon =
-                day.state === "met" ? CheckCircle2 : day.state === "below" ? MinusCircle : Circle;
+                day.state === "met"
+                  ? CheckCircle2
+                  : day.state === "below"
+                    ? MinusCircle
+                    : day.value !== null
+                      ? goal.tracking.type === "scale"
+                        ? SlidersHorizontal
+                        : Clock3
+                      : Circle;
               return (
                 <li key={day.date} className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3">
                   <Icon
-                    className={`size-4 shrink-0 ${day.state === "met" ? "text-success" : "text-muted-foreground"}`}
+                    className={`size-4 shrink-0 ${day.state === "met" ? "text-success" : day.value !== null && !goal.measurable ? "text-primary" : "text-muted-foreground"}`}
                   />
                   <span className="min-w-0 flex-1 text-sm">
                     {formatPlannerDay(day.date)}
+                    {!goal.measurable && day.value !== null && (
+                      <span className="mt-1 block text-xs text-muted-foreground">
+                        {goal.tracking.type === "scale" ? "Оценка внесена" : "Время записано"}
+                      </span>
+                    )}
                     {day.state === "excluded" && (
                       <span className="mt-1 block text-xs text-muted-foreground">
                         Вне периода учёта
@@ -259,7 +274,10 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
                   </span>
                   {day.state !== "excluded" && day.goalId && (
                     <Link
-                      className={buttonVariants({ variant: "outline", size: "sm" })}
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "icon" }),
+                        "size-11 rounded-lg text-primary",
+                      )}
                       aria-label={`${day.value === null ? "Внести" : "Изменить"} · ${formatPlannerDay(day.date)}`}
                       to={`/plans/${day.date.slice(0, 7)}?goal=${day.goalId}&date=${day.date}`}
                     >
@@ -316,7 +334,10 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
         </p>
       )}
       <Link
-        className={buttonVariants({ variant: "outline" })}
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "h-11 w-full rounded-lg text-primary sm:w-auto",
+        )}
         to={`/plans/${goal.days[0]?.date.slice(0, 7) ?? today.slice(0, 7)}?goal=${goal.id}`}
       >
         Открыть записи в плане

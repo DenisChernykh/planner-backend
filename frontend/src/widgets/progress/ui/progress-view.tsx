@@ -1,12 +1,18 @@
 import {
-  ChartNoAxesCombined,
+  CalendarClock,
+  CalendarRange,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Filter,
   Hash,
+  Info,
+  NotebookPen,
   Send,
   SlidersHorizontal,
+  Target,
+  WifiOff,
 } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { ProgressStartDate } from "@/features/progress-settings";
@@ -17,10 +23,16 @@ import {
   useGetApiProgressGoalsGoalId,
   useGetApiRemindersSettings,
 } from "@/shared/api";
-import { addPlannerDays, addPlannerMonth, formatPlannerDay } from "@/shared/lib/planner-calendar";
+import {
+  addPlannerDays,
+  addPlannerMonth,
+  formatPlannerDay,
+  getPlannerMonthEnd,
+  getPlannerWeekStart,
+} from "@/shared/lib/planner-calendar";
 import { formatPlannerMonth } from "@/shared/lib/planner-month";
 import { cn } from "@/shared/lib/utils";
-import { Button, buttonVariants, Skeleton } from "@/shared/ui";
+import { Button, buttonVariants, isCivilDate, Skeleton } from "@/shared/ui";
 import { formatNumber, goalRule, valueLabel } from "../model/presentation";
 import { GoalChart } from "./goal-chart";
 import { GoalDetail } from "./goal-detail";
@@ -29,6 +41,9 @@ import { ProgressCalendar } from "./progress-calendar";
 import { ProgressMeter } from "./progress-meter";
 
 const icons = { check: CheckCircle2, quantity: Hash, scale: SlidersHorizontal, time: Clock3 };
+const emptyStateClass =
+  "flex min-h-[400px] flex-col items-center justify-center px-2 py-12 text-center sm:min-h-[560px]";
+const stateIconClass = "size-14 rounded-2xl bg-primary-soft p-4 text-primary";
 function Summary({ data }: { data: ProgressOverview }) {
   const summary = data.summary;
   return (
@@ -88,6 +103,13 @@ export function ProgressView({ month }: { month: string }) {
   );
   const query = goalId ? detail : params.get("goals") ? filtered : all;
   const data = query.data;
+  const requested =
+    data?.requested ??
+    (isCivilDate(anchor)
+      ? period === "week"
+        ? { from: getPlannerWeekStart(anchor), to: addPlannerDays(getPlannerWeekStart(anchor), 6) }
+        : { from: `${anchor.slice(0, 7)}-01`, to: getPlannerMonthEnd(anchor.slice(0, 7)) }
+      : null);
   const goal = goalId ? data?.goals[0] : null;
   const update = (patch: Record<string, string | null>) =>
     setParams((previous) => {
@@ -117,7 +139,7 @@ export function ProgressView({ month }: { month: string }) {
         ? "Период раньше начала учёта"
         : "В этом периоде пока нет целей";
   return (
-    <div className="min-w-0 bg-background px-5 py-7 sm:px-8">
+    <div className="min-h-[calc(100svh-3.5rem)] min-w-0 bg-background px-5 py-7 sm:px-8 md:min-h-svh">
       <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           {goal && (
@@ -181,11 +203,11 @@ export function ProgressView({ month }: { month: string }) {
             <ChevronLeft />
           </Button>
           <span className="min-w-0 text-center text-xs font-semibold sm:text-sm">
-            {data
+            {requested
               ? period === "week"
-                ? `${formatPlannerDay(data.requested.from)} – ${formatPlannerDay(data.requested.to)} ${data.requested.to.slice(0, 4)}`
-                : formatPlannerMonth(data.requested.from.slice(0, 7))
-              : "Загружаем период…"}
+                ? `${formatPlannerDay(requested.from)} – ${formatPlannerDay(requested.to)} ${requested.to.slice(0, 4)}`
+                : formatPlannerMonth(requested.from.slice(0, 7))
+              : "Период недоступен"}
           </span>
           <Button
             variant="ghost"
@@ -210,38 +232,47 @@ export function ProgressView({ month }: { month: string }) {
         </Button>
       )}
       {(general.isPending || (ready && query.isPending)) && (
-        <div role="status" aria-label="Загружаем статистику" className="space-y-5">
-          <div className="grid grid-cols-3 gap-3">
-            <Skeleton className="h-24 rounded-xl" />
-            <Skeleton className="h-24 rounded-xl" />
-            <Skeleton className="h-24 rounded-xl" />
+        <div role="status" aria-label="Загружаем статистику" className={emptyStateClass}>
+          <div className="w-full max-w-4xl space-y-4">
+            <div className="grid grid-cols-3 gap-3">
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+              <Skeleton className="h-24 rounded-xl" />
+            </div>
+            <Skeleton className="h-14 rounded-xl" />
+            <Skeleton className="h-14 rounded-xl" />
+            <Skeleton className="h-14 rounded-xl" />
+            <p className="text-sm text-muted-foreground">Загружаем статистику…</p>
           </div>
-          <Skeleton className="h-52 rounded-xl" />
-          <p className="text-sm text-muted-foreground">Загружаем статистику…</p>
         </div>
       )}
       {(query.isError || general.isError) && (
-        <section className="rounded-xl border bg-card p-7">
-          <h2 role="alert" className="font-bold">
+        <section className={emptyStateClass}>
+          {getApiProblem(query.error)?.status === 404 ? (
+            <Info className={stateIconClass} />
+          ) : (
+            <WifiOff className={stateIconClass} />
+          )}
+          <h2 role="alert" className="mt-5 text-xl font-bold">
             {getApiProblem(query.error)?.status === 404
               ? "Цель удалена или недоступна"
               : "Не удалось загрузить статистику"}
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-3 max-w-md text-sm text-muted-foreground">
             {getApiProblem(query.error)?.status === 404
               ? "Вернитесь к списку целей. Удалённые цели можно восстановить в корзине."
               : "Проверьте соединение и повторите попытку."}
           </p>
           {getApiProblem(query.error)?.status === 404 ? (
             <Button
-              className="mt-4"
+              className="mt-5 h-11 w-full max-w-sm rounded-lg"
               onClick={() => update({ goal: null, goals: null, empty: null })}
             >
               Все цели
             </Button>
           ) : (
             <Button
-              className="mt-4"
+              className="mt-5 h-11 w-full max-w-sm rounded-lg"
               onClick={() => {
                 void query.refetch();
                 void general.refetch();
@@ -255,38 +286,77 @@ export function ProgressView({ month }: { month: string }) {
       {data && !query.isError && (
         <div className="space-y-5">
           {["future-start", "before-start", "no-goals"].includes(data.state) ? (
-            <section className="rounded-xl border bg-card px-5 py-12 text-center">
-              <ChartNoAxesCombined className="mx-auto size-8 text-primary" />
-              <h2 className="mt-4 text-lg font-bold">{emptyMessage}</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
+            <section className={emptyStateClass}>
+              {data.state === "no-goals" ? (
+                <Target className={stateIconClass} />
+              ) : data.state === "before-start" ? (
+                <CalendarRange className={stateIconClass} />
+              ) : (
+                <CalendarClock className={stateIconClass} />
+              )}
+              <h2 className="mt-5 text-xl font-bold">{emptyMessage}</h2>
+              <p className="mt-3 max-w-md text-sm text-muted-foreground">
                 {data.state === "no-goals"
                   ? "Добавьте цели в план, чтобы видеть их результаты."
-                  : "Ранее внесённые факты сохраняются в плане."}
+                  : data.state === "before-start"
+                    ? `Выбранный период раньше ${formatPlannerDay(data.startsOn ?? today)}. Записи до начала учёта доступны в плане.`
+                    : "До этой даты статистика и автоматические отчёты не формируются. Записи в плане сохраняются."}
               </p>
               {data.state === "no-goals" && (
-                <Link to={`/plans/${month}/goals/new`} className={`${buttonVariants()} mt-5`}>
+                <Link
+                  to={`/plans/${month}/goals/new`}
+                  className={cn(buttonVariants(), "mt-5 h-11 w-full max-w-sm rounded-lg")}
+                >
                   Добавить цель
                 </Link>
               )}
               {data.state !== "no-goals" && (
-                <div className="mt-5 flex flex-wrap justify-center gap-2">
-                  <ProgressStartDate startsOn={data.startsOn} today={data.today} />
-                  <Link to={`/plans/${month}`} className={buttonVariants({ variant: "outline" })}>
-                    Открыть план
-                  </Link>
+                <div className="mt-5 w-full max-w-sm space-y-3">
+                  {data.state === "before-start" && (
+                    <Button
+                      className="h-11 w-full rounded-lg"
+                      onClick={() => update({ anchor: today, goals: null, empty: null })}
+                    >
+                      Текущий период
+                    </Button>
+                  )}
+                  <ProgressStartDate
+                    startsOn={data.startsOn}
+                    today={data.today}
+                    triggerLabel="Изменить начало учёта"
+                    triggerVariant={data.state === "before-start" ? "outline" : "default"}
+                  />
                 </div>
               )}
             </section>
           ) : selected?.length === 0 && !goalId ? (
-            <section className="rounded-xl border bg-card p-8">
-              <h2 className="font-bold">Фильтр не дал результатов</h2>
+            <section className={emptyStateClass}>
+              <Filter className={stateIconClass} />
+              <h2 className="mt-5 text-xl font-bold">Фильтр не дал результатов</h2>
+              <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                Измените фильтр или покажите все цели. Выбор для Telegram остаётся прежним.
+              </p>
               <Button
-                className="mt-4"
-                variant="outline"
+                className="mt-5 h-11 w-full max-w-sm rounded-lg"
                 onClick={() => update({ goals: null, empty: null })}
               >
                 Показать все цели
               </Button>
+            </section>
+          ) : data.state === "no-entries" && !goalId ? (
+            <section role="status" className={emptyStateClass}>
+              <NotebookPen className={stateIconClass} />
+              <h2 className="mt-5 text-xl font-bold">Пока нет записей</h2>
+              <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                За этот период пока нет записей. Внесите первый результат в плане, чтобы увидеть
+                статистику.
+              </p>
+              <Link
+                to={`/plans/${month}`}
+                className={cn(buttonVariants(), "mt-5 h-11 w-full max-w-sm rounded-lg")}
+              >
+                Открыть план
+              </Link>
             </section>
           ) : goalId ? (
             <div className="space-y-5">
@@ -297,17 +367,6 @@ export function ProgressView({ month }: { month: string }) {
           ) : (
             <>
               <Summary data={data} />
-              {data.state === "no-entries" && (
-                <p role="status" className="rounded-xl bg-primary-soft p-4 text-sm">
-                  За этот период пока нет записей. Внесите первый результат в плане.
-                  <Link
-                    to={`/plans/${month}`}
-                    className="mt-3 block text-primary underline underline-offset-4"
-                  >
-                    Открыть план
-                  </Link>
-                </p>
-              )}
               <ProgressCalendar key={`${data.requested.from}-${data.requested.to}`} data={data} />
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-lg font-bold">
@@ -470,18 +529,27 @@ export function ProgressView({ month }: { month: string }) {
             </>
           )}
           {goalId && (
-            <Button variant="outline" onClick={() => update({ goal: null })}>
+            <Button
+              variant="outline"
+              className="h-11 w-full rounded-lg text-primary sm:w-auto"
+              onClick={() => update({ goal: null })}
+            >
               <ChevronLeft />
               Все цели
             </Button>
           )}
-          <Link
-            to={reportUrl}
-            className={`${buttonVariants({ variant: "outline" })} w-full rounded-lg sm:hidden`}
-          >
-            Отчёты в Telegram
-            <Send className="size-4" />
-          </Link>
+          {(data.state === "ready" || goalId) && selected?.length !== 0 && (
+            <Link
+              to={reportUrl}
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "h-11 w-full rounded-lg text-primary sm:hidden",
+              )}
+            >
+              Отчёты в Telegram
+              <Send className="size-4" />
+            </Link>
+          )}
         </div>
       )}
     </div>
