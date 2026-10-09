@@ -173,7 +173,6 @@ export function GoalChart({ goal, compact = false }: { goal: ProgressGoal; compa
               />
             ))}
           {points.map((point, index) => {
-            const previous = points[index - 1];
             const numeric = point.numeric;
             return (
               <g key={point.date}>
@@ -245,21 +244,7 @@ export function GoalChart({ goal, compact = false }: { goal: ProgressGoal; compa
                           fill="var(--primary)"
                         />
                       ) : (
-                        <>
-                          {!compact &&
-                            previous?.numeric !== null &&
-                            previous?.numeric !== undefined && (
-                              <line
-                                x1={x(index - 1)}
-                                x2={x(index)}
-                                y1={y(previous.numeric)}
-                                y2={y(numeric)}
-                                stroke="var(--primary)"
-                                strokeWidth="2.5"
-                              />
-                            )}
-                          <circle cx={x(index)} cy={y(numeric)} r="4" fill="var(--primary)" />
-                        </>
+                        <circle cx={x(index)} cy={y(numeric)} r="4" fill="var(--primary)" />
                       )}
                       {!compact && points.length <= 10 && (
                         <text

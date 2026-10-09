@@ -112,7 +112,13 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
                       {formatPlannerDay(target.from)}–{formatPlannerDay(target.to)}
                     </p>
                   )}
-                  <ProgressMeter target={target} goal={goal} today={today} prominent />
+                  <ProgressMeter
+                    target={target}
+                    goal={goal}
+                    today={today}
+                    prominent
+                    showExplanation={false}
+                  />
                 </div>
               ))}
               {!goal.targets.length && <p className="text-lg font-semibold">Нет периода</p>}
@@ -159,11 +165,38 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
           </h2>
         </section>
       </div>
+      {goal.targets
+        .filter((item) => item.reduced || item.missingPlan)
+        .map((item) => (
+          <section key={item.from} className="space-y-2 rounded-xl bg-muted p-4">
+            <h2 className="text-sm font-bold">
+              {item.missingPlan
+                ? "План соседнего месяца ещё не сформирован"
+                : `План уменьшен с ${item.originalTarget} до ${item.target}`}
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {item.missingPlan
+                ? "Показываем число выполнений. Итоговый процент появится после подготовки соседнего плана."
+                : `Учитываем ${formatPlannerDay(item.accounted?.from ?? item.from)}–${formatPlannerDay(item.accounted?.to ?? item.to)}. Исходная настройка цели сохранена.`}
+            </p>
+            {item.missingPlan && (
+              <Link
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "h-11 rounded-lg text-primary",
+                )}
+                to={`/plans/${item.to.slice(0, 7)}`}
+              >
+                Открыть план
+              </Link>
+            )}
+          </section>
+        ))}
       {!flexible && goal.measurable && comparisonPanel}
       {flexible && target && (
         <section className="space-y-4 rounded-xl border bg-card p-4 sm:p-5">
           <h2 className="font-bold">План {goal.cadence.period === "week" ? "недели" : "месяца"}</h2>
-          {target.target !== null && (
+          {goal.cadence.period === "week" && target.target !== null && (
             <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
               {Array.from({ length: target.target }, (_, order) => ({
                 id: `${target.from}:${order}`,
@@ -189,6 +222,9 @@ export function GoalDetail({ goal, today }: { goal: ProgressGoal; today: string 
                 );
               })}
             </div>
+          )}
+          {goal.cadence.period === "month" && (
+            <ProgressMeter target={target} goal={goal} today={today} showExplanation={false} />
           )}
           {target.remaining !== null && <p className="text-sm">Осталось: {target.remaining}</p>}
           <p className="text-xs text-muted-foreground">

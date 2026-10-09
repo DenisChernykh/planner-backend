@@ -9,12 +9,14 @@ export function ProgressMeter({
   today,
   prominent = false,
   compactLabel = false,
+  showExplanation = true,
 }: {
   target: ProgressTarget;
   goal: ProgressGoal;
   today: string;
   prominent?: boolean;
   compactLabel?: boolean;
+  showExplanation?: boolean;
 }) {
   if (target.from > today)
     return (
@@ -48,14 +50,14 @@ export function ProgressMeter({
           />
         </div>
       )}
-      {target.reduced && (
+      {showExplanation && target.reduced && (
         <p className="text-xs text-muted-foreground">
           План уменьшен с {target.originalTarget} до {target.target}: учитываем{" "}
           {formatPlannerDay(target.accounted?.from ?? target.from)}–
           {formatPlannerDay(target.accounted?.to ?? target.to)}
         </p>
       )}
-      {target.missingPlan && (
+      {showExplanation && target.missingPlan && (
         <div className="space-y-2 text-xs text-muted-foreground">
           <p>
             План соседнего месяца ещё не сформирован. Итоговый процент появится после подготовки
