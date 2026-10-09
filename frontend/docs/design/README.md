@@ -50,7 +50,9 @@ of the specification.
 services card and support action in the sidebar, a desktop donation dialog,
 mobile navigation, and donation sheets at 390 and 320 px. «Обсудить проект»
 opens an author and services dialog, with desktop and mobile variants and a
-Telegram contact action for [@ChernykDenis](https://t.me/ChernykDenis).
+Telegram contact action for [@ChernykDenis](https://t.me/ChernykDenis). Websites,
+web applications and Telegram bots remain explicit services, with AI and ChatGPT
+shown as a highlighted additional service.
 The editable «Монетизация» frames and reusable components are in the existing
 `Planner.pen`, including a custom amount example. The payment service is selected
 when implementing the design.
