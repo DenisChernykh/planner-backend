@@ -8,7 +8,6 @@ import {
   Filter,
   Hash,
   Info,
-  NotebookPen,
   Send,
   SlidersHorizontal,
   Target,
@@ -351,26 +350,6 @@ export function ProgressView({ month }: { month: string }) {
             </div>
           ) : (
             <>
-              {data.state === "no-entries" && (
-                <section
-                  role="status"
-                  className="flex flex-wrap items-center gap-3 rounded-xl border bg-card p-4 sm:p-5"
-                >
-                  <NotebookPen className="size-5 shrink-0 text-primary" aria-hidden="true" />
-                  <div className="min-w-0 flex-1 basis-48">
-                    <h2 className="text-sm font-semibold">Результаты ещё не внесены</h2>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Цели уже в плане. За этот период пока нет записей — внесите первый результат.
-                    </p>
-                  </div>
-                  <Link
-                    to={`/plans/${month}`}
-                    className={cn(buttonVariants({ variant: "outline" }), "h-11 rounded-lg")}
-                  >
-                    Открыть план
-                  </Link>
-                </section>
-              )}
               <Summary data={data} />
               <ProgressCalendar key={`${data.requested.from}-${data.requested.to}`} data={data} />
               <div className="flex items-center justify-between gap-3">

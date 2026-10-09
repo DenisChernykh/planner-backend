@@ -65573,102 +65573,131 @@
       "type": "frame",
       "id": "bR2Yt",
       "x": 13000,
-      "y": 3180,
+      "y": 8400,
       "name": "Прогресс / 16 · Нет записей",
       "clip": true,
       "width": 1440,
-      "height": 900,
+      "height": 1280,
       "fill": "$--background",
       "children": [
         {
-          "id": "WniId",
+          "id": "Lrwp7",
           "type": "ref",
           "ref": "qccpN",
           "name": "Навигация",
-          "width": 176,
           "height": "fill_container"
         },
         {
           "type": "frame",
-          "id": "JMXBr",
-          "name": "Содержимое",
+          "id": "dr2wq",
+          "name": "Содержимое недели",
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 24,
+          "gap": 20,
           "padding": 32,
           "children": [
             {
               "type": "frame",
-              "id": "wKDsX",
+              "id": "OFPfZ",
               "name": "Заголовок",
               "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
+              "justifyContent": "space_between",
+              "alignItems": "center",
               "children": [
                 {
-                  "type": "text",
-                  "id": "OmKR4",
-                  "name": "Название",
-                  "fill": "$--foreground",
-                  "textGrowth": "fixed-width",
+                  "type": "frame",
+                  "id": "zPcDn",
+                  "name": "Название и описание",
                   "width": "fill_container",
-                  "content": "Прогресс",
-                  "lineHeight": 1.4,
-                  "fontFamily": "Inter",
-                  "fontSize": 32,
-                  "fontWeight": "600"
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "sAPe8",
+                      "name": "Название страницы",
+                      "fill": "$--foreground",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Прогресс",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 32,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "P1Tym",
+                      "name": "Описание страницы",
+                      "fill": "$--muted-foreground",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Ваши результаты и ритм целей.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 },
                 {
-                  "type": "text",
-                  "id": "rrqYx",
-                  "name": "Описание",
-                  "fill": "$--muted-foreground",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Неделя · статистика целей",
-                  "lineHeight": 1.4,
-                  "fontFamily": "Inter",
-                  "fontSize": 13
+                  "id": "tTBeZ",
+                  "type": "ref",
+                  "ref": "p5Wd1c",
+                  "name": "Настройка Telegram",
+                  "fill": "$--background",
+                  "stroke": "$--border",
+                  "strokeWidth": 1,
+                  "descendants": {
+                    "ufCCH": {
+                      "content": "Отчёты в Telegram",
+                      "fill": "$--primary"
+                    },
+                    "zwdjW": {
+                      "icon": "send",
+                      "fill": "$--primary"
+                    }
+                  }
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "W8ODSe",
-              "name": "Период и начало",
+              "id": "FTflF",
+              "name": "Период и учёт",
               "width": "fill_container",
-              "gap": 12,
+              "gap": 16,
               "alignItems": "center",
               "children": [
                 {
-                  "id": "uvBxr",
+                  "id": "tF3UK",
                   "type": "ref",
                   "ref": "SIRpG",
-                  "name": "Неделя / Месяц",
+                  "name": "Период просмотра",
                   "width": 230
                 },
                 {
                   "type": "frame",
-                  "id": "eoqkH",
-                  "name": "Навигация по периоду",
+                  "id": "uLzkV",
+                  "name": "Выбор недели",
                   "width": "fill_container",
                   "height": 44,
-                  "fill": "$--background",
-                  "cornerRadius": 8,
+                  "cornerRadius": 10,
                   "stroke": "$--border",
                   "strokeWidth": 1,
-                  "gap": 12,
+                  "gap": 14,
                   "padding": [
                     0,
-                    12
+                    14
                   ],
+                  "justifyContent": "center",
                   "alignItems": "center",
                   "children": [
                     {
                       "type": "icon",
-                      "id": "KeeuV",
-                      "name": "Назад",
+                      "id": "X6icAq",
+                      "name": "Предыдущая неделя",
                       "width": 16,
                       "height": 16,
                       "icon": "chevron-left",
@@ -65677,22 +65706,19 @@
                     },
                     {
                       "type": "text",
-                      "id": "T8h0Pf",
-                      "name": "Выбранный период",
+                      "id": "U02aig",
+                      "name": "Даты недели",
                       "fill": "$--foreground",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
                       "content": "5–11 октября 2026",
                       "lineHeight": 1.4,
-                      "textAlign": "center",
                       "fontFamily": "Inter",
                       "fontSize": 14,
-                      "fontWeight": "500"
+                      "fontWeight": "600"
                     },
                     {
                       "type": "icon",
-                      "id": "Mi9lA",
-                      "name": "Вперёд",
+                      "id": "pahoO",
+                      "name": "Следующая неделя",
                       "width": 16,
                       "height": 16,
                       "icon": "chevron-right",
@@ -65700,104 +65726,855 @@
                       "fill": "$--foreground"
                     }
                   ]
+                },
+                {
+                  "id": "eL3SD",
+                  "type": "ref",
+                  "ref": "hEM4W",
+                  "name": "Граница учёта",
+                  "width": 350
                 }
               ]
             },
             {
               "type": "frame",
-              "id": "pfRQF",
-              "name": "Состояние страницы",
+              "id": "tgcK9",
+              "name": "Обзор чисел",
               "width": "fill_container",
-              "height": "fill_container",
-              "layout": "vertical",
-              "gap": 20,
-              "padding": 40,
-              "justifyContent": "center",
-              "alignItems": "center",
+              "gap": 16,
               "children": [
                 {
-                  "type": "frame",
-                  "id": "uJM3S",
-                  "name": "Значок состояния",
-                  "width": 64,
-                  "height": 64,
-                  "fill": "$--primary-soft",
-                  "cornerRadius": 20,
-                  "layout": "vertical",
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "LrV4V",
-                      "name": "Иконка",
-                      "width": 28,
-                      "height": 28,
-                      "icon": "notebook-pen",
-                      "library": "lucide",
-                      "fill": "$--primary"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "yz8q3",
-                  "name": "Текст состояния",
-                  "width": 520,
-                  "layout": "vertical",
-                  "gap": 10,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "LNP6D",
-                      "name": "Заголовок",
-                      "fill": "$--foreground",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Пока нет записей",
-                      "lineHeight": 1.4,
-                      "textAlign": "center",
-                      "fontFamily": "Inter",
-                      "fontSize": 26,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "jy5uP",
-                      "name": "Описание",
-                      "fill": "$--muted-foreground",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Цели уже есть. Заполните первый факт за 6–7 октября, чтобы увидеть статистику.",
-                      "lineHeight": 1.4,
-                      "textAlign": "center",
-                      "fontFamily": "Inter",
-                      "fontSize": 14
-                    }
-                  ]
-                },
-                {
-                  "id": "wG2B3",
+                  "id": "urtiT",
                   "type": "ref",
-                  "ref": "p5Wd1c",
-                  "name": "Основное действие",
-                  "fill": "$--primary",
-                  "stroke": "#00000000",
-                  "strokeWidth": 1,
-                  "width": "fit_content",
-                  "height": 44,
+                  "ref": "LktOl",
+                  "name": "Подтверждённых выполнений",
+                  "width": "fill_container",
                   "descendants": {
-                    "ufCCH": {
-                      "content": "Открыть план",
-                      "fill": "$--primary-foreground"
+                    "NuQkt": {
+                      "content": "0"
                     },
-                    "zwdjW": {
-                      "icon": "arrow-up-right",
-                      "fill": "$--primary-foreground"
+                    "jcd0N": {
+                      "content": "Подтверждённых выполнений"
+                    }
+                  }
+                },
+                {
+                  "id": "riHMU",
+                  "type": "ref",
+                  "ref": "LktOl",
+                  "name": "Ежедневных записей · 7 из 8",
+                  "width": "fill_container",
+                  "descendants": {
+                    "NuQkt": {
+                      "content": "0%"
+                    },
+                    "jcd0N": {
+                      "content": "Ежедневных записей · 0 из 8"
+                    }
+                  }
+                },
+                {
+                  "id": "Ah1uz",
+                  "type": "ref",
+                  "ref": "LktOl",
+                  "name": "Дней с записями",
+                  "width": "fill_container",
+                  "descendants": {
+                    "NuQkt": {
+                      "content": "0 из 2"
+                    },
+                    "jcd0N": {
+                      "content": "Дней с записями"
                     }
                   }
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "CtANS",
+              "name": "Активность по дням",
+              "width": "fill_container",
+              "cornerRadius": 12,
+              "stroke": "$--border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "n2KEs",
+                  "name": "Заголовок активности",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rHGja",
+                      "name": "Активность по дням",
+                      "fill": "$--foreground",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Активность по дням",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZZfTz",
+                      "name": "Сегодня",
+                      "fill": "$--muted-foreground",
+                      "content": "7 октября · день ещё идёт",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wwXDe",
+                  "name": "Дни недели",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R5jeC",
+                      "name": "День / 5 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "$--muted",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "F4yb49",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Пн · 5",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "L2dDB",
+                          "name": "Состояние дня",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "minus",
+                          "library": "lucide",
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "text",
+                          "id": "uscjz",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "Вне учёта",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NvyWC",
+                      "name": "День / 6 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "#FAFAFA",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "PtP4p",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Вт · 6",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ZBHIn",
+                          "name": "Статусы трёх ежедневных целей",
+                          "height": 26,
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "y5x7B",
+                              "name": "Статус 0",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "pikhy",
+                              "name": "Статус 1",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "en4lG",
+                              "name": "Статус 2",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ddRew",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "0 из 3",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fH253",
+                      "name": "День / 7 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "$--primary-soft",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "V6JpE",
+                          "name": "День недели",
+                          "fill": "$--primary",
+                          "content": "Ср · 7",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "LJU2l",
+                          "name": "Статусы трёх ежедневных целей",
+                          "height": 26,
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "AJjoV",
+                              "name": "Статус 0",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "k7SICW",
+                              "name": "Статус 1",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "y5GTls",
+                              "name": "Статус 2",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "circle",
+                              "library": "lucide",
+                              "fill": "$--muted-foreground"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "o4wCXC",
+                          "name": "Итог дня",
+                          "fill": "$--primary",
+                          "content": "0 из 3",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fyM7p",
+                      "name": "День / 8 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "#FAFAFA",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "B0ESVu",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Чт · 8",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "nfT1W",
+                          "name": "Состояние дня",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "text",
+                          "id": "O5e4c",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "Впереди",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T3tWiE",
+                      "name": "День / 9 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "#FAFAFA",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KG6iE",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Пт · 9",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "NqxuH",
+                          "name": "Состояние дня",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "text",
+                          "id": "kN4yK",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "Впереди",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p5YC8",
+                      "name": "День / 10 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "#FAFAFA",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "welc6",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Сб · 10",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "ePo0D",
+                          "name": "Состояние дня",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "text",
+                          "id": "A2Mx4",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "Впереди",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "W7I7Bg",
+                      "name": "День / 11 октября",
+                      "width": "fill_container",
+                      "height": 122,
+                      "fill": "#FAFAFA",
+                      "cornerRadius": 8,
+                      "layout": "vertical",
+                      "gap": 6,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "s5KmWX",
+                          "name": "День недели",
+                          "fill": "$--muted-foreground",
+                          "content": "Вс · 11",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "kK4RZ",
+                          "name": "Состояние дня",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "text",
+                          "id": "SDzKy",
+                          "name": "Итог дня",
+                          "fill": "$--muted-foreground",
+                          "content": "Впереди",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bmIlh",
+                  "name": "Легенда",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Fepzo",
+                      "name": "Выполнено",
+                      "width": 126,
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "a3t7q",
+                          "name": "Обозначение",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "circle-check",
+                          "library": "lucide",
+                          "fill": "$--success"
+                        },
+                        {
+                          "type": "text",
+                          "id": "r5ddM",
+                          "name": "Подпись",
+                          "fill": "$--muted-foreground",
+                          "content": "Выполнено",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "E1Uyj",
+                      "name": "Ниже цели",
+                      "width": 126,
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "CEJYX",
+                          "name": "Обозначение",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "circle-minus",
+                          "library": "lucide",
+                          "fill": "$--muted-foreground"
+                        },
+                        {
+                          "type": "text",
+                          "id": "DN1fX",
+                          "name": "Подпись",
+                          "fill": "$--muted-foreground",
+                          "content": "Ниже цели",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bd8Xi",
+                      "name": "Нет записи",
+                      "width": 126,
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "azbF5",
+                          "name": "Обозначение",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$--muted-foreground"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KfBwi",
+                          "name": "Подпись",
+                          "fill": "$--muted-foreground",
+                          "content": "Нет записи",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bZNjK",
+              "name": "Прогресс по целям",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "X3dhX",
+                  "name": "Заголовок списка целей",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wdoJy",
+                      "name": "Цели",
+                      "fill": "$--foreground",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Цели",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 20,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "W5itYM",
+                      "name": "Количество целей",
+                      "fill": "$--muted-foreground",
+                      "content": "5 целей",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "id": "PVE6Q",
+                      "type": "ref",
+                      "ref": "p5Wd1c",
+                      "name": "Фильтр просмотра",
+                      "fill": "$--background",
+                      "stroke": "$--border",
+                      "strokeWidth": 1,
+                      "height": 40,
+                      "descendants": {
+                        "ufCCH": {
+                          "content": "Все цели",
+                          "fill": "$--primary"
+                        },
+                        "zwdjW": {
+                          "icon": "list-filter",
+                          "fill": "$--primary"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "BEfDw",
+                  "type": "ref",
+                  "ref": "UuPii",
+                  "name": "Цель / Чтение",
+                  "width": "fill_container",
+                  "height": 92,
+                  "descendants": {
+                    "pYw7w": {
+                      "icon": "book-open"
+                    },
+                    "j3uSSX": {
+                      "content": "Чтение"
+                    },
+                    "C6A1G": {
+                      "content": "От 20 страниц · ежедневно"
+                    },
+                    "OH70z": {
+                      "content": "0 из 2 дней · 0%"
+                    },
+                    "keZ1l": {
+                      "enabled": true
+                    },
+                    "wTa0s": {
+                      "width": 0,
+                      "enabled": true
+                    },
+                    "bx5Wv": {
+                      "content": "Внесено 0 из 2"
+                    }
+                  }
+                },
+                {
+                  "id": "waNXb",
+                  "type": "ref",
+                  "ref": "UuPii",
+                  "name": "Цель / Вода",
+                  "width": "fill_container",
+                  "height": 92,
+                  "descendants": {
+                    "pYw7w": {
+                      "icon": "droplets"
+                    },
+                    "j3uSSX": {
+                      "content": "Вода"
+                    },
+                    "C6A1G": {
+                      "content": "Не менее 2 л · ежедневно"
+                    },
+                    "OH70z": {
+                      "content": "0 из 2 дней · 0%"
+                    },
+                    "keZ1l": {
+                      "enabled": true
+                    },
+                    "wTa0s": {
+                      "width": 0,
+                      "enabled": true
+                    },
+                    "bx5Wv": {
+                      "content": "Внесено 0 из 2"
+                    }
+                  }
+                },
+                {
+                  "id": "in4uh",
+                  "type": "ref",
+                  "ref": "UuPii",
+                  "name": "Цель / Сон до 23:30",
+                  "width": "fill_container",
+                  "height": 92,
+                  "descendants": {
+                    "pYw7w": {
+                      "icon": "moon"
+                    },
+                    "j3uSSX": {
+                      "content": "Сон до 23:30"
+                    },
+                    "C6A1G": {
+                      "content": "Не позже 23:30 · ежедневно"
+                    },
+                    "OH70z": {
+                      "content": "0 из 2 дней · 0%"
+                    },
+                    "keZ1l": {
+                      "enabled": true
+                    },
+                    "wTa0s": {
+                      "width": 0,
+                      "enabled": true
+                    },
+                    "bx5Wv": {
+                      "content": "Внесено 0 из 2"
+                    }
+                  }
+                },
+                {
+                  "id": "SEHM9",
+                  "type": "ref",
+                  "ref": "UuPii",
+                  "name": "Цель / Настроение",
+                  "width": "fill_container",
+                  "height": 92,
+                  "descendants": {
+                    "pYw7w": {
+                      "icon": "smile"
+                    },
+                    "j3uSSX": {
+                      "content": "Настроение"
+                    },
+                    "C6A1G": {
+                      "content": "Шкала от 1 до 5 · ежедневно"
+                    },
+                    "OH70z": {
+                      "content": "— из 5"
+                    },
+                    "keZ1l": {
+                      "enabled": false
+                    },
+                    "wTa0s": {
+                      "width": 0,
+                      "enabled": false
+                    },
+                    "bx5Wv": {
+                      "content": "Внесено 0 из 2"
+                    }
+                  }
+                },
+                {
+                  "id": "uX31h",
+                  "type": "ref",
+                  "ref": "UuPii",
+                  "name": "Цель / Тренировки",
+                  "width": "fill_container",
+                  "height": 92,
+                  "descendants": {
+                    "pYw7w": {
+                      "icon": "dumbbell"
+                    },
+                    "j3uSSX": {
+                      "content": "Тренировки"
+                    },
+                    "C6A1G": {
+                      "content": "3 раза в неделю"
+                    },
+                    "OH70z": {
+                      "content": "0 из 3 · 0%"
+                    },
+                    "keZ1l": {
+                      "enabled": true
+                    },
+                    "wTa0s": {
+                      "width": 0,
+                      "enabled": true
+                    },
+                    "bx5Wv": {
+                      "content": "Внесено 0 из 2"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "e4yjO1",
+              "name": "О сравнении",
+              "fill": "$--muted-foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Пока недостаточно данных для сравнения: учёт начался 6 октября.",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
             }
           ]
         }
@@ -65807,11 +66584,11 @@
       "type": "frame",
       "id": "rlByB",
       "x": 14520,
-      "y": 3180,
+      "y": 8400,
       "name": "Прогресс / 16 · Нет записей · Мобильный",
       "clip": true,
       "width": 390,
-      "height": 844,
+      "height": 1540,
       "fill": "$--background",
       "layout": "vertical",
       "gap": 20,
@@ -65819,14 +66596,16 @@
       "children": [
         {
           "type": "frame",
-          "id": "AZq2A",
-          "name": "Навигация",
+          "id": "d5yr5M",
+          "name": "Шапка",
           "width": "fill_container",
+          "height": 36,
+          "justifyContent": "space_between",
           "alignItems": "center",
           "children": [
             {
               "type": "text",
-              "id": "atp6I",
+              "id": "jFdoA",
               "name": "Ритм",
               "fill": "$--primary",
               "textGrowth": "fixed-width",
@@ -65839,7 +66618,7 @@
             },
             {
               "type": "icon",
-              "id": "p8NKoB",
+              "id": "qEIkT",
               "name": "Меню",
               "width": 22,
               "height": 22,
@@ -65851,204 +66630,797 @@
         },
         {
           "type": "frame",
-          "id": "HdtXK",
-          "name": "Заголовок",
+          "id": "fbOiE",
+          "name": "Название страницы",
           "width": "fill_container",
           "layout": "vertical",
-          "gap": 6,
+          "gap": 4,
           "children": [
             {
               "type": "text",
-              "id": "r5Ip1J",
-              "name": "Название",
+              "id": "H30WX2",
+              "name": "Прогресс",
               "fill": "$--foreground",
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Прогресс",
               "lineHeight": 1.4,
               "fontFamily": "Inter",
-              "fontSize": 26,
+              "fontSize": 28,
               "fontWeight": "600"
             },
             {
               "type": "text",
-              "id": "Ff6fc",
-              "name": "Описание",
+              "id": "ciRWt",
+              "name": "Подзаголовок",
               "fill": "$--muted-foreground",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Неделя · статистика целей",
+              "content": "Ваши результаты и ритм целей.",
               "lineHeight": 1.4,
               "fontFamily": "Inter",
-              "fontSize": 13
+              "fontSize": 14,
+              "fontWeight": "normal"
             }
           ]
         },
         {
+          "id": "Slddx",
+          "type": "ref",
+          "ref": "SIRpG",
+          "name": "Период",
+          "width": "fill_container"
+        },
+        {
           "type": "frame",
-          "id": "WnCxJ",
-          "name": "Период и начало",
+          "id": "ycNyl",
+          "name": "Выбор недели",
           "width": "fill_container",
-          "layout": "vertical",
+          "height": 44,
+          "cornerRadius": 8,
+          "stroke": "$--border",
+          "strokeWidth": 1,
+          "padding": [
+            0,
+            10
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "f1MjR",
+              "name": "Предыдущая неделя",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-left",
+              "library": "lucide",
+              "fill": "$--foreground"
+            },
+            {
+              "type": "text",
+              "id": "YfSX1",
+              "name": "Неделя",
+              "fill": "$--foreground",
+              "content": "5–11 октября 2026",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "icon",
+              "id": "UYUt3",
+              "name": "Следующая неделя",
+              "width": 18,
+              "height": 18,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "$--foreground"
+            }
+          ]
+        },
+        {
+          "id": "zUo24",
+          "type": "ref",
+          "ref": "hEM4W",
+          "name": "Начало учёта",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "kR53B",
+          "name": "Показатели",
+          "width": "fill_container",
           "gap": 12,
-          "alignItems": "center",
-          "children": [
-            {
-              "id": "r8hvz9",
-              "type": "ref",
-              "ref": "SIRpG",
-              "name": "Неделя / Месяц",
-              "width": "fill_container"
-            },
-            {
-              "type": "frame",
-              "id": "s1FzTL",
-              "name": "Навигация по периоду",
-              "width": "fill_container",
-              "height": 44,
-              "fill": "$--background",
-              "cornerRadius": 8,
-              "stroke": "$--border",
-              "strokeWidth": 1,
-              "gap": 12,
-              "padding": [
-                0,
-                12
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "rzHgF",
-                  "name": "Назад",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "chevron-left",
-                  "library": "lucide",
-                  "fill": "$--foreground"
-                },
-                {
-                  "type": "text",
-                  "id": "rQ5GN",
-                  "name": "Выбранный период",
-                  "fill": "$--foreground",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "5–11 октября 2026",
-                  "lineHeight": 1.4,
-                  "textAlign": "center",
-                  "fontFamily": "Inter",
-                  "fontSize": 14,
-                  "fontWeight": "500"
-                },
-                {
-                  "type": "icon",
-                  "id": "D8Tmhx",
-                  "name": "Вперёд",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "chevron-right",
-                  "library": "lucide",
-                  "fill": "$--foreground"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "Rxc6W",
-          "name": "Состояние страницы",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "justifyContent": "center",
-          "alignItems": "center",
+          "padding": [
+            4,
+            0
+          ],
           "children": [
             {
               "type": "frame",
-              "id": "JuboC",
-              "name": "Значок состояния",
-              "width": 64,
-              "height": 64,
-              "fill": "$--primary-soft",
-              "cornerRadius": 20,
-              "layout": "vertical",
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "boG1N",
-                  "name": "Иконка",
-                  "width": 28,
-                  "height": 28,
-                  "icon": "notebook-pen",
-                  "library": "lucide",
-                  "fill": "$--primary"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "L4aiSU",
-              "name": "Текст состояния",
+              "id": "goQHg",
+              "name": "Показатель / Выполнений",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 10,
+              "gap": 4,
               "children": [
                 {
                   "type": "text",
-                  "id": "QP4CE",
-                  "name": "Заголовок",
+                  "id": "yEeoI",
+                  "name": "Значение",
                   "fill": "$--foreground",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Пока нет записей",
+                  "content": "0",
                   "lineHeight": 1.4,
-                  "textAlign": "center",
                   "fontFamily": "Inter",
-                  "fontSize": 22,
+                  "fontSize": 25,
                   "fontWeight": "600"
                 },
                 {
                   "type": "text",
-                  "id": "I6te8",
-                  "name": "Описание",
+                  "id": "YK5rR",
+                  "name": "Название",
+                  "fill": "$--foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Выполнений",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "mVimI",
+                  "name": "Пояснение",
                   "fill": "$--muted-foreground",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Цели уже есть. Заполните первый факт за 6–7 октября, чтобы увидеть статистику.",
+                  "content": "По 4 целям",
                   "lineHeight": 1.4,
-                  "textAlign": "center",
                   "fontFamily": "Inter",
-                  "fontSize": 14
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
             {
-              "id": "CrP3E",
+              "type": "frame",
+              "id": "KzhFI",
+              "name": "Показатель / Записей",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Q38Vv",
+                  "name": "Значение",
+                  "fill": "$--foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "0%",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 25,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "yoSoe",
+                  "name": "Название",
+                  "fill": "$--foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Записей",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "qmc0Q",
+                  "name": "Пояснение",
+                  "fill": "$--muted-foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "0 из 8",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "X8tSwS",
+              "name": "Показатель / Дней",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "hFz9G",
+                  "name": "Значение",
+                  "fill": "$--foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "0 из 2",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 25,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "KL6d6",
+                  "name": "Название",
+                  "fill": "$--foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Дней",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "kEfbs",
+                  "name": "Пояснение",
+                  "fill": "$--muted-foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "С записями",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "laeP0",
+          "name": "Дни недели",
+          "width": "fill_container",
+          "gap": 4,
+          "children": [
+            {
+              "type": "frame",
+              "id": "wMTp0",
+              "name": "Дата / 5",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$--muted",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "AzXYG",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Пн",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "U0BLWR",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "5",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GDxPj",
+              "name": "Дата / 6",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "#FAFAFA",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YYupw",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Вт",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "vtyPP",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "6",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DgMeI",
+              "name": "Дата / 7",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "$--primary-soft",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "i793E",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Ср",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "IAAOo",
+                  "name": "Число",
+                  "fill": "$--primary",
+                  "content": "7",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sBY9t",
+              "name": "Дата / 8",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "#FAFAFA",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bB4tz",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Чт",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "AIDNE",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "8",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WKrxj",
+              "name": "Дата / 9",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "#FAFAFA",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lUpTm",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Пт",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "MOIZW",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "9",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "y3dqc",
+              "name": "Дата / 10",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "#FAFAFA",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IjfFz",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Сб",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "AFi7e",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "10",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kJfg4",
+              "name": "Дата / 11",
+              "width": "fill_container",
+              "height": 54,
+              "fill": "#FAFAFA",
+              "cornerRadius": 6,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "luMls",
+                  "name": "День",
+                  "fill": "$--muted-foreground",
+                  "content": "Вс",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "y99bqn",
+                  "name": "Число",
+                  "fill": "$--foreground",
+                  "content": "11",
+                  "lineHeight": 1.4,
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lElTY",
+          "name": "Текущий день",
+          "width": "fill_container",
+          "fill": "$--primary-soft",
+          "cornerRadius": 8,
+          "layout": "vertical",
+          "gap": 4,
+          "padding": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "f5MBGo",
+              "name": "Сегодня",
+              "fill": "$--primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Сегодня · выполнено 0 из 3",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "bTLgk",
+              "name": "Подсказка",
+              "fill": "$--muted-foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "День ещё идёт. Чтение, вода и сон: нет записи.",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kGSdK",
+          "name": "Цели и фильтр",
+          "width": "fill_container",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "zTCgl",
+              "name": "Цели",
+              "fill": "$--foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Цели",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 20,
+              "fontWeight": "600"
+            },
+            {
+              "id": "y0Ozp",
               "type": "ref",
               "ref": "p5Wd1c",
-              "name": "Основное действие",
-              "fill": "$--primary",
-              "stroke": "#00000000",
+              "name": "Фильтр просмотра",
+              "fill": "$--background",
+              "stroke": "$--border",
               "strokeWidth": 1,
-              "width": "fill_container",
-              "height": 44,
+              "height": 40,
               "descendants": {
                 "ufCCH": {
-                  "content": "Открыть план",
-                  "fill": "$--primary-foreground"
+                  "content": "Все цели",
+                  "fill": "$--primary"
                 },
                 "zwdjW": {
-                  "icon": "arrow-up-right",
-                  "fill": "$--primary-foreground"
+                  "icon": "list-filter",
+                  "fill": "$--primary"
                 }
               }
             }
           ]
+        },
+        {
+          "id": "nkjPZ",
+          "type": "ref",
+          "ref": "lrDwS",
+          "name": "Мобильная цель / Чтение",
+          "width": "fill_container",
+          "layout": "vertical",
+          "descendants": {
+            "dCfZU": {
+              "icon": "book-open"
+            },
+            "ucSEt": {
+              "content": "Чтение"
+            },
+            "RcoQp": {
+              "content": "0 из 2 · 0%"
+            },
+            "QSrXL": {
+              "content": "От 20 страниц · ежедневно"
+            },
+            "ghQoN": {
+              "enabled": true,
+              "width": 318
+            },
+            "POzlM": {
+              "width": 0,
+              "enabled": true
+            },
+            "b6iYce": {
+              "content": "Внесено 0 из 2 · 2 дн. без записи"
+            }
+          }
+        },
+        {
+          "id": "Ie5F8",
+          "type": "ref",
+          "ref": "lrDwS",
+          "name": "Мобильная цель / Вода",
+          "width": "fill_container",
+          "layout": "vertical",
+          "descendants": {
+            "dCfZU": {
+              "icon": "droplets"
+            },
+            "ucSEt": {
+              "content": "Вода"
+            },
+            "RcoQp": {
+              "content": "0 из 2 · 0%"
+            },
+            "QSrXL": {
+              "content": "Не менее 2 л · ежедневно"
+            },
+            "ghQoN": {
+              "enabled": true,
+              "width": 318
+            },
+            "POzlM": {
+              "width": 0,
+              "enabled": true
+            },
+            "b6iYce": {
+              "content": "Внесено 0 из 2 · 2 дн. без записи"
+            }
+          }
+        },
+        {
+          "id": "hdbCA",
+          "type": "ref",
+          "ref": "lrDwS",
+          "name": "Мобильная цель / Сон до 23:30",
+          "width": "fill_container",
+          "layout": "vertical",
+          "descendants": {
+            "dCfZU": {
+              "icon": "moon"
+            },
+            "ucSEt": {
+              "content": "Сон до 23:30"
+            },
+            "RcoQp": {
+              "content": "0 из 2 · 0%"
+            },
+            "QSrXL": {
+              "content": "Не позже 23:30 · ежедневно"
+            },
+            "ghQoN": {
+              "enabled": true,
+              "width": 318
+            },
+            "POzlM": {
+              "width": 0,
+              "enabled": true
+            },
+            "b6iYce": {
+              "content": "Внесено 0 из 2 · 2 дн. без записи"
+            }
+          }
+        },
+        {
+          "id": "UTZDe",
+          "type": "ref",
+          "ref": "lrDwS",
+          "name": "Мобильная цель / Настроение",
+          "width": "fill_container",
+          "layout": "vertical",
+          "descendants": {
+            "dCfZU": {
+              "icon": "smile"
+            },
+            "ucSEt": {
+              "content": "Настроение"
+            },
+            "RcoQp": {
+              "content": "— из 5"
+            },
+            "QSrXL": {
+              "content": "Шкала от 1 до 5"
+            },
+            "ghQoN": {
+              "enabled": false,
+              "width": 318
+            },
+            "POzlM": {
+              "width": 0,
+              "enabled": false
+            },
+            "b6iYce": {
+              "content": "Внесено 0 из 2"
+            }
+          }
+        },
+        {
+          "id": "UCyuR",
+          "type": "ref",
+          "ref": "lrDwS",
+          "name": "Мобильная цель / Тренировки",
+          "width": "fill_container",
+          "layout": "vertical",
+          "descendants": {
+            "dCfZU": {
+              "icon": "dumbbell"
+            },
+            "ucSEt": {
+              "content": "Тренировки"
+            },
+            "RcoQp": {
+              "content": "0 из 3 · 0%"
+            },
+            "QSrXL": {
+              "content": "3 раза в неделю"
+            },
+            "ghQoN": {
+              "enabled": true,
+              "width": 318
+            },
+            "POzlM": {
+              "width": 0,
+              "enabled": true
+            },
+            "b6iYce": {
+              "content": "Внесено 0 из 2"
+            }
+          }
+        },
+        {
+          "id": "xh40X",
+          "type": "ref",
+          "ref": "p5Wd1c",
+          "name": "Перейти к настройкам",
+          "fill": "$--background",
+          "stroke": "$--border",
+          "strokeWidth": 1,
+          "width": "fill_container",
+          "descendants": {
+            "ufCCH": {
+              "content": "Отчёты в Telegram",
+              "fill": "$--primary"
+            },
+            "zwdjW": {
+              "icon": "send",
+              "fill": "$--primary"
+            }
+          }
         }
       ]
     },

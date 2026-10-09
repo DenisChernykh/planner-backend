@@ -163,7 +163,7 @@ try {
     async () => {
       let count = 0;
       const states = [
-        ["empty", "За этот период пока нет записей"],
+        ["empty", "Активность по дням"],
         ["no-goals", "В этом периоде пока нет целей"],
         ["before-start", "Период раньше начала учёта"],
         ["future-start", "Учёт начнётся"],
@@ -182,6 +182,11 @@ try {
           );
           if (stateMode === "loading") await page.getByLabel(text, { exact: true }).waitFor();
           else await page.getByText(new RegExp(text)).first().waitFor();
+          if (stateMode === "empty") {
+            if ((await page.locator("article").count()) !== 5) throw new Error("Hidden unrecorded goals");
+            if (await page.getByText("Результаты ещё не внесены", { exact: true }).count())
+              throw new Error("Unexpected empty-record notice");
+          }
           if (!(await overflow())) throw new Error(`Overflow ${width} ${stateMode}`);
           count++;
         }

@@ -167,11 +167,9 @@ describe("progress screen", () => {
     (period) => {
       mode = "no-entries";
       open(`/plans/2026-10/progress?anchor=2026-10-07&period=${period}`);
-      expect(screen.getByRole("status")).toHaveTextContent("Результаты ещё не внесены");
-      expect(screen.getByRole("link", { name: "Открыть план" })).toHaveAttribute(
-        "href",
-        "/plans/2026-10",
-      );
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+      expect(screen.queryByText("Результаты ещё не внесены")).not.toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: "Открыть план" })).not.toBeInTheDocument();
       expect(screen.getByText("Чтение").closest("a")).toBeInTheDocument();
       expect(screen.getByText("Прогулки").closest("a")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "Все цели" })).toBeInTheDocument();
