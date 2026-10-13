@@ -37,6 +37,7 @@ export interface PlanningRepository {
     ownerId: string,
     month: string,
     includeDeleted: boolean,
+    date?: string,
   ): Promise<StoredEntry[]>;
   upsertEntry(entry: EntryWrite, expectedRevision?: string | null): Promise<StoredEntry>;
   deleteEntry(goalId: string, date: string, expectedRevision: string): Promise<boolean>;

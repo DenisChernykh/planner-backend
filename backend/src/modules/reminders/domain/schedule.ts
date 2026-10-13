@@ -4,9 +4,34 @@ import {
   ReminderScheduleInvalidError,
   ReminderSettingsInvalidError,
 } from "./errors";
-import type { GoalReminderInput, SettingsInput } from "./model";
+import { DEFAULT_SETTINGS, type GoalReminderInput, type SettingsInput } from "./model";
 
 const TIME = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
+function createFormatter(zone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: zone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
+}
+// Initialize the default calendar during module startup, outside a Cron invocation.
+const formatters = new Map([
+  [DEFAULT_SETTINGS.timeZone, createFormatter(DEFAULT_SETTINGS.timeZone)],
+]);
+function localParts(now: number, zone: string) {
+  let formatter = formatters.get(zone);
+  if (!formatter) {
+    formatter = createFormatter(zone);
+    // Cache derived calendar machinery only, with a bounded isolate footprint.
+    if (formatters.size >= 32) formatters.clear();
+    formatters.set(zone, formatter);
+  }
+  return Object.fromEntries(formatter.formatToParts(now).map((part) => [part.type, part.value]));
+}
 export function validateSettings(value: SettingsInput): void {
   if (
     !IANAZone.isValidZone(value.timeZone) ||
@@ -30,7 +55,8 @@ export function validateReminder(value: GoalReminderInput): void {
   }
 }
 export function localDate(now: number, zone: string): string {
-  return DateTime.fromMillis(now, { zone }).toFormat("yyyy-MM-dd");
+  const parts = localParts(now, zone);
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }
 function atTime(day: DateTime, time: string): DateTime {
   const [hour = 0, minute = 0] = time.split(":").map(Number);
@@ -55,11 +81,12 @@ export function nextOccurrence(
 }
 export function afterQuietHours(now: number, settings: SettingsInput): number {
   if (settings.quietStart === settings.quietEnd) return now;
-  const local = DateTime.fromMillis(now, { zone: settings.timeZone });
-  const time = local.toFormat("HH:mm");
+  const parts = localParts(now, settings.timeZone);
+  const time = `${parts.hour}:${parts.minute}`;
   const { quietStart: start, quietEnd: end } = settings;
   const quiet = start < end ? time >= start && time < end : time >= start || time < end;
   if (!quiet) return now;
+  const local = DateTime.fromMillis(now, { zone: settings.timeZone });
   const day = start > end && time >= start ? local.plus({ days: 1 }) : local;
   return atTime(day, end).toMillis();
 }

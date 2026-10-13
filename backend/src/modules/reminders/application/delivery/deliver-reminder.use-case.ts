@@ -41,11 +41,9 @@ export class DeliverReminderUseCase {
     else {
       const goal = job.goalId ? await this.planning.goal(job.ownerId, job.goalId) : null;
       const entry = goal ? await this.planning.entry(job.ownerId, goal.id, job.localDate) : null;
-      const rule = (await this.repository.reminders(job.ownerId)).find(
-        (item) => item.goalId === job.goalId,
-      );
+      const rule = job.goalId ? await this.repository.reminder(job.ownerId, job.goalId) : null;
       message =
-        goal && canAskGoal(job, goal.month, entry !== null, rule, interactive)
+        goal && canAskGoal(job, goal.month, entry !== null, rule ?? undefined, interactive)
           ? questionMessage(job, goal)
           : null;
     }

@@ -6,9 +6,10 @@ export async function withEntries(
   month: string,
   includeDeleted: boolean,
   goals: GoalRecord[],
+  date?: string,
 ): Promise<GoalResource[]> {
   const entriesByGoal = new Map<string, GoalEntry[]>();
-  for (const entry of await repository.listEntriesForPlan(ownerId, month, includeDeleted)) {
+  for (const entry of await repository.listEntriesForPlan(ownerId, month, includeDeleted, date)) {
     const entries = entriesByGoal.get(entry.goalId) ?? [];
     entries.push(entry);
     entriesByGoal.set(entry.goalId, entries);

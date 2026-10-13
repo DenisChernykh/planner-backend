@@ -97,6 +97,8 @@ export function createPlanningOperations(database: D1Database): PlanningOperatio
       useCases.progressSources.execute(ownerId, fromMonth, toMonth),
     ensureCurrentPlan: (input) => useCases.ensureCurrentPlan.execute(input),
     list: (ownerId, month) => useCases.listPlan.execute({ ownerId, month }),
+    listForDate: (ownerId, date) =>
+      useCases.listPlan.execute({ ownerId, month: date.slice(0, 7), date }),
     goal: (ownerId, goalId) => useCases.findGoal.execute({ ownerId, goalId }),
     entry: (ownerId, goalId, date) => useCases.getEntrySnapshot.execute({ ownerId, goalId, date }),
     recordAnswer: (input) => useCases.recordAnswer.execute(input),

@@ -310,6 +310,60 @@ describe("reminder inheritance and scheduled rollover", () => {
     ).toMatchObject({ mode: "scheduled", time: "09:00" });
   });
 
+  it("repairs a committed but incomplete rollover through Cron on the next tick", async () => {
+    const source = await create();
+    await configure(source.id);
+    await reminders.saveSettings(
+      { ownerId: OWNER, ...DEFAULT_SETTINGS, enabled: true, nextEveningAt: null },
+      await reminders.reminders(OWNER),
+    );
+    await env.DB.prepare("INSERT INTO telegram_links VALUES (?, '123', '123', 'active')")
+      .bind(OWNER)
+      .run();
+    await ensure();
+    const [copy] = await planning.list(OWNER, "2026-10");
+    expect((await reminders.reminders(OWNER)).some((item) => item.goalId === copy?.id)).toBe(false);
+    const transport: ReminderTransport = {
+      send: vi.fn(async () => 1),
+      edit: vi.fn(async () => {}),
+      username: vi.fn(async () => "test"),
+    };
+    await createReminderOperations(env.DB, transport).runReminders.execute({ now: OCTOBER });
+    expect(transport.send).toHaveBeenCalledTimes(1);
+    expect((await reminders.reminders(OWNER)).find((item) => item.goalId === copy?.id)?.mode).toBe(
+      "scheduled",
+    );
+  });
+
+  it("prepares report-only owners even when no general reminder settings exist", async () => {
+    const source = await create();
+    await env.DB.prepare("INSERT INTO telegram_links VALUES (?, '123', '123', 'active')")
+      .bind(OWNER)
+      .run();
+    await env.DB.prepare(
+      "INSERT INTO progress_report_settings (owner_id, enabled, next_wednesday_at, next_sunday_at) VALUES (?, 1, ?, ?)",
+    )
+      .bind(OWNER, OCTOBER + 86400000, OCTOBER + 2 * 86400000)
+      .run();
+    await env.DB.prepare("INSERT INTO goal_progress_reports VALUES (?, ?, 1)")
+      .bind(source.id, OWNER)
+      .run();
+    const transport: ReminderTransport = {
+      send: vi.fn(async () => 1),
+      edit: vi.fn(async () => {}),
+      username: vi.fn(async () => "test"),
+    };
+    await createReminderOperations(env.DB, transport).runReminders.execute({ now: OCTOBER });
+    const [copy] = await planning.list(OWNER, "2026-10");
+    expect(copy?.title).toBe(source.title);
+    expect(
+      await env.DB.prepare("SELECT included FROM goal_progress_reports WHERE goal_id = ?")
+        .bind(copy?.id)
+        .first("included"),
+    ).toBe(1);
+    expect(transport.send).not.toHaveBeenCalled();
+  });
+
   it("initializes through Cron without a browser and sends only new-month goals exactly once", async () => {
     const source = await create();
     await configure(source.id);

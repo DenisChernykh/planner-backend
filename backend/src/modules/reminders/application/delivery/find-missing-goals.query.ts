@@ -18,17 +18,19 @@ export class FindMissingGoalsQuery {
     date: string;
     settings: ReminderSettings;
   }): Promise<GoalResource[]> {
-    const goals = await this.planning.list(ownerId, date.slice(0, 7));
+    const goals = await this.planning.listForDate(ownerId, date);
+    const weekday = DateTime.fromISO(date, { zone: settings.timeZone }).weekday;
     const configured = new Map(
       (await this.repository.reminders(ownerId)).map((item) => [item.goalId, item]),
     );
     return goals.filter((goal) =>
       needsReminder(
-        date,
-        settings,
+        weekday,
         configured.get(goal.id),
         goal.entries.some((entry) => entry.date === date),
       ),
     );
   }
 }
+
+import { DateTime } from "luxon";

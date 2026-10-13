@@ -2,7 +2,7 @@ import type { ReminderJob, ReminderSettings } from "../../domain/model";
 import type { ReportSelection, ReportSettings, ReportSlot } from "../../domain/progress-reports";
 export interface ProgressReportRepository {
   settings(ownerId: string): Promise<ReportSettings>;
-  active(): Promise<ReportSettings[]>;
+  active(now: number): Promise<ReportSettings[]>;
   deliveryStatus(
     ownerId: string,
     since: number,

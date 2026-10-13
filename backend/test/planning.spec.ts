@@ -274,7 +274,7 @@ describe("planning application rules", () => {
       },
     ]);
     expect(listEntriesForPlan).toHaveBeenCalledOnce();
-    expect(listEntriesForPlan).toHaveBeenCalledWith("owner-a", "2026-04", false);
+    expect(listEntriesForPlan).toHaveBeenCalledWith("owner-a", "2026-04", false, undefined);
   });
 
   it("calculates quantity, scale and every time-boundary variant", () => {

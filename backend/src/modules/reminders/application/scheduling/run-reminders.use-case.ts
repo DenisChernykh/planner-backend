@@ -15,16 +15,33 @@ export class RunRemindersUseCase {
     private readonly reports?: ProgressReportsUseCases,
   ) {}
 
-  async execute({ now }: { now: number }): Promise<void> {
+  async execute({
+    now,
+    deferNewReportSnapshot = false,
+  }: {
+    now: number;
+    deferNewReportSnapshot?: boolean;
+  }): Promise<void> {
     if (!this.botAvailable) return;
     await this.repository.recover(now);
-    for (const settings of await this.repository.activeSettings()) {
-      if ((await this.repository.link(settings.ownerId))?.status !== "active") continue;
-      await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now });
-      const configured = await this.repository.scheduledReminders(
-        settings.ownerId,
-        localDate(now, settings.timeZone).slice(0, 7),
-      );
+    const queued = await this.repository.due(now);
+    if (queued.length) {
+      // Finish persisted work before spending CPU on another scheduling pass.
+      await this.deliverQueued(queued, now, deferNewReportSnapshot);
+      return;
+    }
+    for (const state of await this.repository.schedulingState()) {
+      const { settings } = state;
+      const month = localDate(now, settings.timeZone).slice(0, 7);
+      const prepare =
+        !state.preparedMonths.includes(month) ||
+        state.inheritanceMonths.some((inheritedMonth) => inheritedMonth <= month);
+      if (prepare) await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now });
+      if (!settings.enabled) continue;
+      const goalDue = prepare || (state.nextGoalRuns[month] ?? Infinity) <= now;
+      const eveningDue = settings.nextEveningAt !== null && settings.nextEveningAt <= now;
+      if (!goalDue && !eveningDue) continue;
+      const configured = await this.repository.scheduledReminders(settings.ownerId, month, now);
       for (const item of dueGoalReminders(configured, now)) {
         const previous = item.nextRunAt as number;
         const date = localDate(previous, settings.timeZone);
@@ -65,8 +82,17 @@ export class RunRemindersUseCase {
       }
     }
     await this.reports?.schedule(now);
-    for (const job of await this.repository.due(now)) {
-      if (job.kind === "weekly-progress") await this.reports?.deliver(job.id, now);
+    await this.deliverQueued(await this.repository.due(now), now, deferNewReportSnapshot);
+  }
+
+  private async deliverQueued(
+    jobs: Awaited<ReturnType<ReminderRepository["due"]>>,
+    now: number,
+    deferNewReportSnapshot: boolean,
+  ) {
+    for (const job of jobs) {
+      if (job.kind === "weekly-progress")
+        await this.reports?.deliver(job.id, now, deferNewReportSnapshot);
       else await this.deliver.execute({ job, now });
     }
   }

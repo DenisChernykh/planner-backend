@@ -44,6 +44,7 @@ export interface PlanningOperations {
     timeZone: string;
   }): Promise<{ month: string; carriedGoals: { sourceGoalId: string; goalId: string }[] }>;
   list(ownerId: string, month: string): Promise<GoalResource[]>;
+  listForDate(ownerId: string, date: string): Promise<GoalResource[]>;
   goal(ownerId: string, goalId: string): Promise<GoalRecord | null>;
   entry(ownerId: string, goalId: string, date: string): Promise<EntrySnapshot | null>;
   recordAnswer(input: RecordAnswerInput): Promise<"saved" | "conflict">;

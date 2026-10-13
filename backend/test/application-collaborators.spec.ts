@@ -85,6 +85,7 @@ describe("structural application collaborators", () => {
       progressSources: vi.fn(async () => []),
       ensureCurrentPlan: vi.fn(async () => ({ month: "2026-10", carriedGoals: [] })),
       list: vi.fn(async () => []),
+      listForDate: vi.fn(async () => []),
       goal: vi.fn(async () => goal),
       entry: vi.fn(async () => null),
       recordAnswer: vi.fn(async () => "saved" as const),

@@ -1,5 +1,5 @@
 import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "./model";
-import { afterQuietHours, isReminderDay } from "./schedule";
+import { afterQuietHours } from "./schedule";
 
 const DAY = 86_400_000;
 export const DELIVERY_ISSUE_WINDOW_MS = DAY;
@@ -45,14 +45,11 @@ export function dueGoalReminders(reminders: GoalReminder[], now: number): GoalRe
 }
 
 export function needsReminder(
-  date: string,
-  settings: ReminderSettings,
+  weekday: number,
   rule: GoalReminder | undefined,
   hasEntry: boolean,
 ): boolean {
-  return Boolean(
-    rule && rule.mode !== "off" && isReminderDay(date, settings, rule.weekdays) && !hasEntry,
-  );
+  return Boolean(rule && rule.mode !== "off" && rule.weekdays.includes(weekday) && !hasEntry);
 }
 
 export function deliveryDecision(

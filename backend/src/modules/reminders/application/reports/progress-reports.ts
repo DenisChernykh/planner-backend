@@ -254,10 +254,10 @@ export class ProgressReportsUseCases {
     });
   }
   async schedule(now: number) {
-    for (const settings of await this.reports.active()) {
+    for (const settings of await this.reports.active(now)) {
       const general = await this.reminders.settings(settings.ownerId);
       if ((await this.reminders.link(settings.ownerId))?.status !== "active") continue;
-      await this.prepare.execute({ ownerId: settings.ownerId, now });
+      // RunReminders prepares active reminder/report owners once before scheduling.
       for (const slot of ["wed", "sun"] as const) {
         const previous = slot === "wed" ? settings.nextWednesdayAt : settings.nextSundayAt;
         if (previous === null || previous > now) continue;
@@ -290,7 +290,7 @@ export class ProgressReportsUseCases {
       }
     }
   }
-  async deliver(jobId: string, now: number) {
+  async deliver(jobId: string, now: number, deferNewSnapshot = false) {
     if (!this.transport) return;
     const job = await this.reminders.job(jobId);
     if (job?.status !== "pending") return;
@@ -315,23 +315,29 @@ export class ProgressReportsUseCases {
       return;
     }
     let snapshot = job.payload === "[]" ? null : (JSON.parse(job.payload) as Snapshot);
-    const period = DateTime.fromISO(job.localDate, { zone: general.timeZone }).startOf("week");
-    const [selections, sources] = await Promise.all([
-      this.reports.selections(job.ownerId),
-      this.planning.progressSources(
-        job.ownerId,
-        period.toFormat("yyyy-MM"),
-        period.plus({ days: 6 }).toFormat("yyyy-MM"),
-      ),
-    ]);
-    const selected = new Set(selections.filter((goal) => goal.included).map((goal) => goal.goalId));
-    const activeIds = sources
-      .filter((goal) => selected.has(goal.id))
-      .map((goal) => goal.id)
-      .sort();
+    let selectionChanged = false;
+    if (snapshot) {
+      const period = DateTime.fromISO(job.localDate, { zone: general.timeZone }).startOf("week");
+      const [selections, sources] = await Promise.all([
+        this.reports.selections(job.ownerId),
+        this.planning.progressSources(
+          job.ownerId,
+          period.toFormat("yyyy-MM"),
+          period.plus({ days: 6 }).toFormat("yyyy-MM"),
+        ),
+      ]);
+      const selected = new Set(
+        selections.filter((goal) => goal.included).map((goal) => goal.goalId),
+      );
+      const activeIds = sources
+        .filter((goal) => selected.has(goal.id))
+        .map((goal) => goal.id)
+        .sort();
+      selectionChanged = JSON.stringify([...snapshot.goalIds].sort()) !== JSON.stringify(activeIds);
+    }
     if (
       !snapshot ||
-      JSON.stringify([...snapshot.goalIds].sort()) !== JSON.stringify(activeIds) ||
+      selectionChanged ||
       snapshot.reportRevision !== report.revision ||
       snapshot.progressRevision !== shared.revision ||
       snapshot.timeZone !== general.timeZone ||
@@ -380,6 +386,8 @@ export class ProgressReportsUseCases {
       const payload = JSON.stringify(snapshot);
       if (!(await this.reports.setSnapshot(job.id, job.payload, payload))) return;
       job.payload = payload;
+      // Production Cron persists preparation before claiming/sending on its next tick.
+      if (deferNewSnapshot) return;
     }
     if (
       !(await this.reports.claim(

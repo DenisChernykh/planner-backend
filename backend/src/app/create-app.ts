@@ -168,11 +168,18 @@ export function reminderTransport(env: CloudflareBindings) {
     ? createReminderTransport(config.telegramBotToken)
     : null;
 }
+const reminderRunners = new WeakMap<
+  CloudflareBindings,
+  ReturnType<typeof createReminderOperations>
+>();
+
 export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
   if (Math.floor(now / 60_000) % 60 === 0) await createPlanningMaintenance(env.DB).execute(now);
-  await createReminderOperations(
-    env.DB,
-    reminderTransport(env),
-    env.APP_ORIGIN,
-  ).runReminders.execute({ now });
+  let operations = reminderRunners.get(env);
+  if (!operations) {
+    operations = createReminderOperations(env.DB, reminderTransport(env), env.APP_ORIGIN);
+    reminderRunners.set(env, operations);
+  }
+  // Only wiring/transport is reused. Settings, schedules and delivery claims stay in D1.
+  await operations.runReminders.execute({ now, deferNewReportSnapshot: true });
 }

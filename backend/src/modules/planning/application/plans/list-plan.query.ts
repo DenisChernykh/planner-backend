@@ -7,7 +7,15 @@ import { withEntries } from "./with-entries";
 export class ListPlanQuery {
   constructor(private readonly repository: PlanningRepository) {}
 
-  async execute({ ownerId, month }: { ownerId: string; month: string }): Promise<GoalResource[]> {
+  async execute({
+    ownerId,
+    month,
+    date,
+  }: {
+    ownerId: string;
+    month: string;
+    date?: string;
+  }): Promise<GoalResource[]> {
     if (!validMonth(month)) throw new GoalCadenceInvalidError();
     return withEntries(
       this.repository,
@@ -15,6 +23,7 @@ export class ListPlanQuery {
       month,
       false,
       await this.repository.listGoals(ownerId, month, false),
+      date,
     );
   }
 }

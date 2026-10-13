@@ -39,10 +39,13 @@ export class D1ProgressReportRepository implements ProgressReportRepository {
           revision: 0,
         };
   }
-  async active() {
+  async active(now: number) {
     return (
       await this.database
-        .prepare("SELECT * FROM progress_report_settings WHERE enabled = 1")
+        .prepare(
+          "SELECT * FROM progress_report_settings WHERE enabled = 1 AND (next_wednesday_at <= ? OR next_sunday_at <= ?)",
+        )
+        .bind(now, now)
         .all<Row>()
     ).results.map(map);
   }

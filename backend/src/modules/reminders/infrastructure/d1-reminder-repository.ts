@@ -1,14 +1,16 @@
-import { and, eq, exists, gt, inArray, isNull, like, lte, ne, or, sql } from "drizzle-orm";
+import { and, eq, exists, gt, inArray, isNull, like, ne, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import {
   goalReminders,
-  planGoals,
   reminderJobs,
   reminderSettings,
   telegramLinks,
   telegramLinkTokens,
 } from "../../../platform/database/schema";
-import type { ReminderRepository } from "../application/ports/reminder-repository";
+import type {
+  ReminderRepository,
+  ReminderSchedulingState,
+} from "../application/ports/reminder-repository";
 import {
   DEFAULT_SETTINGS,
   type GoalReminder,
@@ -27,6 +29,32 @@ const toReminder = (row: typeof goalReminders.$inferSelect): GoalReminder => ({
   mode: row.mode as GoalReminder["mode"],
   weekdays: JSON.parse(row.weekdays) as number[],
 });
+type SettingsRow = {
+  owner_id: string;
+  enabled: number;
+  time_zone: string;
+  quiet_start: string;
+  quiet_end: string;
+  evening_time: string;
+  next_evening_at: number | null;
+  revision: string;
+};
+const settingsFromRow = (row: SettingsRow): ReminderSettings => ({
+  ownerId: row.owner_id,
+  enabled: Boolean(row.enabled),
+  timeZone: row.time_zone,
+  quietStart: row.quiet_start,
+  quietEnd: row.quiet_end,
+  eveningTime: row.evening_time,
+  nextEveningAt: row.next_evening_at,
+  revision: row.revision,
+});
+const reminderColumns = `r.goal_id AS goalId, r.owner_id AS ownerId, r.mode, r.time,
+  r.weekdays, r.next_run_at AS nextRunAt, r.revision`;
+const jobColumns = `id, event_key AS eventKey, owner_id AS ownerId, goal_id AS goalId,
+  local_date AS localDate, kind, status, due_at AS dueAt, expires_at AS expiresAt,
+  lease_until AS leaseUntil, chat_id AS chatId, message_id AS messageId,
+  expected_revision AS expectedRevision, payload, attempts, created_at AS createdAt`;
 
 // Unsent automatic jobs can be rebuilt after a schedule edit. Keep delivery history,
 // including uncertain sends, and never release the event key of a delivered message.
@@ -39,29 +67,20 @@ const replaceableAutomaticJob = and(
   ),
 );
 
-const matchingSettings = (settings: ReminderSettings) =>
-  and(
-    eq(reminderSettings.ownerId, settings.ownerId),
-    eq(reminderSettings.enabled, settings.enabled),
-    eq(reminderSettings.timeZone, settings.timeZone),
-    eq(reminderSettings.quietStart, settings.quietStart),
-    eq(reminderSettings.quietEnd, settings.quietEnd),
-    eq(reminderSettings.eveningTime, settings.eveningTime),
-    eq(reminderSettings.revision, settings.revision ?? "initial"),
-  );
-
 export class D1ReminderRepository implements ReminderRepository {
-  private readonly db;
-  constructor(private readonly binding: D1Database) {
-    this.db = drizzle(binding);
+  private database: ReturnType<typeof drizzle> | undefined;
+  constructor(private readonly binding: D1Database) {}
+  private get db() {
+    this.database ??= drizzle(this.binding);
+    return this.database;
   }
 
   async settings(ownerId: string): Promise<ReminderSettings> {
-    const [row] = await this.db
-      .select()
-      .from(reminderSettings)
-      .where(eq(reminderSettings.ownerId, ownerId));
-    return row ?? { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null };
+    const row = await this.binding
+      .prepare("SELECT * FROM reminder_settings WHERE owner_id = ?")
+      .bind(ownerId)
+      .first<SettingsRow>();
+    return row ? settingsFromRow(row) : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null };
   }
   async saveSettings(
     settings: ReminderSettings,
@@ -146,13 +165,59 @@ export class D1ReminderRepository implements ReminderRepository {
     const results = await this.binding.batch(statements);
     return results[0]?.meta.changes === 1;
   }
-  async activeSettings(): Promise<ReminderSettings[]> {
-    return this.db.select().from(reminderSettings).where(eq(reminderSettings.enabled, true));
+  async schedulingState(): Promise<ReminderSchedulingState[]> {
+    // One read replaces per-owner scans and plan inheritance on every minute.
+    // Keep unfinished inheritance visible after an interrupted month rollover.
+    const rows = await this.binding
+      .prepare(`SELECT u.id AS owner_id, coalesce(s.enabled, 0) AS enabled,
+        coalesce(s.time_zone, 'Asia/Yekaterinburg') AS time_zone,
+        coalesce(s.quiet_start, '23:00') AS quiet_start, coalesce(s.quiet_end, '08:00') AS quiet_end,
+        coalesce(s.evening_time, '21:00') AS evening_time, s.next_evening_at,
+        coalesce(s.revision, 'initial') AS revision,
+        (SELECT json_group_array(month) FROM plan_month_rollovers WHERE owner_id = u.id) AS prepared_months,
+        (SELECT json_group_array(DISTINCT target.month) FROM plan_goals target
+          WHERE target.owner_id = u.id AND target.deleted_at IS NULL AND target.carried_from_goal_id IS NOT NULL
+          AND (EXISTS (SELECT 1 FROM goal_reminders source WHERE source.goal_id = target.carried_from_goal_id AND source.owner_id = u.id)
+            AND NOT EXISTS (SELECT 1 FROM goal_reminders inherited WHERE inherited.goal_id = target.id)
+          OR EXISTS (SELECT 1 FROM goal_progress_reports source WHERE source.goal_id = target.carried_from_goal_id AND source.owner_id = u.id)
+            AND NOT EXISTS (SELECT 1 FROM goal_progress_reports inherited WHERE inherited.goal_id = target.id))) AS inheritance_months,
+        (SELECT json_group_object(month, due_at) FROM (
+          SELECT g.month, min(r.next_run_at) AS due_at FROM goal_reminders r JOIN plan_goals g ON g.id = r.goal_id
+          WHERE r.owner_id = u.id AND g.owner_id = u.id AND g.deleted_at IS NULL
+            AND r.mode = 'scheduled' AND r.next_run_at IS NOT NULL GROUP BY g.month
+        )) AS next_goal_runs
+        FROM users u JOIN telegram_links l ON l.owner_id = u.id AND l.status = 'active'
+        LEFT JOIN reminder_settings s ON s.owner_id = u.id
+        WHERE s.enabled = 1 OR EXISTS (SELECT 1 FROM progress_report_settings p WHERE p.owner_id = u.id AND p.enabled = 1)`)
+      .all<
+        SettingsRow & {
+          prepared_months: string;
+          inheritance_months: string;
+          next_goal_runs: string;
+        }
+      >();
+    return rows.results.map((row) => ({
+      settings: settingsFromRow(row),
+      preparedMonths: JSON.parse(row.prepared_months) as string[],
+      inheritanceMonths: JSON.parse(row.inheritance_months) as string[],
+      nextGoalRuns: JSON.parse(row.next_goal_runs) as Record<string, number>,
+    }));
   }
   async reminders(ownerId: string): Promise<GoalReminder[]> {
-    return (
-      await this.db.select().from(goalReminders).where(eq(goalReminders.ownerId, ownerId))
-    ).map(toReminder);
+    const rows = await this.binding
+      .prepare(`SELECT ${reminderColumns} FROM goal_reminders r WHERE r.owner_id = ?`)
+      .bind(ownerId)
+      .all<typeof goalReminders.$inferSelect>();
+    return rows.results.map(toReminder);
+  }
+  async reminder(ownerId: string, goalId: string): Promise<GoalReminder | null> {
+    const row = await this.binding
+      .prepare(
+        `SELECT ${reminderColumns} FROM goal_reminders r WHERE r.owner_id = ? AND r.goal_id = ?`,
+      )
+      .bind(ownerId, goalId)
+      .first<typeof goalReminders.$inferSelect>();
+    return row ? toReminder(row) : null;
   }
   async saveReminder(item: GoalReminder, expected?: ReminderSettings): Promise<boolean> {
     const settings = expected ?? (await this.settings(item.ownerId));
@@ -237,28 +302,22 @@ export class D1ReminderRepository implements ReminderRepository {
     return result.meta.changes === 1;
   }
 
-  async scheduledReminders(ownerId: string, month: string): Promise<GoalReminder[]> {
-    const rows = await this.db
-      .select({ reminder: goalReminders })
-      .from(goalReminders)
-      .innerJoin(planGoals, eq(planGoals.id, goalReminders.goalId))
-      .where(
-        and(
-          eq(goalReminders.ownerId, ownerId),
-          eq(planGoals.ownerId, ownerId),
-          eq(planGoals.month, month),
-          isNull(planGoals.deletedAt),
-          eq(goalReminders.mode, "scheduled"),
-        ),
-      );
-    return rows.map(({ reminder }) => toReminder(reminder));
+  async scheduledReminders(ownerId: string, month: string, now: number): Promise<GoalReminder[]> {
+    const rows = await this.binding
+      .prepare(`SELECT ${reminderColumns} FROM goal_reminders r JOIN plan_goals g ON g.id = r.goal_id
+        WHERE r.owner_id = ? AND g.owner_id = ? AND g.month = ? AND g.deleted_at IS NULL
+          AND r.mode = 'scheduled' AND r.next_run_at <= ? ORDER BY r.next_run_at, r.goal_id LIMIT 5`)
+      .bind(ownerId, ownerId, month, now)
+      .all<typeof goalReminders.$inferSelect>();
+    return rows.results.map(toReminder);
   }
 
   async link(ownerId: string) {
-    return (
-      (await this.db.select().from(telegramLinks).where(eq(telegramLinks.ownerId, ownerId)))[0] ??
-      null
-    );
+    return this.binding
+      .prepare(`SELECT owner_id AS ownerId, chat_id AS chatId, telegram_user_id AS telegramUserId, status
+        FROM telegram_links WHERE owner_id = ?`)
+      .bind(ownerId)
+      .first<typeof telegramLinks.$inferSelect>();
   }
   async linkForChat(chatId: string, userId: string) {
     return (
@@ -349,28 +408,29 @@ export class D1ReminderRepository implements ReminderRepository {
     job: ReminderJob | null,
     settings: ReminderSettings,
   ): Promise<void> {
-    const advance = this.db
-      .update(goalReminders)
-      .set({ nextRunAt: item.nextRunAt })
-      .where(
-        and(
-          eq(goalReminders.goalId, item.goalId),
-          eq(goalReminders.ownerId, item.ownerId),
-          eq(goalReminders.nextRunAt, previous),
-          eq(goalReminders.mode, item.mode),
-          eq(goalReminders.time, item.time),
-          eq(goalReminders.weekdays, JSON.stringify(item.weekdays)),
-          eq(goalReminders.revision, item.revision ?? "initial"),
-          exists(
-            this.db
-              .select({ ownerId: reminderSettings.ownerId })
-              .from(reminderSettings)
-              .where(matchingSettings(settings)),
-          ),
-        ),
-      )
-      .toSQL();
-    await this.advanceSchedule(this.binding.prepare(advance.sql).bind(...advance.params), job);
+    const advance = this.binding
+      .prepare(`UPDATE goal_reminders SET next_run_at = ?
+        WHERE goal_id = ? AND owner_id = ? AND next_run_at = ? AND mode = ? AND time = ? AND weekdays = ? AND revision = ?
+        AND EXISTS (SELECT 1 FROM reminder_settings WHERE owner_id = ? AND enabled = ? AND time_zone = ?
+          AND quiet_start = ? AND quiet_end = ? AND evening_time = ? AND revision = ?)`)
+      .bind(
+        item.nextRunAt,
+        item.goalId,
+        item.ownerId,
+        previous,
+        item.mode,
+        item.time,
+        JSON.stringify(item.weekdays),
+        item.revision ?? "initial",
+        settings.ownerId,
+        Number(settings.enabled),
+        settings.timeZone,
+        settings.quietStart,
+        settings.quietEnd,
+        settings.eveningTime,
+        settings.revision ?? "initial",
+      );
+    await this.advanceSchedule(advance, job);
   }
   async advanceEvening(
     settings: ReminderSettings,
@@ -378,12 +438,22 @@ export class D1ReminderRepository implements ReminderRepository {
     next: number,
     job: ReminderJob | null,
   ): Promise<void> {
-    const advance = this.db
-      .update(reminderSettings)
-      .set({ nextEveningAt: next })
-      .where(and(matchingSettings(settings), eq(reminderSettings.nextEveningAt, previous)))
-      .toSQL();
-    await this.advanceSchedule(this.binding.prepare(advance.sql).bind(...advance.params), job);
+    const advance = this.binding
+      .prepare(`UPDATE reminder_settings SET next_evening_at = ?
+        WHERE owner_id = ? AND next_evening_at = ? AND enabled = ? AND time_zone = ?
+          AND quiet_start = ? AND quiet_end = ? AND evening_time = ? AND revision = ?`)
+      .bind(
+        next,
+        settings.ownerId,
+        previous,
+        Number(settings.enabled),
+        settings.timeZone,
+        settings.quietStart,
+        settings.quietEnd,
+        settings.eveningTime,
+        settings.revision ?? "initial",
+      );
+    await this.advanceSchedule(advance, job);
   }
   private async advanceSchedule(advance: D1PreparedStatement, job: ReminderJob | null) {
     if (!job) {
@@ -421,17 +491,19 @@ export class D1ReminderRepository implements ReminderRepository {
     ]);
   }
   async due(now: number): Promise<ReminderJob[]> {
-    return (
-      await this.db
-        .select()
-        .from(reminderJobs)
-        .where(and(eq(reminderJobs.status, "pending"), lte(reminderJobs.dueAt, now)))
-        .orderBy(reminderJobs.dueAt)
-        .limit(3)
-    ).map(toJob);
+    const rows = await this.binding
+      .prepare(
+        `SELECT ${jobColumns} FROM reminder_jobs WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1`,
+      )
+      .bind(now)
+      .all<JobRow>();
+    return rows.results.map(toJob);
   }
   async job(id: string): Promise<ReminderJob | null> {
-    const [row] = await this.db.select().from(reminderJobs).where(eq(reminderJobs.id, id));
+    const row = await this.binding
+      .prepare(`SELECT ${jobColumns} FROM reminder_jobs WHERE id = ?`)
+      .bind(id)
+      .first<JobRow>();
     return row ? toJob(row) : null;
   }
   async replyJob(chatId: string, messageId: number): Promise<ReminderJob | null> {
@@ -442,32 +514,49 @@ export class D1ReminderRepository implements ReminderRepository {
     return row ? toJob(row) : null;
   }
   async claim(id: string, now: number): Promise<boolean> {
-    const result = await this.db
-      .update(reminderJobs)
-      .set({
-        status: "sending",
-        leaseUntil: now + 60_000,
-        attempts: sql`${reminderJobs.attempts} + 1`,
-      })
-      .where(
-        and(
-          eq(reminderJobs.id, id),
-          eq(reminderJobs.status, "pending"),
-          lte(reminderJobs.dueAt, now),
-        ),
-      )
-      .returning({ id: reminderJobs.id });
-    return result.length === 1;
+    const result = await this.binding
+      .prepare(`UPDATE reminder_jobs SET status = 'sending', lease_until = ?, attempts = attempts + 1
+        WHERE id = ? AND status = 'pending' AND due_at <= ?`)
+      .bind(now + 60_000, id, now)
+      .run();
+    return result.meta.changes === 1;
   }
   async updateJob(id: string, changes: Partial<ReminderJob>): Promise<void> {
-    await this.db.update(reminderJobs).set(changes).where(eq(reminderJobs.id, id));
+    const columns: Record<keyof ReminderJob, string> = {
+      id: "id",
+      eventKey: "event_key",
+      ownerId: "owner_id",
+      goalId: "goal_id",
+      localDate: "local_date",
+      kind: "kind",
+      status: "status",
+      dueAt: "due_at",
+      expiresAt: "expires_at",
+      leaseUntil: "lease_until",
+      chatId: "chat_id",
+      messageId: "message_id",
+      expectedRevision: "expected_revision",
+      payload: "payload",
+      attempts: "attempts",
+      createdAt: "created_at",
+    };
+    const entries = Object.entries(changes).filter(([, value]) => value !== undefined);
+    if (!entries.length) return;
+    await this.binding
+      .prepare(
+        `UPDATE reminder_jobs SET ${entries.map(([key]) => `${columns[key as keyof ReminderJob]} = ?`).join(", ")} WHERE id = ?`,
+      )
+      .bind(...entries.map(([, value]) => value), id)
+      .run();
   }
   async recover(now: number): Promise<void> {
     // A crashed send may have reached Telegram: do not automatically resend it.
-    await this.db
-      .update(reminderJobs)
-      .set({ status: "unknown", leaseUntil: null })
-      .where(and(eq(reminderJobs.status, "sending"), lte(reminderJobs.leaseUntil, now)));
+    await this.binding
+      .prepare(
+        "UPDATE reminder_jobs SET status = 'unknown', lease_until = NULL WHERE status = 'sending' AND lease_until <= ?",
+      )
+      .bind(now)
+      .run();
     if (Math.floor(now / 60_000) % 60 !== 0) return;
     const cutoff = now - 90 * 86_400_000;
     await this.binding.batch([

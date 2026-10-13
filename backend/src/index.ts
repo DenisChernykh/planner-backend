@@ -2,9 +2,13 @@ import { createApp, runReminders } from "./app/create-app";
 
 export { createApp } from "./app/create-app";
 
-const app = createApp();
+let app: ReturnType<typeof createApp> | undefined;
 export default {
-  fetch: app.fetch,
+  fetch(request: Request, env: CloudflareBindings, context: ExecutionContext) {
+    // Cron isolates do not need to construct the HTTP router and OpenAPI registry.
+    app ??= createApp();
+    return app.fetch(request, env, context);
+  },
   async scheduled(_controller: ScheduledController, env: CloudflareBindings): Promise<void> {
     try {
       await runReminders(env, Date.now());

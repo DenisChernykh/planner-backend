@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { runReminders } from "../src/app/create-app";
 import { CreateGoalUseCase } from "../src/modules/planning/application/goals/create-goal.use-case";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { createProgressOperations } from "../src/modules/progress";
@@ -93,6 +94,47 @@ describe("report schedules", () => {
 });
 
 describe("progress reports with D1 and fake transport", () => {
+  it("production Cron persists a report before sending on a later tick and reuses only wiring", async () => {
+    await save();
+    const send = vi.fn(async () => Response.json({ ok: true, result: { message_id: 10 } }));
+    vi.stubGlobal("fetch", send);
+    const bindings = {
+      ...env,
+      AUTH_MODE: "disabled",
+      APP_ORIGIN: "https://example.com",
+      AUTH_SUCCESS_REDIRECT_URL: "https://example.com/",
+      BUILD_REVISION: "local",
+      TELEGRAM_BOT_MODE: "webhook",
+      TELEGRAM_BOT_TOKEN: "123:local-test-only",
+      TELEGRAM_BOT_WEBHOOK_SECRET: "local-test-only",
+    } as unknown as CloudflareBindings;
+    try {
+      await runReminders(bindings, NOW);
+      const [prepared] = (await jobs()).results;
+      expect(prepared?.status).toBe("pending");
+      expect(JSON.parse(prepared?.payload ?? "[]").version).toBe(1);
+      expect(send).not.toHaveBeenCalled();
+      await runReminders(bindings, NOW + 60_000);
+      expect(send).toHaveBeenCalledTimes(1);
+      expect((await jobs()).results[0]?.status).toBe("sent");
+      await runReminders(bindings, NOW + 120_000);
+      expect(send).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("honors report settings changed between preparation and delivery", async () => {
+    await save();
+    const runner = operations();
+    await runner.runReminders.execute({ now: NOW, deferNewReportSnapshot: true });
+    expect((await jobs()).results[0]?.status).toBe("pending");
+    await save({ enabled: false }, NOW + 30_000);
+    await runner.runReminders.execute({ now: NOW + 60_000, deferNewReportSnapshot: true });
+    expect(transport.send).not.toHaveBeenCalled();
+    expect((await jobs()).results[0]?.status).toBe("cancelled");
+  });
+
   it("sends one report with reminders disabled and handles parallel Cron ticks", async () => {
     await save();
     await Promise.all([

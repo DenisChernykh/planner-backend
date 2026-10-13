@@ -6,6 +6,7 @@ import { UpsertGoalEntryUseCase } from "../src/modules/planning/application/entr
 import { CreateGoalUseCase } from "../src/modules/planning/application/goals/create-goal.use-case";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { createReminderOperations } from "../src/modules/reminders";
+import { createReminderJob } from "../src/modules/reminders/domain/jobs";
 import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
 import { afterQuietHours, nextOccurrence } from "../src/modules/reminders/domain/schedule";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
@@ -120,6 +121,74 @@ describe("reminder schedules", () => {
 });
 
 describe("Telegram reminders with D1", () => {
+  it("keeps an idle tick independent of plan preparation and reminder history", async () => {
+    await goal();
+    await operations().runReminders.execute({ now });
+    const rollover = vi.spyOn(D1PlanningRepository.prototype, "rolloverState");
+    const inheritance = vi.spyOn(D1PlanningRepository.prototype, "carriedGoals");
+    const schedules = vi.spyOn(D1ReminderRepository.prototype, "scheduledReminders");
+    await operations().runReminders.execute({ now: now + 60_000 });
+    expect(rollover).not.toHaveBeenCalled();
+    expect(inheritance).not.toHaveBeenCalled();
+    expect(schedules).not.toHaveBeenCalled();
+    expect(sent).toHaveLength(1);
+  });
+
+  it("drains persisted questions one per tick before preparing any new schedules", async () => {
+    const first = await goal();
+    const second = await goal();
+    for (const created of [first, second])
+      await repository.enqueue(
+        createReminderJob({
+          id: crypto.randomUUID(),
+          ownerId: OWNER,
+          goalId: created.id,
+          date: "2026-09-29",
+          kind: "question",
+          eventKey: `queued:${created.id}`,
+          now,
+        }),
+      );
+    const prepare = vi.spyOn(D1PlanningRepository.prototype, "rolloverState");
+    await operations().runReminders.execute({ now });
+    expect(sent).toHaveLength(1);
+    expect(await repository.due(now)).toHaveLength(1);
+    await operations().runReminders.execute({ now: now + 60_000 });
+    expect(sent).toHaveLength(2);
+    expect(await repository.due(now + 60_000)).toHaveLength(0);
+    expect(prepare).not.toHaveBeenCalled();
+    const rows = await env.DB.prepare("SELECT status, attempts FROM reminder_jobs").all();
+    expect(rows.results).toEqual([
+      { status: "sent", attempts: 1 },
+      { status: "sent", attempts: 1 },
+    ]);
+  });
+
+  it("collects today's missing goals without loading another day's facts", async () => {
+    const yesterday = await goal({ type: "check" }, "evening");
+    const today = await goal({ type: "check" }, "evening");
+    for (const [created, date] of [
+      [yesterday, "2026-09-28"],
+      [today, "2026-09-29"],
+    ] as const)
+      await new UpsertGoalEntryUseCase(planningRepository).execute({
+        ownerId: OWNER,
+        goalId: created.id,
+        date,
+        now,
+        expectedRevision: null,
+        value: { completed: false },
+      });
+    const snapshot = await planning.listForDate(OWNER, "2026-09-29");
+    expect(snapshot.find((item) => item.id === yesterday.id)?.entries).toEqual([]);
+    expect(snapshot.find((item) => item.id === today.id)?.entries).toHaveLength(1);
+    expect(
+      (await planning.list(OWNER, "2026-09")).find((item) => item.id === yesterday.id)?.entries,
+    ).toHaveLength(1);
+    await operations().runReminders.execute({ now: Date.parse("2026-09-29T16:00:00Z") });
+    expect(JSON.parse((await firstJob()).payload)).toEqual([yesterday.id]);
+  });
+
   it("handles help and stop commands before interpreting a reply to a question", async () => {
     const created = await goal();
     await operations().runReminders.execute({ now });
@@ -716,6 +785,8 @@ describe("reminder runtime integration", () => {
     await operations().runReminders.execute({ now: late });
     expect(sent).toHaveLength(0);
     await operations().runReminders.execute({ now: Date.parse("2026-09-30T03:00:00Z") });
+    // The digest and question share a send time; Cron drains one message per minute.
+    await operations().runReminders.execute({ now: Date.parse("2026-09-30T03:01:00Z") });
     expect(sent.length).toBeGreaterThan(0);
     const questions = await env.DB.prepare(
       "SELECT local_date FROM reminder_jobs WHERE goal_id = ? AND status = 'sent'",

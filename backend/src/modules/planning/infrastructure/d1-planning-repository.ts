@@ -34,6 +34,10 @@ import type { EntrySnapshot, ProgressPlanningSource, RecordAnswerInput } from ".
 
 type GoalRow = typeof planGoals.$inferSelect;
 type EntryRow = typeof goalEntries.$inferSelect;
+const goalColumns = `id, owner_id AS ownerId, month, carried_from_goal_id AS carriedFromGoalId,
+  title, description, tracking_type AS trackingType, tracking_config AS trackingConfig,
+  cadence_period AS cadencePeriod, target_occurrences AS targetOccurrences, sort_order AS sortOrder,
+  deleted_at AS deletedAt, created_at AS createdAt, updated_at AS updatedAt`;
 
 function parseJson<T>(value: string): T {
   return JSON.parse(value) as T;
@@ -102,12 +106,15 @@ function toEntry(row: EntryRow): StoredEntry {
 export class D1PlanningRepository
   implements PlanningRepository, AnswerRepository, MonthRolloverRepository, SearchRepository
 {
-  private readonly database;
+  private dataSource: ReturnType<typeof drizzle> | undefined;
   private readonly binding: D1Database;
 
   constructor(binding: D1Database) {
     this.binding = binding;
-    this.database = drizzle(binding);
+  }
+  private get database() {
+    this.dataSource ??= drizzle(this.binding);
+    return this.dataSource;
   }
 
   async progressSources(
@@ -329,13 +336,12 @@ export class D1PlanningRepository
   }
 
   async findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null> {
-    const [row] = await this.database
-      .select()
-      .from(planGoals)
-      .where(
-        and(eq(planGoals.id, goalId), eq(planGoals.ownerId, ownerId), isNull(planGoals.deletedAt)),
+    const row = await this.binding
+      .prepare(
+        `SELECT ${goalColumns} FROM plan_goals WHERE id = ? AND owner_id = ? AND deleted_at IS NULL`,
       )
-      .limit(1);
+      .bind(goalId, ownerId)
+      .first<GoalRow>();
     return row ? toGoal(row) : null;
   }
 
@@ -575,6 +581,7 @@ export class D1PlanningRepository
     ownerId: string,
     month: string,
     includeDeleted: boolean,
+    date?: string,
   ): Promise<StoredEntry[]> {
     const planGoalIds = this.database
       .select({ id: planGoals.id })
@@ -589,7 +596,12 @@ export class D1PlanningRepository
     const rows: EntryRow[] = await this.database
       .select()
       .from(goalEntries)
-      .where(inArray(goalEntries.goalId, planGoalIds))
+      .where(
+        and(
+          inArray(goalEntries.goalId, planGoalIds),
+          date === undefined ? undefined : eq(goalEntries.localDate, date),
+        ),
+      )
       .orderBy(asc(goalEntries.goalId), desc(goalEntries.localDate));
     return rows.map(toEntry);
   }
@@ -655,20 +667,16 @@ export class D1PlanningRepository
     goalId: string,
     date: string,
   ): Promise<EntrySnapshot | null> {
-    const [row] = await this.database
-      .select({ entry: goalEntries })
-      .from(goalEntries)
-      .innerJoin(planGoals, eq(planGoals.id, goalEntries.goalId))
-      .where(
-        and(
-          eq(planGoals.ownerId, ownerId),
-          isNull(planGoals.deletedAt),
-          eq(goalEntries.goalId, goalId),
-          eq(goalEntries.localDate, date),
-        ),
-      )
-      .limit(1);
-    return row ? { entry: toEntry(row.entry), revision: row.entry.revision } : null;
+    const row = await this.binding
+      .prepare(`SELECT e.goal_id AS goalId, e.local_date AS localDate, e.value, e.revision, e.met,
+        e.note, e.created_at AS createdAt, e.updated_at AS updatedAt
+        FROM goal_entries e JOIN plan_goals g ON g.id = e.goal_id
+        WHERE g.owner_id = ? AND g.deleted_at IS NULL AND e.goal_id = ? AND e.local_date = ?`)
+      .bind(ownerId, goalId, date)
+      .first<EntryRow>();
+    return row
+      ? { entry: toEntry({ ...row, met: Boolean(row.met) }), revision: row.revision }
+      : null;
   }
 
   async recordAnswer(
