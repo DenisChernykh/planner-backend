@@ -93,26 +93,65 @@ production measurement before broader reliability claims.
 - Digests load facts only for their question date and calculate the weekday once.
   Website plan reads retain full monthly history.
 
-## Production acceptance — pending separate deployment authorization
+## Authorized production deployment and delivery verification
 
-Commit and push checked source before any deployment. Deploy only that revision
-to the existing Worker `app`; retain the existing database, secrets, single Cron,
-Free plan and disabled invocation logs. Deployment can naturally send already
-pending reminders; do not replay `unknown`/`sent` jobs or send synthetic messages
-to another person's chat.
+After local `pnpm check`, production dry-run and the pushed revision's
+[successful CI run](https://github.com/DenisChernykh/planner-backend/actions/runs/38371601661),
+the owner authorized deployment of `ebbbf202b3e9c4e3a98a3a35745847aee0dd5695`
+to the existing Worker `app`. Cloudflare created version
+`30161c27-1250-4aee-8a27-5d464653d6f9` at 08:53:49 UTC on 13 October.
+`/health` subsequently returned `200` and that exact source revision.
 
-After an authorized deployment:
+The existing D1 binding, secret bindings and one `* * * * *` Cron were retained;
+invocation logs remain disabled. No remote migration, resource creation or plan
+upgrade was performed. A read of account subscriptions returned `403`, so billing
+tier was not independently verified through that API; Free is the owner's stated
+deployment constraint.
 
-1. Confirm `/health` reports the deployed commit and the Cron remains unchanged.
-2. Read exact scheduled-event outcomes and CPU around ordinary minute ticks and
-   the top of an hour, including fresh isolates. Compare with the failure window.
-3. Observe a naturally due question move through its claim to `sent` with one
-   attempt and no duplicate. D1 `sent` establishes Telegram API acceptance, not
-   whether the recipient saw a device notification.
-4. Observe evening delivery and weekly-report preparation/send, including quiet
-   hours and an existing fact that should suppress a question. Test messages
-   require explicit authorization and an owner's dedicated chat.
-5. Measure monthly rollover and inheritance recovery at the next relevant
-   boundary, or use a separately authorized isolated test. Persistent CPU
-   overruns or unchanged pending jobs require further profiling; do not declare
-   the Free-tier reliability goal achieved from local tests alone.
+Exact `workersInvocationsScheduled` events from 08:54:01 through 09:06:01 UTC
+(13:54:01–14:06:01 Asia/Yekaterinburg) showed **13 successes, zero resource
+terminations**. These are production CPU measurements, unlike the local samples.
+
+| Observed work | Invocations | CPU, ms | Outcome |
+| --- | ---: | ---: | --- |
+| First recorded tick after deployment | 1 | 14.702 | success |
+| Other ticks, excluding control delivery | 11 | 4.101–7.882; median 4.664 | all success |
+| Control question scheduled and delivered at 09:02:01 UTC | 1 | 29.433 | success |
+
+The top-of-hour tick at 09:00:01 UTC used 7.882 ms. The dataset does not expose
+isolate identity, so the first recorded invocation cannot be proven to be a cold
+isolate. In particular, the successful control delivery exceeded the Free 10 ms
+CPU budget. Cloudflare documents flexibility for infrequent overruns, but this
+does **not** establish sufficient CPU headroom or reliable Free-tier delivery.
+The resource-failure sequence stopped in this observation window; the CPU
+acceptance criterion remains unmet for the real question path.
+
+The owner separately authorized one temporary goal titled
+“Проверка доставки уведомлений” for the recipient's connected Telegram chat.
+Cron scheduled and sent exactly one recorded job at 14:02:01 local time:
+`status=sent`, `attempts=1`, message ID present. The owner confirmed that the
+question appeared in Telegram and that they pressed “Да”. This confirms client
+receipt in addition to Telegram API acceptance; it does not independently verify
+that the button response was persisted.
+
+After delivery, the temporary goal was soft-deleted from the active plan and its
+reminder switched to `off` with `next_run_at=NULL`. A readback confirmed one sent
+job, one attempt and zero pending/sending jobs. Existing goals and settings were
+not changed; no old `unknown` or `sent` jobs were replayed. Delivery history was
+retained.
+
+## Remaining CPU acceptance work
+
+1. Profile the first question scheduling/delivery path, including native calendar
+   work and real Telegram-response handling. The 29.433 ms event cannot be
+   attributed to an individual function from scheduled-event metrics alone.
+2. Measure more ordinary deliveries and fresh isolates. Do not rely on the
+   platform's occasional overrun allowance as the delivery budget. Additional
+   synthetic messages require separate authorization; only one was authorized
+   for this verification.
+3. Observe evening delivery and weekly-report preparation/send, including quiet
+   hours and an existing fact that should suppress a question. These paths were
+   tested locally but were not exercised by this production control question.
+4. Measure monthly rollover and inheritance recovery at the next relevant
+   boundary, or use a separately authorized isolated test. Larger histories and
+   account counts remain outside this short production observation window.
