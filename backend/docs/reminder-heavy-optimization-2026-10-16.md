@@ -201,3 +201,12 @@ Sanitized metrics, deployment metadata and transition/cleanup readbacks are in
 [`reminder-cpu-2026-10-16-644a395-production.json`](reminder-cpu-2026-10-16-644a395-production.json).
 The implementation checks and CI above apply to the deployed source. The evidence
 update also passed root `pnpm check` before commit; it changes documentation only.
+
+
+## Further bounded-stage implementation
+
+The next [bounded-stage implementation](reminder-heavy-stages-2026-10-16.md)
+separates selection, input capture, four-group calculation batches, formatting and
+sending; it also copies months atomically in D1 and inherits eight edges per tick.
+It is not deployed. Its local observations, including retained inheritance
+estimates above 10 ms, are separate from the `644a395` production control above.

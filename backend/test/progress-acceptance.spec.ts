@@ -588,11 +588,13 @@ describe("bounded D1 profile", () => {
     const start = performance.now();
     const sources = await measured.progressSources(OWNER, "2026-09", "2026-10");
     expect(sources).toHaveLength(30);
-    expect(statements).toHaveLength(2);
+    expect(statements).toHaveLength(1);
     expect(sources.reduce((total, source) => total + source.entries.length, 0)).toBe(206);
     const queries = [
-      [statements[0] as string, [OWNER, "2026-09", "2026-10"]],
-      [statements[1] as string, [OWNER, "2026-09", "2026-10", OWNER, OWNER]],
+      [
+        statements[0] as string,
+        [OWNER, "2026-09", "2026-10", OWNER, OWNER, OWNER, "2026-09", "2026-10"],
+      ],
       ["SELECT * FROM progress_report_settings WHERE enabled = 1", []],
       [
         "SELECT * FROM reminder_jobs WHERE status = 'pending' AND due_at <= ? ORDER BY due_at LIMIT 5",

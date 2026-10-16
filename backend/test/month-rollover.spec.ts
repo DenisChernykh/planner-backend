@@ -259,6 +259,89 @@ describe("month rollover in D1", () => {
   });
 });
 
+describe("atomic Cron month copy", () => {
+  const copy = (now: number) =>
+    planning.ensureCurrentPlan({
+      ownerId: OWNER,
+      now,
+      timeZone: TIME_ZONE,
+      includeCarriedGoals: false,
+    });
+  it("matches the domain copy, clamps February and copies once under concurrency", async () => {
+    const february = Date.parse("2027-02-01T06:00:00Z");
+    const definitions: Partial<GoalCreateInput>[] = [
+      { tracking: { type: "check" } },
+      {
+        tracking: { type: "quantity", comparison: "equal", targetValue: 12, unit: "шт." },
+        cadence: { period: "week", targetOccurrences: 4 },
+      },
+      {
+        tracking: { type: "scale", min: 1, max: 10 },
+        cadence: { period: "month", targetOccurrences: 31 },
+      },
+      {
+        tracking: { type: "time", targetEnd: "08:30" },
+        cadence: { period: "month", targetOccurrences: 29 },
+      },
+    ];
+    for (const [index, definition] of definitions.entries())
+      await create("2027-01", { ...definition, title: `Goal ${index}` });
+    await create("2027-01", { title: "Other account" }, OTHER);
+    const source = await planning.list(OWNER, "2027-01");
+    const deleted = await create("2027-01", { title: "Deleted" });
+    await useCases.deleteGoal.execute({ ownerId: OWNER, goalId: deleted.id, now: february - 1 });
+    await Promise.all(Array.from({ length: 8 }, () => copy(february)));
+    const targets = await planning.list(OWNER, "2027-02");
+    expect(targets).toHaveLength(4);
+    expect(new Set(targets.map((goal) => goal.id)).size).toBe(4);
+    for (const [index, target] of targets.entries()) {
+      expect(target.id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,
+      );
+      const original = source[index];
+      if (!original) throw new Error("Missing copy source");
+      expect(target).toEqual({
+        ...carryGoalToMonth(original, "2027-02", target.id, february),
+        entries: [],
+      });
+    }
+    expect(await planning.list(OTHER, "2027-02")).toEqual([]);
+    expect(await planning.list(OWNER, "2027-01")).toEqual(source);
+    const first = targets[0];
+    if (!first) throw new Error("Missing copy target");
+    await useCases.deleteGoal.execute({ ownerId: OWNER, goalId: first.id, now: february });
+    await copy(february + 60_000);
+    expect(await planning.list(OWNER, "2027-02")).toHaveLength(3);
+  });
+  it("preserves a manual destination including trash and an empty previous receipt", async () => {
+    await create();
+    const manual = await create("2026-10", { title: "Manual" });
+    await useCases.deleteGoal.execute({ ownerId: OWNER, goalId: manual.id, now: OCTOBER });
+    await copy(OCTOBER);
+    expect(await planning.list(OWNER, "2026-10")).toEqual([]);
+    await copy(Date.parse("2026-11-01T06:00:00Z"));
+    expect(await planning.list(OWNER, "2026-11")).toEqual([]);
+  });
+  it("rolls back the receipt with a failed copy and can resume next tick", async () => {
+    await create();
+    await env.DB.prepare(`CREATE TRIGGER fail_cron_copy BEFORE INSERT ON plan_goals WHEN NEW.month = '2026-10'
+      BEGIN SELECT RAISE(ABORT, 'test copy failure'); END`).run();
+    try {
+      await expect(copy(OCTOBER)).rejects.toThrow();
+      expect(
+        await env.DB.prepare(
+          "SELECT count(*) AS n FROM plan_month_rollovers WHERE month = '2026-10'",
+        ).first("n"),
+      ).toBe(0);
+      expect(await planning.list(OWNER, "2026-10")).toEqual([]);
+    } finally {
+      await env.DB.prepare("DROP TRIGGER fail_cron_copy").run();
+    }
+    await copy(OCTOBER + 60_000);
+    expect(await planning.list(OWNER, "2026-10")).toHaveLength(1);
+  });
+});
+
 describe("reminder inheritance and scheduled rollover", () => {
   it("bounds Cron inheritance and resumes the remaining rules and report selections next tick", async () => {
     for (let index = 0; index < 30; index++) await create("2026-09", { title: `Goal ${index}` });
@@ -290,8 +373,12 @@ describe("reminder inheritance and scheduled rollover", () => {
     await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
     expect(await counts()).toEqual({ reminders: 0, selections: 0 });
     await runner.runReminders.execute({ now: OCTOBER + 60_000, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 24, selections: 24 });
+    expect(await counts()).toEqual({ reminders: 8, selections: 8 });
     await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
+    expect(await counts()).toEqual({ reminders: 16, selections: 16 });
+    await runner.runReminders.execute({ now: OCTOBER + 180_000, deferNewDelivery: true });
+    expect(await counts()).toEqual({ reminders: 24, selections: 24 });
+    await runner.runReminders.execute({ now: OCTOBER + 240_000, deferNewDelivery: true });
     expect(await counts()).toEqual({ reminders: 30, selections: 30 });
     expect(transport.send).not.toHaveBeenCalled();
   });

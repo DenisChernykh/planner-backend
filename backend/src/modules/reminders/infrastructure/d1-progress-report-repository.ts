@@ -221,6 +221,7 @@ export class D1ProgressReportRepository implements ProgressReportRepository {
     const result = await this.database
       .prepare(`UPDATE reminder_jobs SET status = 'sending', lease_until = ?, attempts = attempts + 1
       WHERE id = ? AND status = 'pending' AND due_at <= ? AND expires_at > ? AND payload = ?
+      AND json_extract(payload, '$.version') = 1
       AND EXISTS (SELECT 1 FROM progress_report_settings WHERE owner_id = ? AND enabled = 1 AND revision = ?)
       AND coalesce((SELECT revision FROM progress_settings WHERE owner_id = ?), 0) = ?
       AND EXISTS (SELECT 1 FROM telegram_links WHERE owner_id = ? AND status = 'active' AND chat_id = ?)

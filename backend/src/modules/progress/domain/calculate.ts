@@ -4,6 +4,7 @@ import type {
   ProgressDay,
   ProgressGoal,
   ProgressOverview,
+  ProgressReportGoal,
   ProgressSource,
   ProgressTarget,
 } from "./model";
@@ -235,7 +236,7 @@ function streak(days: ProgressDay[], today: string, requested: Interval) {
   }
   return { current, best };
 }
-export function calculateProgress(input: {
+export type ProgressCalculationInput = {
   sources: ProgressSource[];
   knownSources?: Pick<ProgressSource, "chainId" | "month">[];
   period: "week" | "month";
@@ -245,7 +246,14 @@ export function calculateProgress(input: {
   asOf: number;
   timeZone: string;
   includeHistory?: boolean;
-}): ProgressOverview {
+};
+export function calculateProgress(input: ProgressCalculationInput): ProgressOverview {
+  return completeProgress(input, calculateGoalBatch(input, 0, Infinity).goals);
+}
+
+// Offset counts definition groups, not monthly versions: a chain with changed
+// rules stays separate, while compatible versions spanning months stay together.
+export function calculateGoalBatch(input: ProgressCalculationInput, offset: number, limit: number) {
   const { sources, period, today, startsOn } = input;
   const calendar = calculationCalendar();
   const knownSources = input.knownSources ?? sources;
@@ -258,7 +266,8 @@ export function calculateProgress(input: {
     const key = `${goal.chainId}:${calendar.signature(goal)}`;
     groups.set(key, [...(groups.get(key) ?? []), goal]);
   }
-  const goals: ProgressGoal[] = [...groups.values()].map((versions) => {
+  const selected = [...groups.values()].slice(offset, offset + limit);
+  const goals: ProgressGoal[] = selected.map((versions) => {
     const first = versions[0] as ProgressSource;
     const days = dayData(versions, requested, startsOn, today, calendar);
     const current = stats(days);
@@ -377,6 +386,23 @@ export function calculateProgress(input: {
           : null,
     };
   });
+  const nextOffset = offset + goals.length;
+  const pendingChains = [
+    ...new Set(
+      [...groups.values()]
+        .slice(nextOffset)
+        .flatMap((versions) => versions.map((goal) => goal.chainId)),
+    ),
+  ];
+  return { goals, nextOffset, done: nextOffset >= groups.size, pendingChains };
+}
+
+export function completeProgress<T extends ProgressReportGoal>(
+  input: ProgressCalculationInput,
+  goals: T[],
+): Omit<ProgressOverview, "goals"> & { goals: T[] } {
+  const { period, today, startsOn } = input;
+  const requested = intervalFor(period, input.anchor);
   const eligibleDates = new Set(
     goals.flatMap((goal) =>
       goal.days.filter((day) => !["excluded", "future"].includes(day.state)).map((day) => day.date),

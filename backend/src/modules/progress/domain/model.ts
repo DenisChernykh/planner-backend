@@ -96,3 +96,30 @@ export type ProgressOverview = {
   };
   goals: ProgressGoal[];
 };
+
+// The report consumes totals and the last recorded values, not previous-period
+// day tables, history or streaks used by the interactive Progress view.
+export type ProgressReportGoal = Pick<
+  ProgressGoal,
+  | "id"
+  | "goalIds"
+  | "title"
+  | "tracking"
+  | "cadence"
+  | "measurable"
+  | "average"
+  | "minimum"
+  | "maximum"
+  | "targets"
+  | "sum"
+  | "records"
+  | "eligibleDays"
+  | "missing"
+  | "met"
+> & {
+  days: Pick<ProgressDay, "date" | "state" | "value">[];
+  comparison: Pick<NonNullable<ProgressGoal["comparison"]>, "deltaPoints"> | null;
+};
+export type ProgressReportOverview = Omit<ProgressOverview, "goals"> & {
+  goals: ProgressReportGoal[];
+};

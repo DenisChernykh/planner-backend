@@ -38,7 +38,7 @@ export function createReminderOperations(
     reportRepository,
     repository,
     planning,
-    createProgressOperations(database),
+    createProgressOperations(database, planning),
     prepareCurrentPlan,
     transport,
     appOrigin,
@@ -90,17 +90,43 @@ export function createReminderRunner(
   appOrigin: string,
 ) {
   const repository = new D1ReminderRepository(database);
-  let operations: ReturnType<typeof createReminderOperations> | undefined;
-  const full = () => (operations ??= createReminderOperations(database, transport, appOrigin));
+  let operations:
+    | { prepareCurrentPlan: PrepareCurrentPlanUseCase; reports: ProgressReportsUseCases }
+    | undefined;
+  const scheduledOperations = () => {
+    if (!operations) {
+      const planning = createPlanningOperations(database);
+      const reportRepository = new D1ProgressReportRepository(database);
+      const prepareCurrentPlan = new PrepareCurrentPlanUseCase(
+        repository,
+        planning,
+        reportRepository,
+      );
+      operations = {
+        prepareCurrentPlan,
+        reports: new ProgressReportsUseCases(
+          reportRepository,
+          repository,
+          planning,
+          createProgressOperations(database, planning),
+          prepareCurrentPlan,
+          transport,
+          appOrigin,
+        ),
+      };
+    }
+    return operations;
+  };
   const digest = new DigestMessages(repository, transport, new FindMissingGoalsQuery(repository));
   return new RunRemindersUseCase(
     repository,
     transport !== null,
     new DeliverReminderUseCase(repository, transport, digest),
-    { execute: (input) => full().prepareCurrentPlan.execute(input) },
+    { execute: (input) => scheduledOperations().prepareCurrentPlan.execute(input) },
     {
-      schedule: (now, limit, settings) => full().reports.schedule(now, limit, settings),
-      deliver: (id, now, defer, job) => full().reports.deliver(id, now, defer, job),
+      schedule: (now, limit, settings) =>
+        scheduledOperations().reports.schedule(now, limit, settings),
+      deliver: (id, now, defer, job) => scheduledOperations().reports.deliver(id, now, defer, job),
     },
   );
 }

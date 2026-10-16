@@ -1,4 +1,7 @@
-import type { ProgressGoal, ProgressOverview } from "../../../progress/public-contracts";
+import type {
+  ProgressReportGoal,
+  ProgressReportOverview,
+} from "../../../progress/public-contracts";
 import { DEFAULT_SETTINGS } from "../../domain/model";
 import type { ReportSlot } from "../../domain/progress-reports";
 import type { MessageBlock, OutgoingMessage } from "../delivery/outgoing-message";
@@ -38,7 +41,7 @@ const render = (blocks: MessageBlock[], html: boolean) =>
     )
     .join("\n\n");
 
-function goalBlock(goal: ProgressGoal): MessageBlock {
+function goalBlock(goal: ProgressReportGoal): MessageBlock {
   const lines: MessageBlock["lines"] = [];
   const add = (text: string, bold = false) => lines.push({ text, bold });
   if (goal.tracking.type === "scale") {
@@ -116,7 +119,7 @@ function goalBlock(goal: ProgressGoal): MessageBlock {
 }
 
 export function reportMessage(
-  overview: ProgressOverview,
+  overview: ProgressReportOverview,
   slot: ReportSlot,
   appOrigin: string,
   delivery?: { scheduledAt: number; quietDelayed: boolean },
@@ -185,13 +188,21 @@ export function reportMessage(
       ],
     });
   else {
+    let prefixLength = render(blocks, true).length;
+    const footerLength = render([footer], true).length;
     for (const goal of overview.goals) {
       const block = goalBlock(goal),
         hidden = overview.goals.length - included - 1;
-      if (
-        render([...blocks, block, ...(hidden ? [notice(hidden)] : []), footer], true).length > 3500
-      )
-        break;
+      const blockLength = render([block], true).length;
+      const candidateLength =
+        prefixLength +
+        2 +
+        blockLength +
+        (hidden ? 2 + render([notice(hidden)], true).length : 0) +
+        2 +
+        footerLength;
+      if (candidateLength > 3500) break;
+      prefixLength += 2 + blockLength;
       blocks.push(block);
       included++;
     }

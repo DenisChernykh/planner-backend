@@ -112,37 +112,39 @@ export class D1PlanningRepository
     entryGoalIds?: string[],
   ): Promise<ProgressPlanningSource[]> {
     const scope = "g.owner_id = ? AND g.month BETWEEN ? AND ? AND g.deleted_at IS NULL";
-    const [goals, ancestry] = await this.binding.batch([
-      this.binding
-        .prepare(`SELECT g.id, g.month, g.title, g.tracking_config AS trackingConfig,
-          g.cadence_period AS cadencePeriod, g.target_occurrences AS targetOccurrences,
-          CASE WHEN ${entryGoalIds === undefined ? "1" : "g.id IN (SELECT value FROM json_each(?))"}
-          THEN (SELECT json_group_array(json_object('date', e.local_date, 'value', json(e.value)))
-            FROM goal_entries e WHERE e.goal_id = g.id) ELSE '[]' END AS entriesJson
-          FROM plan_goals g WHERE ${scope}
-          ORDER BY month, CASE cadence_period WHEN 'day' THEN 0 WHEN 'week' THEN 1 ELSE 2 END,
-            sort_order, id`)
-        .bind(
-          ...(entryGoalIds === undefined ? [] : [JSON.stringify(entryGoalIds)]),
-          ownerId,
-          fromMonth,
-          toMonth,
-        ),
-      this.binding
-        .prepare(`WITH RECURSIVE ancestry(leaf, id, parent) AS (
+    const goals = await this.binding
+      .prepare(`WITH RECURSIVE ancestry(leaf, id, parent) AS (
         SELECT id, id, carried_from_goal_id FROM plan_goals g WHERE ${scope}
-        UNION ALL SELECT a.leaf, p.id, p.carried_from_goal_id FROM ancestry a JOIN plan_goals p ON p.id = a.parent AND p.owner_id = ?
-      ) SELECT leaf, id AS root FROM ancestry WHERE parent IS NULL OR NOT EXISTS (SELECT 1 FROM plan_goals WHERE id = ancestry.parent AND owner_id = ?)`)
-        .bind(ownerId, fromMonth, toMonth, ownerId, ownerId),
-    ]);
-    if (!goals || !ancestry) throw new Error("Incomplete progress source batch");
-    const roots = new Map(
-      (ancestry.results as { leaf: string; root: string }[]).map((row) => [row.leaf, row.root]),
-    );
+        UNION ALL SELECT a.leaf, p.id, p.carried_from_goal_id FROM ancestry a
+          JOIN plan_goals p ON p.id = a.parent AND p.owner_id = ?
+      ), roots AS (
+        SELECT leaf, id AS root FROM ancestry WHERE parent IS NULL
+          OR NOT EXISTS (SELECT 1 FROM plan_goals WHERE id = ancestry.parent AND owner_id = ?)
+      ) SELECT g.id, coalesce(roots.root, g.id) AS chainId, g.month, g.title,
+        g.tracking_config AS trackingConfig, g.cadence_period AS cadencePeriod,
+        g.target_occurrences AS targetOccurrences,
+        CASE WHEN ${entryGoalIds === undefined ? "1" : "g.id IN (SELECT value FROM json_each(?))"}
+        THEN (SELECT json_group_array(json_object('date', e.local_date, 'value', json(e.value)))
+          FROM goal_entries e WHERE e.goal_id = g.id) ELSE '[]' END AS entriesJson
+        FROM plan_goals g LEFT JOIN roots ON roots.leaf = g.id WHERE ${scope}
+        ORDER BY g.month, CASE g.cadence_period WHEN 'day' THEN 0 WHEN 'week' THEN 1 ELSE 2 END,
+          g.sort_order, g.id`)
+      .bind(
+        ownerId,
+        fromMonth,
+        toMonth,
+        ownerId,
+        ownerId,
+        ...(entryGoalIds === undefined ? [] : [JSON.stringify(entryGoalIds)]),
+        ownerId,
+        fromMonth,
+        toMonth,
+      )
+      .all();
     type SourceRow = Pick<
       GoalRow,
       "id" | "month" | "title" | "trackingConfig" | "cadencePeriod" | "targetOccurrences"
-    > & { entriesJson: string };
+    > & { chainId: string; entriesJson: string };
     // D1 aggregates each history rather than returning hundreds of individual
     // fact rows. Unselected definitions still establish neighbouring plan presence.
     return (goals.results as SourceRow[]).map((row) => {
@@ -152,7 +154,7 @@ export class D1PlanningRepository
       );
       return {
         id: row.id,
-        chainId: roots.get(row.id) ?? row.id,
+        chainId: row.chainId,
         month: row.month,
         title: row.title,
         tracking,
@@ -209,6 +211,40 @@ export class D1PlanningRepository
     const sortOrder = await this.nextSortOrder(goal.ownerId, goal.month, goal.cadence.period);
     await this.database.insert(planGoals).values(toGoalRow(goal, sortOrder));
     return goal;
+  }
+
+  async copyCurrentMonth(input: {
+    ownerId: string;
+    month: string;
+    operationId: string;
+    now: number;
+    monthlyLimit: number;
+  }): Promise<void> {
+    const { ownerId, month, operationId, now, monthlyLimit } = input;
+    // The source is selected and copied inside one D1 transaction. Concurrent
+    // edits serialize with the entire copy; no marker can expose a partial plan.
+    // monthlyLimit is supplied by the domain's target-month calendar policy.
+    await this.binding.batch([
+      this.binding
+        .prepare(`INSERT INTO plan_month_rollovers (owner_id, month, operation_id, source_month, created_at)
+        SELECT ?, ?, ?, CASE WHEN EXISTS (SELECT 1 FROM plan_goals WHERE owner_id = ? AND month = ?)
+          THEN NULL ELSE (${previousMonthSql}) END, ?
+        ON CONFLICT(owner_id, month) DO NOTHING`)
+        .bind(ownerId, month, operationId, ownerId, month, ownerId, month, ownerId, month, now),
+      this.binding
+        .prepare(`INSERT INTO plan_goals
+        (id, owner_id, month, carried_from_goal_id, title, description, tracking_type, tracking_config,
+          cadence_period, target_occurrences, sort_order, created_at, updated_at)
+        SELECT lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))), 2)
+          || '-' || substr('89ab', abs(random() % 4) + 1, 1) || substr(lower(hex(randomblob(2))), 2) || '-' || lower(hex(randomblob(6))),
+          source.owner_id, ?, source.id, source.title, source.description, source.tracking_type, source.tracking_config,
+          source.cadence_period, CASE WHEN source.cadence_period = 'month' THEN min(source.target_occurrences, ?) ELSE source.target_occurrences END,
+          row_number() OVER (ORDER BY source.sort_order, source.created_at, source.id) - 1, ?, ?
+        FROM plan_goals source JOIN plan_month_rollovers receipt
+          ON receipt.owner_id = source.owner_id AND receipt.source_month = source.month
+        WHERE receipt.owner_id = ? AND receipt.month = ? AND receipt.operation_id = ? AND source.deleted_at IS NULL`)
+        .bind(month, monthlyLimit, now, now, ownerId, month, operationId),
+    ]);
   }
 
   async rolloverState(ownerId: string, month: string): Promise<MonthRolloverState> {

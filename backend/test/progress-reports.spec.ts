@@ -38,6 +38,12 @@ const jobs = () =>
     "SELECT id, status, payload, local_date FROM reminder_jobs WHERE kind = 'weekly-progress'",
   ).all<{ id: string; status: string; payload: string; local_date: string }>();
 
+const firstJob = async () => {
+  const job = (await jobs()).results[0];
+  if (!job) throw new Error("Missing report job");
+  return job;
+};
+
 beforeEach(async () => {
   await env.DB.prepare("DELETE FROM users").run();
   await env.DB.prepare("INSERT INTO users (id, created_at, updated_at) VALUES (?, ?, ?)")
@@ -111,6 +117,8 @@ describe("progress reports with D1 and fake transport", () => {
     await reports.schedule(NOW);
     const id = (await jobs()).results[0]?.id as string;
     await reports.deliver(id, NOW, true);
+    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(5);
+    await reports.deliver(id, NOW + 60_000, true);
     const captured = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
     expect(captured.version).toBe(2);
     expect(captured.reportRevision).toBe(-1);
@@ -126,21 +134,117 @@ describe("progress reports with D1 and fake transport", () => {
       updatedAt: NOW + 1,
     });
     await Promise.all([
-      reports.deliver(id, NOW + 60_000, true),
-      reports.deliver(id, NOW + 60_000, true),
+      reports.deliver(id, NOW + 120_000, true),
+      reports.deliver(id, NOW + 120_000, true),
     ]);
+    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(4);
+    await reports.deliver(id, NOW + 180_000, true);
     const rendered = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
     expect(rendered.version).toBe(1);
-    expect(rendered.formedAt).toBe(NOW);
+    expect(rendered.formedAt).toBe(NOW + 60_000);
     expect(rendered.message.text).toContain("25 страниц за период");
     expect(rendered.message.text).not.toContain("60 страниц за период");
     expect(transport.send).not.toHaveBeenCalled();
     await Promise.all([
-      reports.deliver(id, NOW + 120_000, true),
-      reports.deliver(id, NOW + 120_000, true),
+      reports.deliver(id, NOW + 240_000, true),
+      reports.deliver(id, NOW + 240_000, true),
     ]);
     expect(transport.send).toHaveBeenCalledTimes(1);
     expect((await jobs()).results[0]?.status).toBe("sent");
+  });
+  it("resumes bounded calculations across fresh runners and concurrent ticks with frozen facts", async () => {
+    const selected = [{ goalId, included: true }];
+    for (let index = 0; index < 8; index++) {
+      const goal = await new CreateGoalUseCase(planning).execute({
+        ownerId: OWNER,
+        month: "2026-10",
+        title: `Goal ${index}`,
+        tracking: { type: "check" },
+        cadence: { period: "week", targetOccurrences: 4 },
+        now: NOW,
+      });
+      selected.push({ goalId: goal.id, included: true });
+    }
+    await save({ goals: selected });
+    await operations().reports.schedule(NOW);
+    const id = (await firstJob()).id;
+    await operations().reports.deliver(id, NOW, true);
+    await operations().reports.deliver(id, NOW + 60_000, true);
+    const expected = await operations().reports.preview({
+      ownerId: OWNER,
+      input: input({ goals: selected }),
+      slot: "wed",
+      now: NOW + 60_000,
+    });
+    await planning.upsertEntry({
+      goalId,
+      date: "2026-10-07",
+      value: 35,
+      met: true,
+      note: null,
+      createdAt: NOW,
+      updatedAt: NOW,
+    });
+    for (let step = 2; step <= 4; step++) {
+      await Promise.all([
+        operations().reports.deliver(id, NOW + step * 60_000, true),
+        operations().reports.deliver(id, NOW + step * 60_000, true),
+      ]);
+      const state = JSON.parse((await firstJob()).payload);
+      expect(state.version).toBe(step === 4 ? 4 : 3);
+      expect(step === 4 ? state.overview.goals.length : state.goals.length).toBe(
+        Math.min(9, 4 * (step - 1)),
+      );
+      expect(transport.send).not.toHaveBeenCalled();
+    }
+    await operations().reports.deliver(id, NOW + 5 * 60_000, true);
+    const ready = JSON.parse((await firstJob()).payload);
+    expect(ready.version).toBe(1);
+    expect(ready.message.blocks).toBeUndefined();
+    expect(ready.message.text).toBe(expected.message?.text);
+    expect(ready.message.html).toBe(expected.message?.html);
+    await Promise.all([
+      operations().reports.deliver(id, NOW + 6 * 60_000, true),
+      operations().reports.deliver(id, NOW + 6 * 60_000, true),
+    ]);
+    expect(transport.send).toHaveBeenCalledTimes(1);
+  });
+  it.each([2, 4, 1])(
+    "invalidates persisted phase %s after report settings change",
+    async (version) => {
+      await save();
+      await operations().reports.schedule(NOW);
+      const id = (await firstJob()).id;
+      let step = 0;
+      while (JSON.parse((await firstJob()).payload).version !== version) {
+        expect(step).toBeLessThan(5);
+        await operations().reports.deliver(id, NOW + step++ * 60_000, true);
+      }
+      await env.DB.prepare(
+        "UPDATE progress_report_settings SET revision = revision + 1 WHERE owner_id = ?",
+      )
+        .bind(OWNER)
+        .run();
+      await operations().reports.deliver(id, NOW + step * 60_000, true);
+      expect(JSON.parse((await firstJob()).payload).version).toBe(5);
+      expect(transport.send).not.toHaveBeenCalled();
+    },
+  );
+  it("resets a stale ready selection without sending on claim failure", async () => {
+    await save();
+    await operations().reports.schedule(NOW);
+    const id = (await firstJob()).id;
+    for (let step = 0; step < 4; step++)
+      await operations().reports.deliver(id, NOW + step * 60_000, true);
+    expect(JSON.parse((await firstJob()).payload).version).toBe(1);
+    await env.DB.prepare("UPDATE goal_progress_reports SET included = 0 WHERE owner_id = ?")
+      .bind(OWNER)
+      .run();
+    await operations().reports.deliver(id, NOW + 4 * 60_000, true);
+    expect((await firstJob()).payload).toBe("[]");
+    expect(transport.send).not.toHaveBeenCalled();
+    await operations().reports.deliver(id, NOW + 5 * 60_000, true);
+    expect((await firstJob()).status).toBe("cancelled");
   });
   it("recaptures staged input after a report revision changes before rendering", async () => {
     await save();
@@ -157,9 +261,12 @@ describe("progress reports with D1 and fake transport", () => {
       .run();
     await reports.deliver(id, NOW + 60_000, true);
     const current = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
-    expect(current.version).toBe(2);
+    expect(current.version).toBe(5);
     expect(current.sourceProgressRevision).toBe(previous.sourceProgressRevision + 1);
-    expect(current.calculation.startsOn).toBe("2026-10-07");
+    await reports.deliver(id, NOW + 120_000, true);
+    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").calculation.startsOn).toBe(
+      "2026-10-07",
+    );
     expect(transport.send).not.toHaveBeenCalled();
   });
   it.each(["report", "timezone", "quiet-hours", "selection"] as const)(
@@ -183,7 +290,7 @@ describe("progress reports with D1 and fake transport", () => {
       if (change === "selection") expect(job?.status).toBe("cancelled");
       else {
         const payload = JSON.parse(job?.payload ?? "[]");
-        expect(payload.version).toBe(2);
+        expect(payload.version).toBe(5);
         expect(payload.formedAt).toBe(NOW + 60_000);
       }
     },
@@ -211,15 +318,14 @@ describe("progress reports with D1 and fake transport", () => {
       expect(prepared?.status).toBe("pending");
       expect(prepared?.payload).toBe("[]");
       expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 120_000);
-      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(2);
-      expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 180_000);
-      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(1);
-      expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 240_000);
+      for (const [step, version] of [5, 2, 4, 1].entries()) {
+        await runReminders(bindings, NOW + (step + 2) * 60_000);
+        expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(version);
+        expect(send).not.toHaveBeenCalled();
+      }
+      await runReminders(bindings, NOW + 360_000);
       expect((await jobs()).results[0]?.status).toBe("sent");
-      await runReminders(bindings, NOW + 300_000);
+      await runReminders(bindings, NOW + 420_000);
       expect(send).toHaveBeenCalledTimes(1);
     } finally {
       vi.unstubAllGlobals();

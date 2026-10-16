@@ -30,7 +30,9 @@ const scenarios = [
   "queued-question",
   "weekly-report",
   "weekly-report-quiet",
+  "weekly-report-select",
   "weekly-report-prepare",
+  "weekly-report-calculate",
   "weekly-report-render",
   "weekly-report-send",
   "rollover",
@@ -342,9 +344,7 @@ try {
         )
         .run();
       if (!["weekly-report", "weekly-report-quiet"].includes(scenario)) {
-        const payload = ["weekly-report-render", "weekly-report-send"].includes(scenario)
-          ? inputSnapshot
-          : "[]";
+        const payload = scenario === "weekly-report-select" ? "[]" : inputSnapshot;
         assert.ok(
           payload,
           "Sending a report as the first invocation requires PLANNER_PROFILE_SNAPSHOT from a separate preparation run",
@@ -398,7 +398,13 @@ try {
       assert.equal(result.messages, 0);
     }
     if (
-      ["weekly-report-prepare", "weekly-report-render", "weekly-report-send"].includes(scenario)
+      [
+        "weekly-report-select",
+        "weekly-report-prepare",
+        "weekly-report-calculate",
+        "weekly-report-render",
+        "weekly-report-send",
+      ].includes(scenario)
     ) {
       const job = await database
         .prepare("SELECT status, attempts, payload FROM reminder_jobs WHERE id = 'profile-report'")
@@ -408,8 +414,14 @@ try {
         "The report snapshot must be built, not silently cancelled",
       );
       assert.ok(JSON.parse(job.payload).goalIds.length > 0);
-      assert.ok([1, 2].includes(JSON.parse(job.payload).version));
-      if (scenario !== "weekly-report-prepare") assert.equal(JSON.parse(job.payload).version, 1);
+      const versions = {
+        "weekly-report-select": [5],
+        "weekly-report-prepare": [2],
+        "weekly-report-calculate": [3, 4],
+        "weekly-report-render": [1],
+        "weekly-report-send": [1],
+      };
+      assert.ok(versions[scenario].includes(JSON.parse(job.payload).version));
       assert.equal(job.status, scenario === "weekly-report-send" ? "sent" : "pending");
       assert.equal(job.attempts, scenario === "weekly-report-send" ? 1 : 0);
       assert.equal(result.messages, scenario === "weekly-report-send" ? 1 : 0);
@@ -495,7 +507,7 @@ try {
       profiles.push(profile);
       // Measure each persisted stage separately: old revisions may send immediately,
       // current Cron schedules, prepares reports and sends on independent ticks.
-      for (let step = 1; step <= 2 + 2 * Math.ceil(goalCount / 24); step++) {
+      for (let step = 1; step <= 8 + 2 * Math.ceil(goalCount / 4); step++) {
         if (scenario === "weekly-report-quiet") break;
         const monthly = scenario === "rollover" || scenario === "rollover-inherit";
         const before = monthly ? await monthState() : null;
@@ -537,14 +549,16 @@ try {
             : "inherit"
           : result.messages
             ? "send"
-            : currentPayload && JSON.parse(currentPayload).version === 2
-              ? "load"
+            : currentPayload
+              ? ({ 5: "select", 2: "capture", 3: "calculate", 4: "calculate", 1: "render" }[
+                  JSON.parse(currentPayload).version
+                ] ?? "prepare")
               : "prepare";
         if (!followups.has(phase)) followups.set(phase, []);
         followups.get(phase).push({ ...result, ms });
         if (process.env.PLANNER_PROFILE_OUTPUT)
           await writeFile(
-            `${process.env.PLANNER_PROFILE_OUTPUT}-${scenario}-${phase}-${i}.cpuprofile`,
+            `${process.env.PLANNER_PROFILE_OUTPUT}-${scenario}-${phase}-${i}-${step}.cpuprofile`,
             JSON.stringify(extra),
           );
       }
@@ -553,6 +567,17 @@ try {
         assert.equal(state.owners, 2);
         assert.equal(state.reminders, goalCount * 2);
         assert.equal(state.selections, goalCount * 2);
+      }
+      if (scenario.startsWith("weekly-report") && scenario !== "weekly-report-quiet") {
+        const final = await database
+          .prepare("SELECT status, attempts FROM reminder_jobs WHERE kind = 'weekly-progress'")
+          .first();
+        assert.equal(
+          final.status,
+          "sent",
+          "The entire staged pipeline must finish within the bound",
+        );
+        assert.equal(final.attempts, 1);
       }
       const nodes = new Map(profile.nodes.map((node) => [node.id, node]));
       let time = 0;

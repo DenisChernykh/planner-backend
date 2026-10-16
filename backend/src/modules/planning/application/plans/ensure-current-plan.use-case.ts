@@ -1,5 +1,5 @@
 import { carryGoalToMonth } from "../../domain/month-rollover";
-import { plannerToday } from "../../domain/rules";
+import { daysInMonth, plannerToday } from "../../domain/rules";
 import type { MonthRolloverRepository } from "../ports/month-rollover-repository";
 
 export class EnsureCurrentPlanUseCase {
@@ -12,6 +12,15 @@ export class EnsureCurrentPlanUseCase {
     includeCarriedGoals?: boolean;
   }) {
     const month = plannerToday(input.now, input.timeZone).slice(0, 7);
+    if (input.includeCarriedGoals === false) {
+      await this.repository.copyCurrentMonth({
+        ...input,
+        month,
+        operationId: crypto.randomUUID(),
+        monthlyLimit: daysInMonth(month),
+      });
+      return { month, carriedGoals: [] };
+    }
     for (let attempt = 0; attempt < 4; attempt++) {
       const state = await this.repository.rolloverState(input.ownerId, month);
       if (
@@ -31,10 +40,7 @@ export class EnsureCurrentPlanUseCase {
       ) {
         return {
           month,
-          carriedGoals:
-            input.includeCarriedGoals === false
-              ? []
-              : await this.repository.carriedGoals(input.ownerId, month),
+          carriedGoals: await this.repository.carriedGoals(input.ownerId, month),
         };
       }
     }

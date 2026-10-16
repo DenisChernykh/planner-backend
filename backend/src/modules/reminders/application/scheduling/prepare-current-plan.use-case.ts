@@ -44,7 +44,7 @@ export class PrepareCurrentPlanUseCase {
     const state = await this.repository.inheritanceState(
       ownerId,
       currentMonth,
-      prepared ? 24 : undefined,
+      prepared ? 8 : undefined,
     );
     if (state.carried.length === 0) return;
     await this.reports?.inherit(ownerId, state.carried);

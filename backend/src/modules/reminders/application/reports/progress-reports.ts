@@ -2,9 +2,8 @@ import { DateTime } from "luxon";
 import { ApplicationError } from "../../../../shared/application/application-error";
 import type { PlanningOperations } from "../../../planning/public-contracts";
 import type {
-  ProgressCalculationInput,
   ProgressOperations,
-  ProgressOverview,
+  ProgressReportOverview,
 } from "../../../progress/public-contracts";
 import {
   DELIVERY_ISSUE_WINDOW_MS,
@@ -20,38 +19,19 @@ import {
   reportWeek,
 } from "../../domain/progress-reports";
 import { afterQuietHours, localDate } from "../../domain/schedule";
-import type { OutgoingMessage } from "../delivery/outgoing-message";
 import type { ProgressReportRepository } from "../ports/progress-report-repository";
 import type { QueuedReminder, ReminderRepository } from "../ports/reminder-repository";
 import { DeliveryError, type ReminderTransport } from "../ports/reminder-transport";
 import { makeJob } from "../scheduling/make-job";
 import type { PrepareCurrentPlanUseCase } from "../scheduling/prepare-current-plan.use-case";
 import { reportMessage } from "./report-message";
+import {
+  type Preparation,
+  preparationMetadata,
+  type ReportSnapshot,
+  type SelectionPreparation,
+} from "./report-snapshot";
 
-type Snapshot = {
-  version: 1;
-  reportRevision: number;
-  progressRevision: number;
-  timeZone: string;
-  quietStart: string;
-  quietEnd: string;
-  reportDate: string;
-  period: { from: string; to: string };
-  startsOn: string | null;
-  goalIds: string[];
-  formedAt: number;
-  message: OutgoingMessage;
-};
-// Negative revisions make older Workers rebuild this payload after a rollback;
-// an unfinished preparation must never be treated as a sendable version-1 snapshot.
-type Preparation = Omit<Snapshot, "version" | "message" | "period" | "startsOn"> & {
-  version: 2;
-  reportRevision: -1;
-  progressRevision: -1;
-  sourceReportRevision: number;
-  sourceProgressRevision: number;
-  calculation: ProgressCalculationInput;
-};
 const TIME = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
 export class ProgressReportsUseCases {
   constructor(
@@ -248,9 +228,13 @@ export class ProgressReportsUseCases {
     now: number,
     timeZone: string,
     includeHistory: boolean,
+    selectedIds?: string[],
   ) {
     const selections = new Map(
-      (await this.reports.selections(ownerId)).map((goal) => [goal.goalId, goal.included]),
+      (selectedIds
+        ? selectedIds.map((goalId) => ({ goalId, included: true }))
+        : await this.reports.selections(ownerId)
+      ).map((goal) => [goal.goalId, goal.included]),
     );
     for (const goal of input.goals) selections.set(goal.goalId, goal.included);
     const goalIds = [...selections].filter(([, included]) => included).map(([goalId]) => goalId);
@@ -266,8 +250,8 @@ export class ProgressReportsUseCases {
       includeHistory,
     });
   }
-  private render(
-    overview: ProgressOverview,
+  private render<T extends ProgressReportOverview>(
+    overview: T,
     slot: ReportSlot,
     delivery?: { scheduledAt: number; quietDelayed: boolean },
   ) {
@@ -357,10 +341,9 @@ export class ProgressReportsUseCases {
       await this.reports.postpone(job.id, dueAt);
       return;
     }
-    let snapshot =
-      job.payload === "[]" ? null : (JSON.parse(job.payload) as Snapshot | Preparation);
+    let snapshot = job.payload === "[]" ? null : (JSON.parse(job.payload) as ReportSnapshot);
     let selectionChanged = false;
-    if (snapshot) {
+    if (snapshot && (snapshot.version !== 1 || !deferNewSnapshot)) {
       const period = reportWeek(job.localDate);
       // Validate the selection without loading every historical entry again.
       const activeIds = await this.reports.activeGoalIds(
@@ -373,9 +356,9 @@ export class ProgressReportsUseCases {
     const rebuild =
       !snapshot ||
       selectionChanged ||
-      (snapshot.version === 2 ? snapshot.sourceReportRevision : snapshot.reportRevision) !==
+      (snapshot.version !== 1 ? snapshot.sourceReportRevision : snapshot.reportRevision) !==
         report.revision ||
-      (snapshot.version === 2 ? snapshot.sourceProgressRevision : snapshot.progressRevision) !==
+      (snapshot.version !== 1 ? snapshot.sourceProgressRevision : snapshot.progressRevision) !==
         shared.revision ||
       snapshot.timeZone !== general.timeZone ||
       snapshot.quietStart !== general.quietStart ||
@@ -389,27 +372,22 @@ export class ProgressReportsUseCases {
       startsOn: shared.startsOn,
       goals: [],
     };
-    if (rebuild && deferNewSnapshot) {
-      const calculation = await this.source(
-        job.ownerId,
-        input,
-        job.localDate,
-        now,
-        general.timeZone,
-        false,
-      );
+    if (deferNewSnapshot && rebuild) {
+      const selectedIds = (await this.reports.selections(job.ownerId))
+        .filter((goal) => goal.included)
+        .map((goal) => goal.goalId);
       const period = reportWeek(job.localDate);
-      const goalIds = calculation.sources
-        .filter(
-          (goal) => goal.month >= period.from.slice(0, 7) && goal.month <= period.to.slice(0, 7),
-        )
-        .map((goal) => goal.id);
+      const goalIds = await this.reports.activeGoalIds(
+        job.ownerId,
+        period.from.slice(0, 7),
+        period.to.slice(0, 7),
+      );
       if (!goalIds.length) {
         await this.reports.cancel(job.id);
         return;
       }
-      const preparation: Preparation = {
-        version: 2,
+      const selection: SelectionPreparation = {
+        version: 5,
         reportRevision: -1,
         progressRevision: -1,
         sourceReportRevision: report.revision,
@@ -420,19 +398,49 @@ export class ProgressReportsUseCases {
         reportDate: job.localDate,
         goalIds,
         formedAt: now,
-        calculation,
+        selectedIds,
       };
+      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(selection));
+      return;
+    }
+    if (!rebuild && snapshot?.version === 5) {
+      const calculation = await this.source(
+        job.ownerId,
+        input,
+        job.localDate,
+        now,
+        general.timeZone,
+        false,
+        snapshot.selectedIds,
+      );
+      const metadata = preparationMetadata(snapshot);
+      const preparation: Preparation = { ...metadata, version: 2, formedAt: now, calculation };
       await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(preparation));
       return;
     }
-    if (rebuild || snapshot?.version === 2) {
+    if (!rebuild && (snapshot?.version === 2 || snapshot?.version === 3)) {
+      const batch = this.progress.calculateReportBatch(
+        snapshot.calculation,
+        snapshot.version === 3 ? snapshot.offset : 0,
+        4,
+      );
+      const goals = [...(snapshot.version === 3 ? snapshot.goals : []), ...batch.goals];
+      const { calculation } = batch;
+      const metadata = preparationMetadata(snapshot);
+      const next: ReportSnapshot = batch.done
+        ? { ...metadata, version: 4, overview: this.progress.completeOverview(calculation, goals) }
+        : { ...metadata, version: 3, calculation, offset: batch.nextOffset, goals };
+      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(next));
+      return;
+    }
+    if (rebuild || snapshot?.version === 4) {
       const delivery = {
         scheduledAt: job.expiresAt - 86400000,
         quietDelayed: afterQuietHours(job.expiresAt - 86400000, general) > job.expiresAt - 86400000,
       };
       const built =
-        !rebuild && snapshot?.version === 2
-          ? this.render(this.progress.calculateOverview(snapshot.calculation), slot, delivery)
+        !rebuild && snapshot?.version === 4
+          ? this.render(snapshot.overview, slot, delivery)
           : await this.build(
               job.ownerId,
               input,
@@ -458,7 +466,14 @@ export class ProgressReportsUseCases {
         startsOn: shared.startsOn,
         goalIds: built.overview.goals.flatMap((goal) => goal.goalIds),
         formedAt: built.overview.asOf,
-        message: built.message,
+        // Blocks are preview/UI data; delivery needs only text, HTML and buttons.
+        message: deferNewSnapshot
+          ? {
+              text: built.message.text,
+              html: built.message.html,
+              buttons: built.message.buttons,
+            }
+          : built.message,
       };
       const payload = JSON.stringify(snapshot);
       if (!(await this.reports.setSnapshot(job.id, job.payload, payload))) return;
@@ -476,8 +491,12 @@ export class ProgressReportsUseCases {
         link.chatId,
         now,
       ))
-    )
+    ) {
+      // The atomic claim checks the complete active selection in SQLite. A stale
+      // ready snapshot restarts next tick without a second selection read on send.
+      await this.reports.setSnapshot(job.id, job.payload, "[]");
       return;
+    }
     try {
       const messageId = await this.transport.send(link.chatId, snapshot.message);
       await this.reminders.updateJob(job.id, {

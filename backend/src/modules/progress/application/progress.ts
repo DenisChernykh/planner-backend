@@ -1,8 +1,8 @@
 import { ApplicationError } from "../../../shared/application/application-error";
 import type { PlanningOperations } from "../../planning/public-contracts";
-import { calculateProgress } from "../domain/calculate";
+import { calculateGoalBatch, calculateProgress, completeProgress } from "../domain/calculate";
 import { intervalFor, previousInterval, shiftDate, validProgressDate } from "../domain/calendar";
-import type { ProgressOverview } from "../domain/model";
+import type { ProgressOverview, ProgressReportGoal, ProgressReportOverview } from "../domain/model";
 
 export type ProgressSettings = { startsOn: string | null; revision: number };
 export interface ProgressRepository {
@@ -46,6 +46,68 @@ export class ProgressUseCases {
 
   calculateOverview(input: ProgressCalculationInput): ProgressOverview {
     return calculateProgress(input);
+  }
+
+  calculateReportBatch(input: ProgressCalculationInput, offset: number, limit: number) {
+    const batch = calculateGoalBatch(input, offset, limit);
+    const pending = new Set(batch.pendingChains);
+    return {
+      ...batch,
+      // Future groups still need all compatible/incompatible historical versions
+      // of their chain. Completed chains keep definitions for stable offsets but
+      // no longer carry unused fact arrays through every later CAS write.
+      calculation: {
+        ...input,
+        sources: input.sources.map((goal) =>
+          pending.has(goal.chainId) ? goal : { ...goal, entries: [] },
+        ),
+      },
+      goals: batch.goals.map((goal): ProgressReportGoal => {
+        const {
+          id,
+          goalIds,
+          title,
+          tracking,
+          cadence,
+          measurable,
+          average,
+          minimum,
+          maximum,
+          targets,
+          sum,
+          records,
+          eligibleDays,
+          missing,
+          met,
+        } = goal;
+        return {
+          id,
+          goalIds,
+          title,
+          tracking,
+          cadence,
+          measurable,
+          average,
+          minimum,
+          maximum,
+          targets,
+          sum,
+          records,
+          eligibleDays,
+          missing,
+          met,
+          days: goal.days.map(({ date, state, value }) => ({ date, state, value })),
+          comparison: goal.comparison ? { deltaPoints: goal.comparison.deltaPoints } : null,
+        };
+      }),
+    };
+  }
+
+  completeOverview(
+    input: ProgressCalculationInput,
+    goals: ProgressReportGoal[],
+  ): ProgressReportOverview {
+    return completeProgress(input, goals);
   }
 
   async prepareOverview(input: ProgressQuery): Promise<ProgressCalculationInput> {

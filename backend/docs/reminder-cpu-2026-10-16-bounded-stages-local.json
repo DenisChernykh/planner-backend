@@ -1,0 +1,4687 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-16T17:04:59.606663+00:00",
+  "baseRevision": "a243fb5ad5817bb75ef5165d1a9f010094605961",
+  "runtimeSourceSha256": {
+    "backend/src/app/create-app.ts": "8ee9c3a34454d961d73ed8221b7f0ea8f57301b37b8ce58d779a74ff12c670ba",
+    "backend/src/app/run-reminders.ts": "2ed5b223c44ca1e68722e19dd60fcf57fa74d7f7100e62e9162529c8c41dc7df",
+    "backend/src/index.ts": "8b487f94d0594da570c09db3d16e33da1ce57b34d98eb7e28604958e3b86aa71",
+    "backend/src/modules/identity-access/application/development/development-identity.ts": "c1d06fd523ffb01191a526f891e7fdf60a50c8588f53989b5ec5fb7b6aad22b9",
+    "backend/src/modules/identity-access/application/development/find-development-session.query.ts": "00844b5cc0001a3d578161bccf4106907abb7f80320eb490f6fa31666e41747f",
+    "backend/src/modules/identity-access/application/development/start-development-session.use-case.ts": "1ba7be20d2feb5fe67471f4fcf98191d48a7327e7494a5b6f0f9af8bfb4963c3",
+    "backend/src/modules/identity-access/application/integrations/chatgpt-connection.ts": "db1bc2a30f2ac40c0528a4537dc0c27d0f2c4238fcef811e2cae02a024bd6906",
+    "backend/src/modules/identity-access/application/ports/identity-session-repository.ts": "803e1e1fd2c790e6848877d1c061ceffed2ba3c734c3df02038b7e4629b664f5",
+    "backend/src/modules/identity-access/application/ports/integration-token-repository.ts": "5522d1866aa8416cb4a857d875409a1f7cc8b60cc0a6962726563f8ddf765ac5",
+    "backend/src/modules/identity-access/application/ports/login-flow-codec.ts": "790527e0d77008f9303249556372c8703e814c00f664026a81bb466c3023f05d",
+    "backend/src/modules/identity-access/application/ports/telegram-oidc-client.ts": "4a0bcaf7d1603083f7160bfb28f0cde5a2f22ad55ba15d9d20f9916a0baa69a5",
+    "backend/src/modules/identity-access/application/sessions/authenticate-session.query.ts": "cb2b25dda47777b67a726b1622cc3eb3e1ae85d3e295a42360c4ba65a827d3ab",
+    "backend/src/modules/identity-access/application/sessions/logout.use-case.ts": "7e0e59dd7b7f3a8c02db5e8ca5e0d41c9a0fe007eaa65374faee276ee979002d",
+    "backend/src/modules/identity-access/application/sessions/model.ts": "df4d792aa36cb6a43b2c5debd643ea00de58f68d200fc5b93f2e9786821eaaf7",
+    "backend/src/modules/identity-access/application/sessions/session-policy.ts": "cdf5b3ebd860f81a5afa6cabc3adfc88cf6826555460eb333b4e0c8d457be97b",
+    "backend/src/modules/identity-access/application/telegram-login/complete-telegram-login.use-case.ts": "f06f1815aba7d3d867dac8e65de0b4b4a48a86d9b6fd46350cfd9fe72b775e14",
+    "backend/src/modules/identity-access/application/telegram-login/login-flow-policy.ts": "4545eee09661d193b665f4473d1cdd8e5a64e397991f6fbc107a5e87497ef39e",
+    "backend/src/modules/identity-access/application/telegram-login/model.ts": "72149e52a9713dbf8b1f42cd0fa2540fa557eedd6b544fe70ce2bf0f85f51b04",
+    "backend/src/modules/identity-access/application/telegram-login/return-to.ts": "b95796d94780b6422c07a0046686518de8790449cd82acdceb905b0300bd5957",
+    "backend/src/modules/identity-access/application/telegram-login/start-telegram-login.use-case.ts": "5db1ebbffdf416e23799516e3e9331abc98ef1b34ffc2efe644fd890eff0859c",
+    "backend/src/modules/identity-access/application/telegram-login/validate-telegram-login-flow.query.ts": "c850694755520141c03b7c76c670275bde959960c40be3081e720aaa25bc39f1",
+    "backend/src/modules/identity-access/index.ts": "6d793873c7572930f33eafb5e9daf213310d1de243e96730242247fa3213f82d",
+    "backend/src/modules/identity-access/infrastructure/aes-gcm-login-flow-codec.ts": "e6c500f73c54943e89665dc5dc3f9a99ee8cd3630afa0d447af20df705937933",
+    "backend/src/modules/identity-access/infrastructure/d1-identity-session-repository.ts": "d4f750486d16791e85ecae8ba34fa899d7441658eaf01581c0b24222b3cabea8",
+    "backend/src/modules/identity-access/infrastructure/d1-integration-token-repository.ts": "1e9c0a113f97c7bfb71f5128dc92b97cae0e38632407fd10d62d45b152365d1b",
+    "backend/src/modules/identity-access/infrastructure/telegram-oidc-client.ts": "b08bc7e3cb73615e8b95d60a8e3d2b3da295e560bf73d779f68c2f01bac7ce13",
+    "backend/src/modules/identity-access/presentation/chatgpt-http.ts": "ba80f3bc4b4cd9ece8e81d72d72e8a493e7bbd52fbe37a9ffef21f9b51463851",
+    "backend/src/modules/identity-access/presentation/http.ts": "94ef5f000f357bc3a1787239de96e7a1f555591c879c5ad7a47bf4d832c06e04",
+    "backend/src/modules/identity-access/public-contracts.ts": "7f52a13a51e8211d8140c4d098c76585516bf838c65a03a81c5b38cc412ee6f9",
+    "backend/src/modules/notes/application/ports/notes-repository.ts": "8b5fbbb139e2f83a12fbd00e4dccad915917ba3b71c3e6fd460cf88a7346a904",
+    "backend/src/modules/notes/application/reading/get-note.query.ts": "4f4e9fd3b782572c2798eb786d9e1f121e45b566f4f0eb87b1b2332f9a4cfdfc",
+    "backend/src/modules/notes/application/reading/list-notes.query.ts": "58f7c2e112f24626a018be7048c29b5fa9769f972c0440d8b71498ab551d31d3",
+    "backend/src/modules/notes/application/writing/create-note.use-case.ts": "639f562a56e9645a488dbb21adaaf3c16bd58b78f84e8ac4e6886820fd5eb4c6",
+    "backend/src/modules/notes/application/writing/delete-note.use-case.ts": "0d02b07c755c34c12e8497ef773de8d498f6b2606b6e96286fb222c26e243417",
+    "backend/src/modules/notes/application/writing/update-note.use-case.ts": "14034e61651d6351d9f93072f38a7daecfbde4a3259aa7710846f97f06ba33dc",
+    "backend/src/modules/notes/domain/errors.ts": "327114046a5931698f5fe7ff88f5db27acab8c2fe1cb778ad90cde045feeb5ab",
+    "backend/src/modules/notes/domain/model.ts": "cca25285105bbdd51002ddf7d7e0c6b26cb4b7971d40ee0867f3a97133bce4ec",
+    "backend/src/modules/notes/domain/rules.ts": "be5aa5fcd646c34b7d8eb8972f126f7dc5f887ad533958eea8be631445639fc1",
+    "backend/src/modules/notes/index.ts": "c8de8b58cc4bc9927e3d8ec9b2da418d3308015f270f4e4629827b2b4023204b",
+    "backend/src/modules/notes/infrastructure/d1-notes-repository.ts": "fb00da51153c60a50dfa4153bcb8d142b69bc4e0d69552e3d7fad37ae6ff4c79",
+    "backend/src/modules/notes/presentation/http.ts": "6bd6ee767d91d33e95394dc427fcd087f5107eeb5f3c4ef64253c2af14f7af1d",
+    "backend/src/modules/notes/presentation/problems.ts": "5506c6853018337915db5e9a629e3006a38b171c89cae7cbe6b955d0ba40038b",
+    "backend/src/modules/planning/application/entries/adjust-goal-entry.use-case.ts": "c150a193c7f9715a3be647fb34c2c2362919d78270ebbe32e946ce0c20e3ab2e",
+    "backend/src/modules/planning/application/entries/delete-goal-entry.use-case.ts": "1c0691a217f8c8fc6d110dde1793d3f87292e4c23cc36a75eafda3982d5ee9df",
+    "backend/src/modules/planning/application/entries/get-entry-snapshot.query.ts": "1c6b7819b30e91f7b0c6388e7fd98940e51a0a68da990233bf59efeb9158648d",
+    "backend/src/modules/planning/application/entries/prune-entry-commands.use-case.ts": "3489923b09d9069c4bcf646d6f5f1910bd96bc75cdaa49ef12702c1241cf375d",
+    "backend/src/modules/planning/application/entries/record-answer.use-case.ts": "30bc2fdbb77621e2bf639350d7b9010d9797fbc4421d407bb73feb649a9c2c07",
+    "backend/src/modules/planning/application/entries/upsert-goal-entry.use-case.ts": "705924a0b88da3b65f303054e1c186dcb81d6aad3086814f2924780a13facf1d",
+    "backend/src/modules/planning/application/goals/create-goal.use-case.ts": "67d90aba28a885e12291028e7e9a337d949d79dacd4138ca350845ce4e6d6e7d",
+    "backend/src/modules/planning/application/goals/delete-goal.use-case.ts": "823996b471f027aefd6017f637572c81f27af10da37ee427d3bfd604970e6c66",
+    "backend/src/modules/planning/application/goals/find-goal.query.ts": "cccab94d6495faabb0a9c10a4fcb82944c297808cd6fd652774110396c320c0b",
+    "backend/src/modules/planning/application/goals/reorder-goals.use-case.ts": "d7ecf60294177324782f7e1c178c56cd1e17bb151d487e5b73334f4422c9c02f",
+    "backend/src/modules/planning/application/goals/restore-goal.use-case.ts": "533773565de670d45e5243700a0d3a104efb414ea781a0861b64251384520b27",
+    "backend/src/modules/planning/application/goals/update-goal.use-case.ts": "30be0c6080937bc575b43057d684c7ae662bfe74ae5a727c16eb2e5399d6da81",
+    "backend/src/modules/planning/application/plans/ensure-current-plan.use-case.ts": "ba883d2d154adfcf0f46b8c404fd7c9805e9fab8ee8da1a4d2398c793aff685c",
+    "backend/src/modules/planning/application/plans/get-plan.query.ts": "96501c6477b4599f845c8dcba5a3f48e7b6c5811b0fee313d181c52f1bcff544",
+    "backend/src/modules/planning/application/plans/list-plan.query.ts": "c747d0d627806c3e1a487a17f53f2a324cbf6930623a35942722e3a2f8a05b6b",
+    "backend/src/modules/planning/application/plans/list-trash.query.ts": "8d7170d0668564602a71d6d1f1cf4e027713eddb24bb64bfc96d60d01b13c44a",
+    "backend/src/modules/planning/application/plans/progress-sources.query.ts": "a552770ec1ece1a4cb21b018ec71cbf249b961bc0d0f7a282a9516e295b9f597",
+    "backend/src/modules/planning/application/plans/search-planning.query.ts": "c907fea22e7956e1c79543565133636757ef1b6cf25a88b9f5a0ceb329ede735",
+    "backend/src/modules/planning/application/plans/with-entries.ts": "30a85aeef2ddb3ca77a969d33793600a6218416b8a06b30509dff04163aa61e3",
+    "backend/src/modules/planning/application/ports/answer-repository.ts": "09546d28bf5c4d774594e49012f5109a3114a8fbbc30bb56fada3dda5cdec597",
+    "backend/src/modules/planning/application/ports/month-rollover-repository.ts": "8461b74c37bf436e7eaabbcc9116872d97289dcf745dff695c731c53e4f1e70d",
+    "backend/src/modules/planning/application/ports/planning-repository.ts": "49177c04583fc28f5ac357b4bc19ff2c8319e34be1a7fa787a51c05cce23a037",
+    "backend/src/modules/planning/application/ports/search-repository.ts": "a6bc45e39208a9a9ccf6691abc66a4457c22bba603aa58274901f771a3dd653f",
+    "backend/src/modules/planning/domain/errors.ts": "e17930326a4d43ae48b71dbb32e950777f8d83eeeebb89b4f2eea6f2bba182d3",
+    "backend/src/modules/planning/domain/model.ts": "c98c2b2aa8a42deb526de77694b7aae8da7a46d48c1a7f74cf1c95090715c2f4",
+    "backend/src/modules/planning/domain/month-rollover.ts": "dd498b593f57f1bfbd043c7751ff78be5bd79d2837604d928855b4200ba3c940",
+    "backend/src/modules/planning/domain/rules.ts": "87a65bf214b1b179642459090bd827959c50842756cc5d281097cd360d1f18af",
+    "backend/src/modules/planning/domain/search.ts": "c006025ff49057d0c1d772c720cb1420bfcdb9e3d3532d7ca7143038327f5aa2",
+    "backend/src/modules/planning/index.ts": "1fa90d9057eeedae5123e674cdb28a5f7454819e504fab566e56460a7d473759",
+    "backend/src/modules/planning/infrastructure/d1-planning-repository.ts": "4bc32b434637709b98f23f55598954fba5a2af3964844f4c052b7767e94acf7c",
+    "backend/src/modules/planning/presentation/http.ts": "c08a353fc4efa6e47d09803e2016bc6a104f194c9d8d20b1aaed2d436c6b3142",
+    "backend/src/modules/planning/presentation/problems.ts": "da17819c0304d32e28cef23235f6029150ae8db71c927bef216bc1f6217946c1",
+    "backend/src/modules/planning/presentation/resource-schemas.ts": "19d5abe188ba784ca0465d8b597b7d09822767e8cb9ab61703801ed2916791d1",
+    "backend/src/modules/planning/presentation/search-http.ts": "d855b8ee64fa63ea760f64794e58e419262fa37365f813dace616202365910a6",
+    "backend/src/modules/planning/public-contracts.ts": "4581ab50a965fdb2d5ce34bbd048572454602b6f9ec9e6a1998233c5f0edae09",
+    "backend/src/modules/progress/application/progress.ts": "44eb69439e1d76c9199d421983287190e41e85410cc73ab4f5d47a171e9d001e",
+    "backend/src/modules/progress/domain/calculate.ts": "274cbee42568ca1daafaa3a62df38c05512dcd5a09af1530e16191ee1d9223fe",
+    "backend/src/modules/progress/domain/calendar.ts": "0149c9ddae4b9a32e3a89bfc0914d66ec953d88a4cc0801a31f8325d912bb11d",
+    "backend/src/modules/progress/domain/model.ts": "508805203031a77a47a5004be8118857b5e3aa52f41306edddf490684923f8ad",
+    "backend/src/modules/progress/index.ts": "c1663af9980c80f08d8d24f020ed2d99c9c0a86906611cd43e50ced7b3f3eeef",
+    "backend/src/modules/progress/infrastructure/d1-progress-repository.ts": "0bd195be1a36c576752d7407a504c1ac344ef01592c22be5c10ba36f6eaabf70",
+    "backend/src/modules/progress/presentation/http.ts": "15308ac2745f6871f4f9ba444ac5d0ac68adc377234509736e365c993ff65344",
+    "backend/src/modules/progress/presentation/schemas.ts": "36b34b46b5e2d49dcf578b4116f0144d6e07ff108c448dc7fb97b877dce99039",
+    "backend/src/modules/progress/public-contracts.ts": "70fac48207b495309a8ce2bf71f2d1d0b76d6526b75559297188d9725ff2e8f6",
+    "backend/src/modules/reminders/application/answers/conflict-message.ts": "1df46423e139e1a6fdb218b2ce2fd52c60000b6c24bb9cf3ec144f20c13902ac",
+    "backend/src/modules/reminders/application/answers/handle-reminder-reply.use-case.ts": "227b7ccf3621c1fdc5eac9b8181f312144666763a9055fd55cdbfe50ac1ba74e",
+    "backend/src/modules/reminders/application/answers/parse-answer.ts": "bb5506686180f25fccd6c807557b73c75a28c4e3d5819db86bdde108f48a6758",
+    "backend/src/modules/reminders/application/answers/record-reminder-answer.use-case.ts": "5e1c321e1c8a7a3877a9bd7908a183685c2915a209918b71ca80521ea8ab4914",
+    "backend/src/modules/reminders/application/connection/confirm-telegram-link.use-case.ts": "41116a2c7c2c4138f1e12a8f7a52b948448dae1170fa7188c52c5700f733d9c2",
+    "backend/src/modules/reminders/application/connection/connect-telegram.use-case.ts": "108fcd4d6c72079f90c427a7f272dcd3dfbc9490fe072ac2c37579d8377f693b",
+    "backend/src/modules/reminders/application/connection/disconnect-telegram.use-case.ts": "645643aeeec81ff447760890ecc2a8a14a278e351645d79f1c9504fc25ef20e1",
+    "backend/src/modules/reminders/application/connection/get-chat-connection.query.ts": "7322a550558c59807f4b4b9fdf54556fd38b5967b77a46ee56ae6b746032a0ad",
+    "backend/src/modules/reminders/application/connection/validate-link-token.query.ts": "c5df203ea9a806dfb52541d80f79b36808582469b6df7f82edc19a4aa59a266e",
+    "backend/src/modules/reminders/application/delivery/deliver-reminder.use-case.ts": "dd7e4a4fc2ab718be4912593139b70047f8f770636c0d39bd99b04e6250243f7",
+    "backend/src/modules/reminders/application/delivery/digest-messages.ts": "cdc9132f6d345605828b5f30936ec89757aa0cabc11ca38998d01f22c1c6b40f",
+    "backend/src/modules/reminders/application/delivery/find-missing-goals.query.ts": "f8372b86bcdebf4939d62ebf5765ebaf8e5f92ee07bd33c09482a7ddaa970f5e",
+    "backend/src/modules/reminders/application/delivery/format-digest.ts": "2680879aea6539d792abd9bf140735fbd75a6dc4ed06751da78c34e620bf4943",
+    "backend/src/modules/reminders/application/delivery/open-reminder-question.use-case.ts": "1284b22038c8281b51666afd622baf778765ec68ca5ddfea74f4c7dd3930ac84",
+    "backend/src/modules/reminders/application/delivery/outgoing-message.ts": "ed866c10424fecc6ec9e2e2ec342eab82c1e8d8453356af7a3e5721456664bd8",
+    "backend/src/modules/reminders/application/delivery/question-message.ts": "4cf79a3e6ceffa011873fcc0a65dc7f146d8eb8399f64b4254b7c4c7aa40973c",
+    "backend/src/modules/reminders/application/ports/link-token-codec.ts": "45d36f79a2a41b736a78ae856b3334eb80d6bd014d4f4d9b06db89df525a94b4",
+    "backend/src/modules/reminders/application/ports/progress-report-repository.ts": "e2b0a97b2a129e9ae05fa565d1bc952ac98ba2b220142804977c26bb9c8dbe1d",
+    "backend/src/modules/reminders/application/ports/reminder-repository.ts": "b83779eb472a87a009f68ba4d35802c8d9092eaae04bf16777c80a543adf6c3b",
+    "backend/src/modules/reminders/application/ports/reminder-transport.ts": "964bb911c33bb31a1fd837906fb58ed4e6fe3f858bd58d0e65d643d88cdce5ee",
+    "backend/src/modules/reminders/application/reports/progress-reports.ts": "705f608ef56720774acde6e5c0ece1d4d36f3c9aa2643ad14277212a568bae21",
+    "backend/src/modules/reminders/application/reports/report-message.ts": "e639b01f5555950c65a6c61dd0635ef17db3b77b888edc47e92f6dd9eef3c93b",
+    "backend/src/modules/reminders/application/reports/report-snapshot.ts": "bfe91cca02827de72762cf2ffe3d30bcf7f14c31fde55418da51f04b5dbc6b27",
+    "backend/src/modules/reminders/application/scheduling/make-job.ts": "f5211bf677a0eb0fe8f6b51a4e1238e60070d1464c428b1f11708f5cff1b4a25",
+    "backend/src/modules/reminders/application/scheduling/prepare-current-plan.use-case.ts": "8b9c15d4ce88dae4335a0008c1d4980e43f10b4862436c31bde35132c01039e5",
+    "backend/src/modules/reminders/application/scheduling/run-reminders.use-case.ts": "e0f782066c03ef4d275be2d7c181d6577f59b47762b2852c3f7ef46016c2feea",
+    "backend/src/modules/reminders/application/settings/get-goal-reminders.query.ts": "3c1b2b33f9e1d0ce21a4db07ce17e038a093f190831ba70b6ccf1d96679b8f54",
+    "backend/src/modules/reminders/application/settings/get-reminder-state.query.ts": "ac935ff4851e4d7efc69176074f764400149bfed2e7917ce413a3e226ff8edd8",
+    "backend/src/modules/reminders/application/settings/save-goal-reminder.use-case.ts": "626927ded2a93d5ef1fca49453881d70404e33399d9e49722ddf670cd92b8c29",
+    "backend/src/modules/reminders/application/settings/save-reminder-settings.use-case.ts": "35488df7c68562b2465ff9ef69a0b39355f548867c414ac12459148349a2faa9",
+    "backend/src/modules/reminders/domain/errors.ts": "87fff6f500ed86496a9ae45bb3e52db8bb4f3f2349674f65723d010f47c9934f",
+    "backend/src/modules/reminders/domain/jobs.ts": "61503c86aaab888401931c5a5ca9c345758ca820e3bffd609171d64c0ba67db7",
+    "backend/src/modules/reminders/domain/model.ts": "02b405c76dcb9690ce473ac25ef76003ddf66cbe71c679d8791b542b59077dfc",
+    "backend/src/modules/reminders/domain/progress-reports.ts": "508d1f672340079cdd82f56fee82649d7470a9742558cfa71f3272165d67d320",
+    "backend/src/modules/reminders/domain/schedule.ts": "97f45f35da75010e0204da91d84450cf5a7f43dcb2b98017769525a136b8d72c",
+    "backend/src/modules/reminders/index.ts": "fcc8be715c3bb386f6a4a7178a8355eaf3632e61ce17fd17a9188fd2a13457d0",
+    "backend/src/modules/reminders/infrastructure/d1-progress-report-repository.ts": "45030e926bfdb4fd355d00b75ad839e57ba01cd467fab9df2fe2f1cd74b68d85",
+    "backend/src/modules/reminders/infrastructure/d1-reminder-repository.ts": "4f8b7cdd67448ae15b4f46b36be5ec60a60740933689d06c332813539d9d72ed",
+    "backend/src/modules/reminders/infrastructure/inheritance-batches.ts": "10047884f4025e92dee97148d333bd1fe8e33338643ceb7732c4f1a21e13e42f",
+    "backend/src/modules/reminders/presentation/bot-input.ts": "2f20c5876e7ebed0317d3204002999d8f1e41adb4f48c4a0cda0db3927dfb854",
+    "backend/src/modules/reminders/presentation/bot.controller.ts": "f1b0ea0883386660e47553bef4dc282e5acc657170455c060a5398b49f0ad21c",
+    "backend/src/modules/reminders/presentation/http.ts": "da070e03c1f66af75b505806e284c95ab0dd1d8f2b328116d8b27d1030efc675",
+    "backend/src/modules/reminders/presentation/progress-reports-http.ts": "e3fb480e2f6eebe9504134e9025fdeedf6d07feb6cf8ecdfa380f263b0e4e79c",
+    "backend/src/modules/reminders/public-contracts.ts": "aaf9c1f1cfa7f6d51025dff3e4efffbbabd7a8c64837b249efb9cc714560709b",
+    "backend/src/modules/telegram-bot/index.ts": "8712ae3257859be10687242355e7bab0ea4a9629771ca87e6e11786d77f10127",
+    "backend/src/modules/telegram-bot/infrastructure/handlers.ts": "198cf2017c6569acba01df10376aa5a957854f1c75d6612744281e8e9d0f39d6",
+    "backend/src/modules/telegram-bot/infrastructure/reminder-transport.ts": "7bbf797e077be5bbeea696679a875a57552015cc0d512721756265f25e5493c3",
+    "backend/src/modules/telegram-bot/infrastructure/webhook-handler.ts": "894c8fb3b04ddff26125acdf01a703077ed41adb4d1bdc6b6c27cc0f91e5d049",
+    "backend/src/modules/telegram-bot/presentation/http.ts": "e1e8cf92dc6a9f1147827bbf1962aa0fd4d59e3446ca8640bc38a9e40eb3b916",
+    "backend/src/modules/telegram-bot/presentation/problems.ts": "734c7121ca3381ff24c163ffdd180abbb4c80e52573b3d7c29c57b3e67887986",
+    "backend/src/modules/telegram-bot/public-contracts.ts": "83f51abc171b6e42425bce1f85ad1edf901e14d9451782e71c3d9e5ef63618d4",
+    "backend/src/platform/config/runtime-config.ts": "8e15e0617147da33482485b4fd76f1689e4dd7454a94bec07d408bc33e4b1554",
+    "backend/src/platform/crypto/base64url.ts": "3d1c90e1081faa350717ce186c531084c9f2c853caaad4339e19cf81a1ace078",
+    "backend/src/platform/crypto/secure-values.ts": "ad7c009708084e9f143a338233798a95239b58daeccf36b394de3e8e3eb313ac",
+    "backend/src/platform/database/schema.ts": "9597df39625efc2a0458681bebae6c8cf9fa1d488fc2f676400211751a17e0c0",
+    "backend/src/platform/http/environment.ts": "1f08283ded3caa7a7a6b97ecc4e901dc0a063d660dd805a3feb33b4ef73064f3",
+    "backend/src/platform/http/problem-details-schema.ts": "0c9b58dc66dc652bfb7ef49c0a3914108493b951f9628a5a9591eb1121035fe7",
+    "backend/src/platform/http/problem-details.ts": "cd77346c53c24370a1a77a2e0ce38f10446057bb835f6028d532b41600796e7d",
+    "backend/src/platform/http/request-pipeline.ts": "64fb9797c379ec70af0bf9248e61365932817b3132d0f23580ebbdc2cbe0539c",
+    "backend/src/shared/application/application-error.ts": "ff54c036e2d051faeacfbe35832615798cffd5be74d82dba59551d97197dac99",
+    "backend/src/worker-configuration.d.ts": "3cbe0b49f2eaa96d08fefe28865f48ee9e1ff2f37c39936324f038165ec0721a"
+  },
+  "freshProfilerSha256": {
+    "backend/scripts/profile-reminders.mjs": "16b18a4e000c78316b1c66c4e9c5384085f23cc8af0bdaca641769a6b9893adf",
+    "backend/scripts/profile-reminders-worker.ts": "cc810c9fbbb2cd169a683c68dcbcb065484d4c7b31706d459ff595275c1cd8d5"
+  },
+  "archivedWarmProfilerSha256": "277b9243edd149772ece2bb4feea9189a707ce6bfa2f51b351c68190e3bb2823",
+  "fixture": {
+    "owners": 2,
+    "goalsPerOwner": 24,
+    "trackingTypes": 4,
+    "cadences": 3,
+    "factsPerGoal": 28,
+    "includedPerOwner": 19,
+    "excludedPerOwner": 5,
+    "reminderCalendars": 3,
+    "reportDate": "2026-10-28",
+    "copyDate": "2026-11-01",
+    "maxGroupsPerCalculation": 4,
+    "maxInheritanceEdgesPerTick": 8,
+    "externalNetwork": "denied",
+    "transport": "fake"
+  },
+  "method": {
+    "kind": "local V8 active sample deltas; not Cloudflare CPU metering",
+    "sampleIntervalUs": 100,
+    "fresh": "Each stage is first use in a separate fresh workerd process; input comes from prior process output. Every calculation batch is included.",
+    "warm": "Two sequential complete 30-cycle suites; no concurrent tests/profile processes.",
+    "excludedFrames": ["(idle)", "(root)", "(program)"],
+    "zeroSamples": "Zero estimates mean no active samples were observed, not zero Worker CPU.",
+    "outlierHandling": "All estimates retained; V8 deltas cannot separate CPU from host descheduling or native-call waits.",
+    "productionVerified": false
+  },
+  "fresh": [
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-select",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 5.191,
+      "top": [
+        ["(garbage collector)", 2268],
+        ["(anonymous)", 915],
+        ["reportWeek", 464],
+        ["createReminderRunner", 314],
+        ["addD1MetaToSpan", 309],
+        ["deliver", 307],
+        ["wrap", 156],
+        ["_send", 154],
+        ["scheduledOperations", 153],
+        ["execute", 151]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:56:39Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-prepare",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 4.92,
+      "top": [
+        ["(anonymous)", 1391],
+        ["(garbage collector)", 919],
+        ["addAggregatedD1MetaToSpan", 766],
+        ["activeGoalIds", 462],
+        ["deliver", 310],
+        ["RunRemindersUseCase", 158],
+        ["calculateMet", 158],
+        ["fetch", 156],
+        ["source", 154],
+        ["reportWeek", 150]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:56:43Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.055,
+      "top": [
+        ["(garbage collector)", 1267],
+        ["toJson", 1083],
+        ["toArrayOfObjects", 458],
+        ["(anonymous)", 433],
+        ["_send", 308],
+        ["deliver", 305],
+        ["stats", 305],
+        ["reportWeek", 195],
+        ["scheduled", 162],
+        ["isoDate", 159]
+      ],
+      "series": "1-batch1",
+      "observedAt": "2026-10-16T16:56:46Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 7.753,
+      "top": [
+        ["json", 1515],
+        ["_sendOrThrow", 1125],
+        ["(garbage collector)", 1106],
+        ["deliver", 931],
+        ["(anonymous)", 774],
+        ["runReminders", 462],
+        ["stats", 456],
+        ["scheduledOperations", 305],
+        ["signature", 156],
+        ["reportWeek", 155]
+      ],
+      "series": "1-batch2",
+      "observedAt": "2026-10-16T16:56:49Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 7.071,
+      "top": [
+        ["(garbage collector)", 2608],
+        ["_send", 934],
+        ["(anonymous)", 922],
+        ["calculateGoalBatch", 462],
+        ["deliver", 308],
+        ["scheduled", 156],
+        ["batch", 156],
+        ["_wrappedFetch", 155],
+        ["localParts", 155],
+        ["calculateReportBatch", 155]
+      ],
+      "series": "1-batch3",
+      "observedAt": "2026-10-16T16:56:52Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 5.113,
+      "top": [
+        ["(garbage collector)", 1247],
+        ["(anonymous)", 592],
+        ["calculateReportBatch", 476],
+        ["deliver", 465],
+        ["_send", 314],
+        ["execute", 309],
+        ["_wrappedFetch", 307],
+        ["previousInterval", 188],
+        ["toArrayOfObjects", 157],
+        ["createReminderRunner", 155]
+      ],
+      "series": "1-batch4",
+      "observedAt": "2026-10-16T16:56:56Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 5.711,
+      "top": [
+        ["(anonymous)", 1230],
+        ["_send", 1080],
+        ["(garbage collector)", 1079],
+        ["deliver", 937],
+        ["fetch", 308],
+        ["execute", 300],
+        ["scheduledOperations", 159],
+        ["toJson", 156],
+        ["reportWeek", 156],
+        ["calculateGoalBatch", 155]
+      ],
+      "series": "1-batch5",
+      "observedAt": "2026-10-16T16:56:59Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-render",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.083,
+      "top": [
+        ["(garbage collector)", 1244],
+        ["_send", 1240],
+        ["deliver", 990],
+        ["json", 780],
+        ["(anonymous)", 466],
+        ["scheduledOperations", 301],
+        ["scheduled", 160],
+        ["batch", 159],
+        ["notice", 157],
+        ["number4", 156]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:57:02Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-send",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 3.622,
+      "top": [
+        ["deliver", 1141],
+        ["(garbage collector)", 1085],
+        ["localParts", 167],
+        ["fetch", 158],
+        ["deliveryFromRow", 158],
+        ["addAggregatedD1MetaToSpan", 156],
+        ["(anonymous)", 155],
+        ["_send", 153],
+        ["createReminderRunner", 152],
+        ["execute", 151]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:57:05Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-quiet",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 4.037,
+      "top": [
+        ["(garbage collector)", 1253],
+        ["_send", 628],
+        ["schedule", 466],
+        ["(anonymous)", 311],
+        ["toJson", 305],
+        ["scheduled", 159],
+        ["localParts", 156],
+        ["enterSpan", 155],
+        ["D1PreparedStatement", 155],
+        ["createPlanningUseCases", 154]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:57:09Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 4.634,
+      "top": [
+        ["(garbage collector)", 1248],
+        ["addAggregatedD1MetaToSpan", 769],
+        ["toJson", 623],
+        ["localDate", 609],
+        ["(anonymous)", 306],
+        ["_send", 156],
+        ["ensureCurrentPlan", 156],
+        ["scheduled", 155],
+        ["batch", 154],
+        ["createPlanningUseCases", 154]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:57:12Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover-inherit",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 6.858,
+      "top": [
+        ["(garbage collector)", 1559],
+        ["(anonymous)", 1401],
+        ["schedulingState", 925],
+        ["inherit", 623],
+        ["resolveTime", 616],
+        ["fetch", 323],
+        ["execute", 314],
+        ["scheduled", 168],
+        ["runReminders", 158],
+        ["createReminderRunner", 157]
+      ],
+      "series": 1,
+      "observedAt": "2026-10-16T16:57:15Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-select",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 4.811,
+      "top": [
+        ["(garbage collector)", 1239],
+        ["toArrayOfObjects", 928],
+        ["reportWeek", 624],
+        ["deliver", 618],
+        ["runReminders", 334],
+        ["_sendOrThrow", 170],
+        ["(anonymous)", 165],
+        ["execute", 159],
+        ["createPlanningUseCases", 150],
+        ["localParts", 149]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:18Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-prepare",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 7.718,
+      "top": [
+        ["(garbage collector)", 2577],
+        ["(anonymous)", 2023],
+        ["activeGoalIds", 631],
+        ["deliver", 459],
+        ["prepareOverview", 312],
+        ["reportWeek", 161],
+        ["calculateMet", 160],
+        ["_wrappedFetch", 159],
+        ["runReminders", 157],
+        ["createPlanningOperations", 157]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:21Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 4.97,
+      "top": [
+        ["(garbage collector)", 1248],
+        ["deliver", 785],
+        ["stats", 467],
+        ["(anonymous)", 464],
+        ["_send", 460],
+        ["runReminders", 309],
+        ["scheduledOperations", 309],
+        ["intervalFor", 161],
+        ["preparationMetadata", 160],
+        ["reportWeek", 155]
+      ],
+      "series": "2-batch1",
+      "observedAt": "2026-10-16T16:57:25Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.604,
+      "top": [
+        ["(garbage collector)", 2432],
+        ["toJson", 933],
+        ["_send", 466],
+        ["(anonymous)", 464],
+        ["targetsFor", 310],
+        ["calculateReportBatch", 161],
+        ["deliver", 160],
+        ["localParts", 157],
+        ["addAggregatedD1MetaToSpan", 155],
+        ["createReminderRunner", 154]
+      ],
+      "series": "2-batch2",
+      "observedAt": "2026-10-16T16:57:28Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 5.634,
+      "top": [
+        ["(garbage collector)", 1104],
+        ["toJson", 675],
+        ["calculateReportBatch", 630],
+        ["(anonymous)", 468],
+        ["deliver", 309],
+        ["calculateGoalBatch", 298],
+        ["deliveryFromRow", 160],
+        ["scheduled", 157],
+        ["reportWeek", 156],
+        ["_send", 156]
+      ],
+      "series": "2-batch3",
+      "observedAt": "2026-10-16T16:57:31Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.034,
+      "top": [
+        ["(garbage collector)", 1239],
+        ["toJson", 924],
+        ["calculateReportBatch", 628],
+        ["(anonymous)", 611],
+        ["deliver", 455],
+        ["isoDate", 305],
+        ["stats", 173],
+        ["scheduled", 158],
+        ["scheduledOperations", 158],
+        ["_wrappedFetch", 158]
+      ],
+      "series": "2-batch4",
+      "observedAt": "2026-10-16T16:57:34Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.412,
+      "top": [
+        ["(garbage collector)", 2555],
+        ["(anonymous)", 931],
+        ["toJson", 926],
+        ["deliver", 303],
+        ["createPlanningUseCases", 162],
+        ["scheduled", 158],
+        ["afterQuietHours", 158],
+        ["_send", 156],
+        ["calculateReportBatch", 155],
+        ["signature", 154]
+      ],
+      "series": "2-batch5",
+      "observedAt": "2026-10-16T16:57:38Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-render",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 5.259,
+      "top": [
+        ["(garbage collector)", 1090],
+        ["addAggregatedD1MetaToSpan", 1082],
+        ["activeGoalIds", 468],
+        ["deliver", 466],
+        ["runReminders", 306],
+        ["recoverAndDue", 306],
+        ["enterSpan", 306],
+        ["add", 172],
+        ["reportMessage", 158],
+        ["escapeHtml", 155]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:41Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-send",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 4.328,
+      "top": [
+        ["(garbage collector)", 1243],
+        ["call", 783],
+        ["_send", 777],
+        ["scheduled", 159],
+        ["_sendOrThrow", 155],
+        ["deliver", 155],
+        ["addAggregatedD1MetaToSpan", 154],
+        ["(anonymous)", 154],
+        ["bind", 153],
+        ["runReminders", 151]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:44Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-quiet",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 4.995,
+      "top": [
+        ["(garbage collector)", 1247],
+        ["firstIfArray", 792],
+        ["(anonymous)", 783],
+        ["schedule", 628],
+        ["runReminders", 312],
+        ["scheduledOperations", 307],
+        ["_send", 159],
+        ["enterSpan", 155],
+        ["execute", 154],
+        ["afterQuietHours", 154]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:47Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 5.387,
+      "top": [
+        ["(garbage collector)", 2600],
+        ["_send", 787],
+        ["localDate", 619],
+        ["fetch", 308],
+        ["addD1MetaToSpan", 156],
+        ["execute", 156],
+        ["createPlanningUseCases", 154],
+        ["createReminderRunner", 152],
+        ["recoverAndDue", 152],
+        ["withSpan", 152]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:50Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover-inherit",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 6.766,
+      "top": [
+        ["(garbage collector)", 2899],
+        ["inheritanceState", 924],
+        ["addAggregatedD1MetaToSpan", 772],
+        ["startOfReminderDay", 460],
+        ["fetch", 320],
+        ["scheduledOperations", 312],
+        ["_sendOrThrow", 157],
+        ["nextOccurrence", 156],
+        ["runReminders", 155],
+        ["enterSpan", 155]
+      ],
+      "series": 2,
+      "observedAt": "2026-10-16T16:57:54Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-select",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 4.266,
+      "top": [
+        ["(garbage collector)", 1173],
+        ["enterSpan", 627],
+        ["reportWeek", 622],
+        ["runReminders", 461],
+        ["(anonymous)", 315],
+        ["deliver", 289],
+        ["createPlanningOperations", 188],
+        ["addAggregatedD1MetaToSpan", 158],
+        ["_sendOrThrow", 154],
+        ["recoverAndDue", 153]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:57:57Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-prepare",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 8.16,
+      "top": [
+        ["(garbage collector)", 3230],
+        ["(anonymous)", 2962],
+        ["deliver", 453],
+        ["parseJson", 164],
+        ["scheduled", 158],
+        ["intervalFor", 157],
+        ["runReminders", 155],
+        ["localParts", 155],
+        ["_send", 155],
+        ["batch", 153]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:00Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.503,
+      "top": [
+        ["(garbage collector)", 1257],
+        ["deliver", 931],
+        ["fetch", 926],
+        ["toJson", 915],
+        ["(anonymous)", 617],
+        ["runReminders", 462],
+        ["calculateGoalBatch", 316],
+        ["addAggregatedD1MetaToSpan", 163],
+        ["targetsFor", 156],
+        ["deliveryFromRow", 155]
+      ],
+      "series": "3-batch1",
+      "observedAt": "2026-10-16T16:58:03Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.034,
+      "top": [
+        ["(garbage collector)", 1091],
+        ["toJson", 921],
+        ["(anonymous)", 772],
+        ["setAttributes", 469],
+        ["runReminders", 460],
+        ["deliver", 450],
+        ["_send", 310],
+        ["dates", 166],
+        ["calculateGoalBatch", 161],
+        ["calculateReportBatch", 161]
+      ],
+      "series": "3-batch2",
+      "observedAt": "2026-10-16T16:58:07Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 8.344,
+      "top": [
+        ["_send", 1792],
+        ["(garbage collector)", 1575],
+        ["setAttributes", 779],
+        ["addD1MetaToSpan", 624],
+        ["deliver", 613],
+        ["calculateGoalBatch", 324],
+        ["recoverAndDue", 323],
+        ["stats", 321],
+        ["(anonymous)", 300],
+        ["signature", 160]
+      ],
+      "series": "3-batch3",
+      "observedAt": "2026-10-16T16:58:10Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.702,
+      "top": [
+        ["(garbage collector)", 2406],
+        ["addD1MetaToSpan", 628],
+        ["deliver", 469],
+        ["stats", 311],
+        ["D1ReminderRepository", 310],
+        ["(anonymous)", 306],
+        ["execute", 283],
+        ["signature", 272],
+        ["recoverAndDue", 171],
+        ["calculateGoalBatch", 161]
+      ],
+      "series": "3-batch4",
+      "observedAt": "2026-10-16T16:58:13Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-calculate",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 5.359,
+      "top": [
+        ["(garbage collector)", 1238],
+        ["(anonymous)", 618],
+        ["deliver", 608],
+        ["toJson", 468],
+        ["_send", 301],
+        ["targetsFor", 274],
+        ["isMeasurable", 171],
+        ["scheduled", 157],
+        ["_wrappedFetch", 157],
+        ["batch", 155]
+      ],
+      "series": "3-batch5",
+      "observedAt": "2026-10-16T16:58:16Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-render",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 6.613,
+      "top": [
+        ["json", 1492],
+        ["(garbage collector)", 1249],
+        ["render", 782],
+        ["(anonymous)", 770],
+        ["deliver", 471],
+        ["recoverAndDue", 318],
+        ["mapD1Result", 160],
+        ["enterSpan", 155],
+        ["number4", 154],
+        ["fetch", 154]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:20Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-send",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 4.955,
+      "top": [
+        ["(garbage collector)", 2469],
+        ["inlineOptions", 785],
+        ["(anonymous)", 312],
+        ["deliver", 311],
+        ["createReminderTransport", 164],
+        ["createPlanningUseCases", 162],
+        ["recoverAndDue", 155],
+        ["enterSpan", 154],
+        ["deliveryFromRow", 152],
+        ["runReminders", 146]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:23Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report-quiet",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 4.027,
+      "top": [
+        ["(garbage collector)", 1396],
+        ["execute", 765],
+        ["reportWeek", 463],
+        ["_send", 316],
+        ["(anonymous)", 160],
+        ["createPlanningUseCases", 160],
+        ["addAggregatedD1MetaToSpan", 156],
+        ["resolveTime", 156],
+        ["schedule", 155],
+        ["localTime", 155]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:26Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 5,
+      "messages": 0,
+      "sampledActiveMs": 4.575,
+      "top": [
+        ["(garbage collector)", 2252],
+        ["(anonymous)", 772],
+        ["localDate", 633],
+        ["runReminders", 306],
+        ["DeleteGoalUseCase", 159],
+        ["bind", 156],
+        ["_sendOrThrow", 149],
+        ["ensureCurrentPlan", 148]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:29Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "rollover-inherit",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 5.917,
+      "top": [
+        ["(anonymous)", 2323],
+        ["(garbage collector)", 1412],
+        ["execute", 1086],
+        ["runReminders", 469],
+        ["_sendOrThrow", 160],
+        ["bind", 157],
+        ["createPlanningUseCases", 155],
+        ["set", 155]
+      ],
+      "series": 3,
+      "observedAt": "2026-10-16T16:58:33Z"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 3.487,
+      "top": [
+        ["(garbage collector)", 908],
+        ["(anonymous)", 639],
+        ["localDate", 515],
+        ["runReminders", 270],
+        ["schedule", 253],
+        ["recoverAndDue", 133],
+        ["wrap", 130],
+        ["enterSpan", 129],
+        ["_sendOrThrow", 128],
+        ["makeJob", 128]
+      ],
+      "series": "schedule-1",
+      "observedAt": "2026-10-16T17:04:07.416046+00:00"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 4.183,
+      "top": [
+        ["(garbage collector)", 1179],
+        ["(anonymous)", 914],
+        ["mapD1Result", 521],
+        ["reportWeek", 401],
+        ["schedule", 255],
+        ["localParts", 140],
+        ["addAggregatedD1MetaToSpan", 133],
+        ["D1ReminderRepository", 130],
+        ["runReminders", 128],
+        ["enterSpan", 128]
+      ],
+      "series": "schedule-2",
+      "observedAt": "2026-10-16T17:04:10.115255+00:00"
+    },
+    {
+      "scenario": "first-run",
+      "firstScenario": "weekly-report",
+      "sourceRef": "working-tree",
+      "workload": "mixed",
+      "goalsPerOwner": 24,
+      "queries": 6,
+      "messages": 0,
+      "sampledActiveMs": 4.692,
+      "top": [
+        ["(garbage collector)", 1180],
+        ["(anonymous)", 651],
+        ["aggregateD1Meta", 526],
+        ["schedulingState", 517],
+        ["reportWeek", 387],
+        ["runReminders", 386],
+        ["schedule", 265],
+        ["enterSpan", 132],
+        ["set", 131],
+        ["_send", 130]
+      ],
+      "series": "schedule-3",
+      "observedAt": "2026-10-16T17:04:13.112632+00:00"
+    }
+  ],
+  "warmSeries": [
+    {
+      "series": "bounded-first",
+      "observations": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "idle",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 3,
+          "messages": 0,
+          "sampledActiveMs": 3.878,
+          "top": [
+            ["(garbage collector)", 1235],
+            ["localDate", 938],
+            ["(anonymous)", 925],
+            ["_send", 165],
+            ["fetch", 155],
+            ["execute", 154],
+            ["createReminderRunner", 153],
+            ["prepare", 153]
+          ]
+        },
+        {
+          "scenario": "weekly-report",
+          "sourceScenario": "weekly-report",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.455,
+          "sampledActiveMsP90": 1.932,
+          "sampledActiveMsMax": 3.018,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.018, 1.633, 0, 1.792, 1.473, 0, 1.308, 1.455, 1.78, 1.462, 0, 0.684, 0, 1.785, 0.845,
+            0.987, 1.932, 1.158, 1.786, 2.063, 1.931, 0.684, 1.244, 0.935, 0.466, 0.678, 1.289,
+            1.461, 1.464, 1.809
+          ],
+          "top": [
+            ["fetch", 7438],
+            ["(anonymous)", 4651],
+            ["localParts", 4585],
+            ["setAttributes", 3108],
+            ["toJson", 3103],
+            ["_send", 3004],
+            ["text", 1533],
+            ["json", 1319]
+          ]
+        },
+        {
+          "scenario": "weekly-report-select",
+          "sourceScenario": "weekly-report",
+          "phase": "select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.138,
+          "sampledActiveMsP90": 1.627,
+          "sampledActiveMsMax": 1.926,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.61, 1.598, 0.942, 0, 1.926, 0, 0.988, 1.604, 0, 1.626, 0, 0, 1.146, 0.988, 0.678,
+            0.631, 1.627, 1.615, 1.153, 1.138, 0.678, 0, 0.467, 0.687, 1.763, 1.447, 1.307, 0.847,
+            1.457, 1.452
+          ]
+        },
+        {
+          "scenario": "weekly-report-capture",
+          "sourceScenario": "weekly-report",
+          "phase": "capture",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.075,
+          "sampledActiveMsP90": 2.844,
+          "sampledActiveMsMax": 3.769,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.769, 2.075, 2.27, 1.544, 0.309, 1.61, 0.153, 1.598, 0.772, 2.11, 2.542, 1.611, 2.865,
+            2.844, 2.087, 2.066, 2.092, 2.068, 1.918, 2.241, 2.399, 2.234, 2.382, 1.926, 2.075,
+            2.238, 1.767, 2.406, 1.928, 1.89
+          ]
+        },
+        {
+          "scenario": "weekly-report-calculate",
+          "sourceScenario": "weekly-report",
+          "phase": "calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.763,
+          "sampledActiveMsP90": 2.227,
+          "sampledActiveMsMax": 3.764,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.764, 2.227, 1.76, 1.926, 2.098, 2.224, 2.096, 0.929, 0.915, 1.298, 1.759, 1.772,
+            1.901, 2.845, 2.22, 1.92, 1.912, 1.758, 0.627, 1.6, 1.742, 1.242, 2.221, 1.783, 0.766,
+            1.924, 1.915, 2.229, 2.515, 1.246, 2.064, 1.253, 0.776, 1.4, 2.107, 0.764, 1.91, 0.789,
+            2.234, 1.754, 1.919, 1.614, 2.229, 2.37, 1.465, 1.377, 1.758, 1.763, 1.772, 1.769,
+            1.902, 2.289, 1.614, 1.759, 1.769, 2.238, 1.771, 1.75, 1.761, 1.468, 2.565, 2.042,
+            0.775, 1.899, 1.599, 2.379, 1.595, 1.906, 1.777, 1.762, 2.071, 1.755, 0.624, 1.602,
+            1.606, 1.916, 2.079, 1.768, 1.375, 1.756, 2.077, 2.004, 1.749, 2.075, 2.375, 1.744,
+            1.911, 1.946, 2.066, 2.061, 1.739, 1.767, 1.747, 1.755, 1.612, 1.76, 1.756, 1.43, 1.24,
+            1.753, 1.449, 0.899, 1.901, 1.62, 1.898, 1.759, 1.082, 0.784, 0.732, 1.077, 2.226,
+            2.209, 1.931, 1.393, 1.773, 1.903, 1.581, 2.064, 1.933, 1.585, 1.74, 1.921, 1.449,
+            2.084, 1.747, 2.308, 2.069, 2.073, 0.775, 1.835, 2.225, 1.444, 1.737, 1.09, 1.763,
+            1.578, 1.893, 1.75, 1.748, 1.759, 0.766, 2.053, 1.441, 1.769, 1.509, 1.751, 2.235,
+            1.766, 1.76, 2.07
+          ]
+        },
+        {
+          "scenario": "weekly-report-render",
+          "sourceScenario": "weekly-report",
+          "phase": "render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.599,
+          "sampledActiveMsP90": 2.365,
+          "sampledActiveMsMax": 2.48,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.365, 2.242, 0.617, 1.603, 1.774, 1.618, 1.316, 1.605, 1.769, 1.604, 1.464, 1.757,
+            1.453, 0.462, 1.599, 0.926, 1.293, 0.624, 1.759, 1.127, 0.625, 1.594, 0.934, 1.593,
+            1.288, 1.612, 1.438, 2.07, 2.391, 2.48
+          ]
+        },
+        {
+          "scenario": "weekly-report-send",
+          "sourceScenario": "weekly-report",
+          "phase": "send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+          ],
+          "sampledActiveMsMedian": 1.309,
+          "sampledActiveMsP90": 1.904,
+          "sampledActiveMsMax": 3.069,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.069, 1.759, 1.904, 0, 1.595, 1.13, 1.773, 1.61, 1.126, 1.441, 0.928, 0.468, 1.721, 0,
+            0.98, 1.298, 0, 0, 1.32, 1.592, 2.078, 1.462, 1.139, 1.302, 0.983, 1.309, 0.98, 1.453,
+            1.59, 0.669
+          ]
+        },
+        {
+          "scenario": "weekly-report-quiet",
+          "sourceScenario": "weekly-report-quiet",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.47,
+          "sampledActiveMsP90": 1.957,
+          "sampledActiveMsMax": 2.285,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.629, 0, 1.619, 0.786, 0.851, 1.163, 0.844, 0.832, 0.625, 0, 0, 1.633, 1.931, 1.778,
+            0.847, 0.943, 0, 1.931, 2.106, 1.948, 1.956, 1.621, 1.957, 2.285, 1.308, 1.47, 0.471,
+            0.314, 1.772, 1.772
+          ],
+          "top": [
+            ["_send", 7814],
+            ["toJson", 5572],
+            ["localParts", 4379],
+            ["nextOccurrence", 3888],
+            ["enterSpan", 3343],
+            ["fetch", 2558],
+            ["addD1MetaToSpan", 1651],
+            ["json", 1626]
+          ]
+        },
+        {
+          "scenario": "rollover",
+          "sourceScenario": "rollover",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.291,
+          "sampledActiveMsP90": 1.774,
+          "sampledActiveMsMax": 1.938,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.089, 1.606, 0.679, 0.781, 0.698, 1.304, 1.938, 1.302, 0.84, 0.686, 1.303, 1.923,
+            1.004, 0, 0.624, 0.849, 1.456, 0.991, 1.459, 1.291, 0.841, 1.617, 1.311, 1.608, 1.502,
+            0, 0.774, 1.774, 0.697, 1.624
+          ],
+          "top": [
+            ["toJson", 7394],
+            ["execute", 3459],
+            ["_send", 3309],
+            ["localParts", 3256],
+            ["fetch", 2861],
+            ["recoverAndDue", 2357],
+            ["json", 2223],
+            ["localToday", 1613]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 180,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.477,
+          "sampledActiveMsP90": 2.201,
+          "sampledActiveMsMax": 9.049,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.715, 0, 0.985, 1.933, 1.252, 1.477, 9.049, 0, 2.385, 1.763, 1.612, 1.907, 1.93, 1.926,
+            1.248, 1.625, 2.256, 0, 0, 2.704, 0, 1.919, 0.675, 1.651, 0, 1.298, 0.845, 1.917, 2.122,
+            1.917, 0, 1.163, 0.923, 1.703, 0.634, 1.755, 2.38, 2.065, 1.6, 0.782, 1.614, 1.233,
+            1.914, 0, 0.826, 2.083, 2.212, 2.055, 0, 1.308, 0, 0, 3.132, 1.436, 1.901, 1.466, 1.151,
+            1.909, 3.42, 0.829, 1.307, 1.566, 1.904, 1.773, 1.918, 2.075, 2.091, 1.918, 2.237,
+            0.982, 1.61, 1.918, 0, 0.994, 0.98, 1.907, 1.93, 1.145, 0, 3.885, 1.589, 0.686, 1.778,
+            0.682, 2.052, 1.774, 0.83, 1.241, 0, 1.926, 0.617, 1.453, 2.059, 1, 0.31, 1.45, 2.066,
+            1.763, 0.683, 0.977, 1.473, 0.832, 0.685, 0, 0, 0.666, 1.907, 1.451, 0, 1.814, 2.217,
+            1.444, 1.443, 0, 1.764, 2.389, 0.46, 1.747, 1.909, 1.753, 0.95, 2.247, 1.245, 0.981,
+            1.775, 0.743, 1.769, 0.849, 1.157, 1.909, 1.287, 2.068, 0.98, 0, 0.971, 0.774, 2.089,
+            2.073, 1.912, 1.617, 1.765, 0, 1.474, 1.766, 1.314, 2.38, 0, 0, 1.903, 1.76, 1.239,
+            1.452, 1.606, 2.202, 2.201, 0.839, 2.064, 1.916, 0.667, 2.049, 1.292, 0.979, 2.07,
+            1.303, 0, 2.238, 0.687, 0.31, 0, 1.291, 1.04, 1.929, 1.772, 1.454, 1.249, 1.612, 2.243,
+            1.912, 1.749, 2.074
+          ]
+        },
+        {
+          "scenario": "rollover-copy",
+          "sourceScenario": "rollover",
+          "phase": "copy",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 0.982,
+          "sampledActiveMsP90": 1.59,
+          "sampledActiveMsMax": 2.851,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.316, 1.937, 1.302, 0.834, 2.851, 0.982, 1.306, 1.295, 1.157, 0, 0, 1.489, 0.969,
+            0.618, 0.833, 1.303, 0, 0.671, 0.671, 0, 0, 1.14, 0.827, 0.148, 1.148, 0.62, 1.3, 1.59,
+            1.128, 0.621
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.379,
+          "sampledActiveMsP90": 2.238,
+          "sampledActiveMsMax": 5.051,
+          "over10": 0,
+          "sampledActiveMs": [
+            0, 1.799, 2.238, 0, 0.62, 1.306, 1.451, 5.051, 1.986, 1.008, 1.305, 2, 1.957, 0.69,
+            0.923, 1.454, 1.625, 1.379, 1.617, 2.699, 0.624, 1.924, 0, 0.833, 0, 2.095, 0, 1.375,
+            2.238, 0
+          ],
+          "top": [
+            ["fetch", 10118],
+            ["(anonymous)", 6713],
+            ["toJson", 4038],
+            ["execute", 3908],
+            ["localParts", 3856],
+            ["enterSpan", 2240],
+            ["_wrappedFetch", 1667],
+            ["text", 1625]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.638,
+          "sampledActiveMsP90": 2.418,
+          "sampledActiveMsMax": 17.712,
+          "over10": 1,
+          "sampledActiveMs": [
+            0, 2.197, 2.078, 2.082, 1.923, 2.065, 3.324, 2.115, 0.309, 1.301, 5.505, 0.992, 1.298,
+            1.756, 2.058, 1.62, 1.756, 2.214, 2.074, 2.214, 0, 2.085, 0, 2.001, 0, 0.777, 2.787,
+            1.904, 1.307, 1.752, 0, 1.613, 0.308, 0.93, 0, 2.898, 2.766, 0.441, 2.692, 0, 1.36, 0,
+            2.372, 2.418, 1.638, 0.984, 1.925, 1.835, 1.149, 2.179, 2.225, 1.619, 2.767, 2.066,
+            1.51, 0.843, 2.071, 1.752, 1.746, 1.282, 0, 0.622, 1.767, 2.518, 1.764, 1.082, 0.319,
+            1.77, 2.555, 1.75, 1.451, 1.466, 0.823, 1.414, 2.382, 0, 1.395, 1.315, 0.679, 1.591,
+            1.901, 0, 2.415, 2.937, 1.107, 1.905, 2.1, 0, 2.093, 1.238, 0, 1.758, 2.204, 1.552,
+            2.396, 2.295, 17.712, 1.759, 1.618, 1.905, 0, 3.15, 0, 1.946, 2.056, 2.684, 0.8, 1.239,
+            0.676, 0, 1.451, 1.25, 0.621, 0.775, 0, 2.767, 1.452, 1.295, 0, 1.919, 2.407, 1.066,
+            2.081, 0, 2.105, 2.058, 0, 1.002, 1.894, 1.091, 0, 2.061, 1.765, 2.232, 1.753, 0, 0.616,
+            0, 1.908, 0.84, 0.466, 1.766, 1.141, 1.925, 0.93, 0, 2.137, 0, 2.251, 2.269
+          ]
+        }
+      ]
+    },
+    {
+      "series": "bounded-unique-profiles",
+      "observations": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "idle",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 3,
+          "messages": 0,
+          "sampledActiveMs": 4.276,
+          "top": [
+            ["(garbage collector)", 2728],
+            ["firstIfArray", 615],
+            ["json", 165],
+            ["(anonymous)", 157],
+            ["_sendOrThrow", 157],
+            ["addD1MetaToSpan", 157],
+            ["execute", 150],
+            ["recoverAndDue", 147]
+          ]
+        },
+        {
+          "scenario": "weekly-report",
+          "sourceScenario": "weekly-report",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.46,
+          "sampledActiveMsP90": 2.097,
+          "sampledActiveMsMax": 3.194,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.194, 1.47, 2.924, 1.779, 1.083, 1.295, 2.09, 1.932, 1.293, 1.31, 1.622, 1.455, 1.44,
+            1.891, 1.288, 1.464, 1.46, 1.296, 1.78, 0.681, 2.07, 1.308, 0.625, 1.811, 0.775, 2.097,
+            0.985, 0.626, 1.463, 1.446
+          ],
+          "top": [
+            ["localParts", 6929],
+            ["_send", 4843],
+            ["fetch", 4246],
+            ["(anonymous)", 3874],
+            ["map2", 3034],
+            ["toJson", 2879],
+            ["schedule", 2406],
+            ["get", 2296]
+          ]
+        },
+        {
+          "scenario": "weekly-report-select",
+          "sourceScenario": "weekly-report",
+          "phase": "select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.449,
+          "sampledActiveMsP90": 1.782,
+          "sampledActiveMsMax": 2.703,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.703, 0.991, 1.782, 0.972, 1.617, 1.596, 1.605, 1.597, 0, 1.921, 0.991, 1.607, 1.612,
+            1.141, 0, 0.995, 1.766, 1.15, 1.159, 1.753, 1.475, 1.449, 1.432, 1.155, 0.986, 0, 1.599,
+            1.469, 0, 1.448
+          ]
+        },
+        {
+          "scenario": "weekly-report-capture",
+          "sourceScenario": "weekly-report",
+          "phase": "capture",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.076,
+          "sampledActiveMsP90": 2.554,
+          "sampledActiveMsMax": 3.645,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.645, 2.185, 2.246, 1.59, 1.709, 2.072, 2.072, 2.069, 2.076, 2.401, 2.554, 2.228,
+            1.602, 1.692, 2.274, 2.088, 2.061, 1.898, 1.458, 1.91, 2.447, 2.078, 2.36, 2.064, 3.5,
+            2.249, 2.066, 2.058, 2.217, 1.922
+          ]
+        },
+        {
+          "scenario": "weekly-report-calculate",
+          "sourceScenario": "weekly-report",
+          "phase": "calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.771,
+          "sampledActiveMsP90": 2.364,
+          "sampledActiveMsMax": 3.937,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.937, 2.383, 2.289, 2.86, 2.707, 2.221, 1.392, 2.063, 0.781, 1.917, 1.607, 0.777,
+            2.272, 1.402, 1.915, 2.064, 2.212, 1.392, 1.906, 2.101, 2.054, 1.755, 1.238, 1.752,
+            1.91, 2.085, 1.909, 2.709, 1.733, 0.77, 1.905, 0.772, 1.926, 1.749, 1.908, 2.093, 2.094,
+            2.113, 2.396, 1.935, 1.754, 1.921, 2.081, 1.754, 1.777, 2.06, 2.683, 2.872, 2.075,
+            1.931, 1.757, 0.747, 1.765, 2.229, 1.23, 1.779, 1.381, 1.407, 1.394, 1.759, 0.776,
+            2.078, 3.482, 1.437, 1.231, 2.55, 1.771, 1.606, 1.08, 0.62, 1.766, 1.771, 1.61, 1.242,
+            1.775, 1.978, 1.942, 1.793, 1.751, 1.623, 1.444, 1.703, 2.29, 2.379, 2.368, 1.773,
+            1.915, 1.605, 1.902, 1.077, 2.283, 2.307, 2.078, 2.123, 1.9, 1.764, 1.749, 2.533, 1.913,
+            1.604, 1.452, 1.732, 1.425, 1.757, 1.903, 1.607, 1.894, 2.069, 1.596, 1.736, 1.899,
+            1.771, 1.762, 2.169, 1.593, 0.769, 0.765, 2.076, 2.364, 2.082, 2.362, 1.76, 1.769,
+            1.259, 1.603, 1.285, 0.626, 1.761, 1.594, 1.899, 1.745, 1.24, 1.231, 1.914, 1.245,
+            1.238, 0.624, 1.763, 1.733, 1.754, 2.661, 1.74, 1.658, 1.633, 1.619, 1.761, 1.805,
+            1.771, 2.095, 1.914
+          ]
+        },
+        {
+          "scenario": "weekly-report-render",
+          "sourceScenario": "weekly-report",
+          "phase": "render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.742,
+          "sampledActiveMsP90": 2.255,
+          "sampledActiveMsMax": 2.382,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.255, 2.256, 1.752, 1.641, 0.933, 2.243, 2.382, 1.393, 1.601, 1.807, 1.121, 1.463,
+            1.903, 1.635, 1.746, 1.913, 1.596, 1.763, 0.619, 1.904, 1.742, 1.597, 1.287, 0.616,
+            1.449, 1.78, 0.617, 2.067, 1.466, 1.755
+          ]
+        },
+        {
+          "scenario": "weekly-report-send",
+          "sourceScenario": "weekly-report",
+          "phase": "send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+          ],
+          "sampledActiveMsMedian": 1.142,
+          "sampledActiveMsP90": 1.628,
+          "sampledActiveMsMax": 2.012,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.012, 1.628, 1.132, 1.602, 0.938, 1.086, 0.156, 1.083, 1.139, 1.142, 0.773, 1.132,
+            1.618, 1.441, 0.462, 1.418, 1.607, 0.156, 1.136, 1.135, 0.306, 1.29, 1.139, 1.153,
+            1.922, 1.144, 1.456, 1.129, 1.463, 1.601
+          ]
+        },
+        {
+          "scenario": "weekly-report-quiet",
+          "sourceScenario": "weekly-report-quiet",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.627,
+          "sampledActiveMsP90": 2.098,
+          "sampledActiveMsMax": 2.246,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.957, 1.02, 1.17, 0.465, 1.932, 1.763, 0.615, 1.462, 0, 1.958, 1.616, 2.108, 1.931,
+            1.776, 1.631, 0.866, 2.246, 1.479, 0, 1.627, 1.772, 0.791, 1.451, 2.098, 0.852, 1.632,
+            1.769, 0.311, 1.773, 1.612
+          ],
+          "top": [
+            ["fetch", 7575],
+            ["_send", 7226],
+            ["(anonymous)", 6743],
+            ["setAttributes", 4816],
+            ["nextOccurrence", 3263],
+            ["toJson", 2838],
+            ["localParts", 2461],
+            ["afterQuietHours", 1938]
+          ]
+        },
+        {
+          "scenario": "rollover",
+          "sourceScenario": "rollover",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.299,
+          "sampledActiveMsP90": 1.93,
+          "sampledActiveMsMax": 2.069,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.601, 1.297, 0, 0.698, 0, 1.613, 0.632, 1.629, 0, 1.46, 1.781, 1.937, 1.168, 1.315,
+            0.854, 0.688, 1.844, 2.069, 1.299, 1.476, 0.309, 0.462, 1.453, 1.308, 0.312, 1.93, 0, 0,
+            1.296, 1.325
+          ],
+          "top": [
+            ["setAttributes", 4737],
+            ["json", 3607],
+            ["(anonymous)", 3538],
+            ["fetch", 2476],
+            ["toJson", 2373],
+            ["execute", 2076],
+            ["text", 1783],
+            ["recoverAndDue", 1517]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 180,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.44,
+          "sampledActiveMsP90": 2.244,
+          "sampledActiveMsMax": 3.162,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.23, 2.069, 1.918, 2.081, 2.231, 1.789, 2.249, 2.095, 1.921, 0.619, 2.209, 2.056,
+            2.575, 2.396, 1.25, 1.925, 0, 1.295, 2.234, 0.973, 1.002, 2.075, 2.074, 1.464, 1.776,
+            1.629, 0, 0.677, 1.155, 1.744, 0.985, 0, 2.068, 1.146, 2.229, 2.07, 1.923, 2.253, 1.078,
+            1.238, 0, 1.612, 2.391, 1.318, 1.082, 1.931, 1.252, 2.234, 1.243, 1.305, 0.934, 0.921,
+            2.465, 2.683, 0, 2.122, 0, 1.777, 0.684, 1.941, 0, 1.789, 1.455, 1.899, 0, 0.68, 2.244,
+            0, 1.44, 0, 0, 1.9, 2.411, 0, 0.839, 0, 0, 1.387, 0.982, 3.162, 1.916, 2.548, 0.933,
+            1.164, 1.707, 0.699, 1.627, 1.226, 1.623, 1.605, 0, 0, 0.84, 0, 0.828, 1.152, 0.98,
+            1.239, 0.692, 2.24, 2.089, 0, 1.311, 2.07, 0.829, 0.617, 1.863, 1.896, 1.232, 1.608,
+            2.076, 1.909, 0, 1.465, 1.626, 0.687, 0.923, 1.621, 1.767, 0.937, 1.911, 1.458, 1.088,
+            0, 0, 1.572, 0, 1.94, 2.066, 0.999, 1.606, 0, 0.824, 0.834, 1.3, 1.602, 0, 0, 2.318,
+            0.989, 2.3, 1.307, 0, 2.139, 0.993, 2.272, 1.298, 0.834, 2.355, 0.308, 1.796, 1.446,
+            0.846, 2.346, 2.336, 1.915, 1.459, 0.99, 0, 0.836, 1.622, 2.544, 0.843, 1.299, 1.764,
+            1.762, 0.308, 2.06, 2.076, 0.843, 0.926, 1.924, 0, 0, 1.942, 0, 0.846, 2.069, 2.071,
+            1.747
+          ]
+        },
+        {
+          "scenario": "rollover-copy",
+          "sourceScenario": "rollover",
+          "phase": "copy",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 0.972,
+          "sampledActiveMsP90": 1.615,
+          "sampledActiveMsMax": 1.923,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.605, 1.923, 1.467, 0.698, 0.834, 0, 0.972, 0.983, 0, 1.172, 0, 1.625, 0.456, 1.295,
+            1.474, 0.837, 1.149, 1.081, 0, 0, 0.826, 0, 0.85, 0.833, 0.842, 1.609, 1.438, 1.459, 0,
+            1.615
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.569,
+          "sampledActiveMsP90": 2.252,
+          "sampledActiveMsMax": 2.533,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.089, 1.459, 2.066, 0.843, 0, 2.533, 0, 0, 1.803, 0, 0, 1.79, 2.252, 0, 2.23, 1.919,
+            1.472, 0.308, 1.604, 0, 2.211, 0.782, 0, 2.402, 0.992, 1.771, 1.313, 1.605, 2.232, 1.569
+          ],
+          "top": [
+            ["fetch", 7163],
+            ["nextOccurrence", 5635],
+            ["setAttributes", 3627],
+            ["toJson", 2648],
+            ["(anonymous)", 2466],
+            ["execute", 2383],
+            ["localParts", 2370],
+            ["_send", 1608]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.452,
+          "sampledActiveMsP90": 2.27,
+          "sampledActiveMsMax": 16.906,
+          "over10": 1,
+          "sampledActiveMs": [
+            1.046, 0.975, 1.459, 0, 0, 2.224, 2.215, 0.84, 2.067, 1.623, 5.014, 0, 0.924, 2.069, 0,
+            0, 2.388, 1.605, 0, 1.927, 2.081, 1.94, 0.687, 0.829, 1.151, 2.26, 1.169, 0.687, 0.625,
+            2.086, 0.991, 0, 2.232, 1.915, 0.68, 1.398, 3.002, 0.311, 1.917, 1.149, 1.453, 1.929,
+            1.45, 1.554, 0, 0, 0.679, 1.925, 0.831, 0.322, 0, 2.407, 0.466, 2.216, 2.421, 2.062, 0,
+            1.465, 2.207, 1.448, 1.098, 0, 2.233, 2.205, 0.839, 5.863, 0.982, 0.678, 0.985, 1.608,
+            2.27, 1.143, 0.31, 0.685, 0, 0, 1.77, 0.978, 0.973, 0, 2.234, 0.842, 1.943, 2.071,
+            1.772, 1.758, 1.662, 0.667, 0.843, 1.611, 2.329, 1.148, 1.299, 1.452, 1.787, 2.082,
+            16.906, 2.374, 2.219, 1.75, 1.93, 0.62, 1.611, 1.918, 1.248, 0.322, 1.143, 2.084, 0,
+            2.072, 1.945, 1.778, 1.768, 0.838, 1.081, 0.77, 0.943, 1.93, 0.979, 1.795, 0.852, 2.682,
+            1.293, 1.296, 2.803, 1.612, 1.602, 1.615, 0.842, 2.239, 2.068, 2.812, 2.577, 0, 0,
+            1.459, 0, 1.242, 0.837, 1.627, 1.473, 2.594, 1.291, 1.139, 1.245, 0.675, 1.291, 1.922,
+            2.089, 2.077
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "select-goals": {
+      "freshMs": [5.191, 4.811, 4.266],
+      "warmMs": [
+        1.61, 1.598, 0.942, 0, 1.926, 0, 0.988, 1.604, 0, 1.626, 0, 0, 1.146, 0.988, 0.678, 0.631,
+        1.627, 1.615, 1.153, 1.138, 0.678, 0, 0.467, 0.687, 1.763, 1.447, 1.307, 0.847, 1.457,
+        1.452, 2.703, 0.991, 1.782, 0.972, 1.617, 1.596, 1.605, 1.597, 0, 1.921, 0.991, 1.607,
+        1.612, 1.141, 0, 0.995, 1.766, 1.15, 1.159, 1.753, 1.475, 1.449, 1.432, 1.155, 0.986, 0,
+        1.599, 1.469, 0, 1.448
+      ],
+      "statements": [5]
+    },
+    "capture-inputs": {
+      "freshMs": [4.92, 7.718, 8.16],
+      "warmMs": [
+        3.769, 2.075, 2.27, 1.544, 0.309, 1.61, 0.153, 1.598, 0.772, 2.11, 2.542, 1.611, 2.865,
+        2.844, 2.087, 2.066, 2.092, 2.068, 1.918, 2.241, 2.399, 2.234, 2.382, 1.926, 2.075, 2.238,
+        1.767, 2.406, 1.928, 1.89, 3.645, 2.185, 2.246, 1.59, 1.709, 2.072, 2.072, 2.069, 2.076,
+        2.401, 2.554, 2.228, 1.602, 1.692, 2.274, 2.088, 2.061, 1.898, 1.458, 1.91, 2.447, 2.078,
+        2.36, 2.064, 3.5, 2.249, 2.066, 2.058, 2.217, 1.922
+      ],
+      "statements": [5]
+    },
+    "calculate-batch": {
+      "freshMs": [
+        6.055, 7.753, 7.071, 5.113, 5.711, 4.97, 6.604, 5.634, 6.034, 6.412, 6.503, 6.034, 8.344,
+        6.702, 5.359
+      ],
+      "warmMs": [
+        3.764, 2.227, 1.76, 1.926, 2.098, 2.224, 2.096, 0.929, 0.915, 1.298, 1.759, 1.772, 1.901,
+        2.845, 2.22, 1.92, 1.912, 1.758, 0.627, 1.6, 1.742, 1.242, 2.221, 1.783, 0.766, 1.924,
+        1.915, 2.229, 2.515, 1.246, 2.064, 1.253, 0.776, 1.4, 2.107, 0.764, 1.91, 0.789, 2.234,
+        1.754, 1.919, 1.614, 2.229, 2.37, 1.465, 1.377, 1.758, 1.763, 1.772, 1.769, 1.902, 2.289,
+        1.614, 1.759, 1.769, 2.238, 1.771, 1.75, 1.761, 1.468, 2.565, 2.042, 0.775, 1.899, 1.599,
+        2.379, 1.595, 1.906, 1.777, 1.762, 2.071, 1.755, 0.624, 1.602, 1.606, 1.916, 2.079, 1.768,
+        1.375, 1.756, 2.077, 2.004, 1.749, 2.075, 2.375, 1.744, 1.911, 1.946, 2.066, 2.061, 1.739,
+        1.767, 1.747, 1.755, 1.612, 1.76, 1.756, 1.43, 1.24, 1.753, 1.449, 0.899, 1.901, 1.62,
+        1.898, 1.759, 1.082, 0.784, 0.732, 1.077, 2.226, 2.209, 1.931, 1.393, 1.773, 1.903, 1.581,
+        2.064, 1.933, 1.585, 1.74, 1.921, 1.449, 2.084, 1.747, 2.308, 2.069, 2.073, 0.775, 1.835,
+        2.225, 1.444, 1.737, 1.09, 1.763, 1.578, 1.893, 1.75, 1.748, 1.759, 0.766, 2.053, 1.441,
+        1.769, 1.509, 1.751, 2.235, 1.766, 1.76, 2.07, 3.937, 2.383, 2.289, 2.86, 2.707, 2.221,
+        1.392, 2.063, 0.781, 1.917, 1.607, 0.777, 2.272, 1.402, 1.915, 2.064, 2.212, 1.392, 1.906,
+        2.101, 2.054, 1.755, 1.238, 1.752, 1.91, 2.085, 1.909, 2.709, 1.733, 0.77, 1.905, 0.772,
+        1.926, 1.749, 1.908, 2.093, 2.094, 2.113, 2.396, 1.935, 1.754, 1.921, 2.081, 1.754, 1.777,
+        2.06, 2.683, 2.872, 2.075, 1.931, 1.757, 0.747, 1.765, 2.229, 1.23, 1.779, 1.381, 1.407,
+        1.394, 1.759, 0.776, 2.078, 3.482, 1.437, 1.231, 2.55, 1.771, 1.606, 1.08, 0.62, 1.766,
+        1.771, 1.61, 1.242, 1.775, 1.978, 1.942, 1.793, 1.751, 1.623, 1.444, 1.703, 2.29, 2.379,
+        2.368, 1.773, 1.915, 1.605, 1.902, 1.077, 2.283, 2.307, 2.078, 2.123, 1.9, 1.764, 1.749,
+        2.533, 1.913, 1.604, 1.452, 1.732, 1.425, 1.757, 1.903, 1.607, 1.894, 2.069, 1.596, 1.736,
+        1.899, 1.771, 1.762, 2.169, 1.593, 0.769, 0.765, 2.076, 2.364, 2.082, 2.362, 1.76, 1.769,
+        1.259, 1.603, 1.285, 0.626, 1.761, 1.594, 1.899, 1.745, 1.24, 1.231, 1.914, 1.245, 1.238,
+        0.624, 1.763, 1.733, 1.754, 2.661, 1.74, 1.658, 1.633, 1.619, 1.761, 1.805, 1.771, 2.095,
+        1.914
+      ],
+      "statements": [4]
+    },
+    "format-report": {
+      "freshMs": [6.083, 5.259, 6.613],
+      "warmMs": [
+        2.365, 2.242, 0.617, 1.603, 1.774, 1.618, 1.316, 1.605, 1.769, 1.604, 1.464, 1.757, 1.453,
+        0.462, 1.599, 0.926, 1.293, 0.624, 1.759, 1.127, 0.625, 1.594, 0.934, 1.593, 1.288, 1.612,
+        1.438, 2.07, 2.391, 2.48, 2.255, 2.256, 1.752, 1.641, 0.933, 2.243, 2.382, 1.393, 1.601,
+        1.807, 1.121, 1.463, 1.903, 1.635, 1.746, 1.913, 1.596, 1.763, 0.619, 1.904, 1.742, 1.597,
+        1.287, 0.616, 1.449, 1.78, 0.617, 2.067, 1.466, 1.755
+      ],
+      "statements": [4]
+    },
+    "send-report": {
+      "freshMs": [3.622, 4.328, 4.955],
+      "warmMs": [
+        3.069, 1.759, 1.904, 0, 1.595, 1.13, 1.773, 1.61, 1.126, 1.441, 0.928, 0.468, 1.721, 0,
+        0.98, 1.298, 0, 0, 1.32, 1.592, 2.078, 1.462, 1.139, 1.302, 0.983, 1.309, 0.98, 1.453, 1.59,
+        0.669, 2.012, 1.628, 1.132, 1.602, 0.938, 1.086, 0.156, 1.083, 1.139, 1.142, 0.773, 1.132,
+        1.618, 1.441, 0.462, 1.418, 1.607, 0.156, 1.136, 1.135, 0.306, 1.29, 1.139, 1.153, 1.922,
+        1.144, 1.456, 1.129, 1.463, 1.601
+      ],
+      "statements": [4]
+    },
+    "schedule-during-quiet-hours": {
+      "freshMs": [4.037, 4.995, 4.027],
+      "warmMs": [
+        1.629, 0, 1.619, 0.786, 0.851, 1.163, 0.844, 0.832, 0.625, 0, 0, 1.633, 1.931, 1.778, 0.847,
+        0.943, 0, 1.931, 2.106, 1.948, 1.956, 1.621, 1.957, 2.285, 1.308, 1.47, 0.471, 0.314, 1.772,
+        1.772, 1.957, 1.02, 1.17, 0.465, 1.932, 1.763, 0.615, 1.462, 0, 1.958, 1.616, 2.108, 1.931,
+        1.776, 1.631, 0.866, 2.246, 1.479, 0, 1.627, 1.772, 0.791, 1.451, 2.098, 0.852, 1.632,
+        1.769, 0.311, 1.773, 1.612
+      ],
+      "statements": [6]
+    },
+    "month-copy": {
+      "freshMs": [4.634, 5.387, 4.575],
+      "warmMs": [
+        1.089, 1.606, 0.679, 0.781, 0.698, 1.304, 1.938, 1.302, 0.84, 0.686, 1.303, 1.923, 1.004, 0,
+        0.624, 0.849, 1.456, 0.991, 1.459, 1.291, 0.841, 1.617, 1.311, 1.608, 1.502, 0, 0.774,
+        1.774, 0.697, 1.624, 1.316, 1.937, 1.302, 0.834, 2.851, 0.982, 1.306, 1.295, 1.157, 0, 0,
+        1.489, 0.969, 0.618, 0.833, 1.303, 0, 0.671, 0.671, 0, 0, 1.14, 0.827, 0.148, 1.148, 0.62,
+        1.3, 1.59, 1.128, 0.621, 1.601, 1.297, 0, 0.698, 0, 1.613, 0.632, 1.629, 0, 1.46, 1.781,
+        1.937, 1.168, 1.315, 0.854, 0.688, 1.844, 2.069, 1.299, 1.476, 0.309, 0.462, 1.453, 1.308,
+        0.312, 1.93, 0, 0, 1.296, 1.325, 1.605, 1.923, 1.467, 0.698, 0.834, 0, 0.972, 0.983, 0,
+        1.172, 0, 1.625, 0.456, 1.295, 1.474, 0.837, 1.149, 1.081, 0, 0, 0.826, 0, 0.85, 0.833,
+        0.842, 1.609, 1.438, 1.459, 0, 1.615
+      ],
+      "statements": [5]
+    },
+    "inherit-settings": {
+      "freshMs": [6.858, 6.766, 5.917],
+      "warmMs": [
+        1.715, 0, 0.985, 1.933, 1.252, 1.477, 9.049, 0, 2.385, 1.763, 1.612, 1.907, 1.93, 1.926,
+        1.248, 1.625, 2.256, 0, 0, 2.704, 0, 1.919, 0.675, 1.651, 0, 1.298, 0.845, 1.917, 2.122,
+        1.917, 0, 1.163, 0.923, 1.703, 0.634, 1.755, 2.38, 2.065, 1.6, 0.782, 1.614, 1.233, 1.914,
+        0, 0.826, 2.083, 2.212, 2.055, 0, 1.308, 0, 0, 3.132, 1.436, 1.901, 1.466, 1.151, 1.909,
+        3.42, 0.829, 1.307, 1.566, 1.904, 1.773, 1.918, 2.075, 2.091, 1.918, 2.237, 0.982, 1.61,
+        1.918, 0, 0.994, 0.98, 1.907, 1.93, 1.145, 0, 3.885, 1.589, 0.686, 1.778, 0.682, 2.052,
+        1.774, 0.83, 1.241, 0, 1.926, 0.617, 1.453, 2.059, 1, 0.31, 1.45, 2.066, 1.763, 0.683,
+        0.977, 1.473, 0.832, 0.685, 0, 0, 0.666, 1.907, 1.451, 0, 1.814, 2.217, 1.444, 1.443, 0,
+        1.764, 2.389, 0.46, 1.747, 1.909, 1.753, 0.95, 2.247, 1.245, 0.981, 1.775, 0.743, 1.769,
+        0.849, 1.157, 1.909, 1.287, 2.068, 0.98, 0, 0.971, 0.774, 2.089, 2.073, 1.912, 1.617, 1.765,
+        0, 1.474, 1.766, 1.314, 2.38, 0, 0, 1.903, 1.76, 1.239, 1.452, 1.606, 2.202, 2.201, 0.839,
+        2.064, 1.916, 0.667, 2.049, 1.292, 0.979, 2.07, 1.303, 0, 2.238, 0.687, 0.31, 0, 1.291,
+        1.04, 1.929, 1.772, 1.454, 1.249, 1.612, 2.243, 1.912, 1.749, 2.074, 0, 1.799, 2.238, 0,
+        0.62, 1.306, 1.451, 5.051, 1.986, 1.008, 1.305, 2, 1.957, 0.69, 0.923, 1.454, 1.625, 1.379,
+        1.617, 2.699, 0.624, 1.924, 0, 0.833, 0, 2.095, 0, 1.375, 2.238, 0, 0, 2.197, 2.078, 2.082,
+        1.923, 2.065, 3.324, 2.115, 0.309, 1.301, 5.505, 0.992, 1.298, 1.756, 2.058, 1.62, 1.756,
+        2.214, 2.074, 2.214, 0, 2.085, 0, 2.001, 0, 0.777, 2.787, 1.904, 1.307, 1.752, 0, 1.613,
+        0.308, 0.93, 0, 2.898, 2.766, 0.441, 2.692, 0, 1.36, 0, 2.372, 2.418, 1.638, 0.984, 1.925,
+        1.835, 1.149, 2.179, 2.225, 1.619, 2.767, 2.066, 1.51, 0.843, 2.071, 1.752, 1.746, 1.282, 0,
+        0.622, 1.767, 2.518, 1.764, 1.082, 0.319, 1.77, 2.555, 1.75, 1.451, 1.466, 0.823, 1.414,
+        2.382, 0, 1.395, 1.315, 0.679, 1.591, 1.901, 0, 2.415, 2.937, 1.107, 1.905, 2.1, 0, 2.093,
+        1.238, 0, 1.758, 2.204, 1.552, 2.396, 2.295, 17.712, 1.759, 1.618, 1.905, 0, 3.15, 0, 1.946,
+        2.056, 2.684, 0.8, 1.239, 0.676, 0, 1.451, 1.25, 0.621, 0.775, 0, 2.767, 1.452, 1.295, 0,
+        1.919, 2.407, 1.066, 2.081, 0, 2.105, 2.058, 0, 1.002, 1.894, 1.091, 0, 2.061, 1.765, 2.232,
+        1.753, 0, 0.616, 0, 1.908, 0.84, 0.466, 1.766, 1.141, 1.925, 0.93, 0, 2.137, 0, 2.251,
+        2.269, 2.23, 2.069, 1.918, 2.081, 2.231, 1.789, 2.249, 2.095, 1.921, 0.619, 2.209, 2.056,
+        2.575, 2.396, 1.25, 1.925, 0, 1.295, 2.234, 0.973, 1.002, 2.075, 2.074, 1.464, 1.776, 1.629,
+        0, 0.677, 1.155, 1.744, 0.985, 0, 2.068, 1.146, 2.229, 2.07, 1.923, 2.253, 1.078, 1.238, 0,
+        1.612, 2.391, 1.318, 1.082, 1.931, 1.252, 2.234, 1.243, 1.305, 0.934, 0.921, 2.465, 2.683,
+        0, 2.122, 0, 1.777, 0.684, 1.941, 0, 1.789, 1.455, 1.899, 0, 0.68, 2.244, 0, 1.44, 0, 0,
+        1.9, 2.411, 0, 0.839, 0, 0, 1.387, 0.982, 3.162, 1.916, 2.548, 0.933, 1.164, 1.707, 0.699,
+        1.627, 1.226, 1.623, 1.605, 0, 0, 0.84, 0, 0.828, 1.152, 0.98, 1.239, 0.692, 2.24, 2.089, 0,
+        1.311, 2.07, 0.829, 0.617, 1.863, 1.896, 1.232, 1.608, 2.076, 1.909, 0, 1.465, 1.626, 0.687,
+        0.923, 1.621, 1.767, 0.937, 1.911, 1.458, 1.088, 0, 0, 1.572, 0, 1.94, 2.066, 0.999, 1.606,
+        0, 0.824, 0.834, 1.3, 1.602, 0, 0, 2.318, 0.989, 2.3, 1.307, 0, 2.139, 0.993, 2.272, 1.298,
+        0.834, 2.355, 0.308, 1.796, 1.446, 0.846, 2.346, 2.336, 1.915, 1.459, 0.99, 0, 0.836, 1.622,
+        2.544, 0.843, 1.299, 1.764, 1.762, 0.308, 2.06, 2.076, 0.843, 0.926, 1.924, 0, 0, 1.942, 0,
+        0.846, 2.069, 2.071, 1.747, 2.089, 1.459, 2.066, 0.843, 0, 2.533, 0, 0, 1.803, 0, 0, 1.79,
+        2.252, 0, 2.23, 1.919, 1.472, 0.308, 1.604, 0, 2.211, 0.782, 0, 2.402, 0.992, 1.771, 1.313,
+        1.605, 2.232, 1.569, 1.046, 0.975, 1.459, 0, 0, 2.224, 2.215, 0.84, 2.067, 1.623, 5.014, 0,
+        0.924, 2.069, 0, 0, 2.388, 1.605, 0, 1.927, 2.081, 1.94, 0.687, 0.829, 1.151, 2.26, 1.169,
+        0.687, 0.625, 2.086, 0.991, 0, 2.232, 1.915, 0.68, 1.398, 3.002, 0.311, 1.917, 1.149, 1.453,
+        1.929, 1.45, 1.554, 0, 0, 0.679, 1.925, 0.831, 0.322, 0, 2.407, 0.466, 2.216, 2.421, 2.062,
+        0, 1.465, 2.207, 1.448, 1.098, 0, 2.233, 2.205, 0.839, 5.863, 0.982, 0.678, 0.985, 1.608,
+        2.27, 1.143, 0.31, 0.685, 0, 0, 1.77, 0.978, 0.973, 0, 2.234, 0.842, 1.943, 2.071, 1.772,
+        1.758, 1.662, 0.667, 0.843, 1.611, 2.329, 1.148, 1.299, 1.452, 1.787, 2.082, 16.906, 2.374,
+        2.219, 1.75, 1.93, 0.62, 1.611, 1.918, 1.248, 0.322, 1.143, 2.084, 0, 2.072, 1.945, 1.778,
+        1.768, 0.838, 1.081, 0.77, 0.943, 1.93, 0.979, 1.795, 0.852, 2.682, 1.293, 1.296, 2.803,
+        1.612, 1.602, 1.615, 0.842, 2.239, 2.068, 2.812, 2.577, 0, 0, 1.459, 0, 1.242, 0.837, 1.627,
+        1.473, 2.594, 1.291, 1.139, 1.245, 0.675, 1.291, 1.922, 2.089, 2.077
+      ],
+      "statements": [6]
+    },
+    "schedule-report": {
+      "freshMs": [3.487, 4.183, 4.692],
+      "warmMs": [
+        3.018, 1.633, 0, 1.792, 1.473, 0, 1.308, 1.455, 1.78, 1.462, 0, 0.684, 0, 1.785, 0.845,
+        0.987, 1.932, 1.158, 1.786, 2.063, 1.931, 0.684, 1.244, 0.935, 0.466, 0.678, 1.289, 1.461,
+        1.464, 1.809, 3.194, 1.47, 2.924, 1.779, 1.083, 1.295, 2.09, 1.932, 1.293, 1.31, 1.622,
+        1.455, 1.44, 1.891, 1.288, 1.464, 1.46, 1.296, 1.78, 0.681, 2.07, 1.308, 0.625, 1.811,
+        0.775, 2.097, 0.985, 0.626, 1.463, 1.446
+      ],
+      "statements": [6]
+    }
+  },
+  "over10": [
+    {
+      "series": "bounded-first",
+      "scenario": "rollover-inherit",
+      "phase": "inherit",
+      "observationIndex": 96,
+      "iteration": 19,
+      "followupStep": 2,
+      "sampledActiveMs": 17.712,
+      "profileUnavailable": "Repeated inheritance phases overwrote that per-iteration profile; filenames now also include the followup step. Estimate retained unchanged."
+    },
+    {
+      "series": "bounded-unique-profiles",
+      "scenario": "rollover-inherit",
+      "phase": "inherit",
+      "observationIndex": 96,
+      "iteration": 19,
+      "followupStep": 2,
+      "sampledActiveMs": 16.906,
+      "profile": {
+        "nodes": [
+          {
+            "id": 1,
+            "callFrame": {
+              "functionName": "(root)",
+              "scriptId": "0",
+              "url": "",
+              "lineNumber": -1,
+              "columnNumber": -1
+            },
+            "hitCount": 0,
+            "children": [2, 3, 9, 16],
+            "positionTicks": []
+          },
+          {
+            "id": 16,
+            "callFrame": {
+              "functionName": "execute",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42244,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [17],
+            "positionTicks": []
+          },
+          {
+            "id": 17,
+            "callFrame": {
+              "functionName": "inherit",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42630,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [18],
+            "positionTicks": []
+          },
+          {
+            "id": 18,
+            "callFrame": {
+              "functionName": "",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49509,
+              "columnNumber": 19
+            },
+            "hitCount": 0,
+            "children": [19],
+            "positionTicks": []
+          },
+          {
+            "id": 19,
+            "callFrame": {
+              "functionName": "run",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 466,
+              "columnNumber": 13
+            },
+            "hitCount": 0,
+            "children": [20],
+            "positionTicks": []
+          },
+          {
+            "id": 20,
+            "callFrame": {
+              "functionName": "withSpan",
+              "scriptId": "6",
+              "url": "cloudflare-internal:tracing-helpers",
+              "lineNumber": 33,
+              "columnNumber": 24
+            },
+            "hitCount": 0,
+            "children": [21],
+            "positionTicks": []
+          },
+          {
+            "id": 21,
+            "callFrame": {
+              "functionName": "enterSpan",
+              "scriptId": "0",
+              "url": "",
+              "lineNumber": -1,
+              "columnNumber": -1
+            },
+            "hitCount": 0,
+            "children": [22],
+            "positionTicks": []
+          },
+          {
+            "id": 22,
+            "callFrame": {
+              "functionName": "",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 467,
+              "columnNumber": 34
+            },
+            "hitCount": 0,
+            "children": [23],
+            "positionTicks": []
+          },
+          {
+            "id": 23,
+            "callFrame": {
+              "functionName": "_sendOrThrow",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 182,
+              "columnNumber": 22
+            },
+            "hitCount": 0,
+            "children": [24],
+            "positionTicks": []
+          },
+          {
+            "id": 24,
+            "callFrame": {
+              "functionName": "_send",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 195,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [25],
+            "positionTicks": []
+          },
+          {
+            "id": 25,
+            "callFrame": {
+              "functionName": "_wrappedFetch",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 161,
+              "columnNumber": 23
+            },
+            "hitCount": 0,
+            "children": [26],
+            "positionTicks": []
+          },
+          {
+            "id": 26,
+            "callFrame": {
+              "functionName": "fetch",
+              "scriptId": "0",
+              "url": "",
+              "lineNumber": -1,
+              "columnNumber": -1
+            },
+            "hitCount": 1,
+            "children": [],
+            "positionTicks": [
+              {
+                "line": 175,
+                "ticks": 1
+              }
+            ]
+          },
+          {
+            "id": 9,
+            "callFrame": {
+              "functionName": "execute",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42310,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [10, 13],
+            "positionTicks": []
+          },
+          {
+            "id": 13,
+            "callFrame": {
+              "functionName": "execute",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 43795,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [14],
+            "positionTicks": []
+          },
+          {
+            "id": 14,
+            "callFrame": {
+              "functionName": "execute",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42244,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [15],
+            "positionTicks": []
+          },
+          {
+            "id": 15,
+            "callFrame": {
+              "functionName": "inheritanceState",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42916,
+              "columnNumber": 24
+            },
+            "hitCount": 1,
+            "children": [],
+            "positionTicks": [
+              {
+                "line": 42931,
+                "ticks": 1
+              }
+            ]
+          },
+          {
+            "id": 10,
+            "callFrame": {
+              "functionName": "schedulingState",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42880,
+              "columnNumber": 23
+            },
+            "hitCount": 0,
+            "children": [11],
+            "positionTicks": []
+          },
+          {
+            "id": 11,
+            "callFrame": {
+              "functionName": "",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49521,
+              "columnNumber": 38
+            },
+            "hitCount": 0,
+            "children": [12],
+            "positionTicks": []
+          },
+          {
+            "id": 12,
+            "callFrame": {
+              "functionName": "wrap",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49504,
+              "columnNumber": 17
+            },
+            "hitCount": 1,
+            "children": [],
+            "positionTicks": [
+              {
+                "line": 49517,
+                "ticks": 1
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "callFrame": {
+              "functionName": "fetch",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49499,
+              "columnNumber": 13
+            },
+            "hitCount": 0,
+            "children": [4],
+            "positionTicks": []
+          },
+          {
+            "id": 4,
+            "callFrame": {
+              "functionName": "scheduled",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49484,
+              "columnNumber": 17
+            },
+            "hitCount": 0,
+            "children": [5],
+            "positionTicks": []
+          },
+          {
+            "id": 5,
+            "callFrame": {
+              "functionName": "runReminders",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 49455,
+              "columnNumber": 27
+            },
+            "hitCount": 0,
+            "children": [6],
+            "positionTicks": []
+          },
+          {
+            "id": 6,
+            "callFrame": {
+              "functionName": "execute",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 42310,
+              "columnNumber": 15
+            },
+            "hitCount": 0,
+            "children": [7],
+            "positionTicks": []
+          },
+          {
+            "id": 7,
+            "callFrame": {
+              "functionName": "recoverAndDue",
+              "scriptId": "4",
+              "url": "worker.mjs",
+              "lineNumber": 43165,
+              "columnNumber": 21
+            },
+            "hitCount": 0,
+            "children": [8],
+            "positionTicks": []
+          },
+          {
+            "id": 8,
+            "callFrame": {
+              "functionName": "bind",
+              "scriptId": "5",
+              "url": "cloudflare-internal:d1-api",
+              "lineNumber": 392,
+              "columnNumber": 8
+            },
+            "hitCount": 1,
+            "children": [],
+            "positionTicks": [
+              {
+                "line": 393,
+                "ticks": 1
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "callFrame": {
+              "functionName": "(idle)",
+              "scriptId": "0",
+              "url": "",
+              "lineNumber": -1,
+              "columnNumber": -1
+            },
+            "hitCount": 1,
+            "children": [],
+            "positionTicks": []
+          }
+        ],
+        "startTime": 463524157740,
+        "endTime": 463524192211,
+        "samples": [2, 8, 12, 15, 26, 2],
+        "timeDeltas": [16139, 998, 457, 14987, 464, 1392]
+      },
+      "profileSha256": "ecb4b7191447a3136a0856dc8162bdc418ab6464d0e3d766a9a555a5d6b74218",
+      "topFrames": [
+        {
+          "function": "inheritanceState",
+          "url": "worker.mjs",
+          "lineNumber": 42916,
+          "sampledUs": 14987
+        },
+        {
+          "function": "bind",
+          "url": "cloudflare-internal:d1-api",
+          "lineNumber": 392,
+          "sampledUs": 998
+        },
+        {
+          "function": "fetch",
+          "url": "",
+          "lineNumber": -1,
+          "sampledUs": 464
+        },
+        {
+          "function": "wrap",
+          "url": "worker.mjs",
+          "lineNumber": 49504,
+          "sampledUs": 457
+        }
+      ]
+    }
+  ],
+  "intermediateCandidates": [
+    {
+      "candidate": "batched-full-goal-results",
+      "observations": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.658,
+          "top": [
+            ["(garbage collector)", 1407],
+            ["addAggregatedD1MetaToSpan", 774],
+            ["reportWeek", 469],
+            ["_send", 466],
+            ["scheduled", 159],
+            ["localParts", 159],
+            ["prepare", 157],
+            ["createPlanningOperations", 157],
+            ["withSpan", 155],
+            ["createReminderOperations", 155]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:49:38Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 7.07,
+          "top": [
+            ["(garbage collector)", 2729],
+            ["deliver", 1228],
+            ["progressSources", 926],
+            ["(anonymous)", 461],
+            ["enterSpan", 311],
+            ["addAggregatedD1MetaToSpan", 173],
+            ["createPlanningUseCases", 161],
+            ["scheduled", 159],
+            ["full", 156],
+            ["recoverAndDue", 154]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:49:41Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.04,
+          "top": [
+            ["(anonymous)", 1539],
+            ["(garbage collector)", 1256],
+            ["calculateGoalBatch", 787],
+            ["deliver", 453],
+            ["scheduled", 160],
+            ["toArrayOfObjects", 159],
+            ["createPlanningUseCases", 159],
+            ["enterSpan", 156],
+            ["toJson", 155],
+            ["_send", 155]
+          ],
+          "series": "1-batch1",
+          "observedAt": "2026-10-16T16:49:44Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.281,
+          "top": [
+            ["deliver", 1571],
+            ["(garbage collector)", 1276],
+            ["(anonymous)", 614],
+            ["createReminderOperations", 324],
+            ["_wrappedFetch", 320],
+            ["_send", 308],
+            ["scheduled", 164],
+            ["enterSpan", 161],
+            ["_sendOrThrow", 160],
+            ["targetsFor", 157]
+          ],
+          "series": "1-batch2",
+          "observedAt": "2026-10-16T16:49:48Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.48,
+          "top": [
+            ["(garbage collector)", 1424],
+            ["toJson", 1243],
+            ["_send", 1104],
+            ["deliver", 601],
+            ["(anonymous)", 462],
+            ["calculateGoalBatch", 320],
+            ["_sendOrThrow", 163],
+            ["addAggregatedD1MetaToSpan", 161],
+            ["isoDate", 160],
+            ["scheduled", 158]
+          ],
+          "series": "1-batch3",
+          "observedAt": "2026-10-16T16:49:51Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.755,
+          "top": [
+            ["runReminders", 1874],
+            ["(garbage collector)", 1273],
+            ["(anonymous)", 1079],
+            ["calculationCalendar", 626],
+            ["deliver", 454],
+            ["_send", 448],
+            ["scheduled", 297],
+            ["RecordReminderAnswerUseCase", 160],
+            ["toJson", 159],
+            ["stats", 156]
+          ],
+          "series": "1-batch4",
+          "observedAt": "2026-10-16T16:49:54Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.805,
+          "top": [
+            ["(garbage collector)", 2574],
+            ["_send", 1382],
+            ["calculateGoalBatch", 617],
+            ["(anonymous)", 464],
+            ["deliver", 455],
+            ["fetch", 159],
+            ["toJson", 159],
+            ["runReminders", 156],
+            ["createReminderOperations", 156],
+            ["localParts", 156]
+          ],
+          "series": "1-batch5",
+          "observedAt": "2026-10-16T16:49:57Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.484,
+          "top": [
+            ["json", 1508],
+            ["(garbage collector)", 1280],
+            ["render", 623],
+            ["(anonymous)", 617],
+            ["_send", 311],
+            ["deliver", 299],
+            ["fetch", 162],
+            ["toJson", 157],
+            ["reportMessage", 157],
+            ["createReminderOperations", 155]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:50:01Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 4.191,
+          "top": [
+            ["(garbage collector)", 1406],
+            ["send", 786],
+            ["(anonymous)", 307],
+            ["_send", 162],
+            ["scheduled", 160],
+            ["deliver", 156],
+            ["localParts", 154],
+            ["updateJob", 154],
+            ["runReminders", 152],
+            ["recoverAndDue", 152]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:50:04Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 4.637,
+          "top": [
+            ["toJson", 1389],
+            ["(garbage collector)", 1247],
+            ["reportWeek", 464],
+            ["(anonymous)", 459],
+            ["execute", 309],
+            ["createReminderOperations", 157],
+            ["scheduled", 156],
+            ["makeJob", 154],
+            ["createPlanningUseCases", 153],
+            ["runReminders", 149]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:50:07Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.507,
+          "top": [
+            ["(garbage collector)", 1094],
+            ["(anonymous)", 785],
+            ["aggregateD1Meta", 614],
+            ["schedulingState", 613],
+            ["fetch", 321],
+            ["execute", 308],
+            ["createReminderRunner", 156],
+            ["createProgressOperations", 155],
+            ["_send", 154],
+            ["D1ReminderRepository", 154]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:50:10Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 6.63,
+          "top": [
+            ["(garbage collector)", 2589],
+            ["execute", 1389],
+            ["toReminder", 631],
+            ["(anonymous)", 630],
+            ["runReminders", 309],
+            ["_sendOrThrow", 157],
+            ["inheritReminders", 157],
+            ["recoverAndDue", 155],
+            ["fetch", 155],
+            ["nextOccurrence", 154]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:50:13Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 6.195,
+          "top": [
+            ["(garbage collector)", 2599],
+            ["_sendOrThrow", 1102],
+            ["reportWeek", 474],
+            ["(anonymous)", 469],
+            ["recoverAndDue", 307],
+            ["deliver", 305],
+            ["execute", 161],
+            ["fetch", 157],
+            ["all", 157],
+            ["createPlanningUseCases", 156]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:17Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 6.516,
+          "top": [
+            ["(garbage collector)", 1250],
+            ["deliver", 943],
+            ["addD1MetaToSpan", 936],
+            ["toArrayOfObjects", 928],
+            ["(anonymous)", 627],
+            ["runReminders", 161],
+            ["enterSpan", 158],
+            ["createProgressOperations", 156],
+            ["progressSources", 156],
+            ["_send", 155]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:20Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.704,
+          "top": [
+            ["(garbage collector)", 1238],
+            ["calculateGoalBatch", 930],
+            ["toJson", 917],
+            ["(anonymous)", 770],
+            ["deliver", 453],
+            ["_send", 318],
+            ["runReminders", 308],
+            ["deliveryFromRow", 159],
+            ["addAggregatedD1MetaToSpan", 154],
+            ["reportWeek", 153]
+          ],
+          "series": "2-batch1",
+          "observedAt": "2026-10-16T16:50:23Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.925,
+          "top": [
+            ["(garbage collector)", 1256],
+            ["_send", 813],
+            ["calculateGoalBatch", 779],
+            ["deliver", 759],
+            ["(anonymous)", 630],
+            ["scheduled", 161],
+            ["signature", 156],
+            ["D1PreparedStatement", 155],
+            ["batch", 155],
+            ["afterQuietHours", 155]
+          ],
+          "series": "2-batch2",
+          "observedAt": "2026-10-16T16:50:27Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.087,
+          "top": [
+            ["(anonymous)", 1540],
+            ["json", 1493],
+            ["(garbage collector)", 1101],
+            ["deliver", 472],
+            ["runReminders", 468],
+            ["calculateGoalBatch", 309],
+            ["_send", 308],
+            ["createReminderOperations", 158],
+            ["enterSpan", 156],
+            ["stats", 154]
+          ],
+          "series": "2-batch3",
+          "observedAt": "2026-10-16T16:50:30Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.239,
+          "top": [
+            ["(garbage collector)", 1084],
+            ["toJson", 1084],
+            ["deliver", 765],
+            ["(anonymous)", 735],
+            ["calculateGoalBatch", 523],
+            ["_send", 457],
+            ["full", 158],
+            ["batch", 156],
+            ["fetch", 155],
+            ["createReminderRunner", 155]
+          ],
+          "series": "2-batch4",
+          "observedAt": "2026-10-16T16:50:33Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 8.382,
+          "top": [
+            ["fetch", 1489],
+            ["(garbage collector)", 1078],
+            ["calculateGoalBatch", 971],
+            ["mapD1Result", 948],
+            ["_send", 475],
+            ["runReminders", 466],
+            ["(anonymous)", 457],
+            ["deliver", 450],
+            ["stats", 166],
+            ["reportWeek", 164]
+          ],
+          "series": "2-batch5",
+          "observedAt": "2026-10-16T16:50:37Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.726,
+          "top": [
+            ["_send", 1244],
+            ["(garbage collector)", 1231],
+            ["render", 624],
+            ["deliver", 466],
+            ["runReminders", 464],
+            ["reportMessage", 158],
+            ["_wrappedFetch", 158],
+            ["toJson", 156],
+            ["(anonymous)", 156],
+            ["_sendOrThrow", 155]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:40Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 7.632,
+          "top": [
+            ["(garbage collector)", 3274],
+            ["addAggregatedD1MetaToSpan", 1093],
+            ["(anonymous)", 833],
+            ["text", 620],
+            ["runReminders", 316],
+            ["deliver", 309],
+            ["createReminderOperations", 306],
+            ["wrap", 254],
+            ["timeout", 168],
+            ["toJob", 164]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:43Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 4.336,
+          "top": [
+            ["(garbage collector)", 1099],
+            ["_send", 618],
+            ["localDate", 616],
+            ["reportWeek", 467],
+            ["createReminderRunner", 313],
+            ["Headers", 158],
+            ["schedulingState", 158],
+            ["createPlanningUseCases", 155],
+            ["schedule", 154],
+            ["recoverAndDue", 153]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:46Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.371,
+          "top": [
+            ["(garbage collector)", 1433],
+            ["toJson", 777],
+            ["addAggregatedD1MetaToSpan", 764],
+            ["scheduled", 161],
+            ["Headers", 160],
+            ["localDate", 159],
+            ["createPlanningUseCases", 157],
+            ["createReminderOperations", 154],
+            ["setAttributes", 153],
+            ["(anonymous)", 152]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:50Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 7.278,
+          "top": [
+            ["(garbage collector)", 2725],
+            ["localParts", 812],
+            ["_sendOrThrow", 790],
+            ["execute", 781],
+            ["inherit", 628],
+            ["(anonymous)", 304],
+            ["createPlanningUseCases", 166],
+            ["createReminderOperations", 159],
+            ["runReminders", 155],
+            ["nextOccurrence", 155]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:50:53Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 5.179,
+          "top": [
+            ["(garbage collector)", 2277],
+            ["(anonymous)", 914],
+            ["enterSpan", 311],
+            ["json", 307],
+            ["mapD1Result", 302],
+            ["createReminderOperations", 298],
+            ["scheduled", 160],
+            ["_send", 155],
+            ["deliver", 154],
+            ["get", 153]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:50:56Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.33,
+          "top": [
+            ["(garbage collector)", 1088],
+            ["toJson", 775],
+            ["deliver", 607],
+            ["(anonymous)", 459],
+            ["createReminderOperations", 316],
+            ["createReminderRunner", 306],
+            ["parseJson", 157],
+            ["_send", 157],
+            ["reportWeek", 156],
+            ["recoverAndDue", 155]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:50:59Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.635,
+          "top": [
+            ["(garbage collector)", 1149],
+            ["toJson", 928],
+            ["(anonymous)", 629],
+            ["activeGoalIds", 471],
+            ["deliver", 455],
+            ["_send", 194],
+            ["execute", 162],
+            ["createPlanningUseCases", 159],
+            ["entry", 157],
+            ["stats", 154]
+          ],
+          "series": "3-batch1",
+          "observedAt": "2026-10-16T16:51:02Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.545,
+          "top": [
+            ["(garbage collector)", 3201],
+            ["deliver", 1009],
+            ["calculateGoalBatch", 921],
+            ["(anonymous)", 778],
+            ["fetch", 302],
+            ["_send", 260],
+            ["_sendOrThrow", 161],
+            ["full", 156],
+            ["prepare", 154],
+            ["createReminderOperations", 153]
+          ],
+          "series": "3-batch2",
+          "observedAt": "2026-10-16T16:51:05Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.488,
+          "top": [
+            ["(garbage collector)", 1238],
+            ["toJson", 1089],
+            ["deliver", 763],
+            ["calculateGoalBatch", 620],
+            ["(anonymous)", 617],
+            ["_send", 460],
+            ["fetch", 302],
+            ["isoDate", 167],
+            ["createPlanningUseCases", 166],
+            ["aggregateD1Meta", 158]
+          ],
+          "series": "3-batch3",
+          "observedAt": "2026-10-16T16:51:09Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.58,
+          "top": [
+            ["(garbage collector)", 1921],
+            ["(anonymous)", 778],
+            ["fetch", 470],
+            ["deliver", 457],
+            ["_send", 314],
+            ["intervalFor", 311],
+            ["toJson", 168],
+            ["signature", 160],
+            ["stats", 160],
+            ["setAttributes", 158]
+          ],
+          "series": "3-batch4",
+          "observedAt": "2026-10-16T16:51:12Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.558,
+          "top": [
+            ["(garbage collector)", 1240],
+            ["deliver", 628],
+            ["toJson", 616],
+            ["(anonymous)", 468],
+            ["calculateGoalBatch", 311],
+            ["stats", 300],
+            ["recoverAndDue", 161],
+            ["_send", 160],
+            ["_sendOrThrow", 155],
+            ["GetReminderStateQuery", 155]
+          ],
+          "series": "3-batch5",
+          "observedAt": "2026-10-16T16:51:15Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.093,
+          "top": [
+            ["(garbage collector)", 2589],
+            ["_send", 1088],
+            ["render", 627],
+            ["(anonymous)", 575],
+            ["deliver", 306],
+            ["number4", 217],
+            ["reportMessage", 158],
+            ["toJson", 157],
+            ["createReminderOperations", 157],
+            ["deliverQueued", 156]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:51:18Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 4.491,
+          "top": [
+            ["(anonymous)", 1548],
+            ["(garbage collector)", 1237],
+            ["addD1MetaToSpan", 618],
+            ["_send", 162],
+            ["scheduled", 160],
+            ["call", 156],
+            ["full", 154],
+            ["deliver", 153],
+            ["afterQuietHours", 152],
+            ["runReminders", 151]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:51:22Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 5.628,
+          "top": [
+            ["(garbage collector)", 1407],
+            ["_send", 1005],
+            ["text", 619],
+            ["reportWeek", 480],
+            ["schedule", 302],
+            ["(anonymous)", 254],
+            ["scheduled", 162],
+            ["D1PreparedStatement", 160],
+            ["wrap", 158],
+            ["createProgressOperations", 158]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:51:25Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.04,
+          "top": [
+            ["(anonymous)", 1705],
+            ["(garbage collector)", 1098],
+            ["execute", 304],
+            ["scheduled", 184],
+            ["enterSpan", 156],
+            ["_send", 154],
+            ["full", 154],
+            ["D1ProgressReportRepository", 153],
+            ["createReminderRunner", 132]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:51:28Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 6.409,
+          "top": [
+            ["(garbage collector)", 1275],
+            ["toArrayOfObjects", 949],
+            ["schedulingState", 786],
+            ["localParts", 780],
+            ["execute", 614],
+            ["text", 462],
+            ["(anonymous)", 309],
+            ["fetch", 306],
+            ["createPlanningUseCases", 164],
+            ["full", 156]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:51:31Z"
+        }
+      ],
+      "finalImplementation": false
+    },
+    {
+      "candidate": "compact-goal-results-before-fact-release",
+      "observations": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.17,
+          "top": [
+            ["(garbage collector)", 1092],
+            ["(anonymous)", 770],
+            ["run", 461],
+            ["runReminders", 460],
+            ["selections", 311],
+            ["deliver", 306],
+            ["full", 156],
+            ["fetch", 155],
+            ["recoverAndDue", 154],
+            ["_send", 153]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:52:44Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 5.594,
+          "top": [
+            ["(garbage collector)", 1102],
+            ["addAggregatedD1MetaToSpan", 927],
+            ["_send", 778],
+            ["deliver", 470],
+            ["(anonymous)", 466],
+            ["source", 455],
+            ["runReminders", 305],
+            ["_sendOrThrow", 162],
+            ["calculateMet", 162],
+            ["prepareOverview", 157]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:52:48Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.93,
+          "top": [
+            ["(garbage collector)", 1242],
+            ["(anonymous)", 1113],
+            ["toJson", 929],
+            ["_send", 464],
+            ["runReminders", 309],
+            ["deliver", 306],
+            ["batch", 161],
+            ["calculateGoalBatch", 160],
+            ["targetsFor", 159],
+            ["addD1MetaToSpan", 158]
+          ],
+          "series": "1-batch1",
+          "observedAt": "2026-10-16T16:52:51Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.264,
+          "top": [
+            ["(anonymous)", 2025],
+            ["(garbage collector)", 1445],
+            ["mapD1Result", 461],
+            ["runReminders", 321],
+            ["Date.now", 311],
+            ["deliver", 302],
+            ["fetch", 299],
+            ["json", 249],
+            ["reportWeek", 161],
+            ["toArrayOfObjects", 157]
+          ],
+          "series": "1-batch2",
+          "observedAt": "2026-10-16T16:52:54Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.596,
+          "top": [
+            ["(garbage collector)", 2231],
+            ["activeGoalIds", 467],
+            ["enterSpan", 461],
+            ["(anonymous)", 459],
+            ["calculateGoalBatch", 309],
+            ["deliver", 306],
+            ["runReminders", 155],
+            ["toJob", 155],
+            ["execute", 154],
+            ["_send", 153]
+          ],
+          "series": "1-batch3",
+          "observedAt": "2026-10-16T16:52:57Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.702,
+          "top": [
+            ["(garbage collector)", 3210],
+            ["deliver", 625],
+            ["toArrayOfObjects", 486],
+            ["(anonymous)", 474],
+            ["_send", 311],
+            ["targetsFor", 300],
+            ["scheduled", 163],
+            ["calculateGoalBatch", 163],
+            ["toJson", 162],
+            ["stats", 155]
+          ],
+          "series": "1-batch4",
+          "observedAt": "2026-10-16T16:53:01Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.16,
+          "top": [
+            ["(garbage collector)", 2251],
+            ["deliver", 451],
+            ["(anonymous)", 310],
+            ["_send", 307],
+            ["createReminderRunner", 159],
+            ["deliveryFromRow", 157],
+            ["enterSpan", 156],
+            ["calculationCalendar", 155],
+            ["entry", 154],
+            ["addAggregatedD1MetaToSpan", 153]
+          ],
+          "series": "1-batch5",
+          "observedAt": "2026-10-16T16:53:04Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.403,
+          "top": [
+            ["(garbage collector)", 1097],
+            ["mapD1Result", 935],
+            ["(anonymous)", 752],
+            ["addD1MetaToSpan", 468],
+            ["render", 464],
+            ["deliver", 304],
+            ["toArrayOfObjects", 159],
+            ["fetch", 158],
+            ["number4", 158],
+            ["reportMessage", 155]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:53:07Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 4.235,
+          "top": [
+            ["(garbage collector)", 2078],
+            ["deliver", 930],
+            ["scheduled", 157],
+            ["(anonymous)", 157],
+            ["_wrappedFetch", 156],
+            ["toArrayOfObjects", 153],
+            ["runReminders", 152],
+            ["full", 152],
+            ["recoverAndDue", 151],
+            ["claim", 149]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:53:10Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 7.508,
+          "top": [
+            ["(garbage collector)", 4276],
+            ["schedule", 932],
+            ["(anonymous)", 914],
+            ["_send", 627],
+            ["_sendOrThrow", 154],
+            ["full", 154],
+            ["setAttributes", 153],
+            ["execute", 152],
+            ["recoverAndDue", 146]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:53:13Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.111,
+          "top": [
+            ["(anonymous)", 1441],
+            ["(garbage collector)", 1122],
+            ["execute", 449],
+            ["fetch", 311],
+            ["setAttributes", 172],
+            ["createPlanningUseCases", 159],
+            ["createReminderOperations", 159],
+            ["createReminderRunner", 154],
+            ["_sendOrThrow", 144]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:53:17Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 6.635,
+          "top": [
+            ["(garbage collector)", 2395],
+            ["(anonymous)", 1442],
+            ["localParts", 772],
+            ["firstIfArray", 465],
+            ["startOfReminderDay", 465],
+            ["runReminders", 314],
+            ["createPlanningUseCases", 164],
+            ["fetch", 156],
+            ["nextOccurrence", 155],
+            ["bind", 154]
+          ],
+          "series": 1,
+          "observedAt": "2026-10-16T16:53:20Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.179,
+          "top": [
+            ["deliver", 1066],
+            ["(garbage collector)", 923],
+            ["(anonymous)", 783],
+            ["recoverAndDue", 310],
+            ["createReminderOperations", 309],
+            ["scheduled", 162],
+            ["withSpan", 162],
+            ["_wrappedFetch", 161],
+            ["runReminders", 152],
+            ["batch", 151]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:23Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 5.438,
+          "top": [
+            ["(garbage collector)", 1091],
+            ["addD1MetaToSpan", 933],
+            ["_sendOrThrow", 771],
+            ["(anonymous)", 769],
+            ["prepareOverview", 280],
+            ["source", 205],
+            ["parseJson", 160],
+            ["createReminderRunner", 157],
+            ["createPlanningOperations", 157],
+            ["_wrappedFetch", 157]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:26Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.017,
+          "top": [
+            ["(garbage collector)", 1249],
+            ["toJson", 920],
+            ["(anonymous)", 769],
+            ["calculateReportBatch", 632],
+            ["deliver", 453],
+            ["_send", 310],
+            ["settingsFromRow", 158],
+            ["fetch", 157],
+            ["calculateGoalBatch", 155],
+            ["recoverAndDue", 154]
+          ],
+          "series": "2-batch1",
+          "observedAt": "2026-10-16T16:53:30Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.918,
+          "top": [
+            ["(garbage collector)", 1252],
+            ["(anonymous)", 1107],
+            ["calculateReportBatch", 620],
+            ["deliver", 617],
+            ["calculateGoalBatch", 313],
+            ["fetch", 310],
+            ["_send", 309],
+            ["runReminders", 308],
+            ["toJson", 159],
+            ["createPlanningUseCases", 155]
+          ],
+          "series": "2-batch2",
+          "observedAt": "2026-10-16T16:53:33Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.874,
+          "top": [
+            ["(garbage collector)", 2716],
+            ["deliver", 1382],
+            ["(anonymous)", 921],
+            ["runReminders", 475],
+            ["calculateGoalBatch", 309],
+            ["targetsFor", 156],
+            ["reportWeek", 155],
+            ["_send", 155],
+            ["_sendOrThrow", 153],
+            ["createPlanningUseCases", 153]
+          ],
+          "series": "2-batch3",
+          "observedAt": "2026-10-16T16:53:36Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.341,
+          "top": [
+            ["(garbage collector)", 1095],
+            ["toJson", 918],
+            ["(anonymous)", 782],
+            ["calculateGoalBatch", 780],
+            ["_send", 474],
+            ["deliver", 455],
+            ["createReminderRunner", 317],
+            ["targetsFor", 157],
+            ["createReminderOperations", 156],
+            ["localParts", 156]
+          ],
+          "series": "2-batch4",
+          "observedAt": "2026-10-16T16:53:40Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 7.205,
+          "top": [
+            ["(garbage collector)", 2577],
+            ["toJson", 927],
+            ["(anonymous)", 613],
+            ["deliver", 457],
+            ["fetch", 313],
+            ["_send", 311],
+            ["targetsFor", 160],
+            ["createReminderOperations", 158],
+            ["signature", 158],
+            ["calculateReportBatch", 156]
+          ],
+          "series": "2-batch5",
+          "observedAt": "2026-10-16T16:53:43Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 4.321,
+          "top": [
+            ["(garbage collector)", 1243],
+            ["deliver", 466],
+            ["render", 457],
+            ["reportMessage", 306],
+            ["scheduled", 163],
+            ["createReminderOperations", 161],
+            ["_sendOrThrow", 160],
+            ["enterSpan", 155],
+            ["_wrappedFetch", 155],
+            ["prepare", 154]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:46Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 4.966,
+          "top": [
+            ["(garbage collector)", 1251],
+            ["_send", 771],
+            ["send", 765],
+            ["(anonymous)", 476],
+            ["deliver", 458],
+            ["enterSpan", 160],
+            ["runReminders", 158],
+            ["_wrappedFetch", 158],
+            ["Headers", 156],
+            ["scheduled", 155]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:49Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 4.661,
+          "top": [
+            ["(garbage collector)", 1093],
+            ["execute", 939],
+            ["_send", 769],
+            ["reportWeek", 467],
+            ["createReminderRunner", 317],
+            ["(anonymous)", 158],
+            ["bind", 155],
+            ["_sendOrThrow", 153],
+            ["createPlanningOperations", 153],
+            ["createReminderOperations", 153]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:52Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 3.409,
+          "top": [
+            ["(garbage collector)", 1239],
+            ["addD1MetaToSpan", 635],
+            ["execute", 464],
+            ["full", 157],
+            ["scheduled", 156],
+            ["D1PreparedStatement", 153],
+            ["batch", 153],
+            ["runReminders", 152],
+            ["UpdateGoalUseCase", 151],
+            ["_send", 149]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:56Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 5.964,
+          "top": [
+            ["(garbage collector)", 1572],
+            ["execute", 1259],
+            ["(anonymous)", 1114],
+            ["inherit", 783],
+            ["createReminderOperations", 315],
+            ["fetch", 305],
+            ["localParts", 163],
+            ["localDate", 155],
+            ["DigestMessages", 149],
+            ["bind", 149]
+          ],
+          "series": 2,
+          "observedAt": "2026-10-16T16:53:59Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 3.575,
+          "top": [
+            ["(garbage collector)", 1102],
+            ["(anonymous)", 939],
+            ["deliver", 614],
+            ["runReminders", 310],
+            ["addAggregatedD1MetaToSpan", 156],
+            ["localParts", 154],
+            ["createPlanningUseCases", 152],
+            ["createReminderOperations", 148]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:02Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 4.53,
+          "top": [
+            ["(garbage collector)", 915],
+            ["addAggregatedD1MetaToSpan", 612],
+            ["fetch", 606],
+            ["source", 469],
+            ["(anonymous)", 405],
+            ["enterSpan", 158],
+            ["execute", 155],
+            ["deliver", 154],
+            ["runReminders", 153],
+            ["calculateMet", 153]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:05Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.48,
+          "top": [
+            ["(garbage collector)", 1929],
+            ["toJson", 626],
+            ["(anonymous)", 463],
+            ["deliver", 307],
+            ["_send", 307],
+            ["mapD1Result", 307],
+            ["calculateGoalBatch", 161],
+            ["scheduled", 158],
+            ["fetch", 157],
+            ["createReminderOperations", 154]
+          ],
+          "series": "3-batch1",
+          "observedAt": "2026-10-16T16:54:08Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 4.777,
+          "top": [
+            ["(garbage collector)", 922],
+            ["(anonymous)", 912],
+            ["runReminders", 657],
+            ["calculateReportBatch", 454],
+            ["deliver", 296],
+            ["reportWeek", 160],
+            ["signature", 157],
+            ["_wrappedFetch", 156],
+            ["createPlanningUseCases", 154],
+            ["aggregateD1Meta", 153]
+          ],
+          "series": "3-batch2",
+          "observedAt": "2026-10-16T16:54:11Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.079,
+          "top": [
+            ["(anonymous)", 1687],
+            ["(garbage collector)", 1084],
+            ["mapD1Result", 465],
+            ["deliver", 457],
+            ["calculateGoalBatch", 314],
+            ["_send", 307],
+            ["firstIfArray", 157],
+            ["_wrappedFetch", 156],
+            ["execute", 151],
+            ["enterSpan", 151]
+          ],
+          "series": "3-batch3",
+          "observedAt": "2026-10-16T16:54:14Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 4.911,
+          "top": [
+            ["toJson", 928],
+            ["(garbage collector)", 926],
+            ["(anonymous)", 916],
+            ["calculateGoalBatch", 309],
+            ["deliver", 304],
+            ["runReminders", 163],
+            ["recoverAndDue", 154],
+            ["enterSpan", 154],
+            ["_send", 153],
+            ["createPlanningUseCases", 152]
+          ],
+          "series": "3-batch4",
+          "observedAt": "2026-10-16T16:54:17Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 6.052,
+          "top": [
+            ["json", 1298],
+            ["toJson", 932],
+            ["(anonymous)", 907],
+            ["(garbage collector)", 769],
+            ["deliver", 606],
+            ["reportWeek", 163],
+            ["completeProgress", 159],
+            ["createReminderRunner", 157],
+            ["signature", 154],
+            ["fetch", 154]
+          ],
+          "series": "3-batch5",
+          "observedAt": "2026-10-16T16:54:20Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 0,
+          "sampledActiveMs": 5.139,
+          "top": [
+            ["(garbage collector)", 1919],
+            ["toJson", 721],
+            ["render", 461],
+            ["(anonymous)", 306],
+            ["reportMessage", 306],
+            ["deliver", 299],
+            ["_sendOrThrow", 210],
+            ["fetch", 155],
+            ["createReminderOperations", 155],
+            ["escapeHtml", 153]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:23Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 4,
+          "messages": 1,
+          "sampledActiveMs": 3.704,
+          "top": [
+            ["(garbage collector)", 939],
+            ["text", 771],
+            ["send", 611],
+            ["deliver", 310],
+            ["(anonymous)", 300],
+            ["addAggregatedD1MetaToSpan", 157],
+            ["createReminderRunner", 156],
+            ["createPlanningOperations", 156],
+            ["fetch", 156],
+            ["execute", 148]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:25Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-quiet",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 8.539,
+          "top": [
+            ["(garbage collector)", 4337],
+            ["addD1MetaToSpan", 934],
+            ["schedulingState", 616],
+            ["reportWeek", 476],
+            ["setAttributes", 454],
+            ["runReminders", 312],
+            ["fetch", 310],
+            ["execute", 163],
+            ["createReminderOperations", 163],
+            ["createPlanningUseCases", 157]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:29Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 5,
+          "messages": 0,
+          "sampledActiveMs": 5.064,
+          "top": [
+            ["(garbage collector)", 2904],
+            ["localDate", 618],
+            ["runReminders", 466],
+            ["bind", 158],
+            ["createPlanningUseCases", 157],
+            ["_sendOrThrow", 155],
+            ["addAggregatedD1MetaToSpan", 155],
+            ["_send", 154],
+            ["ensureCurrentPlan", 153],
+            ["createReminderOperations", 144]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:32Z"
+        },
+        {
+          "scenario": "first-run",
+          "firstScenario": "rollover-inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 6,
+          "messages": 0,
+          "sampledActiveMs": 7.499,
+          "top": [
+            ["(garbage collector)", 1425],
+            ["addAggregatedD1MetaToSpan", 1082],
+            ["(anonymous)", 937],
+            ["execute", 768],
+            ["inheritanceState", 646],
+            ["addD1MetaToSpan", 465],
+            ["scheduled", 321],
+            ["recoverAndDue", 315],
+            ["_send", 314],
+            ["localParts", 162]
+          ],
+          "series": 3,
+          "observedAt": "2026-10-16T16:54:35Z"
+        }
+      ],
+      "finalImplementation": false
+    },
+    {
+      "candidate": "compact-goal-results-before-fact-release",
+      "finalImplementation": false,
+      "warmObservations": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "idle",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 3,
+          "messages": 0,
+          "sampledActiveMs": 3.555,
+          "top": [
+            ["(garbage collector)", 1238],
+            ["(anonymous)", 764],
+            ["schedulingState", 623],
+            ["scheduled", 157],
+            ["recoverAndDue", 157],
+            ["enterSpan", 157],
+            ["_send", 154],
+            ["batch", 153],
+            ["runReminders", 152]
+          ]
+        },
+        {
+          "scenario": "weekly-report",
+          "sourceScenario": "weekly-report",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.476,
+          "sampledActiveMsP90": 2.072,
+          "sampledActiveMsMax": 3.323,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.323, 1.083, 1.468, 0.311, 1.092, 1.623, 1.608, 1.789, 0.958, 0.614, 1.476, 0.838,
+            1.622, 1.919, 0.842, 2.072, 1.623, 1.761, 1.483, 1.464, 1.291, 0.921, 0.838, 1.617,
+            2.882, 1.621, 1.469, 1.465, 1.294, 1.606
+          ],
+          "top": [
+            ["fetch", 11509],
+            ["(anonymous)", 6715],
+            ["_send", 5769],
+            ["localParts", 4873],
+            ["setAttributes", 1839],
+            ["active", 1476],
+            ["toJson", 1239],
+            ["nextOccurrence", 958]
+          ]
+        },
+        {
+          "scenario": "weekly-report-select",
+          "sourceScenario": "weekly-report",
+          "phase": "select",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.173,
+          "sampledActiveMsP90": 1.982,
+          "sampledActiveMsMax": 2.396,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.396, 1.626, 1.285, 1.611, 1.788, 1.135, 1.798, 0, 1.982, 0, 1.152, 0.673, 1.915,
+            1.148, 1.462, 1.6, 0, 1.294, 0.683, 1.473, 1.01, 2.116, 1.148, 1.449, 1.173, 0.984, 0,
+            0.468, 1.149, 1.081
+          ]
+        },
+        {
+          "scenario": "weekly-report-capture",
+          "sourceScenario": "weekly-report",
+          "phase": "capture",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.075,
+          "sampledActiveMsP90": 2.814,
+          "sampledActiveMsMax": 3.183,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.183, 2.595, 2.366, 1.777, 2.07, 2.881, 1.914, 2.075, 1.868, 2.521, 2.256, 1.239,
+            2.069, 2.366, 1.466, 1.773, 2.055, 2.814, 2.214, 2.229, 2.057, 2.274, 2.427, 1.918,
+            2.374, 1.913, 1.503, 1.089, 2.393, 1.911
+          ]
+        },
+        {
+          "scenario": "weekly-report-calculate",
+          "sourceScenario": "weekly-report",
+          "phase": "calculate",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.916,
+          "sampledActiveMsP90": 2.572,
+          "sampledActiveMsMax": 3.788,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.784, 2.994, 2.6, 3.012, 2.369, 1.84, 2.692, 1.548, 2.552, 1.862, 2.061, 1.921, 2.06,
+            2.554, 1.916, 2.057, 1.398, 2.862, 1.933, 2.049, 1.921, 1.09, 2.109, 2.572, 1.545,
+            1.914, 1.237, 2.383, 2.239, 2.062, 1.91, 2.612, 1.63, 2.524, 2.217, 2.213, 2.259, 1.919,
+            1.543, 2.078, 2.436, 2.069, 2.264, 2.407, 0.914, 1.755, 0.771, 1.904, 1.234, 0.776,
+            3.645, 1.395, 1.399, 1.905, 0.772, 1.76, 1.746, 1.912, 1.4, 2.213, 2.092, 2.141, 1.907,
+            2.356, 2.676, 1.762, 1.24, 1.59, 2.656, 2.537, 0.794, 3.788, 0.933, 0.928, 2.359, 1.919,
+            1.684, 2.402, 1.707, 2.22, 1.748, 0.773, 1.908, 2.373, 1.45, 2.382, 1.904, 2.527, 1.281,
+            2.055, 1.925, 1.626, 2.071, 1.544, 1.583, 1.758, 1.894, 0.774, 1.104, 1.907, 2.82,
+            2.702, 2.223, 2.423, 0.923, 2.214, 1.908, 2.075, 2.062, 1.913, 1.238, 2.223, 2.219,
+            1.53, 0.775, 2.064, 1.907, 0.779, 1.916, 2.512, 1.458, 0.796, 2.261, 2.056, 1.744,
+            3.062, 2.525, 2.061, 2.37, 2.05, 1.443, 1.453, 1.774, 1.922, 1.454, 2.529, 1.894, 1.759,
+            1.916, 1.914, 1.445, 0.622, 1.741, 0.933, 2.216, 1.598, 1.913, 1.742, 0.758, 1.769
+          ]
+        },
+        {
+          "scenario": "weekly-report-render",
+          "sourceScenario": "weekly-report",
+          "phase": "render",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.609,
+          "sampledActiveMsP90": 2.064,
+          "sampledActiveMsMax": 2.522,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.379, 0.776, 1.167, 1.3, 1.759, 2.522, 1.616, 1.916, 1.767, 1.593, 1.609, 1.92, 1.145,
+            1.628, 1.793, 0.615, 1.459, 1.753, 1.764, 0.936, 1.665, 1.464, 1.447, 2.064, 1.462,
+            1.584, 1.446, 1.61, 0.463, 1.45
+          ]
+        },
+        {
+          "scenario": "weekly-report-send",
+          "sourceScenario": "weekly-report",
+          "phase": "send",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+          ],
+          "messages": [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+          ],
+          "sampledActiveMsMedian": 1.308,
+          "sampledActiveMsP90": 1.953,
+          "sampledActiveMsMax": 2.369,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.369, 1.744, 1.912, 2.058, 1.154, 1.026, 1.775, 1.611, 1.776, 0.524, 0.973, 0.829,
+            0.991, 1.953, 0.617, 1.456, 0.98, 1.756, 1.877, 1.452, 1.286, 0.968, 1.439, 1.6, 1.308,
+            0.461, 0.976, 1.13, 0.457, 0.477
+          ]
+        },
+        {
+          "scenario": "weekly-report-quiet",
+          "sourceScenario": "weekly-report-quiet",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.641,
+          "sampledActiveMsP90": 2.105,
+          "sampledActiveMsMax": 10.739,
+          "over10": 1,
+          "sampledActiveMs": [
+            0, 1.231, 0.309, 2.108, 1.77, 0.472, 1.944, 1.611, 1.789, 1.63, 1.641, 1.608, 1.763,
+            2.091, 2.079, 1.641, 1.102, 1.778, 2.089, 2.105, 1.943, 1.157, 2.104, 0.847, 0.311,
+            10.739, 0, 0.841, 1.632, 1.097
+          ],
+          "top": [
+            ["fetch", 12975],
+            ["(anonymous)", 5040],
+            ["toJson", 4624],
+            ["setAttributes", 4191],
+            ["schedule", 3999],
+            ["get", 3730],
+            ["localParts", 2143],
+            ["enterSpan", 1949]
+          ]
+        },
+        {
+          "scenario": "rollover",
+          "sourceScenario": "rollover",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.305,
+          "sampledActiveMsP90": 1.92,
+          "sampledActiveMsMax": 3.991,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.616, 0, 0, 0, 1.296, 1.298, 1.802, 1.302, 0, 1.31, 0.84, 1.295, 1.141, 1.92, 0.625,
+            1.448, 1.959, 1.452, 0, 1.779, 1.485, 0, 0, 3.991, 1.305, 1.318, 1.534, 1.625, 1.573, 0
+          ],
+          "top": [
+            ["fetch", 5323],
+            ["(anonymous)", 4846],
+            ["setAttributes", 3101],
+            ["localParts", 2593],
+            ["ensureCurrentPlan", 2568],
+            ["(garbage collector)", 2291],
+            ["get", 2269],
+            ["toJson", 1995]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 180,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.321,
+          "sampledActiveMsP90": 2.371,
+          "sampledActiveMsMax": 6.37,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.361, 1.3, 0.313, 0.678, 0, 2.229, 1.539, 2.395, 2.229, 0, 2.224, 1.911, 1.901, 1.913,
+            1.754, 1.384, 0.69, 1.92, 0, 1.745, 1.292, 0, 1.154, 0, 0, 3.49, 0.838, 0.847, 2.237,
+            0.677, 1.388, 2.549, 2.073, 1.266, 0.97, 0.837, 1.93, 2.087, 0, 0, 0, 0.779, 0.677,
+            1.764, 1.247, 0, 0.318, 1.352, 2.229, 0.827, 1.383, 1.622, 3.94, 0.677, 1.909, 1.896,
+            0.982, 0, 1.73, 1.32, 2.305, 0.675, 0.781, 1.605, 2.082, 1.899, 0, 0.848, 1.425, 2.087,
+            2.107, 2.067, 0, 1.899, 1.756, 0, 0, 0.994, 2.064, 0.457, 0.975, 1.087, 1.769, 0, 0.98,
+            0, 2.237, 1.253, 1.151, 1.924, 2.105, 3.319, 1.397, 1.887, 1.486, 1.63, 2.798, 2.57,
+            2.371, 1.936, 0, 2.272, 2.541, 0.844, 2.076, 2.403, 2.79, 2.423, 2.123, 6.37, 2.544,
+            1.386, 0.886, 1.321, 2.924, 2.307, 2.304, 0, 1.241, 1.757, 1.42, 1.767, 0.908, 2.078, 0,
+            0.837, 0, 2.218, 2.073, 0, 0, 1.293, 2.238, 0, 1.156, 0.832, 0, 1.155, 1.251, 0.972, 0,
+            1.401, 2.07, 1.941, 1.922, 1.785, 2.26, 0.975, 0.934, 0.685, 0.611, 2.406, 0.835, 0,
+            1.139, 0.618, 2.208, 2.538, 0.832, 0.676, 0.83, 1.146, 0.831, 0.693, 0.987, 0.975,
+            1.755, 1.453, 1.96, 1.499, 3.195, 0, 2.231, 0.619, 0, 2.07, 1.249, 0.628, 1.021, 0.763
+          ]
+        },
+        {
+          "scenario": "rollover-copy",
+          "sourceScenario": "rollover",
+          "phase": "copy",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 0.845,
+          "sampledActiveMsP90": 1.607,
+          "sampledActiveMsMax": 1.932,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.307, 1.146, 0, 0.845, 0.841, 0, 0.84, 1.601, 0, 1.458, 0.833, 0, 1.607, 1.151, 0.678,
+            1.45, 1.595, 1.932, 0.314, 0.681, 1.481, 1.457, 0.777, 0.838, 0.997, 0, 0.769, 0, 0.96,
+            1.679
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "initial",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.768,
+          "sampledActiveMsP90": 2.397,
+          "sampledActiveMsMax": 2.559,
+          "over10": 0,
+          "sampledActiveMs": [
+            0, 1.932, 1.768, 1.422, 2.081, 1.612, 0, 2.424, 1.931, 0.838, 1.918, 0.84, 1.897, 2.088,
+            2.22, 0.844, 0.851, 1.761, 0.772, 1.932, 0, 2.397, 2.089, 0, 2.263, 1.581, 0.31, 1.768,
+            2.559, 1.601
+          ],
+          "top": [
+            ["fetch", 7227],
+            ["(anonymous)", 5831],
+            ["localParts", 4859],
+            ["toJson", 4119],
+            ["inheritanceState", 2871],
+            ["setAttributes", 2857],
+            ["URL", 2263],
+            ["_wrappedFetch", 2081]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit-inherit",
+          "sourceScenario": "rollover-inherit",
+          "phase": "inherit",
+          "sourceRef": "working-tree",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 150,
+          "queries": [
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+            6, 6, 6, 6, 6
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 1.716,
+          "sampledActiveMsP90": 2.243,
+          "sampledActiveMsMax": 5.641,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.217, 2.302, 1.815, 0, 2.242, 2.396, 0.624, 0.988, 3.435, 2.227, 2.412, 2.073, 0,
+            0.675, 1.3, 1.453, 2.071, 1.402, 1.248, 1.923, 2.08, 0, 2.252, 1.917, 1.318, 2.074,
+            1.764, 2.2, 2.058, 0.841, 1.901, 2.055, 1.767, 1.441, 1.905, 1.063, 2.069, 0.831, 5.641,
+            2.088, 1.299, 1.391, 1.763, 1.765, 2.546, 0.848, 0, 1.91, 0.684, 1.759, 0.987, 1.598,
+            1.075, 2.055, 1.241, 2.079, 0, 1.891, 0, 0.671, 2.243, 1.915, 0.841, 2.064, 1.452, 0,
+            1.14, 0.785, 1.765, 1.613, 1.907, 2.375, 1.451, 0, 0.964, 1.161, 1.142, 1.293, 1.443,
+            2.373, 0.832, 2.06, 1.302, 2.082, 1.607, 1.906, 2.095, 1.911, 2.071, 2.227, 1.249,
+            1.924, 1.908, 2.951, 1.246, 0.834, 2.251, 0, 0, 0.873, 1.913, 1.615, 0, 0.678, 0, 1.618,
+            2.097, 1.906, 1.765, 1.921, 0.675, 0.841, 2.062, 2.071, 2.21, 1.929, 1.449, 0.981,
+            2.063, 2.236, 1.716, 2.232, 0, 0.938, 1.251, 1.614, 0, 0.964, 1.395, 0.875, 2.231,
+            1.597, 1.599, 1.619, 1.908, 0.839, 2.238, 2.411, 2.375, 2.087, 1.552, 0.848, 2.057,
+            1.929, 2.076, 1.309, 2.926, 0.619, 0, 2.072
+          ]
+        }
+      ]
+    }
+  ],
+  "additionalScheduleProfilerSha256": "277b9243edd149772ece2bb4feea9189a707ce6bfa2f51b351c68190e3bb2823"
+}

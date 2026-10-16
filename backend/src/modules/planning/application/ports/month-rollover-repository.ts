@@ -15,6 +15,14 @@ export type MonthRolloverCommit = {
   goals: { sourceGoalId: string; revision: string; sortOrder: number; goal: GoalRecord }[];
 };
 export interface MonthRolloverRepository {
+  // One transaction copies existing canonical definitions without a JS round trip.
+  copyCurrentMonth(input: {
+    ownerId: string;
+    month: string;
+    operationId: string;
+    now: number;
+    monthlyLimit: number;
+  }): Promise<void>;
   rolloverState(ownerId: string, month: string): Promise<MonthRolloverState>;
   commitRollover(input: MonthRolloverCommit): Promise<boolean>;
   // Oldest first, through this month, to recover incomplete reminder inheritance chains.
