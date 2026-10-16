@@ -278,3 +278,45 @@ ordinary question was scheduled for 20:00 local time and the digest for 21:30.
 No temporary goal or test message was created; permission for such a test was
 requested separately and had not been granted at this observation. Full Telegram
 receipt and the CPU cost of real delivery remain unverified.
+
+## Authorized single-question control — 16 October 2026
+
+The owner subsequently authorized exactly one test question, including a temporary
+check goal in the connected Telegram account and removal from the active plan
+after verification. The published source remained `9859703`; no code deployment
+or migration was performed for this control.
+
+The account was selected unambiguously as the single enabled reminder account
+with an active Telegram connection. Its timezone was Asia/Yekaterinburg and quiet
+hours allowed this test. Existing goals, global settings, chat bindings and
+ordinary schedules were not edited. A temporary goal titled
+“Проверка CPU напоминания” was scheduled for 19:01 local time, with one Friday
+occurrence selected. Its job was created by the ordinary production Cron, not a
+manual Bot API send.
+
+Exact scheduled events and version-grouped adaptive metrics agreed:
+
+| Stage | Invocation UTC | Local time | CPU ms | Outcome |
+| --- | --- | --- | ---: | --- |
+| Schedule the question | 2026-10-16 14:01:41 | 19:01:41 | 6.521 | success |
+| Send the persisted question | 2026-10-16 14:02:16 | 19:02:16 | 9.578 | success |
+
+The job's `created_at` was 14:01:41.198 UTC, matching the scheduling event. D1
+showed it pending with zero attempts at 14:02:05.816 UTC, then `sent` with one
+attempt and a message ID at 14:02:59.864 UTC. The only scheduled event between
+those state observations was the 14:02:16 send. Adaptive metrics attributed both
+minutes to version `8c88d5e4-1838-462a-9fba-831fcd692e9b` in KIX, with sample
+interval 1 and one invocation in each minute. This establishes a real
+scheduling/send pair and Telegram API acceptance; client receipt or a button
+answer was not independently confirmed.
+
+After acceptance, the temporary goal was soft-deleted and its reminder set to
+`off`, `next_run_at=NULL`. Final readback confirmed one job, one attempt, one
+accepted message, zero pending/sending jobs, no foreign-key violations, and the
+original 23 active goals in that account. Delivery history was retained.
+
+**This one control fit within 10 ms per invocation**, with 0.422 ms of measured
+headroom on sending. It does not establish a worst-case bound, repeated-delivery
+reliability, cold-isolate performance, digest/report CPU, or monthly work. The
+previous first-tick 12.731-ms counterexample remains valid: the overall strict
+per-invocation CPU criterion is still unmet.
