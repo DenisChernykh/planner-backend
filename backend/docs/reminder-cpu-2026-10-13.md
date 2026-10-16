@@ -388,3 +388,72 @@ verification. **The specific 12.731-ms exceedance cannot be declared eliminated
 until the new revision is deployed and measured.** Publishing this revision and
 any additional test question require fresh authorization; the earlier approval
 covered `9859703` and one already-completed control question.
+
+## Published `d298b60` and authorized production control — 16 October 2026
+
+The owner authorized publication and exactly one additional control question.
+Source `d298b60e142863be896977c48882a644dc8c071f` had passed the root `pnpm check`,
+architecture checks and [GitHub CI](https://github.com/DenisChernykh/planner-backend/actions/runs/38916910676)
+before deployment. It was published to the existing Worker `app` at
+14:55:53 UTC / 19:55:53 Asia/Yekaterinburg, with 100% traffic on version
+`36a7ed41-0bc7-4726-8050-543331540df2`, deployment
+`5e0f5879-461e-449a-9d2e-750052ff0c19`. The existing D1 binding, five secret
+bindings, single minute Cron and disabled invocation logs were retained. No
+migrations, paid resources or further code deployments were performed.
+
+`/health` confirmed the full source revision. The SPA and OpenAPI returned 200;
+the unauthenticated reminder API returned 401. These probes do not establish a
+real login or authenticated CRUD flow.
+
+A temporary check goal was scheduled for 19:57 local time. The normal Cron
+created its job at 14:57:14.990 UTC. D1 observed that job pending with zero
+attempts at 14:57:24.696 UTC and later sent with one attempt and a message ID.
+The send is attributed to the next successful scheduled invocation at 14:58:15,
+followed by the lower-CPU 14:59 tick; no direct or additional Bot API test sends
+were made. This attribution uses the persisted job lifecycle and Cron sequence,
+not an invocation trace containing the Telegram response.
+Telegram API acceptance was confirmed, independently of client receipt or a
+button answer. At 15:00:50.379 UTC cleanup confirmed the temporary goal removed
+from the active plan, reminder `off`, `next_run_at=NULL`, one accepted message
+and no remaining test work. Independent readback at 15:01:16.382 UTC confirmed
+the original 23 active goals and zero foreign-key violations.
+
+Available exact scheduled metrics and version-grouped adaptive metrics agreed:
+
+| Stage | Invocation UTC | CPU ms | Outcome |
+| --- | --- | ---: | --- |
+| First recorded Cron after publication | 14:56:15 | 5.783 | success |
+| Schedule the control question | 14:57:14 | 8.899 | success |
+| Send the control question | 14:58:15 | 7.523 | success |
+| Idle | 14:59:15 | 2.620 | success |
+| Dedicated hourly retention | 15:00:15 | 3.697 | success |
+| Schedule the ordinary 20:00 reminder | 15:01:42 | 6.078 | success |
+| Send the ordinary reminder | 15:02:14 | 4.705 | success |
+
+The ordinary reminder's existing schedule was not edited. Its job was created
+at 15:01:42.418 UTC, after the dedicated maintenance tick, and D1 confirmed
+`sent`, one attempt and a message ID by 15:03:16.074 UTC. The corresponding
+15:02 minute had one adaptive invocation in KIX for the deployed version, with
+CPU 4.705 ms and no errors; the later exact scheduled record agreed.
+
+The completed 14:56–15:02 UTC window contains **seven scheduled invocations,
+all successful and none above 10 ms**, minimum 2.620 ms, median 5.783 ms,
+maximum 8.899 ms. All seven matching KIX adaptive groups have the new version,
+one invocation and sample interval 1. The earlier 12.731-ms observation was in
+IAD, so the two first-event measurements are not the same runtime environment.
+
+The first-tick 12.731-ms exceedance did not recur in this observed control. The
+control send's headroom increased from 0.422 ms to **2.477 ms** (9.578 to
+7.523 ms CPU). The control scheduling tick was slower than the previous
+6.521-ms control: **8.899 ms**, leaving 1.101 ms of headroom. These are separate
+production observations, not a controlled hardware benchmark or a guarantee
+that every future invocation will remain below 10 ms. Isolate identity is not
+exposed. Digest/report delivery, monthly work and a longer observation window
+remain unverified for this revision.
+
+Raw, non-secret production metrics and cleanup counters are preserved in
+[`reminder-cpu-2026-10-16-production.json`](reminder-cpu-2026-10-16-production.json).
+The adaptive dataset also includes HTTP probe groups; those are not Cron
+samples and are not included in the scheduled CPU criterion. Fresh upper time
+bounds were used for Analytics queries because the scheduled dataset arrives
+later than the adaptive dataset.

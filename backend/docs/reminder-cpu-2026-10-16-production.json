@@ -1,0 +1,268 @@
+{
+  "source": "Cloudflare GraphQL workersInvocationsScheduled and workersInvocationsAdaptive; D1 state readbacks",
+  "sourceRevision": "d298b60e142863be896977c48882a644dc8c071f",
+  "deploymentId": "5e0f5879-461e-449a-9d2e-750052ff0c19",
+  "deployedAt": "2026-10-16T14:55:53.483199Z",
+  "observedAt": "2026-10-16T15:05:18.562Z",
+  "since": "2026-10-16T14:55:53Z",
+  "version": "36a7ed41-0bc7-4726-8050-543331540df2",
+  "workersInvocationsAdaptive": [
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T14:58:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 7523,
+        "cpuTimeP99": 7523
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T15:01:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 6078,
+        "cpuTimeP99": 6078
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T15:00:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 3697,
+        "cpuTimeP99": 3697
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "EWR",
+        "datetimeMinute": "2026-10-16T14:56:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 28205,
+        "cpuTimeP99": 44281
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 2
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T14:59:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 2620,
+        "cpuTimeP99": 2620
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T15:02:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 4705,
+        "cpuTimeP99": 4705
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T14:57:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 8899,
+        "cpuTimeP99": 8899
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "EWR",
+        "datetimeMinute": "2026-10-16T14:57:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 6418,
+        "cpuTimeP99": 164167
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 2
+      }
+    },
+    {
+      "avg": {
+        "sampleInterval": 1
+      },
+      "dimensions": {
+        "coloCode": "KIX",
+        "datetimeMinute": "2026-10-16T14:56:00Z",
+        "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+        "status": "success"
+      },
+      "quantiles": {
+        "cpuTimeP50": 5783,
+        "cpuTimeP99": 5783
+      },
+      "sum": {
+        "errors": 0,
+        "requests": 1
+      }
+    }
+  ],
+  "workersInvocationsScheduled": [
+    {
+      "cpuTimeUs": 5783,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T14:56:15Z",
+      "scheduledDatetime": "2026-10-16T14:56:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 8899,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T14:57:14Z",
+      "scheduledDatetime": "2026-10-16T14:57:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 7523,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T14:58:15Z",
+      "scheduledDatetime": "2026-10-16T14:58:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 2620,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T14:59:15Z",
+      "scheduledDatetime": "2026-10-16T14:59:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 3697,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T15:00:15Z",
+      "scheduledDatetime": "2026-10-16T15:00:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 6078,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T15:01:42Z",
+      "scheduledDatetime": "2026-10-16T15:01:14Z",
+      "status": "success"
+    },
+    {
+      "cpuTimeUs": 4705,
+      "cron": "* * * * *",
+      "datetime": "2026-10-16T15:02:14Z",
+      "scheduledDatetime": "2026-10-16T15:02:14Z",
+      "status": "success"
+    }
+  ],
+  "controlCleanup": {
+    "observedAt": "2026-10-16T15:01:16.382Z",
+    "baselineActiveGoals": 23,
+    "active_goals": 23,
+    "test_removed": 1,
+    "mode": "off",
+    "next_run_at": null,
+    "test_jobs": 1,
+    "test_attempts": 1,
+    "accepted_messages": 1,
+    "test_backlog": 0,
+    "foreign_key_violations": 0
+  },
+  "ordinaryReminder": {
+    "observedAt": "2026-10-16T15:03:16.074Z",
+    "jobs": [
+      {
+        "kind": "question",
+        "status": "sent",
+        "attempts": 1,
+        "created_at": 1792162902418,
+        "due_at": 1792162902418,
+        "message_id_present": 1
+      }
+    ]
+  },
+  "until": "2026-10-16T15:03:00Z",
+  "scheduledSummary": {
+    "count": 7,
+    "successes": 7,
+    "over10": 0,
+    "minMs": 2.62,
+    "medianMs": 5.783,
+    "maxMs": 8.899
+  }
+}
