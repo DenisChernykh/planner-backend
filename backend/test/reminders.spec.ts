@@ -10,6 +10,8 @@ import { createReminderJob } from "../src/modules/reminders/domain/jobs";
 import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
 import {
   afterQuietHours,
+  localDate,
+  localTime,
   nextOccurrence,
   startOfReminderDay,
 } from "../src/modules/reminders/domain/schedule";
@@ -102,6 +104,48 @@ async function firstJob() {
 }
 
 describe("reminder schedules", () => {
+  it.each([
+    "Asia/Yekaterinburg",
+    "UTC",
+    "Europe/Berlin",
+    "Australia/Lord_Howe",
+    "America/Santiago",
+    "Pacific/Apia",
+    "Pacific/Kiritimati",
+    "Asia/Kathmandu",
+  ])("keeps cached local dates and times consistent with Intl around transitions in %s", (zone) => {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: zone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    });
+    for (const day of [
+      "2026-03-29",
+      "2026-10-25",
+      "2026-10-04",
+      "2026-09-06",
+      "2026-12-31",
+      "2011-12-30",
+      "1990-01-01",
+    ])
+      for (const hour of [-36, -12, -1, 0, 1, 12, 36]) {
+        const at = Date.parse(`${day}T00:00:00Z`) + hour * 3_600_000;
+        for (const minute of [0, 1, 59]) {
+          const instant = at + minute * 60_000 + 59_999;
+          const expected = Object.fromEntries(
+            formatter.formatToParts(instant).map((part) => [part.type, part.value]),
+          );
+          expect(localDate(instant, zone)).toBe(
+            `${expected.year}-${expected.month}-${expected.day}`,
+          );
+          expect(localTime(instant, zone)).toBe(`${expected.hour}:${expected.minute}`);
+        }
+      }
+  });
   it.each([
     ["UTC", "2026-12-31T23:58:00Z", "2027-01-01T00:15:00Z"],
     ["Pacific/Kiritimati", "2026-12-31T09:58:00Z", "2026-12-31T10:15:00Z"],

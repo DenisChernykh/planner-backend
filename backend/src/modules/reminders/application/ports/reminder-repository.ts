@@ -15,8 +15,10 @@ export type ReminderDeliveryState = {
   reminder: GoalReminder | null;
   question: (Pick<GoalRecord, "month" | "title" | "tracking"> & { hasEntry: boolean }) | null;
 };
+export type ReportPayloadReference = { captureId: string; offset: number; version: 4 | 6 | 7 | 8 };
 export type QueuedReminder = ReminderJob & {
   deliveryState?: ReminderDeliveryState;
+  reportPayloadReference?: ReportPayloadReference;
   reportState?: { report: ReportSettings; progress: ProgressSettings };
 };
 export interface ReminderRepository {

@@ -1,7 +1,9 @@
 export type {
   ProgressCalculationInput,
   ProgressQuery,
+  ProgressReportCalculationInput,
   ProgressSettings,
+  ReportCaptureScope,
 } from "./application/progress";
 export type {
   ProgressDay,
@@ -9,6 +11,7 @@ export type {
   ProgressOverview,
   ProgressReportGoal,
   ProgressReportOverview,
+  ProgressReportTotals,
   ProgressTarget,
 } from "./domain/model";
 export type ProgressOperations = import("./application/progress").ProgressUseCases;

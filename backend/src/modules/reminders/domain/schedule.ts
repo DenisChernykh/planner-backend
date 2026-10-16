@@ -27,11 +27,9 @@ const formatters = new Map([
 DateTime.fromMillis(0, { zone: DEFAULT_SETTINGS.timeZone });
 const occurrences = new Map<string, { at: number; weekday: number }>();
 const dayOffsets = new Map<string, number | null>();
+const utcDayOffsets = new Map<string, number | null>();
 const minuteParts = new Map<string, { minute: number; parts: Record<string, string> }>();
-function localParts(now: number, zone: string) {
-  const minute = Math.floor(now / 60_000);
-  const cached = minuteParts.get(zone);
-  if (cached?.minute === minute) return cached.parts;
+function formattedParts(now: number, zone: string) {
   let formatter = formatters.get(zone);
   if (!formatter) {
     formatter = createFormatter(zone);
@@ -39,9 +37,50 @@ function localParts(now: number, zone: string) {
     if (formatters.size >= 32) formatters.clear();
     formatters.set(zone, formatter);
   }
-  const parts = Object.fromEntries(
-    formatter.formatToParts(now).map((part) => [part.type, part.value]),
+  const parts: Record<string, string> = {};
+  for (const part of formatter.formatToParts(now))
+    if (part.type !== "literal") parts[part.type] = part.value;
+  return parts;
+}
+function formattedOffset(at: number, zone: string): number {
+  const parts = formattedParts(at, zone);
+  return (
+    Date.parse(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:00Z`) -
+    Math.floor(at / 60_000) * 60_000
   );
+}
+function localParts(now: number, zone: string) {
+  const minute = Math.floor(now / 60_000);
+  const cached = minuteParts.get(zone);
+  if (cached?.minute === minute) return cached.parts;
+  let parts: Record<string, string>;
+  if (now < Date.UTC(2000, 0, 1)) parts = formattedParts(now, zone);
+  else {
+    const utcDay = Math.floor(now / 86_400_000);
+    const key = `${zone}:${utcDay}`;
+    let offset = utcDayOffsets.get(key);
+    if (offset === undefined) {
+      // As in local-time resolution below, transition-adjacent days retain Intl.
+      // Cache a derived timezone offset, never a user's schedule or a clock value.
+      const noon = utcDay * 86_400_000 + 12 * 3_600_000;
+      const before = formattedOffset(noon - 36 * 3_600_000, zone);
+      const after = formattedOffset(noon + 36 * 3_600_000, zone);
+      offset = before === after ? before : null;
+      if (utcDayOffsets.size >= 256) utcDayOffsets.clear();
+      utcDayOffsets.set(key, offset);
+    }
+    if (offset === null) parts = formattedParts(now, zone);
+    else {
+      const local = new Date(now + offset).toISOString();
+      parts = {
+        year: local.slice(0, 4),
+        month: local.slice(5, 7),
+        day: local.slice(8, 10),
+        hour: local.slice(11, 13),
+        minute: local.slice(14, 16),
+      };
+    }
+  }
   if (minuteParts.size >= 32) minuteParts.clear();
   minuteParts.set(zone, { minute, parts });
   return parts;
@@ -76,13 +115,6 @@ export function localTime(now: number, zone: string): string {
   const parts = localParts(now, zone);
   return `${parts.hour}:${parts.minute}`;
 }
-function offsetAt(at: number, zone: string): number {
-  const parts = localParts(at, zone);
-  return (
-    Date.parse(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:00Z`) -
-    Math.floor(at / 60_000) * 60_000
-  );
-}
 function resolveTime(date: string, time: string, zone: string): number {
   // Historical IANA offsets can include seconds; retain Luxon's exact resolution.
   if (date < "2000-01-01") return atTime(DateTime.fromISO(date, { zone }), time).toMillis();
@@ -90,8 +122,8 @@ function resolveTime(date: string, time: string, zone: string): number {
   let offset = dayOffsets.get(key);
   if (offset === undefined) {
     const noon = Date.parse(`${date}T12:00:00Z`);
-    const before = offsetAt(noon - 36 * 3_600_000, zone);
-    const after = offsetAt(noon + 36 * 3_600_000, zone);
+    const before = formattedOffset(noon - 36 * 3_600_000, zone);
+    const after = formattedOffset(noon + 36 * 3_600_000, zone);
     offset = before === after ? before : null;
     if (dayOffsets.size >= 256) dayOffsets.clear();
     dayOffsets.set(key, offset);

@@ -5,6 +5,7 @@ import type {
   ProgressGoal,
   ProgressOverview,
   ProgressReportGoal,
+  ProgressReportTotals,
   ProgressSource,
   ProgressTarget,
 } from "./model";
@@ -12,7 +13,7 @@ import type {
 const percentage = (value: number, total: number) =>
   total > 0 ? Math.round((value / total) * 100) : null;
 const rounded = (value: number) => Math.round(value * 10) / 10;
-const signature = (goal: ProgressSource) =>
+const signature = (goal: Pick<ProgressSource, "tracking" | "cadence">) =>
   JSON.stringify([
     Object.entries(goal.tracking).sort(([left], [right]) =>
       left < right ? -1 : left > right ? 1 : 0,
@@ -30,7 +31,7 @@ type CalculationCalendar = {
 function calculationCalendar(): CalculationCalendar {
   const dates = new Map<string, string[]>();
   const intervals = new Map<string, Interval>();
-  const signatures = new Map<ProgressSource, string>();
+  const signatures = new Map<Pick<ProgressSource, "tracking" | "cadence">, string>();
   const entries = new Map<ProgressSource, Map<string, ProgressSource["entries"][number]>>();
   return {
     entry(goal, date) {
@@ -253,19 +254,36 @@ export function calculateProgress(input: ProgressCalculationInput): ProgressOver
 
 // Offset counts definition groups, not monthly versions: a chain with changed
 // rules stays separate, while compatible versions spanning months stay together.
+type Definition = Pick<ProgressSource, "id" | "chainId" | "month" | "tracking" | "cadence">;
+function sourceGroups<T extends Definition>(sources: T[], requested: Interval) {
+  const groups = new Map<string, T[]>();
+  for (const goal of sources) {
+    if (goal.month < requested.from.slice(0, 7) || goal.month > requested.to.slice(0, 7)) continue;
+    const key = `${goal.chainId}:${signature(goal)}`;
+    groups.set(key, [...(groups.get(key) ?? []), goal]);
+  }
+  return groups;
+}
+export function reportBatchChains(
+  input: { sources: Definition[]; period: "week" | "month"; anchor: string },
+  offset: number,
+  limit: number,
+) {
+  const groups = sourceGroups(input.sources, intervalFor(input.period, input.anchor));
+  return new Set(
+    [...groups.values()]
+      .slice(offset, offset + limit)
+      .flatMap((versions) => versions.map((goal) => goal.chainId)),
+  );
+}
+
 export function calculateGoalBatch(input: ProgressCalculationInput, offset: number, limit: number) {
   const { sources, period, today, startsOn } = input;
   const calendar = calculationCalendar();
   const knownSources = input.knownSources ?? sources;
   const requested = intervalFor(period, input.anchor);
   const previous = previousInterval(period, requested, today);
-  const groups = new Map<string, ProgressSource[]>();
-  for (const goal of sources) {
-    const bounds = calendar.interval("month", `${goal.month}-01`);
-    if (bounds.to < requested.from || bounds.from > requested.to) continue;
-    const key = `${goal.chainId}:${calendar.signature(goal)}`;
-    groups.set(key, [...(groups.get(key) ?? []), goal]);
-  }
+  const groups = sourceGroups(sources, requested);
   const selected = [...groups.values()].slice(offset, offset + limit);
   const goals: ProgressGoal[] = selected.map((versions) => {
     const first = versions[0] as ProgressSource;
@@ -398,11 +416,9 @@ export function calculateGoalBatch(input: ProgressCalculationInput, offset: numb
 }
 
 export function completeProgress<T extends ProgressReportGoal>(
-  input: ProgressCalculationInput,
+  input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
   goals: T[],
 ): Omit<ProgressOverview, "goals"> & { goals: T[] } {
-  const { period, today, startsOn } = input;
-  const requested = intervalFor(period, input.anchor);
   const eligibleDates = new Set(
     goals.flatMap((goal) =>
       goal.days.filter((day) => !["excluded", "future"].includes(day.state)).map((day) => day.date),
@@ -414,6 +430,26 @@ export function completeProgress<T extends ProgressReportGoal>(
   const daily = goals.filter((goal) => goal.cadence.period === "day");
   const dailyRecords = daily.reduce((total, goal) => total + goal.records, 0);
   const dailyDays = daily.reduce((total, goal) => total + goal.eligibleDays, 0);
+  return {
+    ...completeProgressTotals(input, {
+      goalCount: goals.length,
+      met: goals.reduce((total, goal) => total + goal.met, 0),
+      dailyRecords,
+      dailyDays,
+      eligibleDates: [...eligibleDates],
+      recordedDates: [...recordedDates],
+    }),
+    goals,
+  };
+}
+
+export function completeProgressTotals(
+  input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
+  totals: ProgressReportTotals,
+): Omit<ProgressOverview, "goals"> {
+  const { period, today, startsOn } = input;
+  const requested = intervalFor(period, input.anchor);
+  const { dailyRecords, dailyDays } = totals;
   const from = [requested.from, startsOn ?? requested.from].sort().at(-1) as string;
   const to = requested.to < today ? requested.to : today;
   return {
@@ -432,19 +468,18 @@ export function completeProgress<T extends ProgressReportGoal>(
           ? "future-start"
           : startsOn && requested.to < startsOn
             ? "before-start"
-            : !goals.length
+            : !totals.goalCount
               ? "no-goals"
-              : !recordedDates.size
+              : !totals.recordedDates.length
                 ? "no-entries"
                 : "ready",
     summary: {
-      met: goals.reduce((total, goal) => total + goal.met, 0),
+      met: totals.met,
       dailyRecords,
       dailyDays,
       dailyPercent: percentage(dailyRecords, dailyDays),
-      daysWithEntries: recordedDates.size,
-      eligibleDays: eligibleDates.size,
+      daysWithEntries: new Set(totals.recordedDates).size,
+      eligibleDays: new Set(totals.eligibleDates).size,
     },
-    goals,
   };
 }

@@ -372,14 +372,10 @@ describe("reminder inheritance and scheduled rollover", () => {
         .first();
     await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
     expect(await counts()).toEqual({ reminders: 0, selections: 0 });
-    await runner.runReminders.execute({ now: OCTOBER + 60_000, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 8, selections: 8 });
-    await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 16, selections: 16 });
-    await runner.runReminders.execute({ now: OCTOBER + 180_000, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 24, selections: 24 });
-    await runner.runReminders.execute({ now: OCTOBER + 240_000, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 30, selections: 30 });
+    for (let step = 1; step <= 30; step++) {
+      await runner.runReminders.execute({ now: OCTOBER + step * 60_000, deferNewDelivery: true });
+      expect(await counts()).toEqual({ reminders: step, selections: step });
+    }
     expect(transport.send).not.toHaveBeenCalled();
   });
   const prepare = (now = OCTOBER) =>
@@ -463,11 +459,13 @@ describe("reminder inheritance and scheduled rollover", () => {
       (await reminders.reminders(OWNER)).filter((rule) =>
         copies.some((copy) => copy.id === rule.goalId),
       ),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
     expect(transport.send).not.toHaveBeenCalled();
     await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
-    expect(await reminders.due(OCTOBER + 120_000)).toHaveLength(1);
+    expect(await reminders.due(OCTOBER + 120_000)).toHaveLength(0);
     await runner.runReminders.execute({ now: OCTOBER + 180_000, deferNewDelivery: true });
+    expect(await reminders.due(OCTOBER + 180_000)).toHaveLength(1);
+    await runner.runReminders.execute({ now: OCTOBER + 240_000, deferNewDelivery: true });
     expect(transport.send).toHaveBeenCalledTimes(1);
   });
 

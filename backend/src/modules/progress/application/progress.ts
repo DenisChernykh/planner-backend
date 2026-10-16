@@ -1,8 +1,19 @@
 import { ApplicationError } from "../../../shared/application/application-error";
-import type { PlanningOperations } from "../../planning/public-contracts";
-import { calculateGoalBatch, calculateProgress, completeProgress } from "../domain/calculate";
+import { calculateMet, type PlanningOperations } from "../../planning/public-contracts";
+import {
+  calculateGoalBatch,
+  calculateProgress,
+  completeProgress,
+  completeProgressTotals,
+  reportBatchChains,
+} from "../domain/calculate";
 import { intervalFor, previousInterval, shiftDate, validProgressDate } from "../domain/calendar";
-import type { ProgressOverview, ProgressReportGoal, ProgressReportOverview } from "../domain/model";
+import type {
+  ProgressOverview,
+  ProgressReportGoal,
+  ProgressReportOverview,
+  ProgressReportTotals,
+} from "../domain/model";
 
 export type ProgressSettings = { startsOn: string | null; revision: number };
 export interface ProgressRepository {
@@ -23,6 +34,16 @@ export type ProgressQuery = {
   includeHistory?: boolean;
 };
 export type ProgressCalculationInput = Parameters<typeof calculateProgress>[0];
+export type ProgressReportCalculationInput = Omit<ProgressCalculationInput, "sources"> & {
+  sources: (Omit<ProgressCalculationInput["sources"][number], "entries"> & {
+    entries: { date: string; value: boolean | number | string; met?: boolean }[];
+  })[];
+};
+export type ReportCaptureScope = {
+  fromMonth: string;
+  toMonth: string;
+  calculation: Omit<ProgressCalculationInput, "sources" | "knownSources">;
+};
 
 export class ProgressUseCases {
   constructor(
@@ -48,8 +69,21 @@ export class ProgressUseCases {
     return calculateProgress(input);
   }
 
-  calculateReportBatch(input: ProgressCalculationInput, offset: number, limit: number) {
-    const batch = calculateGoalBatch(input, offset, limit);
+  calculateReportBatch(input: ProgressReportCalculationInput, offset: number, limit: number) {
+    const chains = reportBatchChains(input, offset, limit);
+    const decoded: ProgressCalculationInput = {
+      ...input,
+      sources: input.sources.map((goal) => ({
+        ...goal,
+        entries: chains.has(goal.chainId)
+          ? goal.entries.map((entry) => ({
+              ...entry,
+              met: entry.met ?? calculateMet(goal.tracking, entry.value),
+            }))
+          : [],
+      })),
+    };
+    const batch = calculateGoalBatch(decoded, offset, limit);
     const pending = new Set(batch.pendingChains);
     return {
       ...batch,
@@ -104,10 +138,37 @@ export class ProgressUseCases {
   }
 
   completeOverview(
-    input: ProgressCalculationInput,
+    input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
     goals: ProgressReportGoal[],
   ): ProgressReportOverview {
     return completeProgress(input, goals);
+  }
+
+  completeReportTotals(
+    input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
+    totals: ProgressReportTotals,
+  ) {
+    return completeProgressTotals(input, totals);
+  }
+
+  reportCaptureScope(input: ProgressQuery & { startsOn: string | null }): ReportCaptureScope {
+    if (!validProgressDate(input.anchor) || input.period !== "week")
+      throw new ApplicationError("INVALID_REQUEST", "Проверьте период и дату.");
+    const requested = intervalFor(input.period, input.anchor);
+    const previous = previousInterval(input.period, requested, input.today);
+    return {
+      fromMonth: intervalFor("week", previous?.from ?? requested.from).from.slice(0, 7),
+      toMonth: intervalFor("week", requested.to).to.slice(0, 7),
+      calculation: {
+        period: input.period,
+        anchor: input.anchor,
+        today: input.today,
+        startsOn: input.startsOn ?? null,
+        asOf: input.now,
+        timeZone: input.timeZone,
+        includeHistory: false,
+      },
+    };
   }
 
   async prepareOverview(input: ProgressQuery): Promise<ProgressCalculationInput> {

@@ -33,6 +33,7 @@ const scenarios = [
   "weekly-report-select",
   "weekly-report-prepare",
   "weekly-report-calculate",
+  "weekly-report-summary",
   "weekly-report-render",
   "weekly-report-send",
   "rollover",
@@ -402,6 +403,7 @@ try {
         "weekly-report-select",
         "weekly-report-prepare",
         "weekly-report-calculate",
+        "weekly-report-summary",
         "weekly-report-render",
         "weekly-report-send",
       ].includes(scenario)
@@ -416,8 +418,9 @@ try {
       assert.ok(JSON.parse(job.payload).goalIds.length > 0);
       const versions = {
         "weekly-report-select": [5],
-        "weekly-report-prepare": [2],
-        "weekly-report-calculate": [3, 4],
+        "weekly-report-prepare": [6],
+        "weekly-report-calculate": [7, 8],
+        "weekly-report-summary": [4],
         "weekly-report-render": [1],
         "weekly-report-send": [1],
       };
@@ -507,7 +510,7 @@ try {
       profiles.push(profile);
       // Measure each persisted stage separately: old revisions may send immediately,
       // current Cron schedules, prepares reports and sends on independent ticks.
-      for (let step = 1; step <= 8 + 2 * Math.ceil(goalCount / 4); step++) {
+      for (let step = 1; step <= 10 + 2 * goalCount; step++) {
         if (scenario === "weekly-report-quiet") break;
         const monthly = scenario === "rollover" || scenario === "rollover-inherit";
         const before = monthly ? await monthState() : null;
@@ -550,9 +553,16 @@ try {
           : result.messages
             ? "send"
             : currentPayload
-              ? ({ 5: "select", 2: "capture", 3: "calculate", 4: "calculate", 1: "render" }[
-                  JSON.parse(currentPayload).version
-                ] ?? "prepare")
+              ? ({
+                  5: "select",
+                  2: "capture",
+                  3: "calculate",
+                  6: "capture",
+                  7: "calculate",
+                  8: "calculate",
+                  4: "summary",
+                  1: "render",
+                }[JSON.parse(currentPayload).version] ?? "prepare")
               : "prepare";
         if (!followups.has(phase)) followups.set(phase, []);
         followups.get(phase).push({ ...result, ms });

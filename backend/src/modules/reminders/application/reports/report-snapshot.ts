@@ -1,7 +1,9 @@
 import type {
   ProgressCalculationInput,
+  ProgressReportCalculationInput,
   ProgressReportGoal,
   ProgressReportOverview,
+  ProgressReportTotals,
 } from "../../../progress/public-contracts";
 import type { OutgoingMessage } from "../delivery/outgoing-message";
 
@@ -41,14 +43,47 @@ export type CalculationPreparation = Omit<Preparation, "version"> & {
 };
 export type RenderPreparation = Omit<Preparation, "version" | "calculation"> & {
   version: 4;
+  captureId?: string;
+  offset?: number;
   overview: ProgressReportOverview;
 };
+// These new raw/cursor payloads intentionally expose invalid source revisions
+// to d3fdc6c, so rollback rebuilds instead of trying to calculate raw entries.
+export type RawPreparation = Omit<
+  Preparation,
+  "version" | "calculation" | "sourceReportRevision" | "sourceProgressRevision"
+> & {
+  version: 6;
+  sourceReportRevision: -1;
+  sourceProgressRevision: -1;
+  captureId?: string;
+  nextChainId?: string | null;
+  capturedReportRevision: number;
+  capturedProgressRevision: number;
+  calculation: ProgressReportCalculationInput;
+};
+export type RawCalculation = Omit<RawPreparation, "version"> & {
+  version: 7;
+  offset: number;
+  goals: ProgressReportGoal[];
+};
+export type CalculatedGoals = Omit<RawPreparation, "version" | "calculation"> & {
+  version: 8;
+  offset?: number;
+  calculation: Omit<ProgressCalculationInput, "sources" | "knownSources">;
+} & (
+    | { goals: ProgressReportGoal[]; totals?: never }
+    | { totals: ProgressReportTotals; goals?: never }
+  );
 export type ReportSnapshot =
   | Snapshot
   | Preparation
   | SelectionPreparation
   | CalculationPreparation
-  | RenderPreparation;
+  | RenderPreparation
+  | RawPreparation
+  | RawCalculation
+  | CalculatedGoals;
 
 export function preparationMetadata(snapshot: Exclude<ReportSnapshot, Snapshot>) {
   const {
@@ -75,4 +110,10 @@ export function preparationMetadata(snapshot: Exclude<ReportSnapshot, Snapshot>)
     goalIds,
     formedAt,
   };
+}
+
+export function capturedRevisions(snapshot: Exclude<ReportSnapshot, Snapshot>) {
+  return snapshot.version === 6 || snapshot.version === 7 || snapshot.version === 8
+    ? { report: snapshot.capturedReportRevision, progress: snapshot.capturedProgressRevision }
+    : { report: snapshot.sourceReportRevision, progress: snapshot.sourceProgressRevision };
 }

@@ -123,3 +123,12 @@ export type ProgressReportGoal = Pick<
 export type ProgressReportOverview = Omit<ProgressOverview, "goals"> & {
   goals: ProgressReportGoal[];
 };
+
+export type ProgressReportTotals = {
+  goalCount: number;
+  met: number;
+  dailyRecords: number;
+  dailyDays: number;
+  eligibleDates: string[];
+  recordedDates: string[];
+};

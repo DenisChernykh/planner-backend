@@ -9,7 +9,7 @@ import type {
 
 export { PlanningError } from "./domain/errors";
 export type * from "./domain/model";
-export { isScaleValueValid } from "./domain/rules";
+export { calculateMet, isScaleValueValid } from "./domain/rules";
 
 export type ProgressPlanningSource = {
   id: string;

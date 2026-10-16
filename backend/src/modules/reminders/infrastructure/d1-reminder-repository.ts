@@ -20,6 +20,7 @@ import {
   type ReminderSettings,
 } from "../domain/model";
 import { inheritanceBatches } from "./inheritance-batches";
+import { reportPayloadProjection } from "./report-payload-projection";
 
 type JobRow = typeof reminderJobs.$inferSelect;
 const toJob = (row: JobRow): ReminderJob => ({
@@ -663,7 +664,13 @@ export class D1ReminderRepository implements ReminderRepository {
       p.enabled AS report_enabled, p.revision AS report_revision,
       p.wednesday_time, p.sunday_time, p.next_wednesday_at, p.next_sunday_at,
       ps.starts_on, ps.revision AS progress_revision FROM (
-      SELECT ${jobColumns} FROM reminder_jobs
+      SELECT ${jobColumns.replace(
+        "payload,",
+        `${reportPayloadProjection} AS payload,
+        json_extract(payload, '$.captureId') AS report_capture_id,
+        coalesce(json_extract(payload, '$.offset'), 0) AS report_capture_offset,
+        json_extract(payload, '$.version') AS report_payload_version,`,
+      )} FROM reminder_jobs
       WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1
     ) j ${deliveryJoins}
       LEFT JOIN progress_report_settings p ON p.owner_id = j.ownerId AND j.kind = 'weekly-progress'
@@ -672,6 +679,9 @@ export class D1ReminderRepository implements ReminderRepository {
     const results = await this.binding.batch<
       JobRow &
         DeliveryRow & {
+          report_capture_id: string | null;
+          report_capture_offset: number;
+          report_payload_version: number | null;
           report_enabled: number | null;
           report_revision: number | null;
           wednesday_time: string | null;
@@ -684,6 +694,15 @@ export class D1ReminderRepository implements ReminderRepository {
     >([...this.recoveryStatements(now), snapshot]);
     return (results.at(-1)?.results ?? []).map((row) => ({
       ...toJob(row),
+      ...(row.report_capture_id && [4, 6, 7, 8].includes(row.report_payload_version ?? 0)
+        ? {
+            reportPayloadReference: {
+              captureId: row.report_capture_id,
+              offset: row.report_capture_offset,
+              version: row.report_payload_version as 4 | 6 | 7 | 8,
+            },
+          }
+        : {}),
       deliveryState: deliveryFromRow(row, row.ownerId),
       ...(row.kind === "weekly-progress"
         ? {

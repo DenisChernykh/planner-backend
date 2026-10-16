@@ -1,10 +1,13 @@
 # Bounded weekly report stages — 16 October 2026
 
-This follow-up is not deployed. The currently published `644a395` still exceeded
+This follow-up was deployed as `d3fdc6c` and still exceeds the 10 ms criterion.
+The earlier published `644a395` exceeded
 10 ms for input capture (10.733 ms) and calculation/rendering (16.639 ms), as
 recorded in the [production control](reminder-heavy-optimization-2026-10-16.md).
-The changes below require a separately authorized production control before any
-claim of stable Free-tier CPU usage. Local sampling does not enforce that limit.
+The authorized production control below found four overruns. Stable Free-tier
+CPU usage remains unproven. Local sampling does not enforce that limit.
+The next implementation is documented in
+[native capture and projected stages](reminder-native-stages-2026-10-16.md).
 
 ## Changes and behavior
 
@@ -60,7 +63,6 @@ Cron inheritance is reduced from 24 to eight pending edges per tick; existing
 HTTP recovery and guards against overwriting edited settings remain unchanged.
 
 Preparation continues to use the existing oldest-due queue: simultaneous reminder
-work can wait while a report is being prepared. Preparation continues to use the existing oldest-due queue: simultaneous reminder
 work can wait while a report is being prepared. These choices add latency: without backlog, maintenance, quiet hours or retries,
 a report with G compatible groups sends about `ceil(G / 4) + 4` minutes after its
 scheduling tick (10 minutes for 24 groups). Twenty-four inherited rules now take
@@ -151,3 +153,63 @@ control work and no foreign-key violations. Read Cloudflare CPU for each stage;
 label delayed/missing or only correlated metrics honestly. Any invocation above
 10 ms fails acceptance even when its status is `success`; do not retry an
 ambiguous send or replace an inconvenient measurement with another invocation.
+
+
+## Authorized production outcome
+
+Source `d3fdc6c4a05882d1bba627ebb38267fc47567c6b` was deployed to Worker `app`
+as version `9ccf2d58-cc07-4472-af89-63a9c2376bbb` after explicit authorization to
+publish and send exactly one control report. The same D1, bindings, observability
+settings (invocation logs disabled), one Cron and plan were preserved. No migration
+or resource creation was performed. Root checks passed before publication; the
+source also passed [GitHub CI](https://github.com/DenisChernykh/planner-backend/actions/runs/38936980681).
+
+| Stage | UTC minute | Cloudflare CPU, ms |
+| --- | --- | ---: |
+| Copy 24 goals | 17:09 | 7.568 |
+| Inherit eight edges, first portion | 17:10 | 5.557 |
+| Inherit eight edges, second portion | 17:11 | **11.130** |
+| Inherit eight edges, third portion | 17:12 | 8.448 |
+| Schedule in quiet hours | 17:13 | 5.561 |
+| Select report goals | 17:14 | 8.767 |
+| Capture inputs | 17:15 | **14.591** |
+| Calculate goals, portion 1 | 17:16 | 5.641 |
+| Calculate goals, portion 2 | 17:17 | 8.442 |
+| Calculate goals, portion 3 | 17:18 | **15.183** |
+| Calculate goals, portion 4 | 17:19 | 8.451 |
+| Calculate final portion and totals | 17:20 | **11.236** |
+| Format ready message | 17:21 | 8.207 |
+| Send one report | 17:22 | 6.990 |
+
+All attributed invocations completed with `success`, but four exceeded 10 ms;
+the control fails CPU acceptance. Values are `workersInvocationsAdaptive`
+minute/version/status/colo groups with exactly one request, zero errors, average
+sample interval 1 and equal P50/P99. D1 transitions corroborate stage attribution;
+HTTP health groups in EWR are excluded. Adaptive data has no Cron request-source
+filter, so these are correlated observations rather than event-level traces or
+proof of isolate identity. The scheduled dataset remained empty at 17:25:55 UTC.
+GraphQL returned a budget error at 17:12:43; queries paused for five minutes and
+resumed with a smaller limit. That observability limit did not stop the Cron.
+
+D1 readbacks showed inherited counts 0 → 8 → 16 → 24, 24 report selections and
+five exclusions. The synthetic weekly job was deferred to 23:59 local and cancelled
+with zero attempts and no message ID. The real report selected 17 goals; current
+stored entries for those goals totalled 46 at readback. A post-first-batch read
+showed 23 entries remaining in the saved calculation input; it is not the original
+capture count. Readbacks showed cursor 4 → 8 → 16, then an overview with all 17
+goals, then version 1; the 12-goal intermediate cursor was not directly sampled.
+Formation time remained 17:15:20 UTC. The ready payload is 5,019 characters,
+compared with 12,715 in the earlier control. Telegram API acceptance is recorded
+by `sent`, one attempt and a message ID; client receipt was not independently seen.
+No synthetic message was sent and no ambiguous send was retried.
+
+Cleanup at 17:26:09 UTC confirmed zero fixture goals, links, jobs, active control
+jobs or foreign-key violations. The isolated owner and cascading data were
+removed; real send history was retained. Ordinary general/report settings and
+selections matched the original fingerprint, including normal report slots.
+
+Sanitized deployment, metrics and state readbacks are in
+[`reminder-cpu-2026-10-16-d3fdc6c-production.json`](reminder-cpu-2026-10-16-d3fdc6c-production.json).
+One control per stage is not a reliability distribution. This uses an unprepared
+current month, not a real production midnight transition; cross-month report
+and February boundary semantics have local regression coverage only.

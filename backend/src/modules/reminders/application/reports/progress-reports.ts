@@ -26,7 +26,7 @@ import { makeJob } from "../scheduling/make-job";
 import type { PrepareCurrentPlanUseCase } from "../scheduling/prepare-current-plan.use-case";
 import { reportMessage } from "./report-message";
 import {
-  type Preparation,
+  capturedRevisions,
   preparationMetadata,
   type ReportSnapshot,
   type SelectionPreparation,
@@ -321,6 +321,7 @@ export class ProgressReportsUseCases {
     if (!this.transport) return;
     const job = queued ?? (await this.reminders.job(jobId));
     if (job?.status !== "pending") return;
+    const reference = queued?.reportPayloadReference;
     const [report, shared, general, link] = await Promise.all([
       queued?.reportState?.report ?? this.reports.settings(job.ownerId),
       queued?.reportState?.progress ?? this.progress.settings(job.ownerId),
@@ -356,10 +357,11 @@ export class ProgressReportsUseCases {
     const rebuild =
       !snapshot ||
       selectionChanged ||
-      (snapshot.version !== 1 ? snapshot.sourceReportRevision : snapshot.reportRevision) !==
+      (snapshot.version !== 1 ? capturedRevisions(snapshot).report : snapshot.reportRevision) !==
         report.revision ||
-      (snapshot.version !== 1 ? snapshot.sourceProgressRevision : snapshot.progressRevision) !==
-        shared.revision ||
+      (snapshot.version !== 1
+        ? capturedRevisions(snapshot).progress
+        : snapshot.progressRevision) !== shared.revision ||
       snapshot.timeZone !== general.timeZone ||
       snapshot.quietStart !== general.quietStart ||
       snapshot.quietEnd !== general.quietEnd;
@@ -373,11 +375,8 @@ export class ProgressReportsUseCases {
       goals: [],
     };
     if (deferNewSnapshot && rebuild) {
-      const selectedIds = (await this.reports.selections(job.ownerId))
-        .filter((goal) => goal.included)
-        .map((goal) => goal.goalId);
       const period = reportWeek(job.localDate);
-      const goalIds = await this.reports.activeGoalIds(
+      const { selectedIds, goalIds } = await this.reports.selectionState(
         job.ownerId,
         period.from.slice(0, 7),
         period.to.slice(0, 7),
@@ -400,37 +399,123 @@ export class ProgressReportsUseCases {
         formedAt: now,
         selectedIds,
       };
-      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(selection));
+      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(selection), reference);
       return;
     }
     if (!rebuild && snapshot?.version === 5) {
-      const calculation = await this.source(
-        job.ownerId,
-        input,
-        job.localDate,
+      const scope = this.progress.reportCaptureScope({
+        ownerId: job.ownerId,
+        period: "week",
+        anchor: job.localDate,
+        today: job.localDate,
         now,
-        general.timeZone,
-        false,
-        snapshot.selectedIds,
-      );
-      const metadata = preparationMetadata(snapshot);
-      const preparation: Preparation = { ...metadata, version: 2, formedAt: now, calculation };
-      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(preparation));
+        timeZone: general.timeZone,
+        startsOn: shared.startsOn,
+      });
+      await this.reports.captureSnapshot({
+        job,
+        selectedIds: snapshot.selectedIds,
+        scope,
+        metadata: {
+          ...preparationMetadata(snapshot),
+          version: 6,
+          captureId: crypto.randomUUID(),
+          formedAt: now,
+          sourceReportRevision: -1,
+          sourceProgressRevision: -1,
+          capturedReportRevision: report.revision,
+          capturedProgressRevision: shared.revision,
+        },
+      });
       return;
     }
-    if (!rebuild && (snapshot?.version === 2 || snapshot?.version === 3)) {
+    if (
+      !rebuild &&
+      (snapshot?.version === 2 ||
+        snapshot?.version === 3 ||
+        snapshot?.version === 6 ||
+        snapshot?.version === 7)
+    ) {
       const batch = this.progress.calculateReportBatch(
         snapshot.calculation,
-        snapshot.version === 3 ? snapshot.offset : 0,
-        4,
+        snapshot.version === 3 || snapshot.version === 7 ? snapshot.offset : 0,
+        1,
       );
-      const goals = [...(snapshot.version === 3 ? snapshot.goals : []), ...batch.goals];
-      const { calculation } = batch;
-      const metadata = preparationMetadata(snapshot);
+      if ((snapshot.version === 6 || snapshot.version === 7) && snapshot.captureId) {
+        await this.reports.appendCalculation({
+          id: job.id,
+          ownerId: job.ownerId,
+          captureId: snapshot.captureId,
+          previousOffset: snapshot.version === 7 ? snapshot.offset : 0,
+          nextOffset: batch.nextOffset,
+          result: batch.goals[0] ?? null,
+          done: batch.done,
+          nextChainId: batch.pendingChains[0] ?? null,
+        });
+        return;
+      }
+      const goals = [
+        ...(snapshot.version === 3 || snapshot.version === 7 ? snapshot.goals : []),
+        ...batch.goals,
+      ];
+      const metadata = {
+        ...preparationMetadata(snapshot),
+        captureId: crypto.randomUUID(),
+        nextChainId: batch.pendingChains[0] ?? null,
+        sourceReportRevision: -1 as const,
+        sourceProgressRevision: -1 as const,
+        capturedReportRevision: report.revision,
+        capturedProgressRevision: shared.revision,
+      };
+      const { sources: _sources, knownSources: _known, ...context } = batch.calculation;
       const next: ReportSnapshot = batch.done
-        ? { ...metadata, version: 4, overview: this.progress.completeOverview(calculation, goals) }
-        : { ...metadata, version: 3, calculation, offset: batch.nextOffset, goals };
-      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(next));
+        ? { ...metadata, version: 8, calculation: context, offset: batch.nextOffset, goals }
+        : {
+            ...metadata,
+            version: 7,
+            calculation: batch.calculation,
+            offset: batch.nextOffset,
+            goals,
+          };
+      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(next), reference);
+      return;
+    }
+    if (!rebuild && snapshot?.version === 8) {
+      const metadata = {
+        ...preparationMetadata(snapshot),
+        version: 4 as const,
+        sourceReportRevision: snapshot.capturedReportRevision,
+        sourceProgressRevision: snapshot.capturedProgressRevision,
+        ...(snapshot.captureId
+          ? { captureId: snapshot.captureId, offset: snapshot.offset ?? 0 }
+          : {}),
+      };
+      let overview: Omit<ProgressReportOverview, "goals">;
+      if (snapshot.totals)
+        overview = this.progress.completeReportTotals(snapshot.calculation, snapshot.totals);
+      else {
+        const { goals: _goals, ...summary } = this.progress.completeOverview(
+          snapshot.calculation,
+          snapshot.goals ?? [],
+        );
+        overview = summary;
+      }
+      if (snapshot.captureId)
+        await this.reports.finishCalculation({
+          id: job.id,
+          ownerId: job.ownerId,
+          captureId: snapshot.captureId,
+          offset: snapshot.offset ?? 0,
+          metadata,
+          overview,
+        });
+      else
+        await this.reports.setSnapshot(
+          job.id,
+          job.payload,
+          JSON.stringify({ ...metadata, overview: { ...overview, goals: snapshot.goals ?? [] } }),
+          reference,
+        );
       return;
     }
     if (rebuild || snapshot?.version === 4) {
@@ -476,7 +561,7 @@ export class ProgressReportsUseCases {
           : built.message,
       };
       const payload = JSON.stringify(snapshot);
-      if (!(await this.reports.setSnapshot(job.id, job.payload, payload))) return;
+      if (!(await this.reports.setSnapshot(job.id, job.payload, payload, reference))) return;
       job.payload = payload;
       // Production Cron persists preparation before claiming/sending on its next tick.
       if (deferNewSnapshot) return;
@@ -494,7 +579,7 @@ export class ProgressReportsUseCases {
     ) {
       // The atomic claim checks the complete active selection in SQLite. A stale
       // ready snapshot restarts next tick without a second selection read on send.
-      await this.reports.setSnapshot(job.id, job.payload, "[]");
+      await this.reports.setSnapshot(job.id, job.payload, "[]", reference);
       return;
     }
     try {
