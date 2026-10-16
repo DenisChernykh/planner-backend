@@ -1,0 +1,145 @@
+{
+  "sourceRevision": "47021ef0f0fc63b028be5e3d6d4619b71e872402",
+  "worker": "app",
+  "version": "873fe2c9-bbd5-4e4a-9c98-12044f16f6d6",
+  "deployment": {
+    "id": "affaeca5-8793-46df-9bc0-3dee84b83eb6",
+    "created_on": "2026-10-16T18:17:44.854473Z",
+    "versions": [
+      {
+        "version_id": "873fe2c9-bbd5-4e4a-9c98-12044f16f6d6",
+        "percentage": 100
+      }
+    ],
+    "source": "wrangler"
+  },
+  "ci": {
+    "runId": 38945660554,
+    "conclusion": "success",
+    "verifiedBy": "gh run watch --exit-status returned 0",
+    "url": "https://github.com/DenisChernykh/planner-backend/actions/runs/38945660554"
+  },
+  "health": {
+    "name": "health",
+    "http": 200,
+    "result": {
+      "status": "ok",
+      "revision": "47021ef0f0fc63b028be5e3d6d4619b71e872402"
+    },
+    "observed_at": "2026-10-16T18:18:24.793Z"
+  },
+  "verification": {
+    "measuredSourcesMatchPublishedCommit": true,
+    "settingsBindingsObservabilityUnchanged": true,
+    "cronUnchanged": true,
+    "scheduleStateUnchanged": true,
+    "remoteMigration": false,
+    "newResources": false,
+    "planChanged": false,
+    "additionalTelegramMessagesDuringRollout": 0
+  },
+  "settings": {
+    "usage_model": "standard",
+    "observability": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "redact_query_string": false,
+      "logs": {
+        "enabled": true,
+        "head_sampling_rate": 1,
+        "persist": true,
+        "invocation_logs": false
+      },
+      "traces": {
+        "enabled": false,
+        "persist": true,
+        "head_sampling_rate": 1
+      }
+    },
+    "bindings": [
+      {
+        "type": "plain_text",
+        "name": "APP_ORIGIN"
+      },
+      {
+        "type": "secret_text",
+        "name": "AUTH_FLOW_SECRET"
+      },
+      {
+        "type": "plain_text",
+        "name": "AUTH_MODE"
+      },
+      {
+        "type": "plain_text",
+        "name": "AUTH_SUCCESS_REDIRECT_URL"
+      },
+      {
+        "type": "plain_text",
+        "name": "BUILD_REVISION"
+      },
+      {
+        "type": "d1",
+        "name": "DB",
+        "id": "80819e8e-d87f-4240-983e-919b358a42fc"
+      },
+      {
+        "type": "plain_text",
+        "name": "TELEGRAM_BOT_MODE"
+      },
+      {
+        "type": "secret_text",
+        "name": "TELEGRAM_BOT_TOKEN"
+      },
+      {
+        "type": "secret_text",
+        "name": "TELEGRAM_BOT_WEBHOOK_SECRET"
+      },
+      {
+        "type": "secret_text",
+        "name": "TELEGRAM_OIDC_CLIENT_ID"
+      },
+      {
+        "type": "secret_text",
+        "name": "TELEGRAM_OIDC_CLIENT_SECRET"
+      }
+    ]
+  },
+  "schedules": {
+    "schedules": [
+      {
+        "cron": "* * * * *",
+        "created_on": "2026-09-29T11:12:38.129474Z",
+        "modified_on": "2026-10-13T08:53:53.008487Z"
+      }
+    ]
+  },
+  "scheduleState": [
+    {
+      "results": [
+        {
+          "next_question_at": 1792216800000,
+          "next_digest_at": 1792254600000,
+          "next_wednesday_at": 1792598400000,
+          "next_sunday_at": 1792339200000,
+          "backlog": 0,
+          "foreign_key_violations": 0
+        }
+      ],
+      "changes": 0,
+      "rows_written": 0
+    }
+  ],
+  "control": {
+    "status": "scheduled, not yet run",
+    "automationId": "planner-cpu-17",
+    "kind": "thread heartbeat",
+    "oneTime": true,
+    "localTime": "2026-10-17T09:10:00+05:00",
+    "timeZone": "Asia/Yekaterinburg",
+    "maximumNewRealReports": 1,
+    "isolatedFixtureGoals": 24,
+    "syntheticQuietHours": true,
+    "ordinarySettingsAndSchedulesPreserved": true,
+    "cpuStabilityProven": false
+  }
+}

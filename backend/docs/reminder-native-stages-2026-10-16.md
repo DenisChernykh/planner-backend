@@ -8,8 +8,10 @@ calculation 15.183 and final calculation/summary 11.236 ms. Sending took
 6.990 ms. The isolated fixture was removed; the one authorized real report
 was sent once. Full evidence and attribution limits remain in the linked report.
 
-The implementation described here has not been deployed. Local inspector samples
-are estimates, not Cloudflare CPU metrics or proof of stable Free-tier operation.
+The implementation was deployed as `47021ef` after explicit authorization and
+successful CI. The new production control is scheduled for 17 October, 09:10
+Asia/Yekaterinburg; it has not run yet. Local inspector samples are estimates,
+not Cloudflare CPU metrics or proof of stable Free-tier operation.
 
 ## Persisted steps
 
@@ -91,7 +93,7 @@ below after the code is frozen. Production stability needs a check on the
 published revision after separate authorization; the consumed `d3fdc6c`
 deployment/report permission does not authorize an additional report or deploy.
 
-## Proposed production control
+## Authorized production control plan
 
 After publishing the checked, pushed revision to the existing Worker `app`,
 verify `/health` reports that exact revision and retain the existing bindings,
@@ -172,3 +174,31 @@ owners' full month inheritance finish within the profiler's bounds. Stable
 production CPU below 10 ms remains **unproven**; the next useful evidence is the
 explicitly authorized production control above, rather than discarding the two
 remaining native/tracing peaks.
+
+## Authorized rollout and scheduled control
+
+User authorization covers deployment of `47021ef` and one new control on
+17 October at 09:10 Asia/Yekaterinburg: 24 isolated fixture goals, synthetic quiet
+scheduling and exactly one additional real test weekly report. The previous
+`d3fdc6c` permission/report were consumed separately and are not reused.
+
+[CI 38945660554](https://github.com/DenisChernykh/planner-backend/actions/runs/38945660554)
+completed successfully before publishing
+`47021ef0f0fc63b028be5e3d6d4619b71e872402`. Cloudflare version
+`873fe2c9-bbd5-4e4a-9c98-12044f16f6d6` serves that exact revision; `/health` returned
+200 at 18:18:24 UTC. All measured source fingerprints match the published commit.
+Pre/post checks confirmed the same D1 binding, settings, observability, single
+Cron and ordinary schedule state; backlog and FK violations remained zero.
+No migration, resource/plan change or additional Telegram send occurred during
+this rollout. Sanitized evidence is in
+[`reminder-cpu-2026-10-16-47021ef-rollout.json`](reminder-cpu-2026-10-16-47021ef-rollout.json).
+
+Local thread heartbeat `planner-cpu-17` is active with a one-time schedule for
+17 October at 09:10. It checks the exact deployed revision, follows the control
+plan above, uses a fresh private manifest and a 90-minute deadline, cleans up on
+failure and disables itself after the control. It must not deploy another
+revision or enqueue a replacement report after an ambiguous result. The Mac
+must be on and the app running for work with local files, as described in the
+[official scheduled-task documentation](https://learn.chatgpt.com/docs/automations?surface=app).
+No control fixtures have been created for the new run yet; actual CPU results
+remain pending.
