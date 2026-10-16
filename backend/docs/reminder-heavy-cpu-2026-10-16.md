@@ -206,5 +206,7 @@ No application optimization or new deployment is claimed by this report.
 
 The subsequent implementation splits report input capture from calculation,
 streamlines month copy/inheritance and preserves all local observations in the
-[optimization report](reminder-heavy-optimization-2026-10-16.md). It is not yet
-deployed; the production measurements above still describe `d298b60`.
+[optimization report](reminder-heavy-optimization-2026-10-16.md). That follow-up
+was deployed as `644a395`; its authorized control reduced month-processing CPU
+below 10 ms in the observed runs, but report capture and calculation still
+exceeded the budget. The historical measurements above describe `d298b60`.

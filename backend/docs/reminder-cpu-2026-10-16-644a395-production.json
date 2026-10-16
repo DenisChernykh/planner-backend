@@ -1,0 +1,632 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "644a3955ca247e9cc3c84cac81e94a5acd5f9054",
+  "worker": "app",
+  "version": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+  "deployment": {
+    "id": "a9d6401c-e814-4dda-9028-80be22b9e300",
+    "createdOn": "2026-10-16T16:24:29.377272Z",
+    "versions": [
+      {
+        "version_id": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+        "percentage": 100
+      }
+    ],
+    "source": "wrangler"
+  },
+  "authorization": {
+    "deployment": true,
+    "isolatedMonthFixtureGoals": 24,
+    "quietHourScheduling": true,
+    "maximumAdditionalRealReports": 1
+  },
+  "configuration": {
+    "d1BindingUnchanged": true,
+    "bindingsAndObservabilityUnchanged": true,
+    "cronUnchanged": true,
+    "invocationLogsEnabled": false,
+    "cron": ["* * * * *"],
+    "migrationApplied": false,
+    "planChanged": false
+  },
+  "control": {
+    "createdAt": "2026-10-16T16:24:56.225Z",
+    "activatedAt": "2026-10-16T16:25:00.366Z",
+    "syntheticSchedulingArmedAt": "2026-10-16T16:27:00.003Z",
+    "realReportArmedAt": "2026-10-16T16:27:45.200Z",
+    "month": "2026-10",
+    "sourceMonth": "2026-09"
+  },
+  "stages": [
+    {
+      "stage": "copy-month",
+      "datetimeMinute": "2026-10-16T16:25:00Z",
+      "coloCode": "SIN",
+      "cpuTimeUs": 9228,
+      "cpuMs": 9.228,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": true,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    },
+    {
+      "stage": "inherit-settings",
+      "datetimeMinute": "2026-10-16T16:26:00Z",
+      "coloCode": "MEL",
+      "cpuTimeUs": 9257,
+      "cpuMs": 9.257,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": true,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    },
+    {
+      "stage": "schedule-during-quiet-hours",
+      "datetimeMinute": "2026-10-16T16:27:00Z",
+      "coloCode": "SYD",
+      "cpuTimeUs": 5021,
+      "cpuMs": 5.021,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": true,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    },
+    {
+      "stage": "capture-report-inputs",
+      "datetimeMinute": "2026-10-16T16:28:00Z",
+      "coloCode": "KIX",
+      "cpuTimeUs": 10733,
+      "cpuMs": 10.733,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": false,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    },
+    {
+      "stage": "calculate-and-render",
+      "datetimeMinute": "2026-10-16T16:29:00Z",
+      "coloCode": "KIX",
+      "cpuTimeUs": 16639,
+      "cpuMs": 16.639,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": false,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    },
+    {
+      "stage": "send-report",
+      "datetimeMinute": "2026-10-16T16:30:00Z",
+      "coloCode": "KIX",
+      "cpuTimeUs": 9075,
+      "cpuMs": 9.075,
+      "status": "success",
+      "requests": 1,
+      "errors": 0,
+      "averageSampleInterval": 1,
+      "under10ms": true,
+      "evidence": "adaptive invocation group correlated with D1 state transitions; no request-source filter"
+    }
+  ],
+  "acceptance": {
+    "cpuLimitMs": 10,
+    "passed": false,
+    "overBudgetStages": ["capture-report-inputs", "calculate-and-render"],
+    "repeatabilityEstablished": false
+  },
+  "report": {
+    "observedAt": "2026-10-16T16:31:01.555Z",
+    "report": {
+      "status": "sent",
+      "attempts": 1,
+      "message_id_present": 1,
+      "snapshot_version": 1,
+      "formed_at": 1792168100145,
+      "selected_goals": 17,
+      "payload_length": 12715,
+      "selected_goal_entries": 46
+    }
+  },
+  "transitions": [
+    {
+      "mode": "prepare-month",
+      "observedAt": "2026-10-16T16:25:01.941Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 0,
+        "copied_at": null,
+        "inherited_reminders": 0,
+        "inherited_report_selections": 0,
+        "inherited_exclusions": 0
+      },
+      "fixtureJobs": [],
+      "realJobs": [],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "status",
+      "observedAt": "2026-10-16T16:26:17.812Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 0,
+        "inherited_report_selections": 0,
+        "inherited_exclusions": 0
+      },
+      "fixtureJobs": [],
+      "realJobs": [],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "weekly-schedule",
+      "observedAt": "2026-10-16T16:26:59.277Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [],
+      "realJobs": [],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "weekly-schedule",
+      "observedAt": "2026-10-16T16:27:01.651Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [],
+      "realJobs": [],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "weekly-report",
+      "observedAt": "2026-10-16T16:27:43.313Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [
+        {
+          "kind": "weekly-progress",
+          "status": "pending",
+          "attempts": 0,
+          "created_at": 1792168040142,
+          "due_at": 1792177140000,
+          "has_snapshot": 0,
+          "message_id_present": 0
+        }
+      ],
+      "realJobs": [],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "weekly-report",
+      "observedAt": "2026-10-16T16:27:47.880Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [
+        {
+          "kind": "weekly-progress",
+          "status": "cancelled",
+          "attempts": 0,
+          "created_at": 1792168040142,
+          "due_at": 1792177140000,
+          "has_snapshot": 0,
+          "message_id_present": 0
+        }
+      ],
+      "realJobs": [
+        {
+          "status": "pending",
+          "attempts": 0,
+          "created_at": 1792168065200,
+          "due_at": 1792168065200,
+          "lease_until": null,
+          "has_snapshot": 0,
+          "payload_length": 2,
+          "payload_version": null,
+          "formed_at": null,
+          "message_id_present": 0
+        }
+      ],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "status",
+      "observedAt": "2026-10-16T16:28:45.214Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [
+        {
+          "kind": "weekly-progress",
+          "status": "cancelled",
+          "attempts": 0,
+          "created_at": 1792168040142,
+          "due_at": 1792177140000,
+          "has_snapshot": 0,
+          "message_id_present": 0
+        }
+      ],
+      "realJobs": [
+        {
+          "status": "pending",
+          "attempts": 0,
+          "created_at": 1792168065200,
+          "due_at": 1792168065200,
+          "lease_until": null,
+          "has_snapshot": 1,
+          "payload_length": 8479,
+          "payload_version": 2,
+          "formed_at": 1792168100145,
+          "message_id_present": 0
+        }
+      ],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "status",
+      "observedAt": "2026-10-16T16:29:43.354Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [
+        {
+          "kind": "weekly-progress",
+          "status": "cancelled",
+          "attempts": 0,
+          "created_at": 1792168040142,
+          "due_at": 1792177140000,
+          "has_snapshot": 0,
+          "message_id_present": 0
+        }
+      ],
+      "realJobs": [
+        {
+          "status": "pending",
+          "attempts": 0,
+          "created_at": 1792168065200,
+          "due_at": 1792168065200,
+          "lease_until": null,
+          "has_snapshot": 1,
+          "payload_length": 12715,
+          "payload_version": 1,
+          "formed_at": 1792168100145,
+          "message_id_present": 0
+        }
+      ],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "status",
+      "observedAt": "2026-10-16T16:30:44.701Z",
+      "fixture": {
+        "owners": 1,
+        "source_goals": 24,
+        "target_goals": 24,
+        "copied_at": 1792167920509,
+        "inherited_reminders": 24,
+        "inherited_report_selections": 24,
+        "inherited_exclusions": 5
+      },
+      "fixtureJobs": [
+        {
+          "kind": "weekly-progress",
+          "status": "cancelled",
+          "attempts": 0,
+          "created_at": 1792168040142,
+          "due_at": 1792177140000,
+          "has_snapshot": 0,
+          "message_id_present": 0
+        }
+      ],
+      "realJobs": [
+        {
+          "status": "sent",
+          "attempts": 1,
+          "created_at": 1792168065200,
+          "due_at": 1792168065200,
+          "lease_until": null,
+          "has_snapshot": 1,
+          "payload_length": 12715,
+          "payload_version": 1,
+          "formed_at": 1792168100145,
+          "message_id_present": 1
+        }
+      ],
+      "normalConfigurationUnchanged": true
+    },
+    {
+      "mode": "cleanup",
+      "observedAt": "2026-10-16T16:31:00.006Z",
+      "fixture": {
+        "owners": 0,
+        "source_goals": 0,
+        "target_goals": 0,
+        "copied_at": null,
+        "inherited_reminders": 0,
+        "inherited_report_selections": 0,
+        "inherited_exclusions": 0
+      },
+      "fixtureJobs": [],
+      "realJobs": [
+        {
+          "status": "sent",
+          "attempts": 1,
+          "created_at": 1792168065200,
+          "due_at": 1792168065200,
+          "lease_until": null,
+          "has_snapshot": 1,
+          "payload_length": 12715,
+          "payload_version": 1,
+          "formed_at": 1792168100145,
+          "message_id_present": 1
+        }
+      ],
+      "normalConfigurationUnchanged": true
+    }
+  ],
+  "cleanup": {
+    "observedAt": "2026-10-16T16:31:01.201Z",
+    "fixture_goals": 0,
+    "fixture_links": 0,
+    "fixture_jobs": 0,
+    "active_control_jobs": 0,
+    "foreign_key_violations": 0,
+    "normalConfigurationUnchanged": true
+  },
+  "analytics": {
+    "observedAt": "2026-10-16T16:31:19.424Z",
+    "until": "2026-10-16T16:31:19.424Z",
+    "since": "2026-10-16T16:24:00Z",
+    "version": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+    "workersInvocationsAdaptive": [
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "KIX",
+          "datetimeMinute": "2026-10-16T16:28:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 10733,
+          "cpuTimeP99": 10733
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "MEL",
+          "datetimeMinute": "2026-10-16T16:26:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 9257,
+          "cpuTimeP99": 9257
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "KIX",
+          "datetimeMinute": "2026-10-16T16:30:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 9075,
+          "cpuTimeP99": 9075
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "KIX",
+          "datetimeMinute": "2026-10-16T16:29:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 16639,
+          "cpuTimeP99": 16639
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "NRT",
+          "datetimeMinute": "2026-10-16T16:24:00Z",
+          "scriptVersion": "36a7ed41-0bc7-4726-8050-543331540df2",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 6169,
+          "cpuTimeP99": 6169
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "EWR",
+          "datetimeMinute": "2026-10-16T16:24:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 13964,
+          "cpuTimeP99": 15192
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 2
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "SIN",
+          "datetimeMinute": "2026-10-16T16:25:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 9228,
+          "cpuTimeP99": 9228
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "EWR",
+          "datetimeMinute": "2026-10-16T16:27:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 15426,
+          "cpuTimeP99": 15426
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "EWR",
+          "datetimeMinute": "2026-10-16T16:26:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 16511,
+          "cpuTimeP99": 16511
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      },
+      {
+        "avg": {
+          "sampleInterval": 1
+        },
+        "dimensions": {
+          "coloCode": "SYD",
+          "datetimeMinute": "2026-10-16T16:27:00Z",
+          "scriptVersion": "0e65aa5e-0f32-416e-a2d2-adfd8f740eb3",
+          "status": "success"
+        },
+        "quantiles": {
+          "cpuTimeP50": 5021,
+          "cpuTimeP99": 5021
+        },
+        "sum": {
+          "errors": 0,
+          "requests": 1
+        }
+      }
+    ],
+    "workersInvocationsScheduled": []
+  },
+  "limitations": [
+    "One invocation per attributed stage is not a reliability distribution or evidence of isolate identity.",
+    "Adaptive metrics have no Cron source filter; HTTP health groups in EWR and the previous-version row are excluded from stage attribution.",
+    "The scheduled-event dataset is empty at the recorded observation time, not proof of zero invocations.",
+    "Month copy initializes an unprepared current month using previous-month goals, not a real clock transition at midnight.",
+    "The production report uses 17 selected goals and 46 entries; larger histories and a report week crossing months were tested locally only.",
+    "Telegram API acceptance is recorded; client receipt was not independently observed."
+  ]
+}
