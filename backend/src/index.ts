@@ -1,4 +1,5 @@
-import { createApp, runReminders } from "./app/create-app";
+import { createApp } from "./app/create-app";
+import { runReminders } from "./app/run-reminders";
 
 export { createApp } from "./app/create-app";
 

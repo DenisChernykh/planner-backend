@@ -2,7 +2,10 @@ import type { GoalRecord } from "../../../planning/public-contracts";
 import type { ReminderJob } from "../../domain/model";
 import type { Button, OutgoingMessage } from "./outgoing-message";
 
-export function questionMessage(job: ReminderJob, goal: GoalRecord): OutgoingMessage {
+export function questionMessage(
+  job: ReminderJob,
+  goal: Pick<GoalRecord, "title" | "tracking">,
+): OutgoingMessage {
   const heading = `${goal.title} · ${job.localDate}`;
   const correction = job.kind === "correction" ? "Исправление записи. " : "";
   const { tracking } = goal;

@@ -1,18 +1,26 @@
+import type { GoalRecord } from "../../../planning/public-contracts";
 import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "../../domain/model";
 export type ReminderSchedulingState = {
   settings: ReminderSettings;
   preparedMonths: string[];
   inheritanceMonths: string[];
   nextGoalRuns: Record<string, number>;
+  nextReportAt: number | null;
 };
 export type ReminderDeliveryState = {
   settings: ReminderSettings;
   link: TelegramLink | null;
   reminder: GoalReminder | null;
+  question: (Pick<GoalRecord, "month" | "title" | "tracking"> & { hasEntry: boolean }) | null;
 };
+export type QueuedReminder = ReminderJob & { deliveryState?: ReminderDeliveryState };
 export interface ReminderRepository {
   settings(ownerId: string): Promise<ReminderSettings>;
-  deliveryState(ownerId: string, goalId: string | null): Promise<ReminderDeliveryState>;
+  deliveryState(
+    ownerId: string,
+    goalId: string | null,
+    date: string,
+  ): Promise<ReminderDeliveryState>;
   saveSettings(
     settings: ReminderSettings,
     reminders: GoalReminder[],
@@ -20,6 +28,17 @@ export interface ReminderRepository {
   ): Promise<boolean>;
   schedulingState(): Promise<ReminderSchedulingState[]>;
   reminders(ownerId: string): Promise<GoalReminder[]>;
+  digestCandidates(
+    ownerId: string,
+    date: string,
+  ): Promise<
+    {
+      id: string;
+      title: string;
+      reminder: GoalReminder;
+      hasEntry: boolean;
+    }[]
+  >;
   reminder(ownerId: string, goalId: string): Promise<GoalReminder | null>;
   saveReminder(reminder: GoalReminder, settings?: ReminderSettings): Promise<boolean>;
   inheritReminders(
@@ -48,7 +67,7 @@ export interface ReminderRepository {
     job: ReminderJob | null,
   ): Promise<void>;
   due(now: number): Promise<ReminderJob[]>;
-  recoverAndDue(now: number): Promise<ReminderJob[]>;
+  recoverAndDue(now: number): Promise<QueuedReminder[]>;
   job(id: string): Promise<ReminderJob | null>;
   replyJob(chatId: string, messageId: number): Promise<ReminderJob | null>;
   claim(

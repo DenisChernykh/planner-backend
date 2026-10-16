@@ -1,7 +1,6 @@
-import type { PlanningOperations } from "../../../planning/public-contracts";
 import { canAskGoal, deliveryDecision, failedDeliveryChanges } from "../../domain/jobs";
 import type { ReminderJob } from "../../domain/model";
-import type { ReminderRepository } from "../ports/reminder-repository";
+import type { ReminderDeliveryState, ReminderRepository } from "../ports/reminder-repository";
 import { DeliveryError, type ReminderTransport } from "../ports/reminder-transport";
 import type { DigestMessages } from "./digest-messages";
 import type { OutgoingMessage } from "./outgoing-message";
@@ -10,7 +9,6 @@ import { questionMessage } from "./question-message";
 export class DeliverReminderUseCase {
   constructor(
     private readonly repository: ReminderRepository,
-    private readonly planning: PlanningOperations,
     private readonly transport: ReminderTransport | null,
     private readonly digest: DigestMessages,
   ) {}
@@ -19,13 +17,15 @@ export class DeliverReminderUseCase {
     job,
     now,
     interactive = false,
+    state,
   }: {
     job: ReminderJob;
     now: number;
     interactive?: boolean;
+    state?: ReminderDeliveryState;
   }): Promise<void> {
     if (!this.transport || job.status !== "pending") return;
-    const state = await this.repository.deliveryState(job.ownerId, job.goalId);
+    state ??= await this.repository.deliveryState(job.ownerId, job.goalId, job.localDate);
     const { settings, link, reminder: rule } = state;
     const decision = deliveryDecision(job, settings, link, now, interactive);
     if (decision.action === "cancel") {
@@ -39,10 +39,9 @@ export class DeliverReminderUseCase {
     let message: OutgoingMessage | null;
     if (job.kind === "digest") message = await this.digest.prepareDelivery(job, settings);
     else {
-      const goal = job.goalId ? await this.planning.goal(job.ownerId, job.goalId) : null;
-      const entry = goal ? await this.planning.entry(job.ownerId, goal.id, job.localDate) : null;
+      const goal = state.question;
       message =
-        goal && canAskGoal(job, goal.month, entry !== null, rule ?? undefined, interactive)
+        goal && canAskGoal(job, goal.month, goal.hasEntry, rule ?? undefined, interactive)
           ? questionMessage(job, goal)
           : null;
     }

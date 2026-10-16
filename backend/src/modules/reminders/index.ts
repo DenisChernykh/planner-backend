@@ -44,9 +44,9 @@ export function createReminderOperations(
     appOrigin,
   );
   const tokens = { random: () => randomBase64Url(24), hash: sha256Base64Url };
-  const missing = new FindMissingGoalsQuery(repository, planning);
+  const missing = new FindMissingGoalsQuery(repository);
   const digest = new DigestMessages(repository, transport, missing);
-  const deliver = new DeliverReminderUseCase(repository, planning, transport, digest);
+  const deliver = new DeliverReminderUseCase(repository, transport, digest);
   const openQuestion = new OpenReminderQuestionUseCase(repository, deliver);
   const recordAnswer = new RecordReminderAnswerUseCase(repository, planning, digest);
   const reply = new HandleReminderReplyUseCase(
@@ -82,6 +82,34 @@ export function createReminderOperations(
     ),
   };
 }
+// Cron does not need HTTP settings, link-token, answer or report machinery on
+// its first idle tick or while sending a persisted question.
+export function createReminderRunner(
+  database: D1Database,
+  transport: ReminderTransport | null,
+  appOrigin: string,
+) {
+  const repository = new D1ReminderRepository(database);
+  let operations: ReturnType<typeof createReminderOperations> | undefined;
+  const full = () => (operations ??= createReminderOperations(database, transport, appOrigin));
+  const digest = new DigestMessages(repository, transport, new FindMissingGoalsQuery(repository));
+  return new RunRemindersUseCase(
+    repository,
+    transport !== null,
+    new DeliverReminderUseCase(repository, transport, digest),
+    { execute: (input) => full().prepareCurrentPlan.execute(input) },
+    {
+      schedule: (now, limit) => full().reports.schedule(now, limit),
+      deliver: (id, now, defer, job) => full().reports.deliver(id, now, defer, job),
+    },
+  );
+}
+
+export function createReminderMaintenance(database: D1Database) {
+  const repository = new D1ReminderRepository(database);
+  return { execute: (now: number) => repository.recover(now) };
+}
+
 export async function reminderTimeZone(database: D1Database, ownerId: string): Promise<string> {
   return (await new D1ReminderRepository(database).settings(ownerId)).timeZone;
 }

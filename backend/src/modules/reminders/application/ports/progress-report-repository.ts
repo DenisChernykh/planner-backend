@@ -12,6 +12,7 @@ export interface ProgressReportRepository {
     now: number,
   ): Promise<{ slot: ReportSlot; reportDate: string; dueAt: number }[]>;
   selections(ownerId: string): Promise<ReportSelection[]>;
+  activeGoalIds(ownerId: string, fromMonth: string, toMonth: string): Promise<string[]>;
   save(
     settings: ReportSettings,
     selections: ReportSelection[],

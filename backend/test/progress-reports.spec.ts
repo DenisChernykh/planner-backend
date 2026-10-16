@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { runReminders } from "../src/app/create-app";
+import { runReminders } from "../src/app/run-reminders";
 import { CreateGoalUseCase } from "../src/modules/planning/application/goals/create-goal.use-case";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { createProgressOperations } from "../src/modules/progress";
@@ -113,16 +113,19 @@ describe("progress reports with D1 and fake transport", () => {
     } as unknown as CloudflareBindings;
     try {
       await runReminders(bindings, NOW);
+      expect((await jobs()).results).toHaveLength(0);
+      expect(send).not.toHaveBeenCalled();
+      await runReminders(bindings, NOW + 60_000);
       const [prepared] = (await jobs()).results;
       expect(prepared?.status).toBe("pending");
       expect(prepared?.payload).toBe("[]");
       expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 60_000);
+      await runReminders(bindings, NOW + 120_000);
       expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(1);
       expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 120_000);
-      expect((await jobs()).results[0]?.status).toBe("sent");
       await runReminders(bindings, NOW + 180_000);
+      expect((await jobs()).results[0]?.status).toBe("sent");
+      await runReminders(bindings, NOW + 240_000);
       expect(send).toHaveBeenCalledTimes(1);
     } finally {
       vi.unstubAllGlobals();

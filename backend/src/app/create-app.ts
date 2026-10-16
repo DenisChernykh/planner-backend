@@ -5,7 +5,7 @@ import {
 } from "../modules/identity-access";
 import type { IdentityContextVariables } from "../modules/identity-access/public-contracts";
 import { createNotesModule } from "../modules/notes";
-import { createPlanningMaintenance, createPlanningModule } from "../modules/planning";
+import { createPlanningModule } from "../modules/planning";
 import { createProgressModule } from "../modules/progress";
 import {
   createReminderOperations,
@@ -167,23 +167,4 @@ export function reminderTransport(env: CloudflareBindings) {
   return config.telegramBotMode === "webhook"
     ? createReminderTransport(config.telegramBotToken)
     : null;
-}
-const reminderRunners = new WeakMap<
-  CloudflareBindings,
-  ReturnType<typeof createReminderOperations>
->();
-
-export async function runReminders(env: CloudflareBindings, now: number): Promise<void> {
-  if (Math.floor(now / 60_000) % 60 === 0) await createPlanningMaintenance(env.DB).execute(now);
-  let operations = reminderRunners.get(env);
-  if (!operations) {
-    operations = createReminderOperations(env.DB, reminderTransport(env), env.APP_ORIGIN);
-    reminderRunners.set(env, operations);
-  }
-  // Only wiring/transport is reused. Settings, schedules and delivery claims stay in D1.
-  await operations.runReminders.execute({
-    now,
-    deferNewReportSnapshot: true,
-    deferNewDelivery: true,
-  });
 }

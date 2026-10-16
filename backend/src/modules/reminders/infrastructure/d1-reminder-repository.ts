@@ -8,6 +8,7 @@ import {
   telegramLinkTokens,
 } from "../../../platform/database/schema";
 import type {
+  QueuedReminder,
   ReminderDeliveryState,
   ReminderRepository,
   ReminderSchedulingState,
@@ -22,7 +23,20 @@ import { inheritanceBatches } from "./inheritance-batches";
 
 type JobRow = typeof reminderJobs.$inferSelect;
 const toJob = (row: JobRow): ReminderJob => ({
-  ...row,
+  id: row.id,
+  eventKey: row.eventKey,
+  ownerId: row.ownerId,
+  goalId: row.goalId,
+  localDate: row.localDate,
+  dueAt: row.dueAt,
+  expiresAt: row.expiresAt,
+  leaseUntil: row.leaseUntil,
+  chatId: row.chatId,
+  messageId: row.messageId,
+  expectedRevision: row.expectedRevision,
+  payload: row.payload,
+  attempts: row.attempts,
+  createdAt: row.createdAt,
   kind: row.kind as ReminderJob["kind"],
   status: row.status as ReminderJob["status"],
 });
@@ -58,6 +72,65 @@ const jobColumns = `id, event_key AS eventKey, owner_id AS ownerId, goal_id AS g
   lease_until AS leaseUntil, chat_id AS chatId, message_id AS messageId,
   expected_revision AS expectedRevision, payload, attempts, created_at AS createdAt`;
 
+type DeliveryRow = SettingsRow & {
+  chat_id: string | null;
+  telegram_user_id: string | null;
+  link_status: string | null;
+  goal_id: string | null;
+  mode: GoalReminder["mode"];
+  time: string;
+  weekdays: string;
+  next_run_at: number | null;
+  rule_revision: string;
+  goal_month: string | null;
+  goal_title: string;
+  tracking_config: string;
+  has_entry: number;
+};
+const deliveryColumns = `s.*, l.chat_id, l.telegram_user_id, l.status AS link_status,
+  r.goal_id, r.mode, r.time, r.weekdays, r.next_run_at, r.revision AS rule_revision,
+  g.month AS goal_month, g.title AS goal_title, g.tracking_config,
+  EXISTS (SELECT 1 FROM goal_entries e WHERE e.goal_id = g.id AND e.local_date = j.localDate) AS has_entry`;
+const deliveryJoins = `LEFT JOIN reminder_settings s ON s.owner_id = j.ownerId
+  LEFT JOIN telegram_links l ON l.owner_id = j.ownerId
+  LEFT JOIN goal_reminders r ON r.owner_id = j.ownerId AND r.goal_id = j.goalId
+  LEFT JOIN plan_goals g ON g.owner_id = j.ownerId AND g.id = j.goalId AND g.deleted_at IS NULL`;
+function deliveryFromRow(row: DeliveryRow, ownerId: string): ReminderDeliveryState {
+  return {
+    settings: row.owner_id
+      ? settingsFromRow(row)
+      : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null },
+    link:
+      row.chat_id && row.telegram_user_id && row.link_status
+        ? {
+            ownerId,
+            chatId: row.chat_id,
+            telegramUserId: row.telegram_user_id,
+            status: row.link_status,
+          }
+        : null,
+    reminder: row.goal_id
+      ? {
+          ownerId,
+          goalId: row.goal_id,
+          mode: row.mode,
+          time: row.time,
+          weekdays: JSON.parse(row.weekdays) as number[],
+          nextRunAt: row.next_run_at,
+          revision: row.rule_revision,
+        }
+      : null,
+    question: row.goal_month
+      ? {
+          month: row.goal_month,
+          title: row.goal_title,
+          tracking: JSON.parse(row.tracking_config),
+          hasEntry: Boolean(row.has_entry),
+        }
+      : null,
+  };
+}
+
 // Unsent automatic jobs can be rebuilt after a schedule edit. Keep delivery history,
 // including uncertain sends, and never release the event key of a delivered message.
 const replaceableAutomaticJob = and(
@@ -84,55 +157,19 @@ export class D1ReminderRepository implements ReminderRepository {
       .first<SettingsRow>();
     return row ? settingsFromRow(row) : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null };
   }
-  async deliveryState(ownerId: string, goalId: string | null): Promise<ReminderDeliveryState> {
-    // A single fresh read replaces separate settings, connection and rule calls.
-    // Only calendar machinery/wiring is cached; eligibility always comes from D1.
+  async deliveryState(
+    ownerId: string,
+    goalId: string | null,
+    date: string,
+  ): Promise<ReminderDeliveryState> {
+    // Interactive sends use the same owner-scoped snapshot as queued delivery.
     const row = await this.binding
-      .prepare(`SELECT s.*, l.chat_id, l.telegram_user_id, l.status AS link_status,
-        r.goal_id, r.mode, r.time, r.weekdays, r.next_run_at, r.revision AS rule_revision
-        FROM (SELECT ? AS owner_id) u
-        LEFT JOIN reminder_settings s ON s.owner_id = u.owner_id
-        LEFT JOIN telegram_links l ON l.owner_id = u.owner_id
-        LEFT JOIN goal_reminders r ON r.owner_id = u.owner_id AND r.goal_id = ?`)
-      .bind(ownerId, goalId)
-      .first<
-        SettingsRow & {
-          chat_id: string | null;
-          telegram_user_id: string | null;
-          link_status: string | null;
-          goal_id: string | null;
-          mode: GoalReminder["mode"];
-          time: string;
-          weekdays: string;
-          next_run_at: number | null;
-          rule_revision: string;
-        }
-      >();
-    return {
-      settings: row?.owner_id
-        ? settingsFromRow(row)
-        : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null },
-      link:
-        row?.chat_id && row.telegram_user_id && row.link_status
-          ? {
-              ownerId,
-              chatId: row.chat_id,
-              telegramUserId: row.telegram_user_id,
-              status: row.link_status,
-            }
-          : null,
-      reminder: row?.goal_id
-        ? {
-            ownerId,
-            goalId: row.goal_id,
-            mode: row.mode,
-            time: row.time,
-            weekdays: JSON.parse(row.weekdays) as number[],
-            nextRunAt: row.next_run_at,
-            revision: row.rule_revision,
-          }
-        : null,
-    };
+      .prepare(`SELECT ${deliveryColumns}
+        FROM (SELECT ? AS ownerId, ? AS goalId, ? AS localDate) j ${deliveryJoins}`)
+      .bind(ownerId, goalId, date)
+      .first<DeliveryRow>();
+    if (!row) throw new Error("Missing delivery state");
+    return deliveryFromRow(row, ownerId);
   }
   async saveSettings(
     settings: ReminderSettings,
@@ -226,6 +263,8 @@ export class D1ReminderRepository implements ReminderRepository {
         coalesce(s.quiet_start, '23:00') AS quiet_start, coalesce(s.quiet_end, '08:00') AS quiet_end,
         coalesce(s.evening_time, '21:00') AS evening_time, s.next_evening_at,
         coalesce(s.revision, 'initial') AS revision,
+        CASE WHEN p.enabled = 1 THEN min(coalesce(p.next_wednesday_at, 8640000000000000),
+          coalesce(p.next_sunday_at, 8640000000000000)) END AS next_report_at,
         (SELECT json_group_array(month) FROM plan_month_rollovers WHERE owner_id = u.id) AS prepared_months,
         (SELECT json_group_array(DISTINCT target.month) FROM plan_goals target
           WHERE target.owner_id = u.id AND target.deleted_at IS NULL AND target.carried_from_goal_id IS NOT NULL
@@ -240,12 +279,14 @@ export class D1ReminderRepository implements ReminderRepository {
         )) AS next_goal_runs
         FROM users u JOIN telegram_links l ON l.owner_id = u.id AND l.status = 'active'
         LEFT JOIN reminder_settings s ON s.owner_id = u.id
-        WHERE s.enabled = 1 OR EXISTS (SELECT 1 FROM progress_report_settings p WHERE p.owner_id = u.id AND p.enabled = 1)`)
+        LEFT JOIN progress_report_settings p ON p.owner_id = u.id
+        WHERE s.enabled = 1 OR p.enabled = 1`)
       .all<
         SettingsRow & {
           prepared_months: string;
           inheritance_months: string;
           next_goal_runs: string;
+          next_report_at: number | null;
         }
       >();
     return rows.results.map((row) => ({
@@ -253,6 +294,7 @@ export class D1ReminderRepository implements ReminderRepository {
       preparedMonths: JSON.parse(row.prepared_months) as string[],
       inheritanceMonths: JSON.parse(row.inheritance_months) as string[],
       nextGoalRuns: JSON.parse(row.next_goal_runs) as Record<string, number>,
+      nextReportAt: row.next_report_at,
     }));
   }
   async reminders(ownerId: string): Promise<GoalReminder[]> {
@@ -261,6 +303,22 @@ export class D1ReminderRepository implements ReminderRepository {
       .bind(ownerId)
       .all<typeof goalReminders.$inferSelect>();
     return rows.results.map(toReminder);
+  }
+  async digestCandidates(ownerId: string, date: string) {
+    const rows = await this.binding
+      .prepare(`SELECT ${reminderColumns}, g.id, g.title,
+      EXISTS (SELECT 1 FROM goal_entries e WHERE e.goal_id = g.id AND e.local_date = ?) AS has_entry
+      FROM plan_goals g JOIN goal_reminders r ON r.goal_id = g.id AND r.owner_id = g.owner_id
+      WHERE g.owner_id = ? AND g.month = ? AND g.deleted_at IS NULL
+      ORDER BY CASE g.cadence_period WHEN 'day' THEN 0 WHEN 'week' THEN 1 ELSE 2 END, g.sort_order, g.id`)
+      .bind(date, ownerId, date.slice(0, 7))
+      .all<typeof goalReminders.$inferSelect & { id: string; title: string; has_entry: number }>();
+    return rows.results.map((row) => ({
+      id: row.id,
+      title: row.title,
+      reminder: toReminder(row),
+      hasEntry: Boolean(row.has_entry),
+    }));
   }
   async reminder(ownerId: string, goalId: string): Promise<GoalReminder | null> {
     const row = await this.binding
@@ -558,10 +616,23 @@ export class D1ReminderRepository implements ReminderRepository {
       )
       .bind(now);
   }
-  async recoverAndDue(now: number): Promise<ReminderJob[]> {
-    const statements = [...this.recoveryStatements(now), this.dueStatement(now)];
-    const results = await this.binding.batch<JobRow>(statements);
-    return (results.at(-1)?.results ?? []).map(toJob);
+  async recoverAndDue(now: number): Promise<QueuedReminder[]> {
+    // Recovery and the due job's complete send snapshot share one D1 round trip.
+    // The final claim still atomically rechecks mutable eligibility.
+    const snapshot = this.binding
+      .prepare(`SELECT j.*, ${deliveryColumns} FROM (
+      SELECT ${jobColumns} FROM reminder_jobs
+      WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1
+    ) j ${deliveryJoins}`)
+      .bind(now);
+    const results = await this.binding.batch<JobRow & DeliveryRow>([
+      ...this.recoveryStatements(now),
+      snapshot,
+    ]);
+    return (results.at(-1)?.results ?? []).map((row) => ({
+      ...toJob(row),
+      deliveryState: deliveryFromRow(row, row.ownerId),
+    }));
   }
   async job(id: string): Promise<ReminderJob | null> {
     const row = await this.binding

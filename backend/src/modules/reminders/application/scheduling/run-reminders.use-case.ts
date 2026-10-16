@@ -1,7 +1,7 @@
 import { dueGoalReminders, isRecentOccurrence } from "../../domain/jobs";
 import { afterQuietHours, localDate, nextOccurrence } from "../../domain/schedule";
 import type { DeliverReminderUseCase } from "../delivery/deliver-reminder.use-case";
-import type { ReminderRepository } from "../ports/reminder-repository";
+import type { QueuedReminder, ReminderRepository } from "../ports/reminder-repository";
 import type { ProgressReportsUseCases } from "../reports/progress-reports";
 import { makeJob } from "./make-job";
 import type { PrepareCurrentPlanUseCase } from "./prepare-current-plan.use-case";
@@ -10,9 +10,9 @@ export class RunRemindersUseCase {
   constructor(
     private readonly repository: ReminderRepository,
     private readonly botAvailable: boolean,
-    private readonly deliver: DeliverReminderUseCase,
-    private readonly prepareCurrentPlan: PrepareCurrentPlanUseCase,
-    private readonly reports?: ProgressReportsUseCases,
+    private readonly deliver: Pick<DeliverReminderUseCase, "execute">,
+    private readonly prepareCurrentPlan: Pick<PrepareCurrentPlanUseCase, "execute">,
+    private readonly reports?: Pick<ProgressReportsUseCases, "schedule" | "deliver">,
   ) {}
 
   async execute({
@@ -105,20 +105,21 @@ export class RunRemindersUseCase {
         if (deferNewDelivery) return;
       }
     }
-    await this.reports?.schedule(now, deferNewDelivery ? 1 : Infinity);
+    if (states.some((state) => state.nextReportAt !== null && state.nextReportAt <= now))
+      await this.reports?.schedule(now, deferNewDelivery ? 1 : Infinity);
     if (deferNewDelivery) return;
     await this.deliverQueued(await this.repository.due(now), now, deferNewReportSnapshot);
   }
 
   private async deliverQueued(
-    jobs: Awaited<ReturnType<ReminderRepository["due"]>>,
+    jobs: QueuedReminder[],
     now: number,
     deferNewReportSnapshot: boolean,
   ) {
     for (const job of jobs) {
       if (job.kind === "weekly-progress")
-        await this.reports?.deliver(job.id, now, deferNewReportSnapshot);
-      else await this.deliver.execute({ job, now });
+        await this.reports?.deliver(job.id, now, deferNewReportSnapshot, job);
+      else await this.deliver.execute({ job, now, state: job.deliveryState });
     }
   }
 }

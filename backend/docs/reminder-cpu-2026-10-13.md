@@ -320,3 +320,71 @@ headroom on sending. It does not establish a worst-case bound, repeated-delivery
 reliability, cold-isolate performance, digest/report CPU, or monthly work. The
 previous first-tick 12.731-ms counterexample remains valid: the overall strict
 per-invocation CPU criterion is still unmet.
+
+## Further CPU reduction — 16 October 2026, pending publication
+
+The next implementation reduces the work on both the first idle invocation and
+real message delivery. It does not retroactively invalidate the 12.731-ms
+production event or establish a new production bound before deployment.
+
+- The Cron composition now validates only its outgoing bot configuration and
+  constructs a small reminder runner. Full HTTP/OIDC validation remains on HTTP
+  requests; link, answer, planning and report operations are constructed only
+  when needed. Idle ticks also skip the report query when no report is due.
+- Recovery and due-job lookup include an owner-scoped delivery snapshot of the
+  settings, connection, rule, question definition and existence of that date's
+  entry. Question delivery drops from seven SQL statements to four. The atomic
+  claim still rechecks the current owner, active goal/chat, rule/settings
+  revisions, expiry and absence of an answer before sending.
+- Digest preparation reads only the goal titles, reminder rules and existence
+  of entries for the original local date. It no longer loads full goal resources
+  and entry histories. Its send tick drops from nine statements to six.
+- Report delivery reuses the current tick's settings/link snapshot and validates
+  selected goal IDs with a bounded-column query instead of loading their entry
+  histories. Its send tick drops from thirteen statements to seven; snapshot
+  preparation drops from twelve to nine. Selection/settings checks in the atomic
+  report claim remain in place.
+- Outgoing `sendMessage`, `editMessageText` and `getMe` use small JSON Bot API
+  requests with a five-second timeout. Inline/URL buttons, HTML, force replies,
+  explicit 429 backoff and blocked chats are preserved. Network errors, timeouts
+  and malformed/ambiguous responses remain `unknown`, with no automatic resend.
+  Incoming webhooks still use grammY. Transport errors are sanitized.
+- The first minute of each UTC hour is reserved for bounded retention work;
+  it does not also schedule or send. Persisted due work resumes the next minute,
+  adding up to one minute of waiting at an hour boundary. No resources,
+  migrations or additional Cron triggers are required.
+
+Sequential local workerd comparisons used the same fixture and profiler against
+`e86643a` and the candidate working tree. The fixture has two synthetic owners,
+twenty goals each, local D1 and fake Telegram responses; external requests are
+denied. Full samples and statement counts are saved in
+[`reminder-cpu-2026-10-16-local.json`](reminder-cpu-2026-10-16-local.json).
+
+| Warm scenario, 15 ticks each | Baseline median ms | Candidate median ms | Baseline / candidate SQL statements |
+| --- | ---: | ---: | --- |
+| Idle | 1.777 | 0.848 | 4 / 3 |
+| Schedule a question | 1.614 | 1.623 | 6 / 6 |
+| Deliver a newly scheduled question | 2.090 | 1.167 | 7 / 4 |
+| Deliver an already queued question | 1.772 | 0.945 | 7 / 4 |
+| Deliver a digest | 2.584 | 1.604 | 9 / 6 |
+| Prepare a weekly report snapshot | 3.318 | 3.159 | 12 / 9 |
+| Deliver a weekly report snapshot | 3.149 | 1.761 | 13 / 7 |
+| Copy a month | 2.854 | 2.448 | 10 / 10 |
+| Inherit month settings | 3.038 | 3.014 | 9 / 9 |
+
+Three additional fresh workerd instances per scenario measured first idle
+invocations at 4.006–4.941 ms for the baseline and 3.284–5.035 ms for the candidate.
+First invocations with a queued question measured 6.054–8.312 ms versus
+3.272–4.037 ms. At an hour boundary, the candidate performed only maintenance
+(2.473–3.095 ms, four statements, no message); the baseline combined maintenance
+and sending (7.290–8.268 ms, ten statements, one message), so those are different
+units of work rather than an equivalent-send timing comparison.
+
+The idle first-call ranges overlap and sampling has visible variance, including
+zero-sample ticks. These are local active-sample estimates, not Cloudflare CPU
+accounting or a statistically established worst-case bound. Scheduling was not
+shown faster, and report/month first-use paths remain part of production
+verification. **The specific 12.731-ms exceedance cannot be declared eliminated
+until the new revision is deployed and measured.** Publishing this revision and
+any additional test question require fresh authorization; the earlier approval
+covered `9859703` and one already-completed control question.

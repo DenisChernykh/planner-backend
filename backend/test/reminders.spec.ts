@@ -181,15 +181,29 @@ describe("Telegram reminders with D1", () => {
 
   it("does not read another owner's reminder through the combined delivery state", async () => {
     const created = await goal();
-    const state = await repository.deliveryState("another-owner", created.id);
+    const state = await repository.deliveryState("another-owner", created.id, "2026-09-29");
     expect(state).toEqual({
       settings: { ownerId: "another-owner", ...DEFAULT_SETTINGS, nextEveningAt: null },
       link: null,
       reminder: null,
+      question: null,
     });
   });
 
-  it.each(["answer", "rule", "connection"])(
+  it("claims a staged question only once when two delivery ticks race", async () => {
+    await goal({ type: "check" });
+    const runner = operations();
+    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
+    await runner.runReminders.execute({ now, deferNewDelivery: true });
+    await Promise.all([
+      runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true }),
+      runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true }),
+    ]);
+    expect(sent).toHaveLength(1);
+    expect(await firstJob()).toMatchObject({ status: "sent", attempts: 1, messageId: 1 });
+  });
+
+  it.each(["answer", "rule", "connection", "settings", "deletion"])(
     "rejects a concurrent %s change at the delivery claim",
     async (change) => {
       const created = await goal({ type: "check" });
@@ -215,6 +229,16 @@ describe("Telegram reminders with D1", () => {
             "UPDATE goal_reminders SET mode = 'off', revision = 'changed' WHERE goal_id = ?",
           )
             .bind(created.id)
+            .run();
+        else if (change === "settings")
+          await env.DB.prepare(
+            "UPDATE reminder_settings SET enabled = 0, revision = 'changed' WHERE owner_id = ?",
+          )
+            .bind(OWNER)
+            .run();
+        else if (change === "deletion")
+          await env.DB.prepare("UPDATE plan_goals SET deleted_at = ? WHERE id = ?")
+            .bind(at, created.id)
             .run();
         else
           await env.DB.prepare("UPDATE telegram_links SET status = 'blocked' WHERE owner_id = ?")
@@ -847,13 +871,15 @@ describe("reminder runtime integration", () => {
         TELEGRAM_BOT_TOKEN: "321:runtime-test-token",
         TELEGRAM_BOT_WEBHOOK_SECRET: "runtime-test-secret",
       } as unknown as CloudflareBindings;
-      for (let step = 0; step < 3; step++) {
+      // The exact hour is reserved for retention, then preparation, scheduling
+      // and delivery each get an independent invocation.
+      for (let step = 0; step < 4; step++) {
         vi.setSystemTime(now + step * 60_000);
         await runtime.default.scheduled(
           { scheduledTime: now + step * 60_000, cron: "* * * * *", noRetry() {} },
           bindings,
         );
-        if (step < 2) expect(messageId).toBe(0);
+        if (step < 3) expect(messageId).toBe(0);
       }
       const job = await firstJob();
       expect(job.messageId).toBe(1);

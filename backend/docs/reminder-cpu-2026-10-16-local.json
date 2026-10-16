@@ -1,0 +1,425 @@
+{
+  "measuredOn": "2026-10-16",
+  "runtime": {
+    "node": "v24.18.0",
+    "pnpm": "11.15.1"
+  },
+  "method": "Sequential local workerd V8 CPU sampling at 100 us; active sample deltas exclude idle/root/program. Not production CPU accounting.",
+  "fixture": "Two synthetic owners, 20 goals each, local D1, fake Telegram responses; external network denied.",
+  "baseline": "e86643afd211baa0e698171c1ebad0d7f3eed476",
+  "candidate": "Working tree accompanying this evidence",
+  "warmed": {
+    "baseline": [
+      {
+        "scenario": "idle",
+        "ticks": 15,
+        "queries": [4],
+        "messages": [0],
+        "medianMs": 1.777,
+        "p90Ms": 1.968,
+        "samplesMs": [
+          1.931, 1.804, 1.359, 1.803, 1.777, 1.63, 0.843, 1.809, 1.483, 1.928, 1.612, 2.357, 1.609,
+          1.968, 0
+        ]
+      },
+      {
+        "scenario": "question",
+        "ticks": 15,
+        "queries": [6],
+        "messages": [0],
+        "medianMs": 1.614,
+        "p90Ms": 2.081,
+        "samplesMs": [
+          3.689, 0.305, 1.752, 1.614, 1.778, 1.759, 1.976, 0.458, 2.081, 0.616, 1.147, 1.767, 1.152,
+          0, 1.313
+        ]
+      },
+      {
+        "scenario": "question-send",
+        "ticks": 15,
+        "queries": [7],
+        "messages": [1],
+        "medianMs": 2.09,
+        "p90Ms": 2.546,
+        "samplesMs": [
+          3.456, 1.25, 2.072, 1.765, 2.238, 2.07, 2.28, 2.546, 2.491, 2.135, 2.273, 2.087, 1.311,
+          1.626, 2.09
+        ]
+      },
+      {
+        "scenario": "digest",
+        "ticks": 15,
+        "queries": [6],
+        "messages": [0],
+        "medianMs": 0.683,
+        "p90Ms": 1.769,
+        "samplesMs": [
+          0.838, 1.936, 0, 1.634, 0.625, 0, 0, 0.978, 0, 0.315, 0, 0.683, 1.302, 1.769, 1.314
+        ]
+      },
+      {
+        "scenario": "digest-send",
+        "ticks": 15,
+        "queries": [9],
+        "messages": [1],
+        "medianMs": 2.584,
+        "p90Ms": 3.924,
+        "samplesMs": [
+          4.954, 3.924, 3.515, 2.584, 2.978, 2.69, 1.599, 1.928, 0.614, 3.924, 2.221, 2.699, 2.555,
+          2.078, 2.396
+        ]
+      },
+      {
+        "scenario": "queued-question",
+        "ticks": 15,
+        "queries": [7],
+        "messages": [1],
+        "medianMs": 1.772,
+        "p90Ms": 2.089,
+        "samplesMs": [
+          1.772, 2.086, 1.157, 2.091, 1.773, 1.462, 1.79, 1.927, 0.469, 0.79, 0.697, 2.079, 1.168,
+          2.089, 0.629
+        ]
+      },
+      {
+        "scenario": "weekly-report",
+        "ticks": 15,
+        "queries": [8],
+        "messages": [0],
+        "medianMs": 1.934,
+        "p90Ms": 3.195,
+        "samplesMs": [
+          3.626, 1.917, 2.093, 1.935, 0.467, 3.195, 1.463, 1.921, 1.934, 2.088, 2.245, 1.787, 2.233,
+          1.911, 1.931
+        ]
+      },
+      {
+        "scenario": "weekly-report-prepare",
+        "ticks": 15,
+        "queries": [12],
+        "messages": [0],
+        "medianMs": 3.318,
+        "p90Ms": 5.335,
+        "samplesMs": [
+          5.335, 4.389, 2.347, 2.64, 3.922, 3.006, 3.156, 3.115, 3.475, 3.465, 2.491, 3.168, 3.467,
+          6.899, 3.318
+        ]
+      },
+      {
+        "scenario": "weekly-report-send",
+        "ticks": 15,
+        "queries": [13],
+        "messages": [1],
+        "medianMs": 3.149,
+        "p90Ms": 4.114,
+        "samplesMs": [
+          4.114, 5.012, 2.997, 3.149, 2.171, 1.866, 3.31, 1.892, 3.164, 2.701, 3.476, 2.69, 3.289,
+          1.241, 3.313
+        ]
+      },
+      {
+        "scenario": "rollover",
+        "ticks": 15,
+        "queries": [10],
+        "messages": [0],
+        "medianMs": 2.854,
+        "p90Ms": 3.275,
+        "samplesMs": [
+          2.885, 3.671, 2.854, 3.037, 2.031, 2.376, 2.243, 2.87, 3.033, 1.461, 2.225, 2.25, 3.275,
+          2.266, 3.02
+        ]
+      },
+      {
+        "scenario": "rollover-inherit",
+        "ticks": 15,
+        "queries": [9],
+        "messages": [0],
+        "medianMs": 3.038,
+        "p90Ms": 3.795,
+        "samplesMs": [
+          4.171, 2.504, 3.038, 2.858, 2.862, 3.032, 3.795, 3.493, 3.347, 3.47, 2.338, 2.334, 3.166,
+          2.874, 3.487
+        ]
+      }
+    ],
+    "candidate": [
+      {
+        "scenario": "idle",
+        "ticks": 15,
+        "queries": [3],
+        "messages": [0],
+        "medianMs": 0.848,
+        "p90Ms": 1.452,
+        "samplesMs": [
+          1.016, 1.323, 1.452, 1.307, 0.848, 1.161, 0.681, 0.837, 0, 0.783, 1.147, 0, 0, 1.469,
+          0.846
+        ]
+      },
+      {
+        "scenario": "question",
+        "ticks": 15,
+        "queries": [6],
+        "messages": [0],
+        "medianMs": 1.623,
+        "p90Ms": 2.859,
+        "samplesMs": [
+          2.859, 1.773, 1.615, 1.39, 1.454, 1.284, 3.125, 1.15, 1.689, 2.842, 0, 1.746, 1.623,
+          1.923, 0
+        ]
+      },
+      {
+        "scenario": "question-send",
+        "ticks": 15,
+        "queries": [4],
+        "messages": [1],
+        "medianMs": 1.167,
+        "p90Ms": 2.67,
+        "samplesMs": [
+          2.402, 0.494, 2.054, 0.62, 1.167, 0.316, 2.74, 0, 2.67, 0.819, 1.466, 1.473, 0.993, 0.974,
+          1.451
+        ]
+      },
+      {
+        "scenario": "digest",
+        "ticks": 15,
+        "queries": [6],
+        "messages": [0],
+        "medianMs": 1.359,
+        "p90Ms": 2.435,
+        "samplesMs": [
+          2.086, 0.947, 1.472, 2.435, 4.116, 1.787, 2.092, 0, 0.841, 0.309, 0.934, 1.664, 0.926,
+          0.468, 1.359
+        ]
+      },
+      {
+        "scenario": "digest-send",
+        "ticks": 15,
+        "queries": [6],
+        "messages": [1],
+        "medianMs": 1.604,
+        "p90Ms": 2.216,
+        "samplesMs": [
+          1.663, 1.292, 1.6, 2.232, 1.604, 1.76, 1.261, 0.779, 1.449, 1.768, 2.216, 1.92, 1.613,
+          1.453, 1.14
+        ]
+      },
+      {
+        "scenario": "queued-question",
+        "ticks": 15,
+        "queries": [4],
+        "messages": [1],
+        "medianMs": 0.945,
+        "p90Ms": 1.774,
+        "samplesMs": [
+          0.945, 0, 0.762, 0.785, 0, 0.776, 1.466, 1.464, 1.774, 1.479, 0.701, 1.33, 1.463, 0, 1.798
+        ]
+      },
+      {
+        "scenario": "weekly-report",
+        "ticks": 15,
+        "queries": [8],
+        "messages": [0],
+        "medianMs": 2.076,
+        "p90Ms": 3.056,
+        "samplesMs": [
+          3.645, 2.558, 1.909, 2.869, 2.076, 3.056, 0.789, 2.077, 1.911, 1.932, 0.622, 2.08, 1.934,
+          2.079, 1.42
+        ]
+      },
+      {
+        "scenario": "weekly-report-prepare",
+        "ticks": 15,
+        "queries": [9],
+        "messages": [0],
+        "medianMs": 3.159,
+        "p90Ms": 4.792,
+        "samplesMs": [
+          8.11, 2.683, 2.826, 2.314, 3.009, 3.319, 3.159, 4.792, 3.313, 3.124, 3.168, 3.436, 3.601,
+          2.37, 3
+        ]
+      },
+      {
+        "scenario": "weekly-report-send",
+        "ticks": 15,
+        "queries": [7],
+        "messages": [1],
+        "medianMs": 1.761,
+        "p90Ms": 2.227,
+        "samplesMs": [
+          2.821, 1.294, 1.933, 1.626, 2.118, 1.463, 1.748, 1.761, 2.227, 2.066, 1.768, 1.749, 1.098,
+          2.22, 1.753
+        ]
+      },
+      {
+        "scenario": "rollover",
+        "ticks": 15,
+        "queries": [10],
+        "messages": [0],
+        "medianMs": 2.448,
+        "p90Ms": 3.95,
+        "samplesMs": [
+          4.083, 2.234, 2.763, 2.39, 3.325, 2.393, 2.236, 2.42, 2.402, 3.95, 3.307, 3.251, 2.874,
+          1.722, 2.448
+        ]
+      },
+      {
+        "scenario": "rollover-inherit",
+        "ticks": 15,
+        "queries": [9],
+        "messages": [0],
+        "medianMs": 3.014,
+        "p90Ms": 3.325,
+        "samplesMs": [
+          2.489, 3.139, 3.484, 2.33, 1.57, 2.549, 2.483, 3.189, 2.513, 3.052, 2.483, 3.014, 3.065,
+          3.032, 3.325
+        ]
+      }
+    ]
+  },
+  "fresh": [
+    {
+      "source": "baseline",
+      "scenario": "idle",
+      "repeat": 0,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 4.798
+    },
+    {
+      "source": "baseline",
+      "scenario": "idle",
+      "repeat": 1,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 4.006
+    },
+    {
+      "source": "baseline",
+      "scenario": "idle",
+      "repeat": 2,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 4.941
+    },
+    {
+      "source": "baseline",
+      "scenario": "queued-question",
+      "repeat": 0,
+      "queries": 7,
+      "messages": 1,
+      "sampledActiveMs": 7.569
+    },
+    {
+      "source": "baseline",
+      "scenario": "queued-question",
+      "repeat": 1,
+      "queries": 7,
+      "messages": 1,
+      "sampledActiveMs": 8.312
+    },
+    {
+      "source": "baseline",
+      "scenario": "queued-question",
+      "repeat": 2,
+      "queries": 7,
+      "messages": 1,
+      "sampledActiveMs": 6.054
+    },
+    {
+      "source": "baseline",
+      "scenario": "hour-queued-question",
+      "repeat": 0,
+      "queries": 10,
+      "messages": 1,
+      "sampledActiveMs": 7.29
+    },
+    {
+      "source": "baseline",
+      "scenario": "hour-queued-question",
+      "repeat": 1,
+      "queries": 10,
+      "messages": 1,
+      "sampledActiveMs": 8.268
+    },
+    {
+      "source": "baseline",
+      "scenario": "hour-queued-question",
+      "repeat": 2,
+      "queries": 10,
+      "messages": 1,
+      "sampledActiveMs": 7.582
+    },
+    {
+      "source": "candidate",
+      "scenario": "idle",
+      "repeat": 0,
+      "queries": 3,
+      "messages": 0,
+      "sampledActiveMs": 4.24
+    },
+    {
+      "source": "candidate",
+      "scenario": "idle",
+      "repeat": 1,
+      "queries": 3,
+      "messages": 0,
+      "sampledActiveMs": 5.035
+    },
+    {
+      "source": "candidate",
+      "scenario": "idle",
+      "repeat": 2,
+      "queries": 3,
+      "messages": 0,
+      "sampledActiveMs": 3.284
+    },
+    {
+      "source": "candidate",
+      "scenario": "queued-question",
+      "repeat": 0,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 3.874
+    },
+    {
+      "source": "candidate",
+      "scenario": "queued-question",
+      "repeat": 1,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 4.037
+    },
+    {
+      "source": "candidate",
+      "scenario": "queued-question",
+      "repeat": 2,
+      "queries": 4,
+      "messages": 1,
+      "sampledActiveMs": 3.272
+    },
+    {
+      "source": "candidate",
+      "scenario": "hour-queued-question",
+      "repeat": 0,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 3.095
+    },
+    {
+      "source": "candidate",
+      "scenario": "hour-queued-question",
+      "repeat": 1,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 2.473
+    },
+    {
+      "source": "candidate",
+      "scenario": "hour-queued-question",
+      "repeat": 2,
+      "queries": 4,
+      "messages": 0,
+      "sampledActiveMs": 2.66
+    }
+  ]
+}

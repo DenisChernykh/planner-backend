@@ -15,6 +15,8 @@ const { build } = dependencies("esbuild");
 const state = await mkdtemp(join(tmpdir(), "planner-reminder-profile-"));
 const scriptPath = join(state, "worker.mjs");
 const sourceRef = process.env.PLANNER_PROFILE_REF;
+const iterations = Number(process.env.PLANNER_PROFILE_ITERATIONS ?? 15);
+assert.ok(Number.isInteger(iterations) && iterations >= 1 && iterations <= 50);
 if (sourceRef) {
   const run = promisify(execFile);
   const { stdout } = await run("git", ["archive", sourceRef, "backend/src"], {
@@ -275,6 +277,7 @@ try {
     JSON.stringify({
       scenario: "first-run",
       firstScenario,
+      sourceRef: sourceRef ?? "working-tree",
       ...firstRun,
       sampledActiveMs: firstActiveMs,
       top: [...firstTop].sort((a, b) => b[1] - a[1]).slice(0, 10),
@@ -285,21 +288,23 @@ try {
       `${process.env.PLANNER_PROFILE_OUTPUT}-first-run.cpuprofile`,
       JSON.stringify(firstProfile),
     );
-  for (const scenario of [
-    "idle",
-    "question",
-    "digest",
-    "queued-question",
-    "weekly-report",
-    "rollover",
-    "rollover-inherit",
-  ]) {
+  for (const scenario of process.env.PLANNER_PROFILE_FIRST_ONLY === "1"
+    ? []
+    : [
+        "idle",
+        "question",
+        "digest",
+        "queued-question",
+        "weekly-report",
+        "rollover",
+        "rollover-inherit",
+      ]) {
     const results = [];
     const profiles = [];
     const active = new Map();
     const times = [];
     const followups = new Map();
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < iterations; i++) {
       const at = await setup(scenario);
       await command("Profiler.start");
       results.push(await tick(at));
@@ -354,8 +359,8 @@ try {
         ticks: results.length,
         queries: results.map((result) => result.queries),
         messages: results.map((result) => result.messages),
-        sampledActiveMsMedian: sorted[7],
-        sampledActiveMsP90: sorted[13],
+        sampledActiveMsMedian: sorted[Math.floor(sorted.length * 0.5)],
+        sampledActiveMsP90: sorted[Math.floor(sorted.length * 0.9)],
         sampledActiveMs: times,
         top: [...active].sort((a, b) => b[1] - a[1]).slice(0, 8),
       }),

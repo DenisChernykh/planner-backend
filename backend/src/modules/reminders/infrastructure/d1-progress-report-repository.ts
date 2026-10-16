@@ -22,6 +22,16 @@ const map = (row: Row): ReportSettings => ({
   revision: row.revision,
 });
 export class D1ProgressReportRepository implements ProgressReportRepository {
+  async activeGoalIds(ownerId: string, fromMonth: string, toMonth: string): Promise<string[]> {
+    const rows = await this.database
+      .prepare(`SELECT g.id FROM plan_goals g
+      JOIN goal_progress_reports s ON s.goal_id = g.id AND s.owner_id = g.owner_id
+      WHERE g.owner_id = ? AND g.deleted_at IS NULL AND s.included = 1
+        AND g.month BETWEEN ? AND ? ORDER BY g.id`)
+      .bind(ownerId, fromMonth, toMonth)
+      .all<{ id: string }>();
+    return rows.results.map((row) => row.id);
+  }
   constructor(private readonly database: D1Database) {}
   async settings(ownerId: string): Promise<ReportSettings> {
     const row = await this.database

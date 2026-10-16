@@ -17,7 +17,7 @@ import {
 import { afterQuietHours, localDate } from "../../domain/schedule";
 import type { OutgoingMessage } from "../delivery/outgoing-message";
 import type { ProgressReportRepository } from "../ports/progress-report-repository";
-import type { ReminderRepository } from "../ports/reminder-repository";
+import type { QueuedReminder, ReminderRepository } from "../ports/reminder-repository";
 import { DeliveryError, type ReminderTransport } from "../ports/reminder-transport";
 import { makeJob } from "../scheduling/make-job";
 import type { PrepareCurrentPlanUseCase } from "../scheduling/prepare-current-plan.use-case";
@@ -292,15 +292,15 @@ export class ProgressReportsUseCases {
       }
     }
   }
-  async deliver(jobId: string, now: number, deferNewSnapshot = false) {
+  async deliver(jobId: string, now: number, deferNewSnapshot = false, queued?: QueuedReminder) {
     if (!this.transport) return;
-    const job = await this.reminders.job(jobId);
+    const job = queued ?? (await this.reminders.job(jobId));
     if (job?.status !== "pending") return;
     const [report, shared, general, link] = await Promise.all([
       this.reports.settings(job.ownerId),
       this.progress.settings(job.ownerId),
-      this.reminders.settings(job.ownerId),
-      this.reminders.link(job.ownerId),
+      queued?.deliveryState?.settings ?? this.reminders.settings(job.ownerId),
+      queued?.deliveryState ? queued.deliveryState.link : this.reminders.link(job.ownerId),
     ]);
     if (
       !report.enabled ||
@@ -320,21 +320,12 @@ export class ProgressReportsUseCases {
     let selectionChanged = false;
     if (snapshot) {
       const period = DateTime.fromISO(job.localDate, { zone: general.timeZone }).startOf("week");
-      const [selections, sources] = await Promise.all([
-        this.reports.selections(job.ownerId),
-        this.planning.progressSources(
-          job.ownerId,
-          period.toFormat("yyyy-MM"),
-          period.plus({ days: 6 }).toFormat("yyyy-MM"),
-        ),
-      ]);
-      const selected = new Set(
-        selections.filter((goal) => goal.included).map((goal) => goal.goalId),
+      // Validate the selection without loading every historical entry again.
+      const activeIds = await this.reports.activeGoalIds(
+        job.ownerId,
+        period.toFormat("yyyy-MM"),
+        period.plus({ days: 6 }).toFormat("yyyy-MM"),
       );
-      const activeIds = sources
-        .filter((goal) => selected.has(goal.id))
-        .map((goal) => goal.id)
-        .sort();
       selectionChanged = JSON.stringify([...snapshot.goalIds].sort()) !== JSON.stringify(activeIds);
     }
     if (
