@@ -304,6 +304,45 @@ export class D1ReminderRepository implements ReminderRepository {
       .all<typeof goalReminders.$inferSelect>();
     return rows.results.map(toReminder);
   }
+  async inheritanceState(ownerId: string, month: string, limit?: number) {
+    const rows = (
+      await this.binding
+        .prepare(`SELECT
+      target.carried_from_goal_id AS sourceGoalId, target.id AS targetGoalId,
+      EXISTS (SELECT 1 FROM goal_reminders inherited WHERE inherited.goal_id = target.id
+        AND inherited.owner_id = target.owner_id) AS hasReminder, ${reminderColumns}
+      FROM plan_goals target LEFT JOIN goal_reminders r
+        ON r.goal_id = target.carried_from_goal_id AND r.owner_id = target.owner_id
+      WHERE target.owner_id = ? AND target.month <= ? AND target.deleted_at IS NULL
+        AND target.carried_from_goal_id IS NOT NULL
+        ${
+          limit === undefined
+            ? ""
+            : `AND (r.goal_id IS NOT NULL AND NOT EXISTS (
+          SELECT 1 FROM goal_reminders inherited WHERE inherited.goal_id = target.id)
+        OR EXISTS (SELECT 1 FROM goal_progress_reports source
+          WHERE source.goal_id = target.carried_from_goal_id AND source.owner_id = target.owner_id)
+          AND NOT EXISTS (SELECT 1 FROM goal_progress_reports inherited WHERE inherited.goal_id = target.id))`
+        }
+        ORDER BY target.month, target.id ${limit === undefined ? "" : "LIMIT ?"}`)
+        .bind(ownerId, month, ...(limit === undefined ? [] : [limit]))
+        .all<
+          typeof goalReminders.$inferSelect & {
+            sourceGoalId: string;
+            targetGoalId: string;
+            hasReminder: number;
+          }
+        >()
+    ).results;
+    return {
+      carried: rows.map((row) => ({
+        sourceGoalId: row.sourceGoalId,
+        goalId: row.targetGoalId,
+        hasReminder: Boolean(row.hasReminder),
+      })),
+      sources: rows.filter((row) => row.goalId !== null).map(toReminder),
+    };
+  }
   async digestCandidates(ownerId: string, date: string) {
     const rows = await this.binding
       .prepare(`SELECT ${reminderColumns}, g.id, g.title,
@@ -620,18 +659,48 @@ export class D1ReminderRepository implements ReminderRepository {
     // Recovery and the due job's complete send snapshot share one D1 round trip.
     // The final claim still atomically rechecks mutable eligibility.
     const snapshot = this.binding
-      .prepare(`SELECT j.*, ${deliveryColumns} FROM (
+      .prepare(`SELECT j.*, ${deliveryColumns},
+      p.enabled AS report_enabled, p.revision AS report_revision,
+      p.wednesday_time, p.sunday_time, p.next_wednesday_at, p.next_sunday_at,
+      ps.starts_on, ps.revision AS progress_revision FROM (
       SELECT ${jobColumns} FROM reminder_jobs
       WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1
-    ) j ${deliveryJoins}`)
+    ) j ${deliveryJoins}
+      LEFT JOIN progress_report_settings p ON p.owner_id = j.ownerId AND j.kind = 'weekly-progress'
+      LEFT JOIN progress_settings ps ON ps.owner_id = j.ownerId AND j.kind = 'weekly-progress'`)
       .bind(now);
-    const results = await this.binding.batch<JobRow & DeliveryRow>([
-      ...this.recoveryStatements(now),
-      snapshot,
-    ]);
+    const results = await this.binding.batch<
+      JobRow &
+        DeliveryRow & {
+          report_enabled: number | null;
+          report_revision: number | null;
+          wednesday_time: string | null;
+          sunday_time: string | null;
+          next_wednesday_at: number | null;
+          next_sunday_at: number | null;
+          starts_on: string | null;
+          progress_revision: number | null;
+        }
+    >([...this.recoveryStatements(now), snapshot]);
     return (results.at(-1)?.results ?? []).map((row) => ({
       ...toJob(row),
       deliveryState: deliveryFromRow(row, row.ownerId),
+      ...(row.kind === "weekly-progress"
+        ? {
+            reportState: {
+              report: {
+                ownerId: row.ownerId,
+                enabled: Boolean(row.report_enabled),
+                wednesdayTime: row.wednesday_time ?? "21:00",
+                sundayTime: row.sunday_time ?? "21:00",
+                nextWednesdayAt: row.next_wednesday_at,
+                nextSundayAt: row.next_sunday_at,
+                revision: row.report_revision ?? 0,
+              },
+              progress: { startsOn: row.starts_on, revision: row.progress_revision ?? 0 },
+            },
+          }
+        : {}),
     }));
   }
   async job(id: string): Promise<ReminderJob | null> {

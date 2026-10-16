@@ -93,8 +93,8 @@ export type {
 export function createPlanningOperations(database: D1Database): PlanningOperations {
   const useCases = createPlanningUseCases(database);
   return {
-    progressSources: (ownerId, fromMonth, toMonth) =>
-      useCases.progressSources.execute(ownerId, fromMonth, toMonth),
+    progressSources: (ownerId, fromMonth, toMonth, entryGoalIds) =>
+      useCases.progressSources.execute(ownerId, fromMonth, toMonth, entryGoalIds),
     ensureCurrentPlan: (input) => useCases.ensureCurrentPlan.execute(input),
     list: (ownerId, month) => useCases.listPlan.execute({ ownerId, month }),
     listForDate: (ownerId, date) =>

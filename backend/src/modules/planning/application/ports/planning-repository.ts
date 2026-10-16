@@ -19,6 +19,7 @@ export interface PlanningRepository {
     ownerId: string,
     fromMonth: string,
     toMonth: string,
+    entryGoalIds?: string[],
   ): Promise<ProgressPlanningSource[]>;
   createGoal(goal: GoalRecord): Promise<GoalRecord>;
   findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null>;

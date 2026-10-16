@@ -8,7 +8,11 @@ import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-
 import { createReminderOperations } from "../src/modules/reminders";
 import { createReminderJob } from "../src/modules/reminders/domain/jobs";
 import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
-import { afterQuietHours, nextOccurrence } from "../src/modules/reminders/domain/schedule";
+import {
+  afterQuietHours,
+  nextOccurrence,
+  startOfReminderDay,
+} from "../src/modules/reminders/domain/schedule";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
 import type { BotInput, OutgoingMessage } from "../src/modules/reminders/public-contracts";
 import { DeliveryError, type ReminderTransport } from "../src/modules/reminders/public-contracts";
@@ -98,6 +102,38 @@ async function firstJob() {
 }
 
 describe("reminder schedules", () => {
+  it.each([
+    ["UTC", "2026-12-31T23:58:00Z", "2027-01-01T00:15:00Z"],
+    ["Pacific/Kiritimati", "2026-12-31T09:58:00Z", "2026-12-31T10:15:00Z"],
+    ["Pacific/Honolulu", "2027-01-01T09:58:00Z", "2027-01-01T10:15:00Z"],
+    ["Asia/Kathmandu", "2026-12-31T18:13:00Z", "2026-12-31T18:30:00Z"],
+  ])("keeps local year boundaries and fractional offsets in %s", (zone, now, expected) => {
+    const at = Date.parse(expected);
+    expect(nextOccurrence(Date.parse(now), zone, "00:15")).toBe(at);
+    expect(nextOccurrence(at, zone, "00:15")).toBe(at + 86_400_000);
+  });
+  it("preserves half-hour DST gaps, earliest folds and a missing local midnight", () => {
+    expect(nextOccurrence(Date.parse("2026-10-03T14:00:00Z"), "Australia/Lord_Howe", "02:15")).toBe(
+      Date.parse("2026-10-03T15:45:00Z"),
+    );
+    expect(nextOccurrence(Date.parse("2026-04-04T14:00:00Z"), "Australia/Lord_Howe", "01:45")).toBe(
+      Date.parse("2026-04-04T14:45:00Z"),
+    );
+    expect(nextOccurrence(Date.parse("2026-04-04T14:50:00Z"), "Australia/Lord_Howe", "01:45")).toBe(
+      Date.parse("2026-04-05T15:15:00Z"),
+    );
+    expect(
+      afterQuietHours(Date.parse("2026-10-03T14:00:00Z"), {
+        ...DEFAULT_SETTINGS,
+        timeZone: "Australia/Lord_Howe",
+        quietStart: "23:00",
+        quietEnd: "02:15",
+      }),
+    ).toBe(Date.parse("2026-10-03T15:45:00Z"));
+    expect(startOfReminderDay(Date.parse("2026-09-06T04:30:00Z"), "America/Santiago")).toBe(
+      Date.parse("2026-09-06T04:00:00Z"),
+    );
+  });
   it("handles quiet hours across midnight and disabled quiet hours", () => {
     expect(afterQuietHours(Date.parse("2026-09-29T19:00:00Z"), DEFAULT_SETTINGS)).toBe(
       Date.parse("2026-09-30T03:00:00Z"),

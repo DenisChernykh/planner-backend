@@ -201,3 +201,10 @@ tests, 16 adapter tests, architecture/type/format checks and monolith smoke).
 The profiler revision `4049bd7` also passed
 [GitHub CI](https://github.com/DenisChernykh/planner-backend/actions/runs/38924080201).
 No application optimization or new deployment is claimed by this report.
+
+## Optimization follow-up
+
+The subsequent implementation splits report input capture from calculation,
+streamlines month copy/inheritance and preserves all local observations in the
+[optimization report](reminder-heavy-optimization-2026-10-16.md). It is not yet
+deployed; the production measurements above still describe `d298b60`.

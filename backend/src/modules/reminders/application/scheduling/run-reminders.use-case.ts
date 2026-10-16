@@ -43,6 +43,8 @@ export class RunRemindersUseCase {
           ownerId: state.settings.ownerId,
           now,
           deferInheritance: missingPlan,
+          settings: state.settings,
+          prepared: !missingPlan,
         });
         return;
       }
@@ -54,7 +56,7 @@ export class RunRemindersUseCase {
         !state.preparedMonths.includes(month) ||
         state.inheritanceMonths.some((inheritedMonth) => inheritedMonth <= month);
       if (prepare) {
-        await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now });
+        await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now, settings });
         if (deferNewDelivery) return;
       }
       if (!settings.enabled) continue;
@@ -106,7 +108,11 @@ export class RunRemindersUseCase {
       }
     }
     if (states.some((state) => state.nextReportAt !== null && state.nextReportAt <= now))
-      await this.reports?.schedule(now, deferNewDelivery ? 1 : Infinity);
+      await this.reports?.schedule(
+        now,
+        deferNewDelivery ? 1 : Infinity,
+        new Map(states.map((state) => [state.settings.ownerId, state.settings])),
+      );
     if (deferNewDelivery) return;
     await this.deliverQueued(await this.repository.due(now), now, deferNewReportSnapshot);
   }

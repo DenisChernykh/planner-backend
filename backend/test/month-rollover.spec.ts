@@ -260,6 +260,41 @@ describe("month rollover in D1", () => {
 });
 
 describe("reminder inheritance and scheduled rollover", () => {
+  it("bounds Cron inheritance and resumes the remaining rules and report selections next tick", async () => {
+    for (let index = 0; index < 30; index++) await create("2026-09", { title: `Goal ${index}` });
+    await reminders.saveSettings(
+      { ownerId: OWNER, ...DEFAULT_SETTINGS, enabled: true, nextEveningAt: null },
+      [],
+    );
+    await env.DB.batch([
+      env.DB.prepare(`INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays)
+        SELECT id, owner_id, 'scheduled', '09:00', '[1,2,3,4,5,6,7]' FROM plan_goals WHERE owner_id = ?`).bind(
+        OWNER,
+      ),
+      env.DB.prepare(`INSERT INTO goal_progress_reports SELECT id, owner_id, CASE WHEN sort_order % 5 = 0 THEN 0 ELSE 1 END
+        FROM plan_goals WHERE owner_id = ?`).bind(OWNER),
+      env.DB.prepare("INSERT INTO telegram_links VALUES (?, '123', '123', 'active')").bind(OWNER),
+    ]);
+    const transport: ReminderTransport = {
+      send: vi.fn(async () => 1),
+      edit: vi.fn(async () => {}),
+      username: vi.fn(async () => "test"),
+    };
+    const runner = createReminderOperations(env.DB, transport);
+    const counts = () =>
+      env.DB.prepare(`SELECT
+      (SELECT count(*) FROM goal_reminders r JOIN plan_goals g ON g.id = r.goal_id WHERE g.owner_id = ? AND g.month = '2026-10') AS reminders,
+      (SELECT count(*) FROM goal_progress_reports r JOIN plan_goals g ON g.id = r.goal_id WHERE g.owner_id = ? AND g.month = '2026-10') AS selections`)
+        .bind(OWNER, OWNER)
+        .first();
+    await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
+    expect(await counts()).toEqual({ reminders: 0, selections: 0 });
+    await runner.runReminders.execute({ now: OCTOBER + 60_000, deferNewDelivery: true });
+    expect(await counts()).toEqual({ reminders: 24, selections: 24 });
+    await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
+    expect(await counts()).toEqual({ reminders: 30, selections: 30 });
+    expect(transport.send).not.toHaveBeenCalled();
+  });
   const prepare = (now = OCTOBER) =>
     createReminderOperations(env.DB, null).prepareCurrentPlan.execute({ ownerId: OWNER, now });
   const configure = async (goalId: string, mode: "scheduled" | "off" | "evening" = "scheduled") =>

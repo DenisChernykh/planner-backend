@@ -1,5 +1,7 @@
 import type { GoalRecord } from "../../../planning/public-contracts";
+import type { ProgressSettings } from "../../../progress/public-contracts";
 import type { GoalReminder, ReminderJob, ReminderSettings, TelegramLink } from "../../domain/model";
+import type { ReportSettings } from "../../domain/progress-reports";
 export type ReminderSchedulingState = {
   settings: ReminderSettings;
   preparedMonths: string[];
@@ -13,7 +15,10 @@ export type ReminderDeliveryState = {
   reminder: GoalReminder | null;
   question: (Pick<GoalRecord, "month" | "title" | "tracking"> & { hasEntry: boolean }) | null;
 };
-export type QueuedReminder = ReminderJob & { deliveryState?: ReminderDeliveryState };
+export type QueuedReminder = ReminderJob & {
+  deliveryState?: ReminderDeliveryState;
+  reportState?: { report: ReportSettings; progress: ProgressSettings };
+};
 export interface ReminderRepository {
   settings(ownerId: string): Promise<ReminderSettings>;
   deliveryState(
@@ -28,6 +33,14 @@ export interface ReminderRepository {
   ): Promise<boolean>;
   schedulingState(): Promise<ReminderSchedulingState[]>;
   reminders(ownerId: string): Promise<GoalReminder[]>;
+  inheritanceState(
+    ownerId: string,
+    month: string,
+    limit?: number,
+  ): Promise<{
+    carried: { sourceGoalId: string; goalId: string; hasReminder: boolean }[];
+    sources: GoalReminder[];
+  }>;
   digestCandidates(
     ownerId: string,
     date: string,

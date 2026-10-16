@@ -20,7 +20,9 @@ export type ProgressQuery = {
   goalIds?: string[];
   goals?: string;
   startsOn?: string | null;
+  includeHistory?: boolean;
 };
+export type ProgressCalculationInput = Parameters<typeof calculateProgress>[0];
 
 export class ProgressUseCases {
   constructor(
@@ -39,19 +41,32 @@ export class ProgressUseCases {
   }
 
   async overview(input: ProgressQuery): Promise<ProgressOverview> {
+    return this.calculateOverview(await this.prepareOverview(input));
+  }
+
+  calculateOverview(input: ProgressCalculationInput): ProgressOverview {
+    return calculateProgress(input);
+  }
+
+  async prepareOverview(input: ProgressQuery): Promise<ProgressCalculationInput> {
     if (!validProgressDate(input.anchor) || !["week", "month"].includes(input.period))
       throw new ApplicationError("INVALID_REQUEST", "Проверьте период и дату.");
     const requested = intervalFor(input.period, input.anchor);
     const previous = previousInterval(input.period, requested, input.today);
     const fromMonth = [
       intervalFor("week", previous?.from ?? requested.from).from,
-      shiftDate(requested.from, -21),
+      input.includeHistory === false ? requested.from : shiftDate(requested.from, -21),
     ]
       .sort()[0]
       ?.slice(0, 7) as string;
     const toMonth = intervalFor("week", requested.to).to.slice(0, 7);
-    let sources = await this.planning.progressSources(input.ownerId, fromMonth, toMonth);
-    const knownSources = sources;
+    let sources = await this.planning.progressSources(
+      input.ownerId,
+      fromMonth,
+      toMonth,
+      input.goalIds,
+    );
+    const knownSources = sources.map(({ chainId, month }) => ({ chainId, month }));
     if (input.goals) {
       const selected = input.goals.split(",");
       if (selected.some((id) => !sources.some((goal) => goal.id === id)))
@@ -77,7 +92,7 @@ export class ProgressUseCases {
       if (!selected) throw new ApplicationError("NOT_FOUND", "Цель удалена или недоступна.");
       sources = sources.filter((goal) => goal.chainId === selected.chainId);
     }
-    return calculateProgress({
+    return {
       sources,
       knownSources,
       period: input.period,
@@ -89,6 +104,7 @@ export class ProgressUseCases {
           : input.startsOn,
       asOf: input.now,
       timeZone: input.timeZone,
-    });
+      includeHistory: input.includeHistory,
+    };
   }
 }

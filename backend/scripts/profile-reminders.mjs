@@ -29,7 +29,9 @@ const scenarios = [
   "digest",
   "queued-question",
   "weekly-report",
+  "weekly-report-quiet",
   "weekly-report-prepare",
+  "weekly-report-render",
   "weekly-report-send",
   "rollover",
   "rollover-inherit",
@@ -276,8 +278,8 @@ try {
       if (scenario === "rollover-inherit") {
         await database
           .prepare(`INSERT INTO plan_goals
-          (id, owner_id, month, carried_from_goal_id, title, tracking_type, tracking_config, cadence_period, sort_order, created_at, updated_at)
-          SELECT 'inherited-' || id, owner_id, '2026-11', id, title, tracking_type, tracking_config, cadence_period, sort_order, ?, ?
+          (id, owner_id, month, carried_from_goal_id, title, tracking_type, tracking_config, cadence_period, target_occurrences, sort_order, created_at, updated_at)
+          SELECT 'inherited-' || id, owner_id, '2026-11', id, title, tracking_type, tracking_config, cadence_period, target_occurrences, sort_order, ?, ?
           FROM plan_goals WHERE month = '2026-10'`)
           .bind(at, at)
           .run();
@@ -295,7 +297,9 @@ try {
       .bind(at + 86400000)
       .run();
     await database
-      .prepare("UPDATE reminder_settings SET next_evening_at = ?")
+      .prepare(
+        "UPDATE reminder_settings SET next_evening_at = ?, quiet_start = '23:00', quiet_end = '08:00'",
+      )
       .bind(at + 86400000)
       .run();
     await database
@@ -332,10 +336,15 @@ try {
       await database
         .prepare(`INSERT INTO progress_report_settings (owner_id, enabled, next_wednesday_at, next_sunday_at)
         VALUES ('profile-a', 1, ?, ?) ON CONFLICT(owner_id) DO UPDATE SET next_wednesday_at = excluded.next_wednesday_at`)
-        .bind(scenario === "weekly-report" ? at : at + 7 * 86400000, at + 7 * 86400000)
+        .bind(
+          ["weekly-report", "weekly-report-quiet"].includes(scenario) ? at : at + 7 * 86400000,
+          at + 7 * 86400000,
+        )
         .run();
-      if (scenario !== "weekly-report") {
-        const payload = scenario === "weekly-report-send" ? inputSnapshot : "[]";
+      if (!["weekly-report", "weekly-report-quiet"].includes(scenario)) {
+        const payload = ["weekly-report-render", "weekly-report-send"].includes(scenario)
+          ? inputSnapshot
+          : "[]";
         assert.ok(
           payload,
           "Sending a report as the first invocation requires PLANNER_PROFILE_SNAPSHOT from a separate preparation run",
@@ -359,6 +368,12 @@ try {
           "INSERT INTO goal_progress_reports SELECT id, owner_id, 1 FROM plan_goals WHERE owner_id = 'profile-a' ON CONFLICT DO NOTHING",
         )
         .run();
+      if (scenario === "weekly-report-quiet")
+        await database
+          .prepare(
+            "UPDATE reminder_settings SET quiet_start = '00:00', quiet_end = '23:59' WHERE owner_id = 'profile-a'",
+          )
+          .run();
     }
     return at;
   };
@@ -371,7 +386,20 @@ try {
     (SELECT count(*) FROM goal_progress_reports r JOIN plan_goals g ON g.id = r.goal_id WHERE g.month = '2026-11') AS selections`)
       .first();
   const verifyStage = async (scenario, result) => {
-    if (scenario === "weekly-report-prepare" || scenario === "weekly-report-send") {
+    if (scenario === "weekly-report-quiet") {
+      const job = await database
+        .prepare(
+          "SELECT due_at, payload, attempts FROM reminder_jobs WHERE kind = 'weekly-progress'",
+        )
+        .first();
+      assert.ok(job && job.due_at > Date.parse(`${reportDate}T16:01:00Z`));
+      assert.equal(job.payload, "[]");
+      assert.equal(job.attempts, 0);
+      assert.equal(result.messages, 0);
+    }
+    if (
+      ["weekly-report-prepare", "weekly-report-render", "weekly-report-send"].includes(scenario)
+    ) {
       const job = await database
         .prepare("SELECT status, attempts, payload FROM reminder_jobs WHERE id = 'profile-report'")
         .first();
@@ -380,7 +408,8 @@ try {
         "The report snapshot must be built, not silently cancelled",
       );
       assert.ok(JSON.parse(job.payload).goalIds.length > 0);
-      assert.equal(JSON.parse(job.payload).version, 1);
+      assert.ok([1, 2].includes(JSON.parse(job.payload).version));
+      if (scenario !== "weekly-report-prepare") assert.equal(JSON.parse(job.payload).version, 1);
       assert.equal(job.status, scenario === "weekly-report-send" ? "sent" : "pending");
       assert.equal(job.attempts, scenario === "weekly-report-send" ? 1 : 0);
       assert.equal(result.messages, scenario === "weekly-report-send" ? 1 : 0);
@@ -389,8 +418,13 @@ try {
       const state = await monthState();
       assert.equal(result.messages, 0);
       assert.equal(state.goals, goalCount * (scenario === "rollover" ? 1 : 2));
-      assert.equal(state.reminders, scenario === "rollover" ? 0 : goalCount);
-      assert.equal(state.selections, scenario === "rollover" ? 0 : goalCount);
+      if (scenario === "rollover") {
+        assert.equal(state.reminders, 0);
+        assert.equal(state.selections, 0);
+      } else {
+        assert.ok(state.reminders > 0 && state.reminders <= goalCount);
+        assert.ok(state.selections > 0 && state.selections <= goalCount);
+      }
     }
   };
   const firstScenario = process.env.PLANNER_PROFILE_FIRST_SCENARIO ?? "idle";
@@ -461,7 +495,8 @@ try {
       profiles.push(profile);
       // Measure each persisted stage separately: old revisions may send immediately,
       // current Cron schedules, prepares reports and sends on independent ticks.
-      for (let step = 1; step <= 5; step++) {
+      for (let step = 1; step <= 2 + 2 * Math.ceil(goalCount / 24); step++) {
+        if (scenario === "weekly-report-quiet") break;
         const monthly = scenario === "rollover" || scenario === "rollover-inherit";
         const before = monthly ? await monthState() : null;
         if (
@@ -490,13 +525,21 @@ try {
             0,
           ) / 1000;
         const after = monthly ? await monthState() : null;
+        const currentPayload =
+          !monthly && !result.messages
+            ? await database
+                .prepare("SELECT payload FROM reminder_jobs WHERE status = 'pending' LIMIT 1")
+                .first("payload")
+            : null;
         const phase = monthly
           ? after.goals > before.goals
             ? "copy"
             : "inherit"
           : result.messages
             ? "send"
-            : "prepare";
+            : currentPayload && JSON.parse(currentPayload).version === 2
+              ? "load"
+              : "prepare";
         if (!followups.has(phase)) followups.set(phase, []);
         followups.get(phase).push({ ...result, ms });
         if (process.env.PLANNER_PROFILE_OUTPUT)

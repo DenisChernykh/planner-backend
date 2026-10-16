@@ -99,7 +99,7 @@ export function createReminderRunner(
     new DeliverReminderUseCase(repository, transport, digest),
     { execute: (input) => full().prepareCurrentPlan.execute(input) },
     {
-      schedule: (now, limit) => full().reports.schedule(now, limit),
+      schedule: (now, limit, settings) => full().reports.schedule(now, limit, settings),
       deliver: (id, now, defer, job) => full().reports.deliver(id, now, defer, job),
     },
   );

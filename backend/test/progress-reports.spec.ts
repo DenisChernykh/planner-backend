@@ -9,6 +9,7 @@ import { DEFAULT_SETTINGS } from "../src/modules/reminders/domain/model";
 import {
   nextReportOccurrence,
   type ReportInput,
+  reportWeek,
 } from "../src/modules/reminders/domain/progress-reports";
 import { D1ProgressReportRepository } from "../src/modules/reminders/infrastructure/d1-progress-report-repository";
 import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1-reminder-repository";
@@ -77,6 +78,13 @@ beforeEach(async () => {
 });
 
 describe("report schedules", () => {
+  it("preserves original Monday event keys across month and year boundaries", () => {
+    expect(reportWeek("2027-01-03")).toEqual({ from: "2026-12-28", to: "2027-01-03" });
+    expect(reportWeek("2027-01-04")).toEqual({ from: "2027-01-04", to: "2027-01-10" });
+    expect(
+      nextReportOccurrence(Date.parse("2026-10-03T14:00:00Z"), "Australia/Lord_Howe", "02:15", 7),
+    ).toBe(Date.parse("2026-10-03T15:30:00Z"));
+  });
   it("uses the first valid minute after a spring gap and one occurrence during fall back", () => {
     expect(
       nextReportOccurrence(Date.parse("2026-03-29T00:00:00Z"), "Europe/Berlin", "02:30", 7),
@@ -97,6 +105,89 @@ describe("report schedules", () => {
 });
 
 describe("progress reports with D1 and fake transport", () => {
+  it("freezes report facts before rendering and sends once after concurrent staged ticks", async () => {
+    await save();
+    const reports = operations().reports;
+    await reports.schedule(NOW);
+    const id = (await jobs()).results[0]?.id as string;
+    await reports.deliver(id, NOW, true);
+    const captured = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
+    expect(captured.version).toBe(2);
+    expect(captured.reportRevision).toBe(-1);
+    expect(captured.progressRevision).toBe(-1);
+    expect(transport.send).not.toHaveBeenCalled();
+    await planning.upsertEntry({
+      goalId,
+      date: "2026-10-07",
+      value: 35,
+      met: true,
+      note: null,
+      createdAt: NOW + 1,
+      updatedAt: NOW + 1,
+    });
+    await Promise.all([
+      reports.deliver(id, NOW + 60_000, true),
+      reports.deliver(id, NOW + 60_000, true),
+    ]);
+    const rendered = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
+    expect(rendered.version).toBe(1);
+    expect(rendered.formedAt).toBe(NOW);
+    expect(rendered.message.text).toContain("25 страниц за период");
+    expect(rendered.message.text).not.toContain("60 страниц за период");
+    expect(transport.send).not.toHaveBeenCalled();
+    await Promise.all([
+      reports.deliver(id, NOW + 120_000, true),
+      reports.deliver(id, NOW + 120_000, true),
+    ]);
+    expect(transport.send).toHaveBeenCalledTimes(1);
+    expect((await jobs()).results[0]?.status).toBe("sent");
+  });
+  it("recaptures staged input after a report revision changes before rendering", async () => {
+    await save();
+    const reports = operations().reports;
+    await reports.schedule(NOW);
+    const id = (await jobs()).results[0]?.id as string;
+    await reports.deliver(id, NOW, true);
+    const previous = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
+    // Simulate a concurrent revision change while retaining the old payload.
+    await env.DB.prepare(
+      "UPDATE progress_settings SET starts_on = '2026-10-07', revision = revision + 1 WHERE owner_id = ?",
+    )
+      .bind(OWNER)
+      .run();
+    await reports.deliver(id, NOW + 60_000, true);
+    const current = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
+    expect(current.version).toBe(2);
+    expect(current.sourceProgressRevision).toBe(previous.sourceProgressRevision + 1);
+    expect(current.calculation.startsOn).toBe("2026-10-07");
+    expect(transport.send).not.toHaveBeenCalled();
+  });
+  it.each(["report", "timezone", "quiet-hours", "selection"] as const)(
+    "rechecks %s before using captured report facts",
+    async (change) => {
+      await save();
+      const reports = operations().reports;
+      await reports.schedule(NOW);
+      const id = (await jobs()).results[0]?.id as string;
+      await reports.deliver(id, NOW, true);
+      const writes = {
+        report: "UPDATE progress_report_settings SET revision = revision + 1 WHERE owner_id = ?",
+        timezone: "UPDATE reminder_settings SET time_zone = 'UTC' WHERE owner_id = ?",
+        "quiet-hours": "UPDATE reminder_settings SET quiet_start = '22:00' WHERE owner_id = ?",
+        selection: "UPDATE goal_progress_reports SET included = 0 WHERE owner_id = ?",
+      };
+      await env.DB.prepare(writes[change]).bind(OWNER).run();
+      await reports.deliver(id, NOW + 60_000, true);
+      const job = (await jobs()).results[0];
+      expect(transport.send).not.toHaveBeenCalled();
+      if (change === "selection") expect(job?.status).toBe("cancelled");
+      else {
+        const payload = JSON.parse(job?.payload ?? "[]");
+        expect(payload.version).toBe(2);
+        expect(payload.formedAt).toBe(NOW + 60_000);
+      }
+    },
+  );
   it("production Cron persists a report before sending on a later tick and reuses only wiring", async () => {
     await save();
     const send = vi.fn(async () => Response.json({ ok: true, result: { message_id: 10 } }));
@@ -121,11 +212,14 @@ describe("progress reports with D1 and fake transport", () => {
       expect(prepared?.payload).toBe("[]");
       expect(send).not.toHaveBeenCalled();
       await runReminders(bindings, NOW + 120_000);
-      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(1);
+      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(2);
       expect(send).not.toHaveBeenCalled();
       await runReminders(bindings, NOW + 180_000);
-      expect((await jobs()).results[0]?.status).toBe("sent");
+      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(1);
+      expect(send).not.toHaveBeenCalled();
       await runReminders(bindings, NOW + 240_000);
+      expect((await jobs()).results[0]?.status).toBe("sent");
+      await runReminders(bindings, NOW + 300_000);
       expect(send).toHaveBeenCalledTimes(1);
     } finally {
       vi.unstubAllGlobals();

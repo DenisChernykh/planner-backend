@@ -1,5 +1,14 @@
 import { DateTime } from "luxon";
-import { nextOccurrence } from "./schedule";
+import { localTime, nextOccurrence } from "./schedule";
+
+export function reportWeek(date: string): { from: string; to: string } {
+  const at = new Date(`${date}T00:00:00Z`);
+  const monday = at.getTime() - ((at.getUTCDay() + 6) % 7) * 86_400_000;
+  return {
+    from: new Date(monday).toISOString().slice(0, 10),
+    to: new Date(monday + 6 * 86_400_000).toISOString().slice(0, 10),
+  };
+}
 export type ReportSlot = "wed" | "sun";
 export type ReportSettings = {
   ownerId: string;
@@ -29,6 +38,7 @@ export function nextReportOccurrence(
   let searchAfter = now;
   for (let attempt = 0; attempt < 2; attempt++) {
     const resolved = nextOccurrence(searchAfter, zone, time, [weekday]);
+    if (localTime(resolved, zone) === time) return resolved;
     let candidate = DateTime.fromMillis(resolved, { zone });
     if (candidate.hour !== hour || candidate.minute !== minute) {
       // Use the first real minute after a missing local time, rather than adding the DST gap.

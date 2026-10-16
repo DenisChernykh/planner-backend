@@ -1,12 +1,24 @@
 import type { ProgressGoal, ProgressOverview } from "../../../progress/public-contracts";
+import { DEFAULT_SETTINGS } from "../../domain/model";
 import type { ReportSlot } from "../../domain/progress-reports";
 import type { MessageBlock, OutgoingMessage } from "../delivery/outgoing-message";
 
-const number = (value: number) => value.toLocaleString("ru-RU", { maximumFractionDigits: 1 });
-const date = (value: string) =>
-  new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }).format(
-    new Date(`${value}T12:00:00Z`),
-  );
+const numbers = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 });
+const dates = new Intl.DateTimeFormat("ru-RU", {
+  day: "numeric",
+  month: "long",
+  timeZone: "UTC",
+});
+const number = (value: number) => numbers.format(value);
+const date = (value: string) => dates.format(new Date(`${value}T12:00:00Z`));
+function calendar(timeZone: string) {
+  return {
+    date: new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone }),
+    time: new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit", timeZone }),
+  };
+}
+// Cache formatting machinery only. Report data is always loaded for the current job.
+const calendars = new Map([[DEFAULT_SETTINGS.timeZone, calendar(DEFAULT_SETTINGS.timeZone)]]);
 const escapeHtml = (value: string) =>
   value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const icons = { check: "✅", quantity: "📊", scale: "🙂", time: "🕒" };
@@ -109,17 +121,14 @@ export function reportMessage(
   appOrigin: string,
   delivery?: { scheduledAt: number; quietDelayed: boolean },
 ): OutgoingMessage {
-  const localTime = (at: number) =>
-    new Intl.DateTimeFormat("ru-RU", {
-      hour: "2-digit",
-      minute: "2-digit",
-      timeZone: overview.timeZone,
-    }).format(at);
-  const formedDate = new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-    timeZone: overview.timeZone,
-  }).format(overview.asOf);
+  let formats = calendars.get(overview.timeZone);
+  if (!formats) {
+    formats = calendar(overview.timeZone);
+    if (calendars.size >= 32) calendars.clear();
+    calendars.set(overview.timeZone, formats);
+  }
+  const localTime = (at: number) => formats.time.format(at);
+  const formedDate = formats.date.format(overview.asOf);
   const blocks: MessageBlock[] = [
     {
       kind: "header",

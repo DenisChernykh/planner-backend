@@ -13,9 +13,62 @@ const percentage = (value: number, total: number) =>
 const rounded = (value: number) => Math.round(value * 10) / 10;
 const signature = (goal: ProgressSource) =>
   JSON.stringify([
-    Object.entries(goal.tracking).sort(([left], [right]) => left.localeCompare(right)),
-    Object.entries(goal.cadence).sort(([left], [right]) => left.localeCompare(right)),
+    Object.entries(goal.tracking).sort(([left], [right]) =>
+      left < right ? -1 : left > right ? 1 : 0,
+    ),
+    Object.entries(goal.cadence).sort(([left], [right]) =>
+      left < right ? -1 : left > right ? 1 : 0,
+    ),
   ]);
+type CalculationCalendar = {
+  dates: typeof datesBetween;
+  interval: typeof intervalFor;
+  signature: typeof signature;
+  entry: (goal: ProgressSource, date: string) => ProgressSource["entries"][number] | undefined;
+};
+function calculationCalendar(): CalculationCalendar {
+  const dates = new Map<string, string[]>();
+  const intervals = new Map<string, Interval>();
+  const signatures = new Map<ProgressSource, string>();
+  const entries = new Map<ProgressSource, Map<string, ProgressSource["entries"][number]>>();
+  return {
+    entry(goal, date) {
+      let index = entries.get(goal);
+      if (!index) {
+        index = new Map();
+        for (const entry of goal.entries) if (!index.has(entry.date)) index.set(entry.date, entry);
+        entries.set(goal, index);
+      }
+      return index.get(date);
+    },
+    dates(from, to) {
+      const key = `${from}:${to}`;
+      let value = dates.get(key);
+      if (!value) {
+        value = datesBetween(from, to);
+        dates.set(key, value);
+      }
+      return value;
+    },
+    interval(period, anchor) {
+      const key = `${period}:${anchor}`;
+      let value = intervals.get(key);
+      if (!value) {
+        value = intervalFor(period, anchor);
+        intervals.set(key, value);
+      }
+      return value;
+    },
+    signature(goal) {
+      let value = signatures.get(goal);
+      if (!value) {
+        value = signature(goal);
+        signatures.set(goal, value);
+      }
+      return value;
+    },
+  };
+}
 export function isMeasurable(goal: Pick<ProgressSource, "tracking">): boolean {
   return (
     goal.tracking.type !== "scale" &&
@@ -27,10 +80,11 @@ function dayData(
   period: Interval,
   startsOn: string | null,
   today: string,
+  calendar: CalculationCalendar,
 ): ProgressDay[] {
-  return datesBetween(period.from, period.to).map((date) => {
+  return calendar.dates(period.from, period.to).map((date) => {
     const goal = versions.find((item) => item.month === date.slice(0, 7));
-    const entry = goal?.entries.find((item) => item.date === date);
+    const entry = goal ? calendar.entry(goal, date) : undefined;
     return {
       date,
       goalId: goal?.id ?? null,
@@ -59,14 +113,15 @@ function targetsFor(
   period: Interval,
   startsOn: string | null,
   today: string,
-  knownVersions: ProgressSource[] = allVersions,
+  knownVersions: Pick<ProgressSource, "chainId" | "month">[],
+  calendar: CalculationCalendar,
 ): ProgressTarget[] {
   const first = versions[0];
   if (!first) return [];
   const cadence = first.cadence;
   const measurable = isMeasurable(first);
   if (cadence.period === "day") {
-    const days = dayData(versions, period, startsOn, today).filter(
+    const days = dayData(versions, period, startsOn, today, calendar).filter(
       (day) => !["excluded", "future"].includes(day.state),
     );
     if (!days.length) return [];
@@ -90,16 +145,17 @@ function targetsFor(
     ];
   }
   const compatible = allVersions.filter(
-    (goal) => goal.chainId === first.chainId && signature(goal) === signature(first),
+    (goal) =>
+      goal.chainId === first.chainId && calendar.signature(goal) === calendar.signature(first),
   );
   const intervals = new Map<string, Interval>();
-  for (const date of datesBetween(period.from, period.to)) {
+  for (const date of calendar.dates(period.from, period.to)) {
     if (!versions.some((goal) => goal.month === date.slice(0, 7))) continue;
-    const natural = intervalFor(cadence.period, date);
+    const natural = calendar.interval(cadence.period, date);
     intervals.set(natural.from, natural);
   }
   return [...intervals.values()].map((natural) => {
-    const fullDays = datesBetween(natural.from, natural.to);
+    const fullDays = calendar.dates(natural.from, natural.to);
     const included = fullDays.filter(
       (date) =>
         (!startsOn || date >= startsOn) &&
@@ -115,7 +171,7 @@ function targetsFor(
             (goal) => goal.chainId === first.chainId && goal.month === date.slice(0, 7),
           ),
       );
-    const value = dayData(compatible, natural, startsOn, today).filter((day) =>
+    const value = dayData(compatible, natural, startsOn, today, calendar).filter((day) =>
       measurable ? day.state === "met" : day.value !== null,
     ).length;
     const target =
@@ -181,34 +237,51 @@ function streak(days: ProgressDay[], today: string, requested: Interval) {
 }
 export function calculateProgress(input: {
   sources: ProgressSource[];
-  knownSources?: ProgressSource[];
+  knownSources?: Pick<ProgressSource, "chainId" | "month">[];
   period: "week" | "month";
   anchor: string;
   today: string;
   startsOn: string | null;
   asOf: number;
   timeZone: string;
+  includeHistory?: boolean;
 }): ProgressOverview {
   const { sources, period, today, startsOn } = input;
+  const calendar = calculationCalendar();
+  const knownSources = input.knownSources ?? sources;
   const requested = intervalFor(period, input.anchor);
   const previous = previousInterval(period, requested, today);
   const groups = new Map<string, ProgressSource[]>();
   for (const goal of sources) {
-    const bounds = intervalFor("month", `${goal.month}-01`);
+    const bounds = calendar.interval("month", `${goal.month}-01`);
     if (bounds.to < requested.from || bounds.from > requested.to) continue;
-    const key = `${goal.chainId}:${signature(goal)}`;
+    const key = `${goal.chainId}:${calendar.signature(goal)}`;
     groups.set(key, [...(groups.get(key) ?? []), goal]);
   }
   const goals: ProgressGoal[] = [...groups.values()].map((versions) => {
     const first = versions[0] as ProgressSource;
-    const days = dayData(versions, requested, startsOn, today);
+    const days = dayData(versions, requested, startsOn, today, calendar);
     const current = stats(days);
-    const targets = targetsFor(versions, sources, requested, startsOn, today, input.knownSources);
-    const previousSources = sources.filter(
-      (goal) => goal.chainId === first.chainId && signature(goal) === signature(first),
+    const targets = targetsFor(
+      versions,
+      sources,
+      requested,
+      startsOn,
+      today,
+      knownSources,
+      calendar,
     );
-    const previousDays = previous ? dayData(previousSources, previous, startsOn, today) : [];
-    const currentDates = datesBetween(requested.from, requested.to < today ? requested.to : today);
+    const previousSources = sources.filter(
+      (goal) =>
+        goal.chainId === first.chainId && calendar.signature(goal) === calendar.signature(first),
+    );
+    const previousDays = previous
+      ? dayData(previousSources, previous, startsOn, today, calendar)
+      : [];
+    const currentDates = calendar.dates(
+      requested.from,
+      requested.to < today ? requested.to : today,
+    );
     const comparable =
       previous !== null &&
       previousDays.length > 0 &&
@@ -218,7 +291,15 @@ export function calculateProgress(input: {
     const old = stats(previousDays);
     const daily = first.cadence.period === "day";
     const oldTargets = previous
-      ? targetsFor(previousSources, sources, previous, startsOn, previous.to, input.knownSources)
+      ? targetsFor(
+          previousSources,
+          sources,
+          previous,
+          startsOn,
+          previous.to,
+          knownSources,
+          calendar,
+        )
       : [];
     const oldPercent = daily
       ? percentage(isMeasurable(first) ? old.met : old.records, old.eligibleDays)
@@ -244,8 +325,16 @@ export function calculateProgress(input: {
       days,
       targets,
       history:
-        first.cadence.period === "week"
-          ? targetsFor(previousSources, sources, historyPeriod, startsOn, today, input.knownSources)
+        first.cadence.period === "week" && input.includeHistory !== false
+          ? targetsFor(
+              previousSources,
+              sources,
+              historyPeriod,
+              startsOn,
+              today,
+              knownSources,
+              calendar,
+            )
               .filter((target) => target.accounted !== null && target.to < requested.from)
               .reverse()
           : [],
@@ -278,7 +367,7 @@ export function calculateProgress(input: {
                 goal.chainId === first.chainId &&
                 goal.month >= previous.from.slice(0, 7) &&
                 goal.month <= previous.to.slice(0, 7) &&
-                signature(goal) !== signature(first),
+                calendar.signature(goal) !== calendar.signature(first),
             )
           ? "different-rules"
           : "insufficient-history",

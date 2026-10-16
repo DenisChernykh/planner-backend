@@ -37,11 +37,13 @@ export interface PlanningOperations {
     ownerId: string,
     fromMonth: string,
     toMonth: string,
+    entryGoalIds?: string[],
   ): Promise<ProgressPlanningSource[]>;
   ensureCurrentPlan(input: {
     ownerId: string;
     now: number;
     timeZone: string;
+    includeCarriedGoals?: boolean;
   }): Promise<{ month: string; carriedGoals: { sourceGoalId: string; goalId: string }[] }>;
   list(ownerId: string, month: string): Promise<GoalResource[]>;
   listForDate(ownerId: string, date: string): Promise<GoalResource[]>;

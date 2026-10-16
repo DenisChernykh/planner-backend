@@ -50,6 +50,26 @@ const overview = (
   });
 
 describe("progress calculations", () => {
+  it("omits unused report history without changing totals, targets or comparisons", () => {
+    const sources = [
+      source({
+        cadence: { period: "week", targetOccurrences: 4 },
+        entries: entries({
+          "2026-10-06": 25,
+          "2026-10-14": 25,
+          "2026-10-20": 25,
+          "2026-10-27": 25,
+        }),
+      }),
+    ];
+    const query = { anchor: "2026-10-28", today: "2026-10-28", startsOn: null };
+    const full = overview(sources, query);
+    expect(full.goals[0]?.history.length).toBeGreaterThan(0);
+    expect(overview(sources, { ...query, includeHistory: false })).toEqual({
+      ...full,
+      goals: full.goals.map((goal) => ({ ...goal, history: [] })),
+    });
+  });
   it("includes the start date and excludes earlier entries without converting missing values to zero", () => {
     const result = overview([
       source({ entries: entries({ "2026-10-05": 100, "2026-10-06": 25, "2026-10-07": 30 }) }),
@@ -314,6 +334,48 @@ beforeEach(async () => {
 });
 
 describe("progress D1 and API", () => {
+  it("loads only selected fact histories while retaining owner-scoped neighbouring definitions", async () => {
+    const repository = new D1PlanningRepository(env.DB);
+    const create = (ownerId: string, title: string) =>
+      new CreateGoalUseCase(repository).execute({
+        ownerId,
+        title,
+        month: "2026-10",
+        tracking,
+        cadence: { period: "day" },
+        now: NOW,
+      });
+    const selected = await create(OWNER, "Selected");
+    const excluded = await create(OWNER, "Excluded");
+    const foreign = await create(OTHER, "Private");
+    for (const goal of [selected, excluded, foreign])
+      await repository.upsertEntry({
+        goalId: goal.id,
+        date: "2026-10-06",
+        value: 25,
+        met: true,
+        note: null,
+        createdAt: NOW,
+        updatedAt: NOW,
+      });
+    const result = await createPlanningOperations(env.DB).progressSources(
+      OWNER,
+      "2026-10",
+      "2026-11",
+      [selected.id, foreign.id],
+    );
+    expect(result.map((goal) => goal.id)).toEqual([selected.id, excluded.id]);
+    expect(result[0]?.entries).toEqual([{ date: "2026-10-06", value: 25, met: true }]);
+    expect(result[1]?.entries).toEqual([]);
+    const none = await repository.progressSources(OWNER, "2026-10", "2026-11", []);
+    expect(none).toHaveLength(2);
+    expect(none.every((goal) => goal.entries.length === 0)).toBe(true);
+    expect(
+      (await repository.progressSources(OWNER, "2026-10", "2026-11")).every(
+        (goal) => goal.entries.length === 1,
+      ),
+    ).toBe(true);
+  });
   it("defaults to all history, rejects nonexistent dates and preserves the previous setting", async () => {
     const progress = createProgressOperations(env.DB);
     expect(await progress.settings(OWNER)).toEqual({ startsOn: null, revision: 0 });

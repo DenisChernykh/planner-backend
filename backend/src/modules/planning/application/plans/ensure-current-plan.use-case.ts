@@ -5,7 +5,12 @@ import type { MonthRolloverRepository } from "../ports/month-rollover-repository
 export class EnsureCurrentPlanUseCase {
   constructor(private readonly repository: MonthRolloverRepository) {}
 
-  async execute(input: { ownerId: string; now: number; timeZone: string }) {
+  async execute(input: {
+    ownerId: string;
+    now: number;
+    timeZone: string;
+    includeCarriedGoals?: boolean;
+  }) {
     const month = plannerToday(input.now, input.timeZone).slice(0, 7);
     for (let attempt = 0; attempt < 4; attempt++) {
       const state = await this.repository.rolloverState(input.ownerId, month);
@@ -24,7 +29,13 @@ export class EnsureCurrentPlanUseCase {
           })),
         }))
       ) {
-        return { month, carriedGoals: await this.repository.carriedGoals(input.ownerId, month) };
+        return {
+          month,
+          carriedGoals:
+            input.includeCarriedGoals === false
+              ? []
+              : await this.repository.carriedGoals(input.ownerId, month),
+        };
       }
     }
     throw new Error("The previous plan changed during month rollover; retry the request.");

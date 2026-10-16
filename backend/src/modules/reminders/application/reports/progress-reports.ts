@@ -1,18 +1,23 @@
 import { DateTime } from "luxon";
 import { ApplicationError } from "../../../../shared/application/application-error";
 import type { PlanningOperations } from "../../../planning/public-contracts";
-import type { ProgressOperations } from "../../../progress/public-contracts";
+import type {
+  ProgressCalculationInput,
+  ProgressOperations,
+  ProgressOverview,
+} from "../../../progress/public-contracts";
 import {
   DELIVERY_ISSUE_WINDOW_MS,
   failedDeliveryChanges,
   isRecentOccurrence,
 } from "../../domain/jobs";
-import type { SettingsInput } from "../../domain/model";
+import type { ReminderSettings, SettingsInput } from "../../domain/model";
 import {
   nextReportOccurrence,
   type ReportInput,
   type ReportSettings,
   type ReportSlot,
+  reportWeek,
 } from "../../domain/progress-reports";
 import { afterQuietHours, localDate } from "../../domain/schedule";
 import type { OutgoingMessage } from "../delivery/outgoing-message";
@@ -36,6 +41,16 @@ type Snapshot = {
   goalIds: string[];
   formedAt: number;
   message: OutgoingMessage;
+};
+// Negative revisions make older Workers rebuild this payload after a rollback;
+// an unfinished preparation must never be treated as a sendable version-1 snapshot.
+type Preparation = Omit<Snapshot, "version" | "message" | "period" | "startsOn"> & {
+  version: 2;
+  reportRevision: -1;
+  progressRevision: -1;
+  sourceReportRevision: number;
+  sourceProgressRevision: number;
+  calculation: ProgressCalculationInput;
 };
 const TIME = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
 export class ProgressReportsUseCases {
@@ -221,12 +236,25 @@ export class ProgressReportsUseCases {
     timeZone: string,
     delivery?: { scheduledAt: number; quietDelayed: boolean },
   ) {
+    const overview = this.progress.calculateOverview(
+      await this.source(ownerId, input, reportDate, now, timeZone, delivery === undefined),
+    );
+    return this.render(overview, slot, delivery);
+  }
+  private async source(
+    ownerId: string,
+    input: ReportInput,
+    reportDate: string,
+    now: number,
+    timeZone: string,
+    includeHistory: boolean,
+  ) {
     const selections = new Map(
       (await this.reports.selections(ownerId)).map((goal) => [goal.goalId, goal.included]),
     );
     for (const goal of input.goals) selections.set(goal.goalId, goal.included);
     const goalIds = [...selections].filter(([, included]) => included).map(([goalId]) => goalId);
-    const overview = await this.progress.overview({
+    return this.progress.prepareOverview({
       ownerId,
       now,
       timeZone,
@@ -235,7 +263,14 @@ export class ProgressReportsUseCases {
       anchor: reportDate,
       startsOn: input.startsOn,
       goalIds,
+      includeHistory,
     });
+  }
+  private render(
+    overview: ProgressOverview,
+    slot: ReportSlot,
+    delivery?: { scheduledAt: number; quietDelayed: boolean },
+  ) {
     if (["no-goals", "future-start", "before-start"].includes(overview.state))
       return { message: null, reason: overview.state, overview };
     return {
@@ -253,19 +288,25 @@ export class ProgressReportsUseCases {
       nextSundayAt: nextReportOccurrence(now, general.timeZone, current.sundayTime, 7),
     });
   }
-  async schedule(now: number, limit = Infinity) {
+  async schedule(
+    now: number,
+    limit = Infinity,
+    connectedSettings?: ReadonlyMap<string, ReminderSettings>,
+  ) {
     let advanced = 0;
     for (const settings of await this.reports.active(now)) {
-      const general = await this.reminders.settings(settings.ownerId);
-      if ((await this.reminders.link(settings.ownerId))?.status !== "active") continue;
+      const general = connectedSettings
+        ? connectedSettings.get(settings.ownerId)
+        : await this.reminders.settings(settings.ownerId);
+      if (!general) continue;
+      if (!connectedSettings && (await this.reminders.link(settings.ownerId))?.status !== "active")
+        continue;
       // RunReminders prepares active reminder/report owners once before scheduling.
       for (const slot of ["wed", "sun"] as const) {
         const previous = slot === "wed" ? settings.nextWednesdayAt : settings.nextSundayAt;
         if (previous === null || previous > now) continue;
         const date = localDate(previous, general.timeZone);
-        const monday = DateTime.fromISO(date, { zone: general.timeZone })
-          .startOf("week")
-          .toISODate();
+        const monday = reportWeek(date).from;
         const dueAt = afterQuietHours(Math.max(previous, now), general);
         const job = isRecentOccurrence(previous, now)
           ? {
@@ -297,8 +338,8 @@ export class ProgressReportsUseCases {
     const job = queued ?? (await this.reminders.job(jobId));
     if (job?.status !== "pending") return;
     const [report, shared, general, link] = await Promise.all([
-      this.reports.settings(job.ownerId),
-      this.progress.settings(job.ownerId),
+      queued?.reportState?.report ?? this.reports.settings(job.ownerId),
+      queued?.reportState?.progress ?? this.progress.settings(job.ownerId),
       queued?.deliveryState?.settings ?? this.reminders.settings(job.ownerId),
       queued?.deliveryState ? queued.deliveryState.link : this.reminders.link(job.ownerId),
     ]);
@@ -316,48 +357,91 @@ export class ProgressReportsUseCases {
       await this.reports.postpone(job.id, dueAt);
       return;
     }
-    let snapshot = job.payload === "[]" ? null : (JSON.parse(job.payload) as Snapshot);
+    let snapshot =
+      job.payload === "[]" ? null : (JSON.parse(job.payload) as Snapshot | Preparation);
     let selectionChanged = false;
     if (snapshot) {
-      const period = DateTime.fromISO(job.localDate, { zone: general.timeZone }).startOf("week");
+      const period = reportWeek(job.localDate);
       // Validate the selection without loading every historical entry again.
       const activeIds = await this.reports.activeGoalIds(
         job.ownerId,
-        period.toFormat("yyyy-MM"),
-        period.plus({ days: 6 }).toFormat("yyyy-MM"),
+        period.from.slice(0, 7),
+        period.to.slice(0, 7),
       );
       selectionChanged = JSON.stringify([...snapshot.goalIds].sort()) !== JSON.stringify(activeIds);
     }
-    if (
+    const rebuild =
       !snapshot ||
       selectionChanged ||
-      snapshot.reportRevision !== report.revision ||
-      snapshot.progressRevision !== shared.revision ||
+      (snapshot.version === 2 ? snapshot.sourceReportRevision : snapshot.reportRevision) !==
+        report.revision ||
+      (snapshot.version === 2 ? snapshot.sourceProgressRevision : snapshot.progressRevision) !==
+        shared.revision ||
       snapshot.timeZone !== general.timeZone ||
       snapshot.quietStart !== general.quietStart ||
-      snapshot.quietEnd !== general.quietEnd
-    ) {
-      const slot: ReportSlot = job.eventKey.endsWith(":wed") ? "wed" : "sun";
-      const built = await this.build(
+      snapshot.quietEnd !== general.quietEnd;
+    const slot: ReportSlot = job.eventKey.endsWith(":wed") ? "wed" : "sun";
+    const input: ReportInput = {
+      month: job.localDate.slice(0, 7),
+      enabled: report.enabled,
+      wednesdayTime: report.wednesdayTime,
+      sundayTime: report.sundayTime,
+      startsOn: shared.startsOn,
+      goals: [],
+    };
+    if (rebuild && deferNewSnapshot) {
+      const calculation = await this.source(
         job.ownerId,
-        {
-          month: job.localDate.slice(0, 7),
-          enabled: report.enabled,
-          wednesdayTime: report.wednesdayTime,
-          sundayTime: report.sundayTime,
-          startsOn: shared.startsOn,
-          goals: [],
-        },
-        slot,
+        input,
         job.localDate,
         now,
         general.timeZone,
-        {
-          scheduledAt: job.expiresAt - 86400000,
-          quietDelayed:
-            afterQuietHours(job.expiresAt - 86400000, general) > job.expiresAt - 86400000,
-        },
+        false,
       );
+      const period = reportWeek(job.localDate);
+      const goalIds = calculation.sources
+        .filter(
+          (goal) => goal.month >= period.from.slice(0, 7) && goal.month <= period.to.slice(0, 7),
+        )
+        .map((goal) => goal.id);
+      if (!goalIds.length) {
+        await this.reports.cancel(job.id);
+        return;
+      }
+      const preparation: Preparation = {
+        version: 2,
+        reportRevision: -1,
+        progressRevision: -1,
+        sourceReportRevision: report.revision,
+        sourceProgressRevision: shared.revision,
+        timeZone: general.timeZone,
+        quietStart: general.quietStart,
+        quietEnd: general.quietEnd,
+        reportDate: job.localDate,
+        goalIds,
+        formedAt: now,
+        calculation,
+      };
+      await this.reports.setSnapshot(job.id, job.payload, JSON.stringify(preparation));
+      return;
+    }
+    if (rebuild || snapshot?.version === 2) {
+      const delivery = {
+        scheduledAt: job.expiresAt - 86400000,
+        quietDelayed: afterQuietHours(job.expiresAt - 86400000, general) > job.expiresAt - 86400000,
+      };
+      const built =
+        !rebuild && snapshot?.version === 2
+          ? this.render(this.progress.calculateOverview(snapshot.calculation), slot, delivery)
+          : await this.build(
+              job.ownerId,
+              input,
+              slot,
+              job.localDate,
+              now,
+              general.timeZone,
+              delivery,
+            );
       if (!built.message) {
         await this.reports.cancel(job.id);
         return;
@@ -373,7 +457,7 @@ export class ProgressReportsUseCases {
         period: built.overview.requested,
         startsOn: shared.startsOn,
         goalIds: built.overview.goals.flatMap((goal) => goal.goalIds),
-        formedAt: now,
+        formedAt: built.overview.asOf,
         message: built.message,
       };
       const payload = JSON.stringify(snapshot);
@@ -382,6 +466,7 @@ export class ProgressReportsUseCases {
       // Production Cron persists preparation before claiming/sending on its next tick.
       if (deferNewSnapshot) return;
     }
+    if (snapshot?.version !== 1) return;
     if (
       !(await this.reports.claim(
         job,

@@ -588,17 +588,11 @@ describe("bounded D1 profile", () => {
     const start = performance.now();
     const sources = await measured.progressSources(OWNER, "2026-09", "2026-10");
     expect(sources).toHaveLength(30);
-    expect(statements).toHaveLength(3);
+    expect(statements).toHaveLength(2);
     expect(sources.reduce((total, source) => total + source.entries.length, 0)).toBe(206);
     const queries = [
-      [
-        "SELECT * FROM plan_goals WHERE owner_id = ? AND month >= ? AND month <= ? AND deleted_at IS NULL",
-        [OWNER, "2026-09", "2026-10"],
-      ],
-      [
-        "SELECT e.* FROM plan_goals g JOIN goal_entries e ON e.goal_id = g.id WHERE g.owner_id = ? AND g.month BETWEEN ? AND ?",
-        [OWNER, "2026-09", "2026-10"],
-      ],
+      [statements[0] as string, [OWNER, "2026-09", "2026-10"]],
+      [statements[1] as string, [OWNER, "2026-09", "2026-10", OWNER, OWNER]],
       ["SELECT * FROM progress_report_settings WHERE enabled = 1", []],
       [
         "SELECT * FROM reminder_jobs WHERE status = 'pending' AND due_at <= ? ORDER BY due_at LIMIT 5",

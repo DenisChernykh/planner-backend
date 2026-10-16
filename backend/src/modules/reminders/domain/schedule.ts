@@ -26,6 +26,7 @@ const formatters = new Map([
 // Construct it at module startup, rather than on that delivery's CPU budget.
 DateTime.fromMillis(0, { zone: DEFAULT_SETTINGS.timeZone });
 const occurrences = new Map<string, { at: number; weekday: number }>();
+const dayOffsets = new Map<string, number | null>();
 const minuteParts = new Map<string, { minute: number; parts: Record<string, string> }>();
 function localParts(now: number, zone: string) {
   const minute = Math.floor(now / 60_000);
@@ -71,6 +72,39 @@ export function localDate(now: number, zone: string): string {
   const parts = localParts(now, zone);
   return `${parts.year}-${parts.month}-${parts.day}`;
 }
+export function localTime(now: number, zone: string): string {
+  const parts = localParts(now, zone);
+  return `${parts.hour}:${parts.minute}`;
+}
+function offsetAt(at: number, zone: string): number {
+  const parts = localParts(at, zone);
+  return (
+    Date.parse(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:00Z`) -
+    Math.floor(at / 60_000) * 60_000
+  );
+}
+function resolveTime(date: string, time: string, zone: string): number {
+  // Historical IANA offsets can include seconds; retain Luxon's exact resolution.
+  if (date < "2000-01-01") return atTime(DateTime.fromISO(date, { zone }), time).toMillis();
+  const key = `${zone}:${date}`;
+  let offset = dayOffsets.get(key);
+  if (offset === undefined) {
+    const noon = Date.parse(`${date}T12:00:00Z`);
+    const before = offsetAt(noon - 36 * 3_600_000, zone);
+    const after = offsetAt(noon + 36 * 3_600_000, zone);
+    offset = before === after ? before : null;
+    if (dayOffsets.size >= 256) dayOffsets.clear();
+    dayOffsets.set(key, offset);
+  }
+  if (offset !== null) {
+    const candidate = Date.parse(`${date}T${time}:00Z`) - offset;
+    // Use the inexpensive stable-offset path only when the round trip agrees.
+    // Transition days retain Luxon's gap/fold policy below.
+    if (localDate(candidate, zone) === date && localTime(candidate, zone) === time)
+      return candidate;
+  }
+  return atTime(DateTime.fromISO(date, { zone }), time).toMillis();
+}
 function atTime(day: DateTime, time: string): DateTime {
   const [hour = 0, minute = 0] = time.split(":").map(Number);
   const result = day.set({ hour, minute, second: 0, millisecond: 0 });
@@ -93,12 +127,9 @@ export function nextOccurrence(
     const key = `${zone}:${date.toISOString().slice(0, 10)}:${time}`;
     let occurrence = occurrences.get(key);
     if (occurrence === undefined) {
-      const day = DateTime.fromObject(
-        { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, day: date.getUTCDate() },
-        { zone },
-      );
-      const candidate = atTime(day, time);
-      occurrence = { at: candidate.toMillis(), weekday: candidate.weekday };
+      const at = resolveTime(date.toISOString().slice(0, 10), time, zone);
+      const weekday = new Date(`${localDate(at, zone)}T00:00:00Z`).getUTCDay() || 7;
+      occurrence = { at, weekday };
       // Cache only a deterministic local-time resolution, never a user's next run.
       if (occurrences.size >= 256) occurrences.clear();
       occurrences.set(key, occurrence);
@@ -114,9 +145,12 @@ export function afterQuietHours(now: number, settings: SettingsInput): number {
   const { quietStart: start, quietEnd: end } = settings;
   const quiet = start < end ? time >= start && time < end : time >= start || time < end;
   if (!quiet) return now;
-  const local = DateTime.fromMillis(now, { zone: settings.timeZone });
-  const day = start > end && time >= start ? local.plus({ days: 1 }) : local;
-  return atTime(day, end).toMillis();
+  const date = `${parts.year}-${parts.month}-${parts.day}`;
+  const day =
+    start > end && time >= start
+      ? new Date(Date.parse(`${date}T00:00:00Z`) + 86_400_000).toISOString().slice(0, 10)
+      : date;
+  return resolveTime(day, end, settings.timeZone);
 }
 export function isReminderDay(date: string, settings: SettingsInput, weekdays: number[]): boolean {
   return weekdays.includes(DateTime.fromISO(date, { zone: settings.timeZone }).weekday);
@@ -124,5 +158,5 @@ export function isReminderDay(date: string, settings: SettingsInput, weekdays: n
 
 // Carry today's schedule, including an occurrence due before the first tick, without replaying older days.
 export function startOfReminderDay(now: number, zone: string): number {
-  return DateTime.fromMillis(now, { zone }).startOf("day").toMillis();
+  return resolveTime(localDate(now, zone), "00:00", zone);
 }
