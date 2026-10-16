@@ -24,6 +24,14 @@ import type {
 
 const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/u;
 const LOCAL_TIME_ZONE = "Asia/Yekaterinburg";
+const dateFormatter = (timeZone: string) =>
+  new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone,
+    year: "numeric",
+  });
+const dateFormatters = new Map([[LOCAL_TIME_ZONE, dateFormatter(LOCAL_TIME_ZONE)]]);
 
 export function validMonth(month: string): boolean {
   return /^\d{4}-(?:0[1-9]|1[0-2])$/u.test(month);
@@ -46,12 +54,13 @@ export function daysInMonth(month: string): number {
 }
 
 function localToday(now: number, timeZone = LOCAL_TIME_ZONE): string {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone,
-    year: "numeric",
-  }).formatToParts(new Date(now));
+  let formatter = dateFormatters.get(timeZone);
+  if (!formatter) {
+    formatter = dateFormatter(timeZone);
+    if (dateFormatters.size >= 32) dateFormatters.clear();
+    dateFormatters.set(timeZone, formatter);
+  }
+  const parts = formatter.formatToParts(now);
   const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
   return `${values.year}-${values.month}-${values.day}`;
 }

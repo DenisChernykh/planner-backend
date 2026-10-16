@@ -12,14 +12,14 @@ export class FindMissingGoalsQuery {
   async execute({
     ownerId,
     date,
-    settings,
   }: {
     ownerId: string;
     date: string;
     settings: ReminderSettings;
   }): Promise<GoalResource[]> {
     const goals = await this.planning.listForDate(ownerId, date);
-    const weekday = DateTime.fromISO(date, { zone: settings.timeZone }).weekday;
+    // The persisted local date already identifies the calendar day, including DST days.
+    const weekday = new Date(`${date}T00:00:00Z`).getUTCDay() || 7;
     const configured = new Map(
       (await this.repository.reminders(ownerId)).map((item) => [item.goalId, item]),
     );
@@ -32,5 +32,3 @@ export class FindMissingGoalsQuery {
     );
   }
 }
-
-import { DateTime } from "luxon";

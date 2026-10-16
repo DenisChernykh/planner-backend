@@ -8,6 +8,7 @@ import {
   telegramLinkTokens,
 } from "../../../platform/database/schema";
 import type {
+  ReminderDeliveryState,
   ReminderRepository,
   ReminderSchedulingState,
 } from "../application/ports/reminder-repository";
@@ -17,6 +18,7 @@ import {
   type ReminderJob,
   type ReminderSettings,
 } from "../domain/model";
+import { inheritanceBatches } from "./inheritance-batches";
 
 type JobRow = typeof reminderJobs.$inferSelect;
 const toJob = (row: JobRow): ReminderJob => ({
@@ -81,6 +83,56 @@ export class D1ReminderRepository implements ReminderRepository {
       .bind(ownerId)
       .first<SettingsRow>();
     return row ? settingsFromRow(row) : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null };
+  }
+  async deliveryState(ownerId: string, goalId: string | null): Promise<ReminderDeliveryState> {
+    // A single fresh read replaces separate settings, connection and rule calls.
+    // Only calendar machinery/wiring is cached; eligibility always comes from D1.
+    const row = await this.binding
+      .prepare(`SELECT s.*, l.chat_id, l.telegram_user_id, l.status AS link_status,
+        r.goal_id, r.mode, r.time, r.weekdays, r.next_run_at, r.revision AS rule_revision
+        FROM (SELECT ? AS owner_id) u
+        LEFT JOIN reminder_settings s ON s.owner_id = u.owner_id
+        LEFT JOIN telegram_links l ON l.owner_id = u.owner_id
+        LEFT JOIN goal_reminders r ON r.owner_id = u.owner_id AND r.goal_id = ?`)
+      .bind(ownerId, goalId)
+      .first<
+        SettingsRow & {
+          chat_id: string | null;
+          telegram_user_id: string | null;
+          link_status: string | null;
+          goal_id: string | null;
+          mode: GoalReminder["mode"];
+          time: string;
+          weekdays: string;
+          next_run_at: number | null;
+          rule_revision: string;
+        }
+      >();
+    return {
+      settings: row?.owner_id
+        ? settingsFromRow(row)
+        : { ownerId, ...DEFAULT_SETTINGS, nextEveningAt: null },
+      link:
+        row?.chat_id && row.telegram_user_id && row.link_status
+          ? {
+              ownerId,
+              chatId: row.chat_id,
+              telegramUserId: row.telegram_user_id,
+              status: row.link_status,
+            }
+          : null,
+      reminder: row?.goal_id
+        ? {
+            ownerId,
+            goalId: row.goal_id,
+            mode: row.mode,
+            time: row.time,
+            weekdays: JSON.parse(row.weekdays) as number[],
+            nextRunAt: row.next_run_at,
+            revision: row.rule_revision,
+          }
+        : null,
+    };
   }
   async saveSettings(
     settings: ReminderSettings,
@@ -271,35 +323,40 @@ export class D1ReminderRepository implements ReminderRepository {
     const results = await this.binding.batch(statements);
     return results[0]?.meta.changes === 1;
   }
-  async inheritReminder(
-    source: GoalReminder,
-    target: GoalReminder,
+  async inheritReminders(
+    items: { source: GoalReminder; target: GoalReminder }[],
     timeZone: string,
-  ): Promise<boolean> {
+  ): Promise<void> {
+    if (!items.length) return;
+    const batches = inheritanceBatches(
+      items.map(({ source, target }) => ({
+        sourceGoalId: source.goalId,
+        goalId: target.goalId,
+        ownerId: target.ownerId,
+        mode: source.mode,
+        time: source.time,
+        weekdays: JSON.stringify(source.weekdays),
+        nextRunAt: target.nextRunAt,
+      })),
+    );
     // Retry-safe and never overwrite a new month's manually edited setting.
     // Recheck the source and timezone to reject an inheritance based on stale reads.
-    const result = await this.binding
-      .prepare(`INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays, next_run_at)
-      SELECT target.id, source.owner_id, source.mode, source.time, source.weekdays, ?
-      FROM goal_reminders source JOIN plan_goals target ON target.carried_from_goal_id = source.goal_id
-      WHERE target.id = ? AND target.owner_id = ? AND target.deleted_at IS NULL
-        AND source.goal_id = ? AND source.owner_id = ? AND source.mode = ? AND source.time = ? AND source.weekdays = ?
-        AND NOT EXISTS (SELECT 1 FROM reminder_settings WHERE owner_id = ? AND time_zone != ?)
+    for (const batch of batches)
+      await this.binding
+        .prepare(`INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays, next_run_at)
+      SELECT target.id, source.owner_id, source.mode, source.time, source.weekdays,
+        json_extract(item.value, '$.nextRunAt')
+      FROM json_each(?) item
+      JOIN goal_reminders source ON source.goal_id = json_extract(item.value, '$.sourceGoalId')
+      JOIN plan_goals target ON target.carried_from_goal_id = source.goal_id
+      WHERE target.id = json_extract(item.value, '$.goalId')
+        AND target.owner_id = json_extract(item.value, '$.ownerId') AND target.deleted_at IS NULL
+        AND source.owner_id = target.owner_id AND source.mode = json_extract(item.value, '$.mode')
+        AND source.time = json_extract(item.value, '$.time') AND source.weekdays = json_extract(item.value, '$.weekdays')
+        AND NOT EXISTS (SELECT 1 FROM reminder_settings WHERE owner_id = source.owner_id AND time_zone != ?)
       ON CONFLICT(goal_id) DO NOTHING`)
-      .bind(
-        target.nextRunAt,
-        target.goalId,
-        target.ownerId,
-        source.goalId,
-        source.ownerId,
-        source.mode,
-        source.time,
-        JSON.stringify(source.weekdays),
-        source.ownerId,
-        timeZone,
-      )
-      .run();
-    return result.meta.changes === 1;
+        .bind(JSON.stringify(batch), timeZone)
+        .run();
   }
 
   async scheduledReminders(ownerId: string, month: string, now: number): Promise<GoalReminder[]> {
@@ -491,13 +548,20 @@ export class D1ReminderRepository implements ReminderRepository {
     ]);
   }
   async due(now: number): Promise<ReminderJob[]> {
-    const rows = await this.binding
+    const rows = await this.dueStatement(now).all<JobRow>();
+    return rows.results.map(toJob);
+  }
+  private dueStatement(now: number) {
+    return this.binding
       .prepare(
         `SELECT ${jobColumns} FROM reminder_jobs WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1`,
       )
-      .bind(now)
-      .all<JobRow>();
-    return rows.results.map(toJob);
+      .bind(now);
+  }
+  async recoverAndDue(now: number): Promise<ReminderJob[]> {
+    const statements = [...this.recoveryStatements(now), this.dueStatement(now)];
+    const results = await this.binding.batch<JobRow>(statements);
+    return (results.at(-1)?.results ?? []).map(toJob);
   }
   async job(id: string): Promise<ReminderJob | null> {
     const row = await this.binding
@@ -513,11 +577,36 @@ export class D1ReminderRepository implements ReminderRepository {
       .where(and(eq(reminderJobs.chatId, chatId), eq(reminderJobs.messageId, messageId)));
     return row ? toJob(row) : null;
   }
-  async claim(id: string, now: number): Promise<boolean> {
+  async claim(
+    job: ReminderJob,
+    now: number,
+    state: ReminderDeliveryState,
+    interactive: boolean,
+  ): Promise<boolean> {
+    // Eligibility was read together before formatting. Recheck it in the claim so
+    // a concurrent answer, disconnect or settings edit cannot authorize a stale question.
     const result = await this.binding
       .prepare(`UPDATE reminder_jobs SET status = 'sending', lease_until = ?, attempts = attempts + 1
-        WHERE id = ? AND status = 'pending' AND due_at <= ?`)
-      .bind(now + 60_000, id, now)
+        WHERE id = ? AND status = 'pending' AND due_at <= ? AND expires_at > ?
+        AND EXISTS (SELECT 1 FROM telegram_links l WHERE l.owner_id = reminder_jobs.owner_id AND l.status = 'active' AND l.chat_id = ?)
+        AND coalesce((SELECT revision FROM reminder_settings WHERE owner_id = reminder_jobs.owner_id), 'initial') = ?
+        AND (? OR EXISTS (SELECT 1 FROM reminder_settings WHERE owner_id = reminder_jobs.owner_id AND enabled = 1))
+        AND (goal_id IS NULL OR (
+          EXISTS (SELECT 1 FROM plan_goals g WHERE g.id = reminder_jobs.goal_id AND g.owner_id = reminder_jobs.owner_id
+            AND g.deleted_at IS NULL AND g.month = substr(reminder_jobs.local_date, 1, 7))
+          AND (kind = 'correction' OR NOT EXISTS (SELECT 1 FROM goal_entries e WHERE e.goal_id = reminder_jobs.goal_id AND e.local_date = reminder_jobs.local_date))
+          AND (? OR EXISTS (SELECT 1 FROM goal_reminders r WHERE r.goal_id = reminder_jobs.goal_id AND r.owner_id = reminder_jobs.owner_id AND r.mode != 'off' AND r.revision = ?))))`)
+      .bind(
+        now + 60_000,
+        job.id,
+        now,
+        now,
+        state.link?.chatId ?? "",
+        state.settings.revision ?? "initial",
+        Number(interactive),
+        Number(interactive),
+        state.reminder?.revision ?? "initial",
+      )
       .run();
     return result.meta.changes === 1;
   }
@@ -550,16 +639,19 @@ export class D1ReminderRepository implements ReminderRepository {
       .run();
   }
   async recover(now: number): Promise<void> {
+    await this.binding.batch(this.recoveryStatements(now));
+  }
+  private recoveryStatements(now: number): D1PreparedStatement[] {
     // A crashed send may have reached Telegram: do not automatically resend it.
-    await this.binding
+    const recovery = this.binding
       .prepare(
         "UPDATE reminder_jobs SET status = 'unknown', lease_until = NULL WHERE status = 'sending' AND lease_until <= ?",
       )
-      .bind(now)
-      .run();
-    if (Math.floor(now / 60_000) % 60 !== 0) return;
+      .bind(now);
+    if (Math.floor(now / 60_000) % 60 !== 0) return [recovery];
     const cutoff = now - 90 * 86_400_000;
-    await this.binding.batch([
+    return [
+      recovery,
       this.binding
         .prepare(
           "DELETE FROM reminder_jobs WHERE id IN (SELECT id FROM reminder_jobs WHERE created_at < ? ORDER BY created_at LIMIT 25)",
@@ -570,7 +662,7 @@ export class D1ReminderRepository implements ReminderRepository {
           "DELETE FROM telegram_link_tokens WHERE token_hash IN (SELECT token_hash FROM telegram_link_tokens WHERE expires_at <= ? LIMIT 25)",
         )
         .bind(now),
-    ]);
+    ];
   }
 
   async deliveryIssues(ownerId: string, since: number): Promise<number> {

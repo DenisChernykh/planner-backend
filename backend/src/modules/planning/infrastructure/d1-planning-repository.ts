@@ -1,16 +1,4 @@
-import {
-  and,
-  asc,
-  desc,
-  eq,
-  getTableColumns,
-  gte,
-  inArray,
-  isNotNull,
-  isNull,
-  lte,
-  sql,
-} from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { goalEntries, planGoals } from "../../../platform/database/schema";
 import type { AnswerRepository } from "../application/ports/answer-repository";
@@ -230,20 +218,14 @@ export class D1PlanningRepository
     const rows =
       sourceMonth === null
         ? []
-        : await this.database
-            .select({
-              ...getTableColumns(planGoals),
-              revision: sql<string>`${sql.raw(rolloverRevision)}`,
-            })
-            .from(planGoals)
-            .where(
-              and(
-                eq(planGoals.ownerId, ownerId),
-                eq(planGoals.month, sourceMonth),
-                isNull(planGoals.deletedAt),
-              ),
-            )
-            .orderBy(asc(planGoals.sortOrder), asc(planGoals.createdAt), asc(planGoals.id));
+        : (
+            await this.binding
+              .prepare(`SELECT ${goalColumns}, ${rolloverRevision} AS revision FROM plan_goals
+              WHERE owner_id = ? AND month = ? AND deleted_at IS NULL
+              ORDER BY sort_order, created_at, id`)
+              .bind(ownerId, sourceMonth)
+              .all<GoalRow & { revision: string }>()
+          ).results;
     return {
       initialized: false,
       sourceMonth,
@@ -318,21 +300,13 @@ export class D1PlanningRepository
   }
 
   async carriedGoals(ownerId: string, month: string): Promise<CarriedGoal[]> {
-    const rows = await this.database
-      .select({ sourceGoalId: planGoals.carriedFromGoalId, goalId: planGoals.id })
-      .from(planGoals)
-      .where(
-        and(
-          eq(planGoals.ownerId, ownerId),
-          lte(planGoals.month, month),
-          isNull(planGoals.deletedAt),
-          isNotNull(planGoals.carriedFromGoalId),
-        ),
-      )
-      .orderBy(asc(planGoals.month));
-    return rows.flatMap((row) =>
-      row.sourceGoalId === null ? [] : [{ ...row, sourceGoalId: row.sourceGoalId }],
-    );
+    const rows = await this.binding
+      .prepare(`SELECT carried_from_goal_id AS sourceGoalId, id AS goalId FROM plan_goals
+        WHERE owner_id = ? AND month <= ? AND deleted_at IS NULL AND carried_from_goal_id IS NOT NULL
+        ORDER BY month`)
+      .bind(ownerId, month)
+      .all<CarriedGoal>();
+    return rows.results;
   }
 
   async findOwnedActiveGoal(goalId: string, ownerId: string): Promise<GoalRecord | null> {

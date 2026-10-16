@@ -84,6 +84,9 @@ describe("report schedules", () => {
     expect(
       nextReportOccurrence(Date.parse("2026-10-25T00:45:00Z"), "Europe/Berlin", "02:30", 7),
     ).toBe(Date.parse("2026-11-01T01:30:00Z"));
+    expect(
+      nextReportOccurrence(Date.parse("2026-03-29T01:15:00Z"), "Europe/Berlin", "02:30", 7),
+    ).toBe(Date.parse("2026-04-05T00:30:00Z"));
   });
   it("schedules strictly after saving, without replaying past slots", async () => {
     const state = await save({}, NOW);
@@ -112,12 +115,14 @@ describe("progress reports with D1 and fake transport", () => {
       await runReminders(bindings, NOW);
       const [prepared] = (await jobs()).results;
       expect(prepared?.status).toBe("pending");
-      expect(JSON.parse(prepared?.payload ?? "[]").version).toBe(1);
+      expect(prepared?.payload).toBe("[]");
       expect(send).not.toHaveBeenCalled();
       await runReminders(bindings, NOW + 60_000);
-      expect(send).toHaveBeenCalledTimes(1);
-      expect((await jobs()).results[0]?.status).toBe("sent");
+      expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(1);
+      expect(send).not.toHaveBeenCalled();
       await runReminders(bindings, NOW + 120_000);
+      expect((await jobs()).results[0]?.status).toBe("sent");
+      await runReminders(bindings, NOW + 180_000);
       expect(send).toHaveBeenCalledTimes(1);
     } finally {
       vi.unstubAllGlobals();

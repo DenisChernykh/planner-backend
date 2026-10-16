@@ -1,6 +1,7 @@
 import type { ProgressReportRepository } from "../application/ports/progress-report-repository";
 import type { ReminderJob, ReminderSettings } from "../domain/model";
 import type { ReportSelection, ReportSettings, ReportSlot } from "../domain/progress-reports";
+import { inheritanceBatches } from "./inheritance-batches";
 
 type Row = {
   owner_id: string;
@@ -132,15 +133,16 @@ export class D1ProgressReportRepository implements ProgressReportRepository {
     ]);
   }
   async inherit(ownerId: string, carried: { sourceGoalId: string; goalId: string }[]) {
-    for (const part of carried) {
+    if (!carried.length) return;
+    for (const batch of inheritanceBatches(carried))
       await this.database
         .prepare(`INSERT INTO goal_progress_reports (goal_id, owner_id, included)
         SELECT target.id, source.owner_id, source.included FROM goal_progress_reports source JOIN plan_goals target ON target.carried_from_goal_id = source.goal_id
-        WHERE source.goal_id = ? AND source.owner_id = ? AND target.id = ? AND target.owner_id = source.owner_id AND target.deleted_at IS NULL
+        JOIN json_each(?) item ON source.goal_id = json_extract(item.value, '$.sourceGoalId') AND target.id = json_extract(item.value, '$.goalId')
+        WHERE source.owner_id = ? AND target.owner_id = source.owner_id AND target.deleted_at IS NULL
         ON CONFLICT(goal_id) DO NOTHING`)
-        .bind(part.sourceGoalId, ownerId, part.goalId)
+        .bind(JSON.stringify(batch), ownerId)
         .run();
-    }
   }
   async advance(
     settings: ReportSettings,

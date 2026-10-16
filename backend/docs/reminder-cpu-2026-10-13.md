@@ -155,3 +155,62 @@ retained.
 4. Measure monthly rollover and inheritance recovery at the next relevant
    boundary, or use a separately authorized isolated test. Larger histories and
    account counts remain outside this short production observation window.
+
+## Local optimization follow-up — 16 October 2026
+
+The read-only production audit found 1,437 successful scheduled invocations and
+zero resource terminations in the preceding 24-hour window. CPU median was
+4.976 ms, P95 6.992 ms, maximum 40.502 ms; 16 events exceeded 10 ms. This is the
+deployed `ebbbf20` baseline, not production evidence for the changes below.
+
+The next revision bounds a Cron invocation to one schedule transition or one
+persisted delivery. Questions/digests are sent on a later tick; weekly reports
+have separate schedule, snapshot and send ticks. Month copy and inheritance
+also run separately. A single question normally adds about one minute of delay;
+simultaneous reminders drain at roughly one per two minutes. The original local
+date, expiration, quiet hours, owner scope and uncertain-send handling remain.
+HTTP/bot interactions keep immediate delivery behavior.
+
+Delivery settings, connection and rule are read together. Recovery and selecting
+due work share one D1 batch. The final atomic claim rechecks connection/settings,
+rule revision, goal eligibility and absence of a concurrently entered question fact.
+Inheritance uses one SQL insert per generation rather than per goal, preserving
+source checks and manual edits. Rollover reads use parameterized SQL. Calendar
+formatters and deterministic local-time resolutions have bounded caches; report
+date-only arithmetic uses UTC dates. Luxon still resolves IANA gaps and folds.
+
+The profiling fixture now resets scenario state, measures subsequent persisted
+stages separately, and includes copying/inheriting 20 goals per owner. One final
+run's warm samples (15 per stage) were:
+
+| Stage | Median sampled active ms | P90 ms | D1 statements |
+| --- | ---: | ---: | ---: |
+| Schedule a question | 1.643 | 2.370 | 6 |
+| Send that question | 2.023 | 3.292 | 7 |
+| Schedule a digest | 1.458 | 1.904 | 6 |
+| Send a digest | 2.636 | 3.982 | 9 |
+| Schedule a weekly report | 1.875 | 3.731 | 8 |
+| Prepare its snapshot | 3.830 | 6.380 | 12 |
+| Send its snapshot | 3.135 | 4.306 | 13 |
+| Copy a new month | 2.283 | 3.343 | 10 |
+| Inherit its rules | 3.106 | 3.619 | 9 |
+
+Separate first-handler runs measured question scheduling 6.746 ms, queued-question
+delivery 6.514 ms, digest scheduling 5.581 ms, weekly scheduling 7.322 ms, month
+copy 8.771 ms and inheritance 9.935 ms. Top-of-hour first runs with maintenance
+measured 6.671 ms for scheduling and 6.798 ms for queued delivery. These are local
+sampled active time after module loading, **not Cloudflare CPU accounting or a
+worst-case bound**. The inheritance first run has little measured headroom.
+Intermediate implementations still exceeded 10 ms locally, including a 13.147-ms
+combined rollover; do not treat selective warm medians as an acceptance gate.
+
+Reproduce with Node 24 / pnpm 11.15.1 and `pnpm reminders:profile`; use
+`PLANNER_PROFILE_FIRST_SCENARIO=rollover-inherit` (or `question`, `queued-question`,
+`digest`, `weekly-report`, `rollover`, `hour-question`, `hour-queued-question`) for
+a separate first-handler case. The fixture uses temporary local D1 and fake
+Telegram, with external requests denied. Run profiles sequentially without tests.
+
+This follow-up is not deployed. No remote migrations or Telegram mutations are
+needed to publish the code. Separate deployment authorization and real Cloudflare
+measurements of naturally due deliveries, fresh isolates, report stages and
+monthly work are required before claiming the Free 10-ms CPU target is met.

@@ -310,6 +310,45 @@ describe("reminder inheritance and scheduled rollover", () => {
     ).toMatchObject({ mode: "scheduled", time: "09:00" });
   });
 
+  it("stages a new month's copy and bulk rule inheritance before scheduling delivery", async () => {
+    const source = await create();
+    const second = await create();
+    await configure(source.id);
+    await configure(second.id);
+    await reminders.saveSettings(
+      { ownerId: OWNER, ...DEFAULT_SETTINGS, enabled: true, nextEveningAt: null },
+      await reminders.reminders(OWNER),
+    );
+    await env.DB.prepare("INSERT INTO telegram_links VALUES (?, '123', '123', 'active')")
+      .bind(OWNER)
+      .run();
+    const transport: ReminderTransport = {
+      send: vi.fn(async () => 1),
+      edit: vi.fn(async () => {}),
+      username: vi.fn(async () => "test"),
+    };
+    const runner = createReminderOperations(env.DB, transport);
+    await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
+    const copies = await planning.list(OWNER, "2026-10");
+    expect(copies).toHaveLength(2);
+    expect(
+      (await reminders.reminders(OWNER)).filter((rule) =>
+        copies.some((copy) => copy.id === rule.goalId),
+      ),
+    ).toHaveLength(0);
+    await runner.runReminders.execute({ now: OCTOBER + 60_000, deferNewDelivery: true });
+    expect(
+      (await reminders.reminders(OWNER)).filter((rule) =>
+        copies.some((copy) => copy.id === rule.goalId),
+      ),
+    ).toHaveLength(2);
+    expect(transport.send).not.toHaveBeenCalled();
+    await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
+    expect(await reminders.due(OCTOBER + 120_000)).toHaveLength(1);
+    await runner.runReminders.execute({ now: OCTOBER + 180_000, deferNewDelivery: true });
+    expect(transport.send).toHaveBeenCalledTimes(1);
+  });
+
   it("repairs a committed but incomplete rollover through Cron on the next tick", async () => {
     const source = await create();
     await configure(source.id);

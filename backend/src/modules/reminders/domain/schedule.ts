@@ -22,7 +22,15 @@ function createFormatter(zone: string) {
 const formatters = new Map([
   [DEFAULT_SETTINGS.timeZone, createFormatter(DEFAULT_SETTINGS.timeZone)],
 ]);
+// Luxon's separate IANA formatter is also needed when the first due rule arrives.
+// Construct it at module startup, rather than on that delivery's CPU budget.
+DateTime.fromMillis(0, { zone: DEFAULT_SETTINGS.timeZone });
+const occurrences = new Map<string, { at: number; weekday: number }>();
+const minuteParts = new Map<string, { minute: number; parts: Record<string, string> }>();
 function localParts(now: number, zone: string) {
+  const minute = Math.floor(now / 60_000);
+  const cached = minuteParts.get(zone);
+  if (cached?.minute === minute) return cached.parts;
   let formatter = formatters.get(zone);
   if (!formatter) {
     formatter = createFormatter(zone);
@@ -30,7 +38,12 @@ function localParts(now: number, zone: string) {
     if (formatters.size >= 32) formatters.clear();
     formatters.set(zone, formatter);
   }
-  return Object.fromEntries(formatter.formatToParts(now).map((part) => [part.type, part.value]));
+  const parts = Object.fromEntries(
+    formatter.formatToParts(now).map((part) => [part.type, part.value]),
+  );
+  if (minuteParts.size >= 32) minuteParts.clear();
+  minuteParts.set(zone, { minute, parts });
+  return parts;
 }
 export function validateSettings(value: SettingsInput): void {
   if (
@@ -71,11 +84,26 @@ export function nextOccurrence(
   time: string,
   weekdays = [1, 2, 3, 4, 5, 6, 7],
 ): number {
-  const start = DateTime.fromMillis(now, { zone }).startOf("day");
+  // Select calendar days before asking Luxon to resolve an actual local time.
+  // In particular, a weekly rule must not resolve eight discarded local times.
+  const start = Date.parse(`${localDate(now, zone)}T00:00:00Z`);
   for (let offset = 0; offset <= 8; offset++) {
-    const day = start.plus({ days: offset });
-    const candidate = atTime(day, time);
-    if (weekdays.includes(day.weekday) && candidate.toMillis() > now) return candidate.toMillis();
+    const date = new Date(start + offset * 86_400_000);
+    if (!weekdays.includes(date.getUTCDay() || 7)) continue;
+    const key = `${zone}:${date.toISOString().slice(0, 10)}:${time}`;
+    let occurrence = occurrences.get(key);
+    if (occurrence === undefined) {
+      const day = DateTime.fromObject(
+        { year: date.getUTCFullYear(), month: date.getUTCMonth() + 1, day: date.getUTCDate() },
+        { zone },
+      );
+      const candidate = atTime(day, time);
+      occurrence = { at: candidate.toMillis(), weekday: candidate.weekday };
+      // Cache only a deterministic local-time resolution, never a user's next run.
+      if (occurrences.size >= 256) occurrences.clear();
+      occurrences.set(key, occurrence);
+    }
+    if (weekdays.includes(occurrence.weekday) && occurrence.at > now) return occurrence.at;
   }
   throw new ReminderScheduleInvalidError();
 }

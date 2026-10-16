@@ -159,19 +159,56 @@ try {
     return response.json();
   };
   const setup = async (scenario) => {
-    const at = scenario === "weekly-report" ? Date.parse("2026-10-14T16:01:00Z") : now;
-    if (scenario !== "idle") await database.prepare("DELETE FROM reminder_jobs").run();
-    if (scenario === "question")
+    const at = scenario.startsWith("hour-")
+      ? Date.parse("2026-10-13T06:00:00Z")
+      : scenario === "weekly-report"
+        ? Date.parse("2026-10-14T16:01:00Z")
+        : ["rollover", "rollover-inherit"].includes(scenario)
+          ? Date.parse("2026-11-01T06:01:00Z")
+          : now;
+    if (["rollover", "rollover-inherit"].includes(scenario)) {
+      await database.prepare("DELETE FROM plan_goals WHERE month = '2026-11'").run();
+      await database.prepare("DELETE FROM plan_month_rollovers WHERE month = '2026-11'").run();
+      if (scenario === "rollover-inherit") {
+        await database
+          .prepare(`INSERT INTO plan_goals
+          (id, owner_id, month, carried_from_goal_id, title, tracking_type, tracking_config, cadence_period, sort_order, created_at, updated_at)
+          SELECT 'inherited-' || id, owner_id, '2026-11', id, title, tracking_type, tracking_config, cadence_period, sort_order, ?, ?
+          FROM plan_goals WHERE month = '2026-10'`)
+          .bind(at, at)
+          .run();
+        await database
+          .prepare(
+            "INSERT INTO plan_month_rollovers SELECT id, '2026-11', 'profile', '2026-10', ? FROM users",
+          )
+          .bind(at)
+          .run();
+      }
+    }
+    await database.prepare("DELETE FROM reminder_jobs").run();
+    await database
+      .prepare("UPDATE goal_reminders SET next_run_at = ?")
+      .bind(at + 86400000)
+      .run();
+    await database
+      .prepare("UPDATE reminder_settings SET next_evening_at = ?")
+      .bind(at + 86400000)
+      .run();
+    await database
+      .prepare("UPDATE progress_report_settings SET next_wednesday_at = ?, next_sunday_at = ?")
+      .bind(at + 7 * 86400000, at + 7 * 86400000)
+      .run();
+    if (["question", "hour-question"].includes(scenario))
       await database
         .prepare("UPDATE goal_reminders SET next_run_at = ? WHERE goal_id = 'profile-a-0'")
-        .bind(now)
+        .bind(at)
         .run();
     if (scenario === "digest")
       await database
         .prepare("UPDATE reminder_settings SET next_evening_at = ? WHERE owner_id = 'profile-a'")
         .bind(now)
         .run();
-    if (scenario === "queued-question") {
+    if (["queued-question", "hour-queued-question"].includes(scenario)) {
       await database
         .prepare(`INSERT INTO reminder_jobs
         (id, event_key, owner_id, goal_id, local_date, kind, status, due_at, expires_at, payload, attempts, created_at)
@@ -203,7 +240,17 @@ try {
   };
   const firstScenario = process.env.PLANNER_PROFILE_FIRST_SCENARIO ?? "idle";
   assert.ok(
-    ["idle", "question", "digest", "queued-question", "weekly-report"].includes(firstScenario),
+    [
+      "idle",
+      "question",
+      "digest",
+      "queued-question",
+      "weekly-report",
+      "rollover",
+      "rollover-inherit",
+      "hour-question",
+      "hour-queued-question",
+    ].includes(firstScenario),
   );
   const firstAt = await setup(firstScenario);
   await command("Profiler.start");
@@ -238,39 +285,54 @@ try {
       `${process.env.PLANNER_PROFILE_OUTPUT}-first-run.cpuprofile`,
       JSON.stringify(firstProfile),
     );
-  for (const scenario of ["idle", "question", "digest", "queued-question", "weekly-report"]) {
+  for (const scenario of [
+    "idle",
+    "question",
+    "digest",
+    "queued-question",
+    "weekly-report",
+    "rollover",
+    "rollover-inherit",
+  ]) {
     const results = [];
     const profiles = [];
     const active = new Map();
     const times = [];
-    const deliveryTimes = [];
-    const deliveries = [];
+    const followups = new Map();
     for (let i = 0; i < 15; i++) {
       const at = await setup(scenario);
       await command("Profiler.start");
       results.push(await tick(at));
       const { profile } = await command("Profiler.stop");
       profiles.push(profile);
-      if (scenario === "weekly-report") {
+      // Measure each persisted stage separately: old revisions may send immediately,
+      // current Cron schedules, prepares reports and sends on independent ticks.
+      for (let step = 1; step <= 2; step++) {
+        const pending = await database
+          .prepare("SELECT 1 FROM reminder_jobs WHERE status = 'pending' LIMIT 1")
+          .first();
+        if (!pending) break;
         await command("Profiler.start");
-        deliveries.push(await tick(at + 60_000));
-        const { profile: deliveryProfile } = await command("Profiler.stop");
-        const deliveryNodes = new Map(deliveryProfile.nodes.map((node) => [node.id, node]));
-        deliveryTimes.push(
-          deliveryProfile.samples.reduce(
+        const result = await tick(at + step * 60_000);
+        const { profile: extra } = await command("Profiler.stop");
+        const extraNodes = new Map(extra.nodes.map((node) => [node.id, node]));
+        const ms =
+          extra.samples.reduce(
             (total, sample, index) =>
               ["(idle)", "(root)", "(program)"].includes(
-                deliveryNodes.get(sample).callFrame.functionName,
+                extraNodes.get(sample).callFrame.functionName,
               )
                 ? total
-                : total + deliveryProfile.timeDeltas[index],
+                : total + extra.timeDeltas[index],
             0,
-          ) / 1000,
-        );
+          ) / 1000;
+        const phase = result.messages ? "send" : "prepare";
+        if (!followups.has(phase)) followups.set(phase, []);
+        followups.get(phase).push({ ...result, ms });
         if (process.env.PLANNER_PROFILE_OUTPUT)
           await writeFile(
-            `${process.env.PLANNER_PROFILE_OUTPUT}-${scenario}-send-${i}.cpuprofile`,
-            JSON.stringify(deliveryProfile),
+            `${process.env.PLANNER_PROFILE_OUTPUT}-${scenario}-${phase}-${i}.cpuprofile`,
+            JSON.stringify(extra),
           );
       }
       const nodes = new Map(profile.nodes.map((node) => [node.id, node]));
@@ -298,16 +360,17 @@ try {
         top: [...active].sort((a, b) => b[1] - a[1]).slice(0, 8),
       }),
     );
-    if (scenario === "weekly-report") {
-      const sortedDelivery = [...deliveryTimes].sort((a, b) => a - b);
+    for (const [phase, measurements] of followups) {
+      const sorted = measurements.map((row) => row.ms).sort((a, b) => a - b);
       console.log(
         JSON.stringify({
-          scenario: "weekly-report-send",
-          queries: deliveries.map((result) => result.queries),
-          messages: deliveries.map((result) => result.messages),
-          sampledActiveMsMedian: sortedDelivery[7],
-          sampledActiveMsP90: sortedDelivery[13],
-          sampledActiveMs: deliveryTimes,
+          scenario: `${scenario}-${phase}`,
+          ticks: measurements.length,
+          queries: measurements.map((row) => row.queries),
+          messages: measurements.map((row) => row.messages),
+          sampledActiveMsMedian: sorted[Math.floor(sorted.length * 0.5)],
+          sampledActiveMsP90: sorted[Math.floor(sorted.length * 0.9)],
+          sampledActiveMs: measurements.map((row) => row.ms),
         }),
       );
     }

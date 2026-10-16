@@ -18,25 +18,45 @@ export class RunRemindersUseCase {
   async execute({
     now,
     deferNewReportSnapshot = false,
+    deferNewDelivery = false,
   }: {
     now: number;
     deferNewReportSnapshot?: boolean;
+    deferNewDelivery?: boolean;
   }): Promise<void> {
     if (!this.botAvailable) return;
-    await this.repository.recover(now);
-    const queued = await this.repository.due(now);
+    const queued = await this.repository.recoverAndDue(now);
     if (queued.length) {
       // Finish persisted work before spending CPU on another scheduling pass.
       await this.deliverQueued(queued, now, deferNewReportSnapshot);
       return;
     }
-    for (const state of await this.repository.schedulingState()) {
+    const states = await this.repository.schedulingState();
+    if (deferNewDelivery) {
+      // Keep a new plan's copy and rule inheritance in separate invocations, and
+      // prepare all owners before draining one owner's simultaneous due rules.
+      for (const state of states) {
+        const month = localDate(now, state.settings.timeZone).slice(0, 7);
+        const missingPlan = !state.preparedMonths.includes(month);
+        if (!missingPlan && !state.inheritanceMonths.some((item) => item <= month)) continue;
+        await this.prepareCurrentPlan.execute({
+          ownerId: state.settings.ownerId,
+          now,
+          deferInheritance: missingPlan,
+        });
+        return;
+      }
+    }
+    for (const state of states) {
       const { settings } = state;
       const month = localDate(now, settings.timeZone).slice(0, 7);
       const prepare =
         !state.preparedMonths.includes(month) ||
         state.inheritanceMonths.some((inheritedMonth) => inheritedMonth <= month);
-      if (prepare) await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now });
+      if (prepare) {
+        await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now });
+        if (deferNewDelivery) return;
+      }
       if (!settings.enabled) continue;
       const goalDue = prepare || (state.nextGoalRuns[month] ?? Infinity) <= now;
       const eveningDue = settings.nextEveningAt !== null && settings.nextEveningAt <= now;
@@ -58,6 +78,9 @@ export class RunRemindersUseCase {
             )
           : null;
         await this.repository.advanceGoal({ ...item, nextRunAt: next }, previous, job, settings);
+        // Persist one schedule transition per Cron invocation. Delivery on the next
+        // tick rechecks current settings/facts; it never trusts a cached eligibility.
+        if (deferNewDelivery) return;
       }
       if (settings.nextEveningAt !== null && settings.nextEveningAt <= now) {
         const previous = settings.nextEveningAt;
@@ -79,9 +102,11 @@ export class RunRemindersUseCase {
           nextOccurrence(now, settings.timeZone, settings.eveningTime),
           job,
         );
+        if (deferNewDelivery) return;
       }
     }
-    await this.reports?.schedule(now);
+    await this.reports?.schedule(now, deferNewDelivery ? 1 : Infinity);
+    if (deferNewDelivery) return;
     await this.deliverQueued(await this.repository.due(now), now, deferNewReportSnapshot);
   }
 

@@ -181,5 +181,9 @@ export async function runReminders(env: CloudflareBindings, now: number): Promis
     reminderRunners.set(env, operations);
   }
   // Only wiring/transport is reused. Settings, schedules and delivery claims stay in D1.
-  await operations.runReminders.execute({ now, deferNewReportSnapshot: true });
+  await operations.runReminders.execute({
+    now,
+    deferNewReportSnapshot: true,
+    deferNewDelivery: true,
+  });
 }

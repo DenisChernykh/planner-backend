@@ -25,8 +25,8 @@ export class DeliverReminderUseCase {
     interactive?: boolean;
   }): Promise<void> {
     if (!this.transport || job.status !== "pending") return;
-    const settings = await this.repository.settings(job.ownerId);
-    const link = await this.repository.link(job.ownerId);
+    const state = await this.repository.deliveryState(job.ownerId, job.goalId);
+    const { settings, link, reminder: rule } = state;
     const decision = deliveryDecision(job, settings, link, now, interactive);
     if (decision.action === "cancel") {
       await this.repository.updateJob(job.id, { status: "cancelled" });
@@ -41,7 +41,6 @@ export class DeliverReminderUseCase {
     else {
       const goal = job.goalId ? await this.planning.goal(job.ownerId, job.goalId) : null;
       const entry = goal ? await this.planning.entry(job.ownerId, goal.id, job.localDate) : null;
-      const rule = job.goalId ? await this.repository.reminder(job.ownerId, job.goalId) : null;
       message =
         goal && canAskGoal(job, goal.month, entry !== null, rule ?? undefined, interactive)
           ? questionMessage(job, goal)
@@ -51,7 +50,7 @@ export class DeliverReminderUseCase {
       await this.repository.updateJob(job.id, { status: "cancelled" });
       return;
     }
-    if (!(await this.repository.claim(job.id, now))) return;
+    if (!(await this.repository.claim(job, now, state, interactive))) return;
     try {
       const messageId = await this.transport.send(decision.chatId, message);
       await this.repository.updateJob(job.id, {

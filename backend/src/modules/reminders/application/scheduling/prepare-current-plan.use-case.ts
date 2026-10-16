@@ -14,10 +14,12 @@ export class PrepareCurrentPlanUseCase {
     ownerId,
     now,
     month,
+    deferInheritance = false,
   }: {
     ownerId: string;
     now: number;
     month?: string;
+    deferInheritance?: boolean;
   }): Promise<void> {
     const settings = await this.repository.settings(ownerId);
     const currentMonth = localDate(now, settings.timeZone).slice(0, 7);
@@ -27,11 +29,13 @@ export class PrepareCurrentPlanUseCase {
       now,
       timeZone: settings.timeZone,
     });
+    if (deferInheritance) return;
     if (plan.carriedGoals.length === 0) return;
     await this.reports?.inherit(ownerId, plan.carriedGoals);
     const reminders = new Map(
       (await this.repository.reminders(ownerId)).map((rule) => [rule.goalId, rule]),
     );
+    const inheritance = [];
     for (const { sourceGoalId, goalId } of plan.carriedGoals) {
       const source = reminders.get(sourceGoalId);
       if (!source || reminders.has(goalId)) continue;
@@ -48,8 +52,9 @@ export class PrepareCurrentPlanUseCase {
               )
             : null,
       };
-      if (await this.repository.inheritReminder(source, target, settings.timeZone))
-        reminders.set(goalId, target);
+      inheritance.push({ source, target });
+      reminders.set(goalId, target);
     }
+    await this.repository.inheritReminders(inheritance, settings.timeZone);
   }
 }

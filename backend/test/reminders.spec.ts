@@ -118,9 +118,119 @@ describe("reminder schedules", () => {
       Date.parse("2026-10-26T01:30:00Z"),
     );
   });
+  it("reuses local-time resolutions without repeating a due occurrence or mixing zones", () => {
+    const due = Date.parse("2026-09-29T04:00:00Z");
+    expect(nextOccurrence(due - 1, "Asia/Yekaterinburg", "09:00")).toBe(due);
+    expect(nextOccurrence(due, "Asia/Yekaterinburg", "09:00")).toBe(due + 86400000);
+    expect(nextOccurrence(due, "Europe/Berlin", "09:00")).toBe(Date.parse("2026-09-29T07:00:00Z"));
+    expect(nextOccurrence(Date.parse("2026-03-29T01:15:00Z"), "Europe/Berlin", "02:30")).toBe(
+      Date.parse("2026-03-29T01:30:00Z"),
+    );
+  });
 });
 
 describe("Telegram reminders with D1", () => {
+  it("stages one due schedule at a time and suppresses a queued question answered before delivery", async () => {
+    await goal({ type: "check" });
+    await goal({ type: "check" });
+    const runner = operations();
+    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
+    await runner.runReminders.execute({ now, deferNewDelivery: true });
+    expect(sent).toHaveLength(0);
+    const [queued] = await repository.due(now);
+    expect(queued?.status).toBe("pending");
+    expect(await env.DB.prepare("SELECT count(*) AS count FROM reminder_jobs").first("count")).toBe(
+      1,
+    );
+    const queuedGoal = queued?.goalId;
+    if (!queuedGoal) throw new Error("Missing staged goal");
+    await new UpsertGoalEntryUseCase(planningRepository).execute({
+      ownerId: OWNER,
+      goalId: queuedGoal,
+      date: "2026-09-29",
+      now: now + 30_000,
+      expectedRevision: null,
+      value: { completed: false },
+    });
+    await runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true });
+    expect(sent).toHaveLength(0);
+    expect((await repository.job(queued.id))?.status).toBe("cancelled");
+    await runner.runReminders.execute({ now: now + 120_000, deferNewDelivery: true });
+    expect(await repository.due(now + 120_000)).toHaveLength(1);
+    await runner.runReminders.execute({ now: now + 180_000, deferNewDelivery: true });
+    expect(sent).toHaveLength(1);
+  });
+
+  it("keeps staged concurrent ticks idempotent and reads a changed Telegram connection before sending", async () => {
+    await goal();
+    const runner = operations();
+    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
+    await Promise.all([
+      runner.runReminders.execute({ now, deferNewDelivery: true }),
+      runner.runReminders.execute({ now, deferNewDelivery: true }),
+    ]);
+    const rows = await env.DB.prepare("SELECT status, attempts FROM reminder_jobs").all();
+    expect(rows.results).toEqual([{ status: "pending", attempts: 0 }]);
+    await env.DB.prepare("UPDATE telegram_links SET status = 'blocked' WHERE owner_id = ?")
+      .bind(OWNER)
+      .run();
+    await runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true });
+    expect(sent).toHaveLength(0);
+    expect((await firstJob()).status).toBe("cancelled");
+  });
+
+  it("does not read another owner's reminder through the combined delivery state", async () => {
+    const created = await goal();
+    const state = await repository.deliveryState("another-owner", created.id);
+    expect(state).toEqual({
+      settings: { ownerId: "another-owner", ...DEFAULT_SETTINGS, nextEveningAt: null },
+      link: null,
+      reminder: null,
+    });
+  });
+
+  it.each(["answer", "rule", "connection"])(
+    "rejects a concurrent %s change at the delivery claim",
+    async (change) => {
+      const created = await goal({ type: "check" });
+      const original = D1ReminderRepository.prototype.claim;
+      vi.spyOn(D1ReminderRepository.prototype, "claim").mockImplementationOnce(async function (
+        this: D1ReminderRepository,
+        job,
+        at,
+        state,
+        interactive,
+      ) {
+        if (change === "answer")
+          await new UpsertGoalEntryUseCase(planningRepository).execute({
+            ownerId: OWNER,
+            goalId: created.id,
+            date: "2026-09-29",
+            now: at,
+            expectedRevision: null,
+            value: { completed: false },
+          });
+        else if (change === "rule")
+          await env.DB.prepare(
+            "UPDATE goal_reminders SET mode = 'off', revision = 'changed' WHERE goal_id = ?",
+          )
+            .bind(created.id)
+            .run();
+        else
+          await env.DB.prepare("UPDATE telegram_links SET status = 'blocked' WHERE owner_id = ?")
+            .bind(OWNER)
+            .run();
+        return original.call(this, job, at, state, interactive);
+      });
+      await operations().runReminders.execute({ now });
+      expect(sent).toHaveLength(0);
+      expect((await firstJob()).attempts).toBe(0);
+      await operations().runReminders.execute({ now: now + 60_000 });
+      expect((await firstJob()).status).toBe("cancelled");
+      expect(sent).toHaveLength(0);
+    },
+  );
+
   it("keeps an idle tick independent of plan preparation and reminder history", async () => {
     await goal();
     await operations().runReminders.execute({ now });
@@ -737,10 +847,14 @@ describe("reminder runtime integration", () => {
         TELEGRAM_BOT_TOKEN: "321:runtime-test-token",
         TELEGRAM_BOT_WEBHOOK_SECRET: "runtime-test-secret",
       } as unknown as CloudflareBindings;
-      await runtime.default.scheduled(
-        { scheduledTime: now, cron: "* * * * *", noRetry() {} },
-        bindings,
-      );
+      for (let step = 0; step < 3; step++) {
+        vi.setSystemTime(now + step * 60_000);
+        await runtime.default.scheduled(
+          { scheduledTime: now + step * 60_000, cron: "* * * * *", noRetry() {} },
+          bindings,
+        );
+        if (step < 2) expect(messageId).toBe(0);
+      }
       const job = await firstJob();
       expect(job.messageId).toBe(1);
       const response = await createApp().request(

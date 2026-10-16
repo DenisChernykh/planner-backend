@@ -253,7 +253,8 @@ export class ProgressReportsUseCases {
       nextSundayAt: nextReportOccurrence(now, general.timeZone, current.sundayTime, 7),
     });
   }
-  async schedule(now: number) {
+  async schedule(now: number, limit = Infinity) {
+    let advanced = 0;
     for (const settings of await this.reports.active(now)) {
       const general = await this.reminders.settings(settings.ownerId);
       if ((await this.reminders.link(settings.ownerId))?.status !== "active") continue;
@@ -287,6 +288,7 @@ export class ProgressReportsUseCases {
           slot === "wed" ? 3 : 7,
         );
         await this.reports.advance(settings, slot, previous, next, job);
+        if (++advanced >= limit) return;
       }
     }
   }
