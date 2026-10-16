@@ -1,9 +1,10 @@
 # Weekly reports and month rollover CPU — 16 October 2026
 
-**The published revision is not verified to keep these scenarios below 10 ms.**
-First-use weekly report preparation repeatedly exceeded 10 ms in local workerd.
-A first-use month-copy sample also exceeded it. These are local CPU sampling
-estimates, not measured Cloudflare CPU or observed production terminations.
+**The published revision exceeds 10 ms in the authorized production control.**
+Month copy, settings inheritance, weekly scheduling and snapshot preparation
+exceeded the budget. Cloudflare completed those invocations successfully; its
+overrun allowance does not establish Free-tier CPU headroom. The local results
+below are separate sampling estimates, not Cloudflare CPU measurements.
 
 ## Revision and production evidence
 
@@ -15,14 +16,16 @@ The repository was clean and synchronized with `origin/main` at the start.
 A read-only audit at 15:10:18 UTC found zero weekly report jobs and zero month
 rollover markers created since that deployment. One connected account has reports
 enabled; the next ordinary slots are 18 October and 21 October at 21:00
-Asia/Yekaterinburg. No identifiable real report/rollover execution is available
-for this revision yet. The seven successful production Cron samples in the
+Asia/Yekaterinburg. At that audit time, no identifiable real report/rollover
+execution was available for this revision. The subsequently authorized control
+is recorded below. The seven successful production Cron samples in the
 [previous control](reminder-cpu-2026-10-13.md) covered questions and retention,
 not these heavy scenarios.
 
-Only local fixtures and read-only production queries were used in this check.
-No application source, production data, schedules, deployments or Telegram
-messages were changed.
+The initial check used local fixtures and read-only production queries. The
+owner then explicitly authorized both isolated production scenarios and one
+Telegram report. Application source and the deployed revision were unchanged;
+ordinary goals, report selections and schedules were preserved.
 
 ## Local verification
 
@@ -97,12 +100,12 @@ warm stage pipelines; `PLANNER_PROFILE_ITERATIONS=30` sets their repetition
 count. `PLANNER_PROFILE_OUTPUT` saves individual `.cpuprofile` files. No remote
 database or real bot token is used by this profiler.
 
-## Concrete production control, awaiting authorization
+## Authorized production control
 
-The following control can run on the existing published revision, D1 and Cron.
-It needs no deployment, migration, paid resource or additional Cron. Root
-`AGENTS.md` requires explicit authorization for Telegram mutations; prior
-authorization covered one already-completed question, not a weekly report.
+The owner authorized the following concrete control on 16 October with
+“Проверить оба сценария и отправить один отчёт”. It used the existing published
+revision, D1 and Cron, without deployment, migration, paid resources or an
+additional Cron. The earlier one-question permission was not reused.
 
 1. Verify `/health` still reports the full `d298b60` revision, the same D1 is
    bound, the queue is empty and the connected report account is unambiguous.
@@ -142,3 +145,59 @@ scheduling work by a few ticks. If report preparation hits CPU termination,
 cancel the pending test job rather than letting it block later reminders through
 repeated attempts. A failed control is evidence to optimize, not a reason to
 change the plan tier or add infrastructure.
+
+### Production outcome
+
+The control ran on the unchanged `d298b60` Worker at 15:30–15:35 UTC
+(20:30–20:35 Asia/Yekaterinburg). Ordinary Cron performed each stage. A unique
+control event key kept the real account's Wednesday/Sunday slots unchanged.
+
+| Stage | UTC minute | Cloudflare CPU, ms | Outcome |
+| --- | --- | ---: | --- |
+| Copy 24 previous-month goals | 15:30 | **12.761** | success; 24 current-month goals |
+| Inherit reminders/report selections | 15:31 | **16.740** | success; 24 rules, 24 selections, five exclusions |
+| Schedule synthetic weekly report | 15:33 | **23.321** | success; one quiet-hour-deferred job, cancelled unsent |
+| Prepare real weekly report snapshot | 15:34 | **33.082** | success; persisted version-1 snapshot |
+| Send the one prepared real report | 15:35 | not available at 15:40 UTC | sent; one attempt, message ID present |
+
+These CPU values come from Cloudflare `workersInvocationsAdaptive`, grouped by
+minute, deployed script version, status and colo. Each attributed group has one
+request, zero errors, average sample interval 1, and equal P50/P99. D1 state
+transitions correlate those groups to the control stages. Health requests ran
+in separate EWR groups and are excluded. The adaptive dataset does not expose a
+Cron request-source filter: this is correlated invocation evidence, rather than
+an event-level Cron trace or proof of isolate identity. The separately queried
+`workersInvocationsScheduled` dataset had not yet returned the control window;
+its empty response is retained, not interpreted as zero invocations or a pass.
+At the last read (15:40:37 UTC), the 15:35 send-minute group was also absent,
+although later idle groups were present. Its CPU remains unknown; no value from
+a different minute or the earlier question-delivery control substitutes for it.
+
+The real snapshot selected 17 goals and their 46 persisted entries, with payload
+length 12,715 characters. Counts are recorded without goal names, entry values,
+account/chat IDs or report text. Telegram API acceptance is confirmed by the
+persisted `sent` state and message ID; client receipt has not been independently
+confirmed. There was exactly one send attempt. No synthetic report was sent.
+
+Cleanup at 15:35:56 UTC removed the synthetic user and all 48 source/target goals,
+rules, selections, link, rollover markers and synthetic job. Readback confirmed
+zero remaining fixture goals/links/jobs, zero active control jobs and zero
+foreign-key violations. Ordinary general/report settings and report selections
+matched their pre-control fingerprint; next ordinary report slots were preserved.
+The real sent job and its delivery history were retained.
+
+This production control fails the 10 ms CPU acceptance criterion. Successful
+completion relied on runtime flexibility for overruns; it does not prove stable
+Free-tier operation. Production exercised preparation of an uninitialized current
+month from the previous month, while the local fixture exercised 1 November.
+An actual production midnight/month boundary and a report week crossing months
+remain outside this control. A single observed run per stage is not a reliability
+distribution, even for stages that fit the budget.
+
+Sanitized production observations and state readbacks are preserved in
+[`reminder-cpu-2026-10-16-heavy-production.json`](reminder-cpu-2026-10-16-heavy-production.json).
+The verification changes passed root `pnpm check` (136 frontend tests, 261 backend
+tests, 16 adapter tests, architecture/type/format checks and monolith smoke).
+The profiler revision `4049bd7` also passed
+[GitHub CI](https://github.com/DenisChernykh/planner-backend/actions/runs/38924080201).
+No application optimization or new deployment is claimed by this report.
