@@ -210,7 +210,71 @@ Reproduce with Node 24 / pnpm 11.15.1 and `pnpm reminders:profile`; use
 a separate first-handler case. The fixture uses temporary local D1 and fake
 Telegram, with external requests denied. Run profiles sequentially without tests.
 
-This follow-up is not deployed. No remote migrations or Telegram mutations are
-needed to publish the code. Separate deployment authorization and real Cloudflare
-measurements of naturally due deliveries, fresh isolates, report stages and
-monthly work are required before claiming the Free 10-ms CPU target is met.
+This follow-up was published as authorized below. Real Cloudflare measurements
+of deliveries, fresh isolates, report stages and monthly work are still required
+before claiming the Free 10-ms CPU target is met.
+
+## Authorized publication — 16 October 2026
+
+The owner authorized publishing exactly
+`9859703e566ee9957a52e7817c559d099d3c34e6` and inspecting real Cloudflare CPU.
+The source was already committed and pushed to `origin/main`, with clean local
+status. Local `pnpm check` and `pnpm boundaries:check` passed, the production
+Static Assets dry-run passed, and [GitHub CI for this exact commit](https://github.com/DenisChernykh/planner-backend/actions/runs/38903865357)
+completed successfully.
+
+Wrangler published the existing `app` Worker with explicit
+`BUILD_REVISION=9859703e566ee9957a52e7817c559d099d3c34e6`. Cloudflare activated
+version `8c88d5e4-1838-462a-9fba-831fcd692e9b` at 13:04:07 UTC
+(18:04:07 Asia/Yekaterinburg), deployment
+`e08fd4bd-b60e-45c8-97cd-8afe588efdb7`, at 100% traffic. Reported Worker startup
+was 48 ms. `/health` returned HTTP 200 and this exact revision.
+
+Readback confirmed the same D1 binding, five secret binding names, one
+`* * * * *` Cron and disabled invocation logs. No migrations, plan upgrades or
+Telegram test messages were performed for publication. Public SPA/reminder pages,
+JavaScript and OpenAPI returned 200; the served JavaScript matched the local
+build byte for byte. Unauthenticated account/plan requests returned 401.
+D1 foreign-key validation returned zero violations and the delivery backlog was
+empty. These checks do not constitute a real Telegram login or client receipt.
+
+### Production CPU observation
+
+The exact `workersInvocationsScheduled` dataset returned nine events from
+13:04:30 through 13:10:15 UTC (18:04:30–18:10:15 Asia/Yekaterinburg), as read at
+13:12:50 UTC. All nine had `status=success`; none was terminated for resources.
+Median CPU was **4.899 ms**, minimum **2.506 ms**, maximum **12.731 ms**.
+One event exceeded 10 ms. Excluding that first recorded event, the remaining
+eight used 2.506–8.312 ms.
+
+| Invocation UTC | CPU ms | Status |
+| --- | ---: | --- |
+| 2026-10-16T13:04:30Z | 12.731 | success |
+| 2026-10-16T13:05:32Z | 5.516 | success |
+| 2026-10-16T13:06:31Z | 6.880 | success |
+| 2026-10-16T13:07:29Z | 4.899 | success |
+| 2026-10-16T13:08:15Z | 8.312 | success |
+| 2026-10-16T13:08:34Z | 4.492 | success |
+| 2026-10-16T13:09:15Z | 2.506 | success |
+| 2026-10-16T13:09:30Z | 3.539 | success |
+| 2026-10-16T13:10:15Z | 2.515 | success |
+
+`workersInvocationsAdaptive`, grouped by version, minute and Cloudflare colo,
+attributed the 13:04 IAD event (12.731 ms) to version
+`8c88d5e4-1838-462a-9fba-831fcd692e9b`, matching this deployment. Its sample
+interval was 1 and count 1. Scheduled events do not expose isolate identity;
+being first in this window does not prove a cold isolate or identify a function
+responsible for the CPU cost. Multiple recorded invocations within a minute are
+not treated as additional elapsed observation minutes.
+
+The first recorded invocation **did not meet the 10-ms target**, despite being
+successful. Therefore the strict per-invocation CPU acceptance criterion is not
+met by the observed production revision. Local sub-10-ms samples were insufficient
+to establish it. Later short successful ticks do not erase this counterexample.
+
+The read-only D1 check found no jobs created since publication. This window does
+not measure an actual question, digest, weekly report or month rollover. The next
+ordinary question was scheduled for 20:00 local time and the digest for 21:30.
+No temporary goal or test message was created; permission for such a test was
+requested separately and had not been granted at this observation. Full Telegram
+receipt and the CPU cost of real delivery remain unverified.
