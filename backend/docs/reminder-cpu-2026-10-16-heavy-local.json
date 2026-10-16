@@ -1,0 +1,1482 @@
+{
+  "sourceRevision": "d298b60e142863be896977c48882a644dc8c071f",
+  "measuredOn": "2026-10-16",
+  "node": "v24.18.0",
+  "pnpm": "11.15.1",
+  "method": "Sequential workerd V8 CPU sampling at 100 us, excluding idle/root/program deltas. These estimates are not Cloudflare production accounting. No limit is enforced locally.",
+  "fixtures": {
+    "owners": 2,
+    "goalsPerOwner": 24,
+    "uniform": {
+      "tracking": "time, no target",
+      "cadence": "day",
+      "entriesPerGoal": 0,
+      "reportGoalsPerOwner": 24
+    },
+    "mixed": {
+      "tracking": ["check", "quantity", "scale", "time with target window"],
+      "cadence": ["day", "week", "month"],
+      "entriesPerGoal": 28,
+      "reportGoalsPerOwner": 19,
+      "explicitReportExclusionsPerOwner": 5,
+      "distinctReminderCalendars": 3
+    },
+    "validation": "Report snapshots built and successful fake sends asserted; both owners complete month copy, reminder inheritance and report inclusion/exclusion inheritance. External requests denied."
+  },
+  "summary": [
+    {
+      "workload": "uniform",
+      "scenario": "weekly-report",
+      "fresh": {
+        "n": 3,
+        "minMs": 5.71,
+        "maxMs": 6.392,
+        "over10": 0
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 2.269,
+        "maxMs": 4.472,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "uniform",
+      "scenario": "weekly-report-prepare",
+      "fresh": {
+        "n": 4,
+        "minMs": 9.126,
+        "maxMs": 11.038,
+        "over10": 2
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 3.45,
+        "maxMs": 5.118,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "uniform",
+      "scenario": "weekly-report-send",
+      "fresh": {
+        "n": 3,
+        "minMs": 5.53,
+        "maxMs": 7.25,
+        "over10": 0
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 1.909,
+        "maxMs": 4.762,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "uniform",
+      "scenario": "rollover",
+      "fresh": {
+        "n": 3,
+        "minMs": 5.051,
+        "maxMs": 5.867,
+        "over10": 0
+      },
+      "warm": {
+        "n": 60,
+        "medianMs": 2.407,
+        "maxMs": 5.94,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "uniform",
+      "scenario": "rollover-inherit",
+      "fresh": {
+        "n": 3,
+        "minMs": 6.919,
+        "maxMs": 8.279,
+        "over10": 0
+      },
+      "warm": {
+        "n": 120,
+        "medianMs": 3.04,
+        "maxMs": 21.257,
+        "over10": 2
+      }
+    },
+    {
+      "workload": "mixed",
+      "scenario": "weekly-report",
+      "fresh": {
+        "n": 3,
+        "minMs": 6.464,
+        "maxMs": 7.327,
+        "over10": 0
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 2.375,
+        "maxMs": 4.862,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "mixed",
+      "scenario": "weekly-report-prepare",
+      "fresh": {
+        "n": 4,
+        "minMs": 15.325,
+        "maxMs": 23.629,
+        "over10": 4
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 5.936,
+        "maxMs": 9.393,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "mixed",
+      "scenario": "weekly-report-send",
+      "fresh": {
+        "n": 3,
+        "minMs": 6.49,
+        "maxMs": 7.691,
+        "over10": 0
+      },
+      "warm": {
+        "n": 30,
+        "medianMs": 2.372,
+        "maxMs": 5.166,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "mixed",
+      "scenario": "rollover",
+      "fresh": {
+        "n": 3,
+        "minMs": 5.471,
+        "maxMs": 10.507,
+        "over10": 1
+      },
+      "warm": {
+        "n": 60,
+        "medianMs": 2.688,
+        "maxMs": 4.703,
+        "over10": 0
+      }
+    },
+    {
+      "workload": "mixed",
+      "scenario": "rollover-inherit",
+      "fresh": {
+        "n": 3,
+        "minMs": 6.62,
+        "maxMs": 8.707,
+        "over10": 0
+      },
+      "warm": {
+        "n": 120,
+        "medianMs": 3.003,
+        "maxMs": 4.397,
+        "over10": 0
+      }
+    }
+  ],
+  "observations": [
+    {
+      "workload": "uniform",
+      "kind": "warm",
+      "rows": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "queries": 9,
+          "messages": 0,
+          "sampledActiveMs": 9.942,
+          "top": [
+            ["fetch", 1798],
+            ["(anonymous)", 1439],
+            ["(garbage collector)", 966],
+            ["toJson", 802],
+            ["deliver", 387],
+            ["reportMessage", 345],
+            ["build", 338],
+            ["overview", 285],
+            ["isoDate", 285],
+            ["date5", 257]
+          ]
+        },
+        {
+          "scenario": "weekly-report",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.269,
+          "sampledActiveMsP90": 2.825,
+          "sampledActiveMsMax": 4.472,
+          "over10": 0,
+          "sampledActiveMs": [
+            4.472, 4.137, 2.711, 2.825, 1.611, 1.85, 1.38, 0.13, 1.806, 2.733, 2.556, 1.566, 2.686,
+            2.272, 2.402, 1.892, 0.523, 2.434, 1.57, 1.374, 2.285, 1.299, 2.005, 2.269, 0.131,
+            1.431, 0.399, 2.405, 2.33, 2.304
+          ],
+          "top": [
+            ["(anonymous)", 7301],
+            ["fetch", 7180],
+            ["_wrappedFetch", 4646],
+            ["_send", 4632],
+            ["set", 4480],
+            ["toJson", 3407],
+            ["partsOffset", 2866],
+            ["localParts", 1890]
+          ]
+        },
+        {
+          "scenario": "weekly-report-prepare",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 3.45,
+          "sampledActiveMsP90": 4.507,
+          "sampledActiveMsMax": 5.118,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.858, 3.884, 4.09, 5.118, 4.077, 5.025, 3.847, 3.181, 2.47, 3.567, 3.958, 3.732, 3.145,
+            3.45, 2.468, 3.049, 3.985, 1.412, 2.767, 3.043, 2.913, 2.991, 2.656, 3.046, 4.492,
+            2.838, 3.162, 3.306, 4.507, 4.496
+          ]
+        },
+        {
+          "scenario": "weekly-report-send",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+          ],
+          "messages": [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+          ],
+          "sampledActiveMsMedian": 1.909,
+          "sampledActiveMsP90": 2.677,
+          "sampledActiveMsMax": 4.762,
+          "over10": 0,
+          "sampledActiveMs": [
+            4.762, 2.534, 2.677, 2.28, 2.265, 3.604, 1.832, 1.04, 1.909, 1.434, 2.274, 2.528, 1.035,
+            2.152, 2.423, 2.032, 1.763, 1.293, 1.906, 1.755, 0.648, 2.437, 2.419, 1.557, 1.479,
+            1.756, 1.746, 2.386, 1.52, 1.871
+          ]
+        },
+        {
+          "scenario": "rollover",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.42,
+          "sampledActiveMsP90": 4.114,
+          "sampledActiveMsMax": 5.94,
+          "over10": 0,
+          "sampledActiveMs": [
+            4.114, 3.097, 4.233, 1.697, 2.539, 2.411, 2.42, 2.933, 2.829, 2.42, 0.919, 3.055, 2.333,
+            1.691, 2.13, 1.764, 5.94, 2.811, 2.082, 1.559, 2.456, 3.251, 1.288, 2.669, 3.188, 0.903,
+            1.944, 1.538, 2.065, 1.7
+          ],
+          "top": [
+            ["fetch", 14159],
+            ["toJson", 8602],
+            ["_send", 8321],
+            ["(anonymous)", 7767],
+            ["localParts", 7154],
+            ["rolloverState", 3329],
+            ["setAttributes", 3244],
+            ["set", 1768]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 60,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          "sampledActiveMsMedian": 2.944,
+          "sampledActiveMsP90": 3.47,
+          "sampledActiveMsMax": 21.257,
+          "over10": 1,
+          "sampledActiveMs": [
+            3.871, 3.054, 3.205, 3.063, 2.966, 3.327, 3.053, 2.098, 3.063, 2.79, 2.006, 2.781,
+            3.089, 2.066, 21.257, 3.603, 3.07, 3.216, 2.944, 2.918, 3.058, 3.414, 2.79, 3.622,
+            0.265, 2.908, 2.795, 2.226, 3.761, 3.073, 3.019, 3.47, 2.268, 1.184, 2.141, 2.803,
+            2.692, 3.021, 2.364, 3.364, 2.283, 2.658, 2.398, 2.139, 3.205, 3.458, 2.655, 3.338,
+            2.671, 2.929, 3.055, 3.199, 2.784, 3.051, 1.818, 2.488, 2.521, 2.665, 1.968, 3.054
+          ]
+        },
+        {
+          "scenario": "rollover-copy",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.404,
+          "sampledActiveMsP90": 3.082,
+          "sampledActiveMsMax": 4.112,
+          "over10": 0,
+          "sampledActiveMs": [
+            2.285, 1.764, 2.802, 2.818, 1.964, 3.082, 2.671, 3.202, 1.575, 1.698, 2.267, 2.422,
+            1.424, 2.552, 2.429, 1.382, 3.043, 2.407, 2.389, 2.278, 2.556, 2.404, 2.395, 2.218,
+            2.276, 2.394, 2.41, 4.112, 2.28, 2.407
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 3.321,
+          "sampledActiveMsP90": 3.721,
+          "sampledActiveMsMax": 3.765,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.765, 3.739, 3.588, 3.721, 3.582, 3.646, 2.912, 3.714, 3.204, 3.339, 2.941, 3.337,
+            3.502, 2.193, 3.04, 3.2, 3.601, 3.247, 3.06, 3.179, 2.45, 2.43, 1.166, 3.609, 3.464,
+            3.034, 3.321, 3.269, 3.099, 3.465
+          ],
+          "top": [
+            ["(anonymous)", 14085],
+            ["partsOffset", 11677],
+            ["fetch", 11473],
+            ["toJson", 9066],
+            ["_send", 6893],
+            ["execute", 5650],
+            ["nextOccurrence", 4478],
+            ["setAttributes", 3823]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit-inherit",
+          "sourceRef": "d298b60",
+          "workload": "uniform",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.836,
+          "sampledActiveMsP90": 3.575,
+          "sampledActiveMsMax": 12.984,
+          "over10": 1,
+          "sampledActiveMs": [
+            3.575, 2.461, 3.717, 3.432, 3.035, 2.784, 2.398, 3.554, 12.984, 2.093, 3.047, 3.317,
+            1.996, 2.283, 1.497, 2.078, 2.913, 3.196, 2.403, 3.328, 3.086, 2.944, 2.836, 2.668, 2.8,
+            2.069, 2.791, 2.344, 3.182, 1.813
+          ]
+        }
+      ]
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 6.392,
+        "top": [
+          ["(garbage collector)", 1172],
+          ["_sendOrThrow", 1056],
+          ["execute", 905],
+          ["parseISODate", 659],
+          ["fromObject", 390],
+          ["schedule", 264],
+          ["gregorianToWeek", 139],
+          ["fetch", 134],
+          ["atTime", 131],
+          ["createReminderRunner", 130]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 5.71,
+        "top": [
+          ["(garbage collector)", 908],
+          ["localParts", 650],
+          ["(anonymous)", 645],
+          ["text", 643],
+          ["mapD1Result", 398],
+          ["parse4", 395],
+          ["createReminderRunner", 265],
+          ["gregorianToWeek", 136],
+          ["createPlanningUseCases", 131],
+          ["normalizeZone", 131]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 6.102,
+        "top": [
+          ["(garbage collector)", 1036],
+          ["addAggregatedD1MetaToSpan", 783],
+          ["localParts", 646],
+          ["(anonymous)", 397],
+          ["text", 396],
+          ["schedule", 260],
+          ["addD1MetaToSpan", 258],
+          ["fromObject", 257],
+          ["createPlanningUseCases", 134],
+          ["normalizeUnit", 134]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 11.038,
+        "top": [
+          ["(garbage collector)", 2622],
+          ["(anonymous)", 2607],
+          ["mapResultRow", 1041],
+          ["mapD1Result", 788],
+          ["isoDate", 383],
+          ["_send", 257],
+          ["reportMessage", 257],
+          ["build", 256],
+          ["date5", 253],
+          ["createPlanningUseCases", 134]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 9.126,
+        "top": [
+          ["(anonymous)", 1170],
+          ["(garbage collector)", 1057],
+          ["mapResultRow", 915],
+          ["toJson", 796],
+          ["addD1MetaToSpan", 393],
+          ["build", 392],
+          ["isoDate", 386],
+          ["reportMessage", 386],
+          ["fetch", 265],
+          ["midnight", 262]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 10.888,
+        "top": [
+          ["(anonymous)", 3383],
+          ["text", 1074],
+          ["(garbage collector)", 1043],
+          ["reportMessage", 516],
+          ["deliver", 508],
+          ["buildQueryFromSourceParams", 390],
+          ["isoDate", 386],
+          ["runReminders", 384],
+          ["enterSpan", 280],
+          ["settings", 166]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 7.25,
+        "top": [
+          ["(garbage collector)", 2289],
+          ["(anonymous)", 1298],
+          ["afterQuietHours", 533],
+          ["deliver", 520],
+          ["messageOptions", 519],
+          ["fetch", 262],
+          ["parse4", 138],
+          ["fromObject", 133],
+          ["set", 133],
+          ["fromDurationLike", 133]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 6.733,
+        "top": [
+          ["(anonymous)", 1666],
+          ["(garbage collector)", 914],
+          ["toJson", 781],
+          ["deliver", 519],
+          ["json", 258],
+          ["createReminderTransport", 257],
+          ["bind", 256],
+          ["fetch", 140],
+          ["parse4", 138],
+          ["runReminders", 131]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 5.53,
+        "top": [
+          ["(garbage collector)", 1186],
+          ["setAttributes", 779],
+          ["send", 524],
+          ["deliver", 252],
+          ["stringifyTokens", 190],
+          ["fromDurationLike", 134],
+          ["fetch", 134],
+          ["_wrappedFetch", 132],
+          ["createReminderRunner", 131],
+          ["_send", 131]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 5.051,
+        "top": [
+          ["(anonymous)", 1050],
+          ["(garbage collector)", 1031],
+          ["toArrayOfObjects", 648],
+          ["execute", 522],
+          ["createReminderTransport", 257],
+          ["addAggregatedD1MetaToSpan", 133],
+          ["createReminderOperations", 133],
+          ["carryGoalToMonth", 132],
+          ["validMonth", 131],
+          ["enterSpan", 130]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 5.867,
+        "top": [
+          ["execute", 1296],
+          ["(garbage collector)", 1045],
+          ["json", 1043],
+          ["(anonymous)", 797],
+          ["fetch", 388],
+          ["addD1MetaToSpan", 259],
+          ["scheduled", 134],
+          ["recoverAndDue", 132],
+          ["enterSpan", 132],
+          ["runReminders", 130]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 5.067,
+        "top": [
+          ["(garbage collector)", 1033],
+          ["_send", 652],
+          ["localDate", 521],
+          ["parseJson", 389],
+          ["ensureCurrentPlan", 388],
+          ["(anonymous)", 387],
+          ["fetch", 262],
+          ["_sendOrThrow", 261],
+          ["runReminders", 258],
+          ["createPlanningUseCases", 136]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 7.036,
+        "top": [
+          ["(anonymous)", 1170],
+          ["(garbage collector)", 1049],
+          ["enterSpan", 783],
+          ["fromMillis", 781],
+          ["partsOffset", 524],
+          ["plannerToday", 392],
+          ["toJson", 390],
+          ["nextOccurrence", 136],
+          ["isUndefined2", 134],
+          ["fetch", 133]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 6.919,
+        "top": [
+          ["(anonymous)", 1311],
+          ["(garbage collector)", 1181],
+          ["execute", 922],
+          ["toJson", 396],
+          ["startOf", 267],
+          ["reminders", 262],
+          ["fetch", 261],
+          ["_send", 257],
+          ["gregorianToWeek", 257],
+          ["isUndefined2", 255]
+        ]
+      }
+    },
+    {
+      "workload": "uniform",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "uniform",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 8.279,
+        "top": [
+          ["(garbage collector)", 1203],
+          ["(anonymous)", 1175],
+          ["toJson", 846],
+          ["reminders", 661],
+          ["localToday", 526],
+          ["setAttributes", 407],
+          ["inheritanceBatches", 388],
+          ["tsToObj", 319],
+          ["partsOffset", 281],
+          ["nextOccurrence", 272]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "warm",
+      "rows": [
+        {
+          "scenario": "first-run",
+          "firstScenario": "weekly-report-prepare",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "queries": 9,
+          "messages": 0,
+          "sampledActiveMs": 23.629,
+          "top": [
+            ["(anonymous)", 8274],
+            ["(garbage collector)", 3008],
+            ["isoDate", 2459],
+            ["toJson", 1888],
+            ["number4", 1080],
+            ["reportMessage", 622],
+            ["build", 620],
+            ["Date.now", 471],
+            ["mapResultRow", 468],
+            ["signature", 467]
+          ]
+        },
+        {
+          "scenario": "weekly-report",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.375,
+          "sampledActiveMsP90": 3.203,
+          "sampledActiveMsMax": 4.862,
+          "over10": 0,
+          "sampledActiveMs": [
+            4.862, 1.717, 0.992, 1.479, 2.38, 1.388, 3.022, 2.71, 2.896, 2.375, 2.529, 3.203, 1.32,
+            2.35, 2.255, 3.769, 2.214, 2.218, 2.393, 2.374, 2.389, 1.215, 1.396, 2.401, 1.382,
+            2.702, 1.073, 1.566, 2.379, 2.41
+          ],
+          "top": [
+            ["fetch", 9093],
+            ["_send", 7073],
+            ["(anonymous)", 5974],
+            ["localParts", 4714],
+            ["_sendOrThrow", 3983],
+            ["setAttributes", 3097],
+            ["schedulingState", 2513],
+            ["toJson", 2256]
+          ]
+        },
+        {
+          "scenario": "weekly-report-prepare",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 5.936,
+          "sampledActiveMsP90": 7.191,
+          "sampledActiveMsMax": 9.393,
+          "over10": 0,
+          "sampledActiveMs": [
+            9.393, 5.961, 8.06, 6.577, 7.146, 6.088, 5.735, 5.293, 4.971, 5.914, 5.756, 7.191,
+            7.009, 3.897, 6.965, 5.936, 6.444, 5.151, 4.63, 5.785, 5.5, 6.062, 6.219, 5.753, 6.073,
+            4.773, 4.892, 6.684, 5.783, 5.613
+          ]
+        },
+        {
+          "scenario": "weekly-report-send",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+          ],
+          "messages": [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+          ],
+          "sampledActiveMsMedian": 2.372,
+          "sampledActiveMsP90": 2.858,
+          "sampledActiveMsMax": 5.166,
+          "over10": 0,
+          "sampledActiveMs": [
+            5.166, 2.533, 2.41, 2.227, 2.69, 2.692, 2.858, 2.372, 2.581, 2.548, 4.245, 1.078, 1.837,
+            2.526, 1.383, 2.071, 2.054, 1.397, 1.071, 2.739, 2.387, 2.236, 1.919, 0.939, 2.68,
+            0.771, 1.765, 0.623, 1.775, 2.687
+          ]
+        },
+        {
+          "scenario": "rollover",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.731,
+          "sampledActiveMsP90": 3.626,
+          "sampledActiveMsMax": 4.703,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.596, 3.042, 1.866, 2.843, 2.848, 3.151, 2.544, 3.176, 3.623, 0.464, 3.166, 2.535,
+            2.385, 2.705, 2.529, 2.721, 2.066, 4.098, 2.707, 2.854, 2.723, 3.626, 3.174, 4.703,
+            2.013, 1.559, 2.371, 2.731, 2.999, 2.667
+          ],
+          "top": [
+            ["fetch", 19795],
+            ["toJson", 13511],
+            ["(anonymous)", 8737],
+            ["commitRollover", 8434],
+            ["localParts", 4398],
+            ["rolloverState", 3931],
+            ["execute", 2829],
+            ["_wrappedFetch", 2453]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 60,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+            9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+          ],
+          "sampledActiveMsMedian": 2.994,
+          "sampledActiveMsP90": 3.643,
+          "sampledActiveMsMax": 4.397,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.983, 3.657, 2.322, 3.024, 3.292, 1.756, 2.984, 2.796, 2.696, 2.705, 1.237, 3.304,
+            3.157, 3.447, 3.472, 3.001, 2.368, 2.994, 2.33, 3, 4.397, 3.171, 2.84, 2.856, 2.858,
+            2.845, 3.646, 3.165, 2.843, 3.003, 3.138, 3.139, 2.839, 2.656, 3.643, 1.86, 3.196, 2.16,
+            2.242, 1.69, 2.855, 3.456, 3.025, 2.323, 3.008, 2.226, 3.168, 3.764, 4.379, 2.841,
+            1.538, 1.715, 2.519, 3.025, 2.297, 2.823, 3.01, 3, 3.011, 3.028
+          ]
+        },
+        {
+          "scenario": "rollover-copy",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 2.647,
+          "sampledActiveMsP90": 3.771,
+          "sampledActiveMsMax": 3.928,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.77, 2.549, 1.751, 2.688, 2.864, 2.677, 3.351, 2.532, 2.706, 2.385, 3.771, 1.499,
+            1.547, 2.392, 2.675, 1.683, 2.997, 2.864, 2.707, 3.478, 2.068, 2.408, 2.562, 2.647,
+            2.537, 2.56, 2.175, 3.928, 3.784, 2.681
+          ]
+        },
+        {
+          "scenario": "rollover-inherit",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 3.009,
+          "sampledActiveMsP90": 4.138,
+          "sampledActiveMsMax": 4.388,
+          "over10": 0,
+          "sampledActiveMs": [
+            1.57, 3.001, 3.172, 2.707, 3.33, 2.328, 3.322, 2.982, 2.319, 2.992, 2.183, 3.143, 2.002,
+            4.138, 2.312, 3.009, 2.869, 3.437, 3.008, 3.319, 4.202, 2.993, 3.303, 2.152, 3.184,
+            3.024, 4.388, 1.999, 3.323, 3.292
+          ],
+          "top": [
+            ["fetch", 14064],
+            ["partsOffset", 11585],
+            ["(anonymous)", 10799],
+            ["execute", 4407],
+            ["offset", 4002],
+            ["_send", 2940],
+            ["toJson", 2930],
+            ["_wrappedFetch", 2920]
+          ]
+        },
+        {
+          "scenario": "rollover-inherit-inherit",
+          "sourceRef": "d298b60",
+          "workload": "mixed",
+          "goalsPerOwner": 24,
+          "ticks": 30,
+          "queries": [
+            9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+          ],
+          "messages": [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          ],
+          "sampledActiveMsMedian": 3.156,
+          "sampledActiveMsP90": 3.452,
+          "sampledActiveMsMax": 3.832,
+          "over10": 0,
+          "sampledActiveMs": [
+            3.161, 1.613, 2.847, 3.151, 3.185, 3.157, 3.017, 3.153, 2.84, 3.174, 2.387, 3.199,
+            1.536, 3.335, 3.319, 1.248, 3.452, 3.169, 3.164, 3.832, 2.99, 3.162, 3.156, 3.288,
+            2.829, 1.392, 2.847, 3.765, 3, 1.236
+          ]
+        }
+      ]
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 6.464,
+        "top": [
+          ["(garbage collector)", 1085],
+          ["(anonymous)", 1076],
+          ["_send", 938],
+          ["toJson", 312],
+          ["parse4", 309],
+          ["fromObject", 302],
+          ["text", 299],
+          ["scheduled", 155],
+          ["aggregateD1Meta", 155],
+          ["extractISOTime", 155]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 7.327,
+        "top": [
+          ["(garbage collector)", 2560],
+          ["parse4", 932],
+          ["execute", 924],
+          ["localParts", 623],
+          ["partsOffset", 309],
+          ["scheduled", 308],
+          ["runReminders", 161],
+          ["(anonymous)", 158],
+          ["_sendOrThrow", 155],
+          ["createPlanningUseCases", 154]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 8,
+        "messages": 0,
+        "sampledActiveMs": 7.036,
+        "top": [
+          ["json", 1477],
+          ["(garbage collector)", 1102],
+          ["enterSpan", 773],
+          ["toArrayOfObjects", 619],
+          ["addD1MetaToSpan", 461],
+          ["fetch", 303],
+          ["atTime", 160],
+          ["parse4", 159],
+          ["addAggregatedD1MetaToSpan", 156],
+          ["localDate", 156]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 17.421,
+        "top": [
+          ["(garbage collector)", 3547],
+          ["(anonymous)", 3267],
+          ["isoDate", 892],
+          ["afterQuietHours", 782],
+          ["number4", 766],
+          ["is", 642],
+          ["reportMessage", 616],
+          ["date5", 460],
+          ["signature", 351],
+          ["_send", 316]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 15.325,
+        "top": [
+          ["(anonymous)", 4984],
+          ["(garbage collector)", 1751],
+          ["number4", 1085],
+          ["isoDate", 652],
+          ["reportMessage", 619],
+          ["mapResultRow", 481],
+          ["deliver", 468],
+          ["overview", 463],
+          ["build", 460],
+          ["progressSources", 453]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-prepare",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 18.75,
+        "top": [
+          ["(anonymous)", 3469],
+          ["(garbage collector)", 2857],
+          ["all", 1729],
+          ["number4", 1429],
+          ["afterQuietHours", 901],
+          ["isoDate", 888],
+          ["reportMessage", 618],
+          ["toJson", 616],
+          ["overview", 611],
+          ["progressSources", 439]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 6.645,
+        "top": [
+          ["(garbage collector)", 1105],
+          ["(anonymous)", 1079],
+          ["localParts", 775],
+          ["send", 772],
+          ["toJson", 158],
+          ["full", 157],
+          ["deliver", 157],
+          ["Headers", 157],
+          ["_send", 156],
+          ["_wrappedFetch", 156]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 7.691,
+        "top": [
+          ["(garbage collector)", 2589],
+          ["afterQuietHours", 794],
+          ["(anonymous)", 769],
+          ["send", 613],
+          ["fetch", 487],
+          ["toJson", 311],
+          ["fromObject", 299],
+          ["set", 157],
+          ["parse4", 155],
+          ["enterSpan", 155]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "weekly-report-send",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 7,
+        "messages": 1,
+        "sampledActiveMs": 6.49,
+        "top": [
+          ["(garbage collector)", 1078],
+          ["(anonymous)", 935],
+          ["call", 804],
+          ["deliver", 458],
+          ["get", 454],
+          ["fetch", 317],
+          ["parse4", 157],
+          ["parseDataToDateTime", 157],
+          ["_send", 156],
+          ["enterSpan", 155]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 10.507,
+        "top": [
+          ["(anonymous)", 3912],
+          ["toGoal", 1591],
+          ["localDate", 1128],
+          ["get", 1093],
+          ["enterSpan", 478],
+          ["addD1MetaToSpan", 426],
+          ["createReminderOperations", 306],
+          ["(garbage collector)", 174],
+          ["fetch", 166],
+          ["plannerToday", 162]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 6.55,
+        "top": [
+          ["json", 1468],
+          ["(anonymous)", 1379],
+          ["carriedGoals", 918],
+          ["(garbage collector)", 774],
+          ["toJson", 768],
+          ["settings", 302],
+          ["createProgressOperations", 165],
+          ["execute", 158],
+          ["enterSpan", 157],
+          ["randomUUID", 156]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 10,
+        "messages": 0,
+        "sampledActiveMs": 5.471,
+        "top": [
+          ["(garbage collector)", 2230],
+          ["(anonymous)", 1532],
+          ["execute", 780],
+          ["toArrayOfObjects", 311],
+          ["createReminderRunner", 156],
+          ["validateGoalCreation", 155],
+          ["commitRollover", 154],
+          ["createPlanningOperations", 153]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 0,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 8.336,
+        "top": [
+          ["(garbage collector)", 2563],
+          ["execute", 1153],
+          ["partsOffset", 911],
+          ["_sendOrThrow", 803],
+          ["(anonymous)", 769],
+          ["enterSpan", 768],
+          ["withSpan", 463],
+          ["nextOccurrence", 284],
+          ["runReminders", 158],
+          ["offset", 156]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 1,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 6.62,
+        "top": [
+          ["(garbage collector)", 929],
+          ["execute", 927],
+          ["(anonymous)", 921],
+          ["addAggregatedD1MetaToSpan", 771],
+          ["ensureCurrentPlan", 313],
+          ["_send", 309],
+          ["inherit", 302],
+          ["tsToObj", 301],
+          ["createPlanningOperations", 165],
+          ["offset", 160]
+        ]
+      }
+    },
+    {
+      "workload": "mixed",
+      "kind": "fresh",
+      "repeat": 2,
+      "row": {
+        "scenario": "first-run",
+        "firstScenario": "rollover-inherit",
+        "sourceRef": "d298b60",
+        "workload": "mixed",
+        "goalsPerOwner": 24,
+        "queries": 9,
+        "messages": 0,
+        "sampledActiveMs": 8.707,
+        "top": [
+          ["json", 1617],
+          ["(anonymous)", 1227],
+          ["(garbage collector)", 1078],
+          ["objToLocalTS", 929],
+          ["partsOffset", 462],
+          ["addD1MetaToSpan", 458],
+          ["nextOccurrence", 321],
+          ["fetch", 314],
+          ["inherit", 305],
+          ["plannerToday", 302]
+        ]
+      }
+    }
+  ]
+}

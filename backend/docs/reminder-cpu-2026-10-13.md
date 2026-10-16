@@ -457,3 +457,7 @@ The adaptive dataset also includes HTTP probe groups; those are not Cron
 samples and are not included in the scheduled CPU criterion. Fresh upper time
 bounds were used for Analytics queries because the scheduled dataset arrives
 later than the adaptive dataset.
+
+The subsequent [heavy-scenario verification](reminder-heavy-cpu-2026-10-16.md)
+found repeatable local first-use weekly snapshot exceedances and a first-use
+month-copy exceedance. The earlier question control does not cover these paths.

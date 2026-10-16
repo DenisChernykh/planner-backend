@@ -17,6 +17,41 @@ const scriptPath = join(state, "worker.mjs");
 const sourceRef = process.env.PLANNER_PROFILE_REF;
 const iterations = Number(process.env.PLANNER_PROFILE_ITERATIONS ?? 15);
 assert.ok(Number.isInteger(iterations) && iterations >= 1 && iterations <= 50);
+const goalCount = Number(process.env.PLANNER_PROFILE_GOALS ?? 20);
+assert.ok(Number.isInteger(goalCount) && goalCount >= 1 && goalCount <= 100);
+const workload = process.env.PLANNER_PROFILE_WORKLOAD ?? "uniform";
+assert.ok(["uniform", "mixed"].includes(workload));
+const reportDate = workload === "mixed" ? "2026-10-28" : "2026-10-14";
+const reportMonday = workload === "mixed" ? "2026-10-26" : "2026-10-12";
+const scenarios = [
+  "idle",
+  "question",
+  "digest",
+  "queued-question",
+  "weekly-report",
+  "weekly-report-prepare",
+  "weekly-report-send",
+  "rollover",
+  "rollover-inherit",
+  "hour-question",
+  "hour-queued-question",
+];
+const selectedScenarios = process.env.PLANNER_PROFILE_SCENARIOS?.split(",") ?? [
+  "idle",
+  "question",
+  "digest",
+  "queued-question",
+  "weekly-report",
+  "rollover",
+  "rollover-inherit",
+];
+assert.ok(
+  selectedScenarios.length > 0 &&
+    selectedScenarios.every((scenario) => scenarios.includes(scenario)),
+);
+const inputSnapshot = process.env.PLANNER_PROFILE_SNAPSHOT
+  ? await readFile(process.env.PLANNER_PROFILE_SNAPSHOT, "utf8")
+  : null;
 if (sourceRef) {
   const run = promisify(execFile);
   const { stdout } = await run("git", ["archive", sourceRef, "backend/src"], {
@@ -108,20 +143,87 @@ try {
       .prepare("INSERT INTO plan_month_rollovers VALUES (?, '2026-10', 'profile', NULL, ?)")
       .bind(owner, now)
       .run();
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < goalCount; i++) {
       const id = `${owner}-${i}`;
+      const tracking =
+        workload === "uniform"
+          ? { type: "time" }
+          : [
+              { type: "check" },
+              { type: "quantity", comparison: "atLeast", targetValue: 20, unit: "страниц" },
+              { type: "scale", min: 1, max: 10 },
+              { type: "time", targetStart: "07:00", targetEnd: "09:00" },
+            ][i % 4];
+      const cadence = workload === "uniform" ? "day" : ["day", "week", "month"][i % 3];
       await database
         .prepare(`INSERT INTO plan_goals (id, owner_id, month, title, tracking_type, tracking_config, cadence_period, sort_order, created_at, updated_at)
         VALUES (?, ?, '2026-10', ?, 'time', '{"type":"time"}', 'day', ?, ?, ?)`)
         .bind(id, owner, `Goal ${i}`, i, now, now)
         .run();
+      if (workload === "mixed")
+        await database
+          .prepare(`UPDATE plan_goals SET tracking_type = ?, tracking_config = ?,
+          cadence_period = ?, target_occurrences = ? WHERE id = ?`)
+          .bind(
+            tracking.type,
+            JSON.stringify(tracking),
+            cadence,
+            cadence === "day" ? null : cadence === "week" ? 4 : 20,
+            id,
+          )
+          .run();
       await database
         .prepare(
           "INSERT INTO goal_reminders (goal_id, owner_id, mode, time, weekdays, next_run_at) VALUES (?, ?, 'scheduled', '11:00', '[1,2,3,4,5,6,7]', ?)",
         )
         .bind(id, owner, now + 86400000)
         .run();
+      if (workload === "mixed") {
+        await database
+          .prepare("UPDATE goal_reminders SET time = ?, weekdays = ? WHERE goal_id = ?")
+          .bind(
+            ["09:00", "13:30", "20:00"][i % 3],
+            JSON.stringify(i % 3 === 0 ? [1, 3, 5] : [1, 2, 3, 4, 5, 6, 7]),
+            id,
+          )
+          .run();
+        const entries = Array.from({ length: 28 }, (_, day) => ({
+          date: `2026-10-${String(day + 1).padStart(2, "0")}`,
+          value:
+            tracking.type === "check"
+              ? day % 3 !== 0
+              : tracking.type === "time"
+                ? "08:15"
+                : tracking.type === "scale"
+                  ? (day % 10) + 1
+                  : day % 2
+                    ? 25
+                    : 10,
+          met:
+            tracking.type === "check"
+              ? day % 3 !== 0
+              : tracking.type === "quantity"
+                ? day % 2 === 1
+                : true,
+        }));
+        await database
+          .prepare(`INSERT INTO goal_entries (goal_id, local_date, value, met, created_at, updated_at)
+          SELECT ?, json_extract(value, '$.date'),
+            CASE json_type(value, '$.value') WHEN 'true' THEN 'true' WHEN 'false' THEN 'false'
+              ELSE json_quote(json_extract(value, '$.value')) END,
+            json_extract(value, '$.met'), ?, ? FROM json_each(?)`)
+          .bind(id, now, now, JSON.stringify(entries))
+          .run();
+      }
     }
+    // Include both inherited inclusions and explicit exclusions, including when
+    // inheritance is the very first request in a fresh Worker instance.
+    await database
+      .prepare(`INSERT INTO goal_progress_reports SELECT id, owner_id,
+      CASE WHEN ? = 'mixed' AND sort_order % 5 = 0 THEN 0 ELSE 1 END
+      FROM plan_goals WHERE owner_id = ?`)
+      .bind(workload, owner)
+      .run();
   }
   const inspector = await mf.getInspectorURL();
   const endpoint = new URL(inspector);
@@ -163,8 +265,8 @@ try {
   const setup = async (scenario) => {
     const at = scenario.startsWith("hour-")
       ? Date.parse("2026-10-13T06:00:00Z")
-      : scenario === "weekly-report"
-        ? Date.parse("2026-10-14T16:01:00Z")
+      : scenario.startsWith("weekly-report")
+        ? Date.parse(`${reportDate}T16:01:00Z`)
         : ["rollover", "rollover-inherit"].includes(scenario)
           ? Date.parse("2026-11-01T06:01:00Z")
           : now;
@@ -218,7 +320,7 @@ try {
         .bind(at, at + 86400000, at)
         .run();
     }
-    if (scenario === "weekly-report") {
+    if (scenario.startsWith("weekly-report")) {
       await database
         .prepare("UPDATE goal_reminders SET next_run_at = ?")
         .bind(at + 86400000)
@@ -230,8 +332,28 @@ try {
       await database
         .prepare(`INSERT INTO progress_report_settings (owner_id, enabled, next_wednesday_at, next_sunday_at)
         VALUES ('profile-a', 1, ?, ?) ON CONFLICT(owner_id) DO UPDATE SET next_wednesday_at = excluded.next_wednesday_at`)
-        .bind(at, at + 7 * 86400000)
+        .bind(scenario === "weekly-report" ? at : at + 7 * 86400000, at + 7 * 86400000)
         .run();
+      if (scenario !== "weekly-report") {
+        const payload = scenario === "weekly-report-send" ? inputSnapshot : "[]";
+        assert.ok(
+          payload,
+          "Sending a report as the first invocation requires PLANNER_PROFILE_SNAPSHOT from a separate preparation run",
+        );
+        await database
+          .prepare(`INSERT INTO reminder_jobs
+          (id, event_key, owner_id, local_date, kind, status, due_at, expires_at, payload, attempts, created_at)
+          VALUES ('profile-report', ?, 'profile-a', ?, 'weekly-progress', 'pending', ?, ?, ?, 0, ?)`)
+          .bind(
+            `progress:profile-a:${reportMonday}:wed`,
+            reportDate,
+            at,
+            at + 86400000,
+            payload,
+            at,
+          )
+          .run();
+      }
       await database
         .prepare(
           "INSERT INTO goal_progress_reports SELECT id, owner_id, 1 FROM plan_goals WHERE owner_id = 'profile-a' ON CONFLICT DO NOTHING",
@@ -240,24 +362,44 @@ try {
     }
     return at;
   };
+  const monthState = () =>
+    database
+      .prepare(`SELECT
+    (SELECT count(*) FROM plan_month_rollovers WHERE month = '2026-11') AS owners,
+    (SELECT count(*) FROM plan_goals WHERE month = '2026-11') AS goals,
+    (SELECT count(*) FROM goal_reminders r JOIN plan_goals g ON g.id = r.goal_id WHERE g.month = '2026-11') AS reminders,
+    (SELECT count(*) FROM goal_progress_reports r JOIN plan_goals g ON g.id = r.goal_id WHERE g.month = '2026-11') AS selections`)
+      .first();
+  const verifyStage = async (scenario, result) => {
+    if (scenario === "weekly-report-prepare" || scenario === "weekly-report-send") {
+      const job = await database
+        .prepare("SELECT status, attempts, payload FROM reminder_jobs WHERE id = 'profile-report'")
+        .first();
+      assert.ok(
+        job && job.payload !== "[]",
+        "The report snapshot must be built, not silently cancelled",
+      );
+      assert.ok(JSON.parse(job.payload).goalIds.length > 0);
+      assert.equal(JSON.parse(job.payload).version, 1);
+      assert.equal(job.status, scenario === "weekly-report-send" ? "sent" : "pending");
+      assert.equal(job.attempts, scenario === "weekly-report-send" ? 1 : 0);
+      assert.equal(result.messages, scenario === "weekly-report-send" ? 1 : 0);
+    }
+    if (scenario === "rollover" || scenario === "rollover-inherit") {
+      const state = await monthState();
+      assert.equal(result.messages, 0);
+      assert.equal(state.goals, goalCount * (scenario === "rollover" ? 1 : 2));
+      assert.equal(state.reminders, scenario === "rollover" ? 0 : goalCount);
+      assert.equal(state.selections, scenario === "rollover" ? 0 : goalCount);
+    }
+  };
   const firstScenario = process.env.PLANNER_PROFILE_FIRST_SCENARIO ?? "idle";
-  assert.ok(
-    [
-      "idle",
-      "question",
-      "digest",
-      "queued-question",
-      "weekly-report",
-      "rollover",
-      "rollover-inherit",
-      "hour-question",
-      "hour-queued-question",
-    ].includes(firstScenario),
-  );
+  assert.ok(scenarios.includes(firstScenario));
   const firstAt = await setup(firstScenario);
   await command("Profiler.start");
   const firstRun = await tick(firstAt);
   const { profile: firstProfile } = await command("Profiler.stop");
+  await verifyStage(firstScenario, firstRun);
   const firstNodes = new Map(firstProfile.nodes.map((node) => [node.id, node]));
   const firstTop = new Map();
   for (let i = 0; i < firstProfile.samples.length; i++) {
@@ -278,6 +420,8 @@ try {
       scenario: "first-run",
       firstScenario,
       sourceRef: sourceRef ?? "working-tree",
+      workload,
+      goalsPerOwner: goalCount,
       ...firstRun,
       sampledActiveMs: firstActiveMs,
       top: [...firstTop].sort((a, b) => b[1] - a[1]).slice(0, 10),
@@ -288,17 +432,20 @@ try {
       `${process.env.PLANNER_PROFILE_OUTPUT}-first-run.cpuprofile`,
       JSON.stringify(firstProfile),
     );
-  for (const scenario of process.env.PLANNER_PROFILE_FIRST_ONLY === "1"
-    ? []
-    : [
-        "idle",
-        "question",
-        "digest",
-        "queued-question",
-        "weekly-report",
-        "rollover",
-        "rollover-inherit",
-      ]) {
+  if (process.env.PLANNER_PROFILE_SNAPSHOT_OUTPUT) {
+    const prepared = await database
+      .prepare(
+        "SELECT payload FROM reminder_jobs WHERE kind = 'weekly-progress' AND payload != '[]' LIMIT 1",
+      )
+      .first("payload");
+    assert.equal(
+      typeof prepared,
+      "string",
+      "The first invocation must prepare a real report snapshot",
+    );
+    await writeFile(process.env.PLANNER_PROFILE_SNAPSHOT_OUTPUT, prepared);
+  }
+  for (const scenario of process.env.PLANNER_PROFILE_FIRST_ONLY === "1" ? [] : selectedScenarios) {
     const results = [];
     const profiles = [];
     const active = new Map();
@@ -307,16 +454,27 @@ try {
     for (let i = 0; i < iterations; i++) {
       const at = await setup(scenario);
       await command("Profiler.start");
-      results.push(await tick(at));
+      const result = await tick(at);
+      results.push(result);
       const { profile } = await command("Profiler.stop");
+      await verifyStage(scenario, result);
       profiles.push(profile);
       // Measure each persisted stage separately: old revisions may send immediately,
       // current Cron schedules, prepares reports and sends on independent ticks.
-      for (let step = 1; step <= 2; step++) {
+      for (let step = 1; step <= 5; step++) {
+        const monthly = scenario === "rollover" || scenario === "rollover-inherit";
+        const before = monthly ? await monthState() : null;
+        if (
+          monthly &&
+          before.owners === 2 &&
+          before.reminders === goalCount * 2 &&
+          before.selections === goalCount * 2
+        )
+          break;
         const pending = await database
           .prepare("SELECT 1 FROM reminder_jobs WHERE status = 'pending' LIMIT 1")
           .first();
-        if (!pending) break;
+        if (!monthly && !pending) break;
         await command("Profiler.start");
         const result = await tick(at + step * 60_000);
         const { profile: extra } = await command("Profiler.stop");
@@ -331,7 +489,14 @@ try {
                 : total + extra.timeDeltas[index],
             0,
           ) / 1000;
-        const phase = result.messages ? "send" : "prepare";
+        const after = monthly ? await monthState() : null;
+        const phase = monthly
+          ? after.goals > before.goals
+            ? "copy"
+            : "inherit"
+          : result.messages
+            ? "send"
+            : "prepare";
         if (!followups.has(phase)) followups.set(phase, []);
         followups.get(phase).push({ ...result, ms });
         if (process.env.PLANNER_PROFILE_OUTPUT)
@@ -339,6 +504,12 @@ try {
             `${process.env.PLANNER_PROFILE_OUTPUT}-${scenario}-${phase}-${i}.cpuprofile`,
             JSON.stringify(extra),
           );
+      }
+      if (scenario === "rollover" || scenario === "rollover-inherit") {
+        const state = await monthState();
+        assert.equal(state.owners, 2);
+        assert.equal(state.reminders, goalCount * 2);
+        assert.equal(state.selections, goalCount * 2);
       }
       const nodes = new Map(profile.nodes.map((node) => [node.id, node]));
       let time = 0;
@@ -356,11 +527,18 @@ try {
     console.log(
       JSON.stringify({
         scenario,
+        sourceScenario: scenario,
+        phase: "initial",
+        sourceRef: sourceRef ?? "working-tree",
+        workload,
+        goalsPerOwner: goalCount,
         ticks: results.length,
         queries: results.map((result) => result.queries),
         messages: results.map((result) => result.messages),
         sampledActiveMsMedian: sorted[Math.floor(sorted.length * 0.5)],
         sampledActiveMsP90: sorted[Math.floor(sorted.length * 0.9)],
+        sampledActiveMsMax: sorted.at(-1),
+        over10: times.filter((ms) => ms > 10).length,
         sampledActiveMs: times,
         top: [...active].sort((a, b) => b[1] - a[1]).slice(0, 8),
       }),
@@ -370,11 +548,18 @@ try {
       console.log(
         JSON.stringify({
           scenario: `${scenario}-${phase}`,
+          sourceScenario: scenario,
+          phase,
+          sourceRef: sourceRef ?? "working-tree",
+          workload,
+          goalsPerOwner: goalCount,
           ticks: measurements.length,
           queries: measurements.map((row) => row.queries),
           messages: measurements.map((row) => row.messages),
           sampledActiveMsMedian: sorted[Math.floor(sorted.length * 0.5)],
           sampledActiveMsP90: sorted[Math.floor(sorted.length * 0.9)],
+          sampledActiveMsMax: sorted.at(-1),
+          over10: sorted.filter((ms) => ms > 10).length,
           sampledActiveMs: measurements.map((row) => row.ms),
         }),
       );
