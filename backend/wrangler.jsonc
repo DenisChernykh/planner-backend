@@ -79,6 +79,14 @@
           "/telegram",
           "/telegram/*"
         ]
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "REMINDER_SCHEDULER",
+            "class_name": "ReminderScheduler"
+          }
+        ]
       }
     }
   },
@@ -94,5 +102,19 @@
       "/telegram",
       "/telegram/*"
     ]
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "REMINDER_SCHEDULER",
+        "class_name": "ReminderScheduler"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-reminder-scheduler",
+      "new_sqlite_classes": ["ReminderScheduler"]
+    }
+  ]
 }

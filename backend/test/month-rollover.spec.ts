@@ -343,7 +343,7 @@ describe("atomic Cron month copy", () => {
 });
 
 describe("reminder inheritance and scheduled rollover", () => {
-  it("bounds Cron inheritance and resumes the remaining rules and report selections next tick", async () => {
+  it("inherits all 30 rules and selections in one preparation before delivering due jobs", async () => {
     for (let index = 0; index < 30; index++) await create("2026-09", { title: `Goal ${index}` });
     await reminders.saveSettings(
       { ownerId: OWNER, ...DEFAULT_SETTINGS, enabled: true, nextEveningAt: null },
@@ -370,13 +370,11 @@ describe("reminder inheritance and scheduled rollover", () => {
       (SELECT count(*) FROM goal_progress_reports r JOIN plan_goals g ON g.id = r.goal_id WHERE g.owner_id = ? AND g.month = '2026-10') AS selections`)
         .bind(OWNER, OWNER)
         .first();
-    await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
-    expect(await counts()).toEqual({ reminders: 0, selections: 0 });
-    for (let step = 1; step <= 30; step++) {
-      await runner.runReminders.execute({ now: OCTOBER + step * 60_000, deferNewDelivery: true });
-      expect(await counts()).toEqual({ reminders: step, selections: step });
-    }
-    expect(transport.send).not.toHaveBeenCalled();
+    await runner.runReminders.execute({ now: OCTOBER });
+    expect(await counts()).toEqual({ reminders: 30, selections: 30 });
+    expect(transport.send).toHaveBeenCalledTimes(20);
+    await runner.runReminders.execute({ now: OCTOBER });
+    expect(transport.send).toHaveBeenCalledTimes(30);
   });
   const prepare = (now = OCTOBER) =>
     createReminderOperations(env.DB, null).prepareCurrentPlan.execute({ ownerId: OWNER, now });
@@ -428,7 +426,7 @@ describe("reminder inheritance and scheduled rollover", () => {
     ).toMatchObject({ mode: "scheduled", time: "09:00" });
   });
 
-  it("stages a new month's copy and bulk rule inheritance before scheduling delivery", async () => {
+  it("copies a month, inherits both rules and delivers without minute stages", async () => {
     const source = await create();
     const second = await create();
     await configure(source.id);
@@ -446,27 +444,17 @@ describe("reminder inheritance and scheduled rollover", () => {
       username: vi.fn(async () => "test"),
     };
     const runner = createReminderOperations(env.DB, transport);
-    await runner.runReminders.execute({ now: OCTOBER, deferNewDelivery: true });
+    await runner.runReminders.execute({ now: OCTOBER });
     const copies = await planning.list(OWNER, "2026-10");
     expect(copies).toHaveLength(2);
     expect(
       (await reminders.reminders(OWNER)).filter((rule) =>
         copies.some((copy) => copy.id === rule.goalId),
       ),
-    ).toHaveLength(0);
-    await runner.runReminders.execute({ now: OCTOBER + 60_000, deferNewDelivery: true });
-    expect(
-      (await reminders.reminders(OWNER)).filter((rule) =>
-        copies.some((copy) => copy.id === rule.goalId),
-      ),
-    ).toHaveLength(1);
-    expect(transport.send).not.toHaveBeenCalled();
-    await runner.runReminders.execute({ now: OCTOBER + 120_000, deferNewDelivery: true });
-    expect(await reminders.due(OCTOBER + 120_000)).toHaveLength(0);
-    await runner.runReminders.execute({ now: OCTOBER + 180_000, deferNewDelivery: true });
-    expect(await reminders.due(OCTOBER + 180_000)).toHaveLength(1);
-    await runner.runReminders.execute({ now: OCTOBER + 240_000, deferNewDelivery: true });
-    expect(transport.send).toHaveBeenCalledTimes(1);
+    ).toHaveLength(2);
+    expect(transport.send).toHaveBeenCalledTimes(2);
+    await runner.runReminders.execute({ now: OCTOBER });
+    expect(transport.send).toHaveBeenCalledTimes(2);
   });
 
   it("repairs a committed but incomplete rollover through Cron on the next tick", async () => {

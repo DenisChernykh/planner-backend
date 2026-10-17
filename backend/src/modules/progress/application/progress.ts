@@ -1,19 +1,8 @@
 import { ApplicationError } from "../../../shared/application/application-error";
-import { calculateMet, type PlanningOperations } from "../../planning/public-contracts";
-import {
-  calculateGoalBatch,
-  calculateProgress,
-  completeProgress,
-  completeProgressTotals,
-  reportBatchChains,
-} from "../domain/calculate";
+import type { PlanningOperations } from "../../planning/public-contracts";
+import { calculateProgress } from "../domain/calculate";
 import { intervalFor, previousInterval, shiftDate, validProgressDate } from "../domain/calendar";
-import type {
-  ProgressOverview,
-  ProgressReportGoal,
-  ProgressReportOverview,
-  ProgressReportTotals,
-} from "../domain/model";
+import type { ProgressOverview } from "../domain/model";
 
 export type ProgressSettings = { startsOn: string | null; revision: number };
 export interface ProgressRepository {
@@ -34,17 +23,6 @@ export type ProgressQuery = {
   includeHistory?: boolean;
 };
 export type ProgressCalculationInput = Parameters<typeof calculateProgress>[0];
-export type ProgressReportCalculationInput = Omit<ProgressCalculationInput, "sources"> & {
-  sources: (Omit<ProgressCalculationInput["sources"][number], "entries"> & {
-    entries: { date: string; value: boolean | number | string; met?: boolean }[];
-  })[];
-};
-export type ReportCaptureScope = {
-  fromMonth: string;
-  toMonth: string;
-  calculation: Omit<ProgressCalculationInput, "sources" | "knownSources">;
-};
-
 export class ProgressUseCases {
   constructor(
     private readonly repository: ProgressRepository,
@@ -67,108 +45,6 @@ export class ProgressUseCases {
 
   calculateOverview(input: ProgressCalculationInput): ProgressOverview {
     return calculateProgress(input);
-  }
-
-  calculateReportBatch(input: ProgressReportCalculationInput, offset: number, limit: number) {
-    const chains = reportBatchChains(input, offset, limit);
-    const decoded: ProgressCalculationInput = {
-      ...input,
-      sources: input.sources.map((goal) => ({
-        ...goal,
-        entries: chains.has(goal.chainId)
-          ? goal.entries.map((entry) => ({
-              ...entry,
-              met: entry.met ?? calculateMet(goal.tracking, entry.value),
-            }))
-          : [],
-      })),
-    };
-    const batch = calculateGoalBatch(decoded, offset, limit);
-    const pending = new Set(batch.pendingChains);
-    return {
-      ...batch,
-      // Future groups still need all compatible/incompatible historical versions
-      // of their chain. Completed chains keep definitions for stable offsets but
-      // no longer carry unused fact arrays through every later CAS write.
-      calculation: {
-        ...input,
-        sources: input.sources.map((goal) =>
-          pending.has(goal.chainId) ? goal : { ...goal, entries: [] },
-        ),
-      },
-      goals: batch.goals.map((goal): ProgressReportGoal => {
-        const {
-          id,
-          goalIds,
-          title,
-          tracking,
-          cadence,
-          measurable,
-          average,
-          minimum,
-          maximum,
-          targets,
-          sum,
-          records,
-          eligibleDays,
-          missing,
-          met,
-        } = goal;
-        return {
-          id,
-          goalIds,
-          title,
-          tracking,
-          cadence,
-          measurable,
-          average,
-          minimum,
-          maximum,
-          targets,
-          sum,
-          records,
-          eligibleDays,
-          missing,
-          met,
-          days: goal.days.map(({ date, state, value }) => ({ date, state, value })),
-          comparison: goal.comparison ? { deltaPoints: goal.comparison.deltaPoints } : null,
-        };
-      }),
-    };
-  }
-
-  completeOverview(
-    input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
-    goals: ProgressReportGoal[],
-  ): ProgressReportOverview {
-    return completeProgress(input, goals);
-  }
-
-  completeReportTotals(
-    input: Omit<ProgressCalculationInput, "sources" | "knownSources">,
-    totals: ProgressReportTotals,
-  ) {
-    return completeProgressTotals(input, totals);
-  }
-
-  reportCaptureScope(input: ProgressQuery & { startsOn: string | null }): ReportCaptureScope {
-    if (!validProgressDate(input.anchor) || input.period !== "week")
-      throw new ApplicationError("INVALID_REQUEST", "Проверьте период и дату.");
-    const requested = intervalFor(input.period, input.anchor);
-    const previous = previousInterval(input.period, requested, input.today);
-    return {
-      fromMonth: intervalFor("week", previous?.from ?? requested.from).from.slice(0, 7),
-      toMonth: intervalFor("week", requested.to).to.slice(0, 7),
-      calculation: {
-        period: input.period,
-        anchor: input.anchor,
-        today: input.today,
-        startsOn: input.startsOn ?? null,
-        asOf: input.now,
-        timeZone: input.timeZone,
-        includeHistory: false,
-      },
-    };
   }
 
   async prepareOverview(input: ProgressQuery): Promise<ProgressCalculationInput> {

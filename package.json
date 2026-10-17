@@ -25,7 +25,6 @@
     "deploy:dry-run": "pnpm build && pnpm --dir backend exec wrangler deploy --dry-run --env production",
     "deploy": "pnpm build && pnpm --dir backend deploy",
     "telegram:operator": "pnpm --dir backend telegram:operator",
-    "reminders:profile": "node backend/scripts/profile-reminders.mjs",
     "reminders:compare-do": "pnpm --dir backend exec tsc -p experiments/durable-reminders/tsconfig.json && node backend/experiments/durable-reminders/compare.mjs",
     "test": "pnpm --dir frontend test && pnpm --dir backend test && pnpm --dir chatgpt test",
     "test:smoke": "node scripts/check-monolith.mjs",

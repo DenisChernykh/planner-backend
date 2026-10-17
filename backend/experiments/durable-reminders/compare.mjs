@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
@@ -38,6 +38,21 @@ assert.ok(
 const output = resolve(option("output", join(tmpdir(), "planner-durable-comparison.json")));
 const temporary = await mkdtemp(join(tmpdir(), "planner-durable-prototype-"));
 const scriptPath = join(temporary, "worker.mjs");
+// This is a historical comparison, not another runtime implementation. Keep the
+// removed staged Cron solely in Git, at its reviewed prototype baseline.
+const baselineRevision = "5e0d309eb508a427d06d12185902aa11c3f91eaf";
+const archived = join(temporary, "baseline");
+await mkdir(archived);
+const archivePath = join(temporary, "baseline.tar");
+await writeFile(
+  archivePath,
+  execFileSync("git", ["archive", baselineRevision, "backend/src"], {
+    cwd: root,
+    maxBuffer: 20_000_000,
+  }),
+);
+execFileSync("tar", ["-xf", archivePath, "-C", archived]);
+await symlink(join(backend, "node_modules"), join(archived, "backend/node_modules"));
 const samples = [];
 const rawProfiles = [];
 const checks = [];
@@ -47,18 +62,18 @@ let runtime;
 
 async function sourceFingerprints() {
   const values = {};
-  async function walk(directory) {
+  async function walk(directory, prefix) {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
       const path = join(directory, entry.name);
-      if (entry.isDirectory()) await walk(path);
+      if (entry.isDirectory()) await walk(path, `${prefix}/${entry.name}`);
       else if (/\.(?:ts|mjs|json)$/u.test(entry.name))
-        values[path.slice(root.length + 1)] = createHash("sha256")
+        values[`${prefix}/${entry.name}`] = createHash("sha256")
           .update(await readFile(path))
           .digest("hex");
     }
   }
-  await walk(join(backend, "src"));
-  await walk(dirname(fileURLToPath(import.meta.url)));
+  await walk(join(archived, "backend/src"), "baseline/backend/src");
+  await walk(dirname(fileURLToPath(import.meta.url)), "backend/experiments/durable-reminders");
   for (const relative of ["package.json", "backend/package.json", "pnpm-lock.yaml"])
     values[relative] = createHash("sha256")
       .update(await readFile(join(root, relative)))
@@ -80,6 +95,16 @@ await build({
   target: "es2024",
   sourcemap: true,
   external: ["node:*", "cloudflare:*"],
+  plugins: [
+    {
+      name: "historical-runtime",
+      setup(builder) {
+        builder.onResolve({ filter: /^\.\.\/\.\.\/src(?:\/.*)?$/ }, ({ path }) => ({
+          path: join(archived, "backend", path.slice(6), "index.ts"),
+        }));
+      },
+    },
+  ],
 });
 
 async function profiler(mf) {
@@ -368,6 +393,7 @@ try {
   const result = {
     schemaVersion: 1,
     revision: sourceRevision,
+    baselineRevision,
     node: process.version,
     createdAt: new Date().toISOString(),
     rounds,

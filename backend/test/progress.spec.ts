@@ -9,7 +9,6 @@ import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-
 import { createProgressOperations } from "../src/modules/progress";
 import { calculateProgress } from "../src/modules/progress/domain/calculate";
 import type { ProgressSource } from "../src/modules/progress/domain/model";
-import { reportMessage } from "../src/modules/reminders/application/reports/report-message";
 
 const OWNER = "c5e7a036-50a6-4c56-90a1-59b3d212b44a";
 const OTHER = "cdbe1eba-d2d5-4db3-b636-1b3237756f1a";
@@ -51,68 +50,6 @@ const overview = (
   });
 
 describe("progress calculations", () => {
-  it.each(["2026-10-27", "2026-11-04", null])(
-    "keeps compact batched report output across changed month definitions and start %s",
-    (startsOn) => {
-      const rules: GoalTracking[] = [
-        { type: "check" },
-        tracking,
-        { type: "scale", min: 1, max: 10 },
-        { type: "time", targetEnd: "09:00" },
-      ];
-      const sources: ProgressSource[] = [];
-      for (let index = 0; index < 8; index++)
-        for (const month of ["2026-10", "2026-11"]) {
-          const rule = rules[index % 4] as GoalTracking;
-          const value = rule.type === "check" ? true : rule.type === "time" ? "08:00" : 5;
-          sources.push(
-            source({
-              id: `${index}:${month}`,
-              chainId: `chain:${index}`,
-              month,
-              title: `Goal ${index}`,
-              tracking:
-                month === "2026-11" && index === 1 ? { ...tracking, targetValue: 30 } : rule,
-              cadence:
-                index % 3 === 0
-                  ? { period: "day" }
-                  : { period: index % 3 === 1 ? "week" : "month", targetOccurrences: 4 },
-              entries: entries({ [`${month}-${month === "2026-10" ? "27" : "01"}`]: value }, rule),
-            }),
-          );
-        }
-      const input = {
-        sources,
-        knownSources: sources.map(({ chainId, month }) => ({ chainId, month })),
-        period: "week" as const,
-        anchor: "2026-11-01",
-        today: "2026-11-01",
-        startsOn,
-        asOf: NOW,
-        timeZone: "Asia/Yekaterinburg",
-        includeHistory: false,
-      };
-      const progress = createProgressOperations(env.DB);
-      const goals = [];
-      let offset = 0;
-      for (let step = 0; step < 4; step++) {
-        const batch = progress.calculateReportBatch(JSON.parse(JSON.stringify(input)), offset, 4);
-        expect(batch.goals.length).toBeLessThanOrEqual(4);
-        goals.push(...JSON.parse(JSON.stringify(batch.goals)));
-        offset = batch.nextOffset;
-        if (batch.done) break;
-      }
-      const compact = progress.completeOverview(input, goals);
-      const full = calculateProgress(input);
-      expect(compact.summary).toEqual(full.summary);
-      expect(compact.goals.map((goal) => goal.goalIds)).toEqual(
-        full.goals.map((goal) => goal.goalIds),
-      );
-      expect(reportMessage(compact, "sun", "https://example.com")).toEqual(
-        reportMessage(full, "sun", "https://example.com"),
-      );
-    },
-  );
   it("omits unused report history without changing totals, targets or comparisons", () => {
     const sources = [
       source({

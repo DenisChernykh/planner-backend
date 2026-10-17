@@ -1,6 +1,5 @@
 import { env } from "cloudflare:workers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { runReminders } from "../src/app/run-reminders";
 import { CreateGoalUseCase } from "../src/modules/planning/application/goals/create-goal.use-case";
 import { D1PlanningRepository } from "../src/modules/planning/infrastructure/d1-planning-repository";
 import { createProgressOperations } from "../src/modules/progress";
@@ -42,12 +41,6 @@ const firstJob = async () => {
   const job = (await jobs()).results[0];
   if (!job) throw new Error("Missing report job");
   return job;
-};
-
-const deliverQueued = async (id: string, now: number) => {
-  const job = (await repository.recoverAndDue(now)).find((candidate) => candidate.id === id);
-  if (!job) throw new Error("Missing queued report");
-  await operations().reports.deliver(id, now, true, job);
 };
 
 beforeEach(async () => {
@@ -117,204 +110,102 @@ describe("report schedules", () => {
 });
 
 describe("progress reports with D1 and fake transport", () => {
-  it("freezes report facts before rendering and sends once after concurrent staged ticks", async () => {
+  it("builds and sends the whole report once when concurrent runners race", async () => {
     await save();
-    const reports = operations().reports;
-    await reports.schedule(NOW);
-    const id = (await jobs()).results[0]?.id as string;
-    await reports.deliver(id, NOW, true);
-    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(5);
-    await reports.deliver(id, NOW + 60_000, true);
-    const captured = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
-    expect(captured.version).toBe(6);
-    expect(captured.sourceReportRevision).toBe(-1);
-    expect(captured.sourceProgressRevision).toBe(-1);
-    expect(captured.calculation.sources[0].entries[0].met).toBeUndefined();
-    expect(JSON.stringify(captured.calculation)).not.toContain("private note");
-    expect(captured.reportRevision).toBe(-1);
-    expect(captured.progressRevision).toBe(-1);
-    expect(transport.send).not.toHaveBeenCalled();
-    await planning.upsertEntry({
-      goalId,
-      date: "2026-10-07",
-      value: 35,
-      met: true,
-      note: null,
-      createdAt: NOW + 1,
-      updatedAt: NOW + 1,
-    });
-    await Promise.all([
-      reports.deliver(id, NOW + 120_000, true),
-      reports.deliver(id, NOW + 120_000, true),
-    ]);
-    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(8);
-    await reports.deliver(id, NOW + 180_000, true);
-    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(4);
-    await reports.deliver(id, NOW + 240_000, true);
-    const rendered = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
-    expect(rendered.version).toBe(1);
-    expect(rendered.formedAt).toBe(NOW + 60_000);
-    expect(rendered.message.text).toContain("25 страниц за период");
-    expect(rendered.message.text).not.toContain("60 страниц за период");
-    expect(transport.send).not.toHaveBeenCalled();
-    await Promise.all([
-      reports.deliver(id, NOW + 300_000, true),
-      reports.deliver(id, NOW + 300_000, true),
-    ]);
-    expect(transport.send).toHaveBeenCalledTimes(1);
-    expect((await jobs()).results[0]?.status).toBe("sent");
-  });
-  it("resumes bounded calculations across fresh runners and concurrent ticks with frozen facts", async () => {
-    const selected = [{ goalId, included: true }];
-    for (let index = 0; index < 8; index++) {
-      const goal = await new CreateGoalUseCase(planning).execute({
-        ownerId: OWNER,
-        month: "2026-10",
-        title: `Goal ${index}`,
-        tracking: { type: "check" },
-        cadence: { period: "week", targetOccurrences: 4 },
-        now: NOW,
-      });
-      selected.push({ goalId: goal.id, included: true });
-      if (index === 0)
-        await planning.upsertEntry({
-          goalId: goal.id,
-          date: "2026-10-07",
-          value: false,
-          met: false,
-          note: null,
-          createdAt: NOW,
-          updatedAt: NOW,
-        });
-    }
-    await save({ goals: selected });
     await operations().reports.schedule(NOW);
     const id = (await firstJob()).id;
-    await deliverQueued(id, NOW);
-    await deliverQueued(id, NOW + 60_000);
-    const expected = await operations().reports.preview({
-      ownerId: OWNER,
-      input: input({ goals: selected }),
-      slot: "wed",
-      now: NOW + 60_000,
-    });
-    await planning.upsertEntry({
-      goalId,
-      date: "2026-10-07",
-      value: 35,
-      met: true,
-      note: null,
-      createdAt: NOW,
-      updatedAt: NOW,
-    });
-    for (let step = 2; step <= 10; step++) {
-      await Promise.all([
-        deliverQueued(id, NOW + step * 60_000),
-        deliverQueued(id, NOW + step * 60_000),
-      ]);
-      const state = JSON.parse((await firstJob()).payload);
-      expect(state.version).toBe(step === 10 ? 8 : 7);
-      expect(state.goals.length).toBe(step - 1);
-      expect(transport.send).not.toHaveBeenCalled();
-    }
-    await deliverQueued(id, NOW + 11 * 60_000);
-    expect(JSON.parse((await firstJob()).payload).version).toBe(4);
-    await deliverQueued(id, NOW + 12 * 60_000);
+    await Promise.all([
+      operations().reports.deliver(id, NOW),
+      operations().reports.deliver(id, NOW),
+    ]);
     const ready = JSON.parse((await firstJob()).payload);
     expect(ready.version).toBe(1);
-    expect(ready.message.blocks).toBeUndefined();
-    expect(ready.message.text).toBe(expected.message?.text);
-    expect(ready.message.html).toBe(expected.message?.html);
-    await Promise.all([deliverQueued(id, NOW + 13 * 60_000), deliverQueued(id, NOW + 13 * 60_000)]);
+    expect(ready.formedAt).toBe(NOW);
+    expect(ready.message.text).toContain("25 страниц");
+    expect(ready.message.text).not.toContain("private note");
+    expect(ready.calculation).toBeUndefined();
+    expect(ready.offset).toBeUndefined();
     expect(transport.send).toHaveBeenCalledTimes(1);
+    expect((await firstJob()).status).toBe("sent");
   });
-  it.each([6, 8, 4, 1])(
-    "invalidates persisted phase %s after report settings change",
+
+  it.each([2, 3, 4, 5, 6, 7, 8])(
+    "rebuilds unsent legacy preparation version %s instead of retaining its pipeline",
     async (version) => {
       await save();
       await operations().reports.schedule(NOW);
-      const id = (await firstJob()).id;
-      let step = 0;
-      while (JSON.parse((await firstJob()).payload).version !== version) {
-        expect(step).toBeLessThan(6);
-        await deliverQueued(id, NOW + step++ * 60_000);
-      }
-      const stale = (await repository.recoverAndDue(NOW + step * 60_000))[0];
-      await env.DB.prepare(
-        "UPDATE progress_report_settings SET revision = revision + 1 WHERE owner_id = ?",
-      )
-        .bind(OWNER)
-        .run();
-      await deliverQueued(id, NOW + step * 60_000);
-      expect(JSON.parse((await firstJob()).payload).version).toBe(5);
-      await operations().reports.deliver(id, NOW + step * 60_000, true, stale);
-      expect(JSON.parse((await firstJob()).payload).version).toBe(5);
+      const job = await firstJob();
+      const store = new D1ProgressReportRepository(env.DB);
+      const legacy = JSON.stringify({
+        version,
+        calculation: { sources: ["obsolete"] },
+        reportRevision: -1,
+      });
+      await store.setSnapshot(job.id, job.payload, legacy);
+      const pending = await repository.job(job.id);
+      if (!pending) throw new Error("Missing legacy job");
+      const report = await store.settings(OWNER);
+      const progress = await createProgressOperations(env.DB).settings(OWNER);
+      expect(
+        await store.claim(
+          pending,
+          await repository.settings(OWNER),
+          report.revision,
+          progress.revision,
+          "123",
+          NOW,
+        ),
+      ).toBe(false);
       expect(transport.send).not.toHaveBeenCalled();
+      await operations().runReminders.execute({ now: NOW });
+      const ready = await firstJob();
+      expect(ready.status).toBe("sent");
+      expect(JSON.parse(ready.payload)).toMatchObject({ version: 1, formedAt: NOW });
+      expect(vi.mocked(transport.send).mock.calls[0]?.[1].text).toContain("25 страниц");
+      await operations().runReminders.execute({ now: NOW });
+      expect(transport.send).toHaveBeenCalledTimes(1);
     },
   );
-  it("resets a stale ready selection without sending on claim failure", async () => {
-    await save();
-    await operations().reports.schedule(NOW);
-    const id = (await firstJob()).id;
-    for (let step = 0; step < 5; step++)
-      await operations().reports.deliver(id, NOW + step * 60_000, true);
-    expect(JSON.parse((await firstJob()).payload).version).toBe(1);
-    await env.DB.prepare("UPDATE goal_progress_reports SET included = 0 WHERE owner_id = ?")
-      .bind(OWNER)
-      .run();
-    await operations().reports.deliver(id, NOW + 5 * 60_000, true);
-    expect((await firstJob()).payload).toBe("[]");
-    expect(transport.send).not.toHaveBeenCalled();
-    await operations().reports.deliver(id, NOW + 6 * 60_000, true);
-    expect((await firstJob()).status).toBe("cancelled");
-  });
-  it.each(["quantity", "time"] as const)(
-    "preserves the last %s record when projecting the formatting stage",
+
+  it.each(["quantity", "time", "check"] as const)(
+    "retains zero/false/midnight records for %s in delivered reports",
     async (type) => {
-      const goal = await new CreateGoalUseCase(planning).execute({
+      const created = await new CreateGoalUseCase(planning).execute({
         ownerId: OWNER,
         month: "2026-10",
-        title: "Last record",
+        title: "Recorded value",
         tracking:
           type === "quantity"
-            ? { type: "quantity", comparison: "atLeast", targetValue: 20 }
-            : { type: "time" },
+            ? { type, targetValue: 1, comparison: "atLeast", unit: "шт" }
+            : type === "time"
+              ? { type, targetEnd: "09:00" }
+              : { type },
         cadence: { period: "day" },
         now: NOW,
       });
-      for (const [date, value] of [
-        ["2026-10-06", type === "quantity" ? 25 : "23:30"],
-        ["2026-10-07", type === "quantity" ? 0 : "00:00"],
-      ] as const)
-        await planning.upsertEntry({
-          goalId: goal.id,
-          date,
-          value,
-          met: false,
-          note: null,
-          createdAt: NOW,
-          updatedAt: NOW,
-        });
-      const changes = { goals: [{ goalId: goal.id, included: true }] };
-      await save(changes);
-      await operations().reports.schedule(NOW);
-      const id = (await firstJob()).id;
-      await deliverQueued(id, NOW);
-      await deliverQueued(id, NOW + 60_000);
+      await planning.upsertEntry({
+        goalId: created.id,
+        date: "2026-10-07",
+        value: type === "quantity" ? 0 : type === "time" ? "00:00" : false,
+        met: false,
+        note: null,
+        createdAt: NOW,
+        updatedAt: NOW,
+      });
+      await save({ goals: [{ goalId: created.id, included: true }] });
       const expected = await operations().reports.preview({
         ownerId: OWNER,
-        input: input(changes),
+        input: input({ goals: [{ goalId: created.id, included: true }] }),
         slot: "wed",
-        now: NOW + 60_000,
+        now: NOW,
       });
-      for (let step = 2; step <= 4; step++) await deliverQueued(id, NOW + step * 60_000);
-      const ready = JSON.parse((await firstJob()).payload);
-      expect(ready.message.text).toBe(expected.message?.text);
-      expect(ready.message.html).toBe(expected.message?.html);
-      expect(ready.message.text).toContain(type === "quantity" ? "7 октября: 0" : "00:00");
+      expect(expected.overview.goals[0]?.records).toBe(1);
+      await operations().runReminders.execute({ now: NOW });
+      expect(vi.mocked(transport.send).mock.calls[0]?.[1].text).toBe(expected.message?.text);
     },
   );
-  it("captures owner-scoped cross-month raw sources with preview parity and recalculates stale stored met flags", async () => {
+
+  it("uses owner-scoped cross-month sources with preview parity and recalculates stale stored met flags", async () => {
     const foreignOwner = "b48d9caf-003d-4fc9-94ed-dfca2d105d40";
     await env.DB.prepare("INSERT INTO users (id, created_at, updated_at) VALUES (?, ?, ?)")
       .bind(foreignOwner, NOW, NOW)
@@ -388,17 +279,6 @@ describe("progress reports with D1 and fake transport", () => {
       .run();
     await operations().reports.schedule(at);
     const id = (await firstJob()).id;
-    await deliverQueued(id, at);
-    await deliverQueued(id, at + 60_000);
-    const raw = JSON.parse((await firstJob()).payload);
-    expect(raw.version).toBe(6);
-    expect(raw.calculation.sources).toHaveLength(2);
-    expect(raw.calculation.knownSources).toHaveLength(4);
-    expect(
-      new Set(raw.calculation.sources.map((goal: { chainId: string }) => goal.chainId)),
-    ).toEqual(new Set([goalId]));
-    expect(JSON.stringify(raw.calculation)).not.toContain("Foreign private");
-    expect(JSON.stringify(raw.calculation)).not.toContain("private note");
     const expected = await operations().reports.preview({
       ownerId: OWNER,
       input: input({
@@ -407,236 +287,19 @@ describe("progress reports with D1 and fake transport", () => {
         goals: [{ goalId: copy.id, included: true }],
       }),
       slot: "sun",
-      now: at + 60_000,
+      now: at,
     });
     expect(expected.overview.summary.met).toBe(0);
-    // The event is a Sunday slot and must render the same full cross-month week.
-    for (let step = 2; step <= 4; step++) await deliverQueued(id, at + step * 60_000);
+    await operations().reports.deliver(id, at);
     const ready = JSON.parse((await firstJob()).payload);
     expect(ready.version).toBe(1);
     expect(ready.message.text).toBe(expected.message?.text);
     expect(ready.message.html).toBe(expected.message?.html);
-    expect(transport.send).not.toHaveBeenCalled();
+    expect(transport.send).toHaveBeenCalledTimes(1);
+    expect(ready.message.text).not.toContain("Foreign private");
+    expect(ready.message.text).not.toContain("Excluded");
+    expect(ready.message.text).not.toContain("private note");
   });
-  it.each([6, 7, 8])(
-    "never claims raw/intermediate version %s even with current revisions and makes rollback rebuild",
-    async (version) => {
-      const extra = await new CreateGoalUseCase(planning).execute({
-        ownerId: OWNER,
-        month: "2026-10",
-        title: "Second",
-        tracking: { type: "check" },
-        cadence: { period: "day" },
-        now: NOW,
-      });
-      await save({
-        goals: [
-          { goalId, included: true },
-          { goalId: extra.id, included: true },
-        ],
-      });
-      await operations().reports.schedule(NOW);
-      const id = (await firstJob()).id;
-      let step = 0;
-      while (JSON.parse((await firstJob()).payload).version !== version) {
-        expect(step).toBeLessThan(5);
-        await operations().reports.deliver(id, NOW + step++ * 60_000, true);
-      }
-      const reportStore = new D1ProgressReportRepository(env.DB);
-      const report = await reportStore.settings(OWNER);
-      const shared = await createProgressOperations(env.DB).settings(OWNER);
-      const state = JSON.parse((await firstJob()).payload);
-      expect(state.sourceReportRevision).toBe(-1);
-      expect(state.sourceProgressRevision).toBe(-1);
-      expect(state.capturedReportRevision).toBe(report.revision);
-      expect(state.capturedProgressRevision).toBe(shared.revision);
-      const job = await repository.job(id);
-      if (!job) throw new Error("Missing report job");
-      expect(
-        await reportStore.claim(
-          job,
-          await repository.settings(OWNER),
-          report.revision,
-          shared.revision,
-          "123",
-          NOW + step * 60_000,
-        ),
-      ).toBe(false);
-      expect((await repository.job(id))?.attempts).toBe(0);
-      expect(transport.send).not.toHaveBeenCalled();
-    },
-  );
-  it.each([2, 3])(
-    "resumes legacy version %s without mixing facts or sending twice",
-    async (version) => {
-      const extra = await new CreateGoalUseCase(planning).execute({
-        ownerId: OWNER,
-        month: "2026-10",
-        title: "Second",
-        tracking: { type: "check" },
-        cadence: { period: "day" },
-        now: NOW,
-      });
-      const selected = [
-        { goalId, included: true },
-        { goalId: extra.id, included: true },
-      ];
-      await save({ goals: selected });
-      await operations().reports.schedule(NOW);
-      const id = (await firstJob()).id;
-      await operations().reports.deliver(id, NOW, true);
-      await operations().reports.deliver(id, NOW + 60_000, true);
-      const raw = JSON.parse((await firstJob()).payload);
-      const progress = createProgressOperations(env.DB);
-      const calculation = await progress.prepareOverview({
-        ownerId: OWNER,
-        period: "week",
-        anchor: "2026-10-07",
-        today: "2026-10-07",
-        now: NOW,
-        timeZone: DEFAULT_SETTINGS.timeZone,
-        startsOn: "2026-10-06",
-        goalIds: selected.map((goal) => goal.goalId),
-        includeHistory: false,
-      });
-      const legacy = {
-        ...raw,
-        version,
-        formedAt: NOW,
-        sourceReportRevision: raw.capturedReportRevision,
-        sourceProgressRevision: raw.capturedProgressRevision,
-        calculation,
-        ...(version === 3
-          ? { offset: 1, goals: progress.calculateReportBatch(calculation, 0, 1).goals }
-          : {}),
-      };
-      await new D1ProgressReportRepository(env.DB).setSnapshot(
-        id,
-        (await firstJob()).payload,
-        JSON.stringify(legacy),
-      );
-      await planning.upsertEntry({
-        goalId,
-        date: "2026-10-07",
-        value: 35,
-        met: true,
-        note: null,
-        createdAt: NOW,
-        updatedAt: NOW,
-      });
-      let step = 2;
-      while (JSON.parse((await firstJob()).payload).version !== 1) {
-        expect(step).toBeLessThan(9);
-        await operations().reports.deliver(id, NOW + step++ * 60_000, true);
-      }
-      const ready = JSON.parse((await firstJob()).payload);
-      expect(ready.formedAt).toBe(NOW);
-      expect(ready.message.text).toContain("25 страниц за период");
-      expect(ready.message.text).not.toContain("60 страниц за период");
-      await Promise.all([
-        operations().reports.deliver(id, NOW + step * 60_000, true),
-        operations().reports.deliver(id, NOW + step * 60_000, true),
-      ]);
-      expect(transport.send).toHaveBeenCalledTimes(1);
-    },
-  );
-  it("recaptures staged input after a report revision changes before rendering", async () => {
-    await save();
-    const reports = operations().reports;
-    await reports.schedule(NOW);
-    const id = (await jobs()).results[0]?.id as string;
-    await reports.deliver(id, NOW, true);
-    const previous = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
-    // Simulate a concurrent revision change while retaining the old payload.
-    await env.DB.prepare(
-      "UPDATE progress_settings SET starts_on = '2026-10-07', revision = revision + 1 WHERE owner_id = ?",
-    )
-      .bind(OWNER)
-      .run();
-    await reports.deliver(id, NOW + 60_000, true);
-    const current = JSON.parse((await jobs()).results[0]?.payload ?? "[]");
-    expect(current.version).toBe(5);
-    expect(current.sourceProgressRevision).toBe(previous.sourceProgressRevision + 1);
-    await reports.deliver(id, NOW + 120_000, true);
-    expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").calculation.startsOn).toBe(
-      "2026-10-07",
-    );
-    expect(transport.send).not.toHaveBeenCalled();
-  });
-  it.each(["report", "timezone", "quiet-hours", "selection"] as const)(
-    "rechecks %s before using captured report facts",
-    async (change) => {
-      await save();
-      const reports = operations().reports;
-      await reports.schedule(NOW);
-      const id = (await jobs()).results[0]?.id as string;
-      await reports.deliver(id, NOW, true);
-      const writes = {
-        report: "UPDATE progress_report_settings SET revision = revision + 1 WHERE owner_id = ?",
-        timezone: "UPDATE reminder_settings SET time_zone = 'UTC' WHERE owner_id = ?",
-        "quiet-hours": "UPDATE reminder_settings SET quiet_start = '22:00' WHERE owner_id = ?",
-        selection: "UPDATE goal_progress_reports SET included = 0 WHERE owner_id = ?",
-      };
-      await env.DB.prepare(writes[change]).bind(OWNER).run();
-      await reports.deliver(id, NOW + 60_000, true);
-      const job = (await jobs()).results[0];
-      expect(transport.send).not.toHaveBeenCalled();
-      if (change === "selection") expect(job?.status).toBe("cancelled");
-      else {
-        const payload = JSON.parse(job?.payload ?? "[]");
-        expect(payload.version).toBe(5);
-        expect(payload.formedAt).toBe(NOW + 60_000);
-      }
-    },
-  );
-  it("production Cron persists a report before sending on a later tick and reuses only wiring", async () => {
-    await save();
-    const send = vi.fn(async () => Response.json({ ok: true, result: { message_id: 10 } }));
-    vi.stubGlobal("fetch", send);
-    const bindings = {
-      ...env,
-      AUTH_MODE: "disabled",
-      APP_ORIGIN: "https://example.com",
-      AUTH_SUCCESS_REDIRECT_URL: "https://example.com/",
-      BUILD_REVISION: "local",
-      TELEGRAM_BOT_MODE: "webhook",
-      TELEGRAM_BOT_TOKEN: "123:local-test-only",
-      TELEGRAM_BOT_WEBHOOK_SECRET: "local-test-only",
-    } as unknown as CloudflareBindings;
-    try {
-      await runReminders(bindings, NOW);
-      expect((await jobs()).results).toHaveLength(0);
-      expect(send).not.toHaveBeenCalled();
-      await runReminders(bindings, NOW + 60_000);
-      const [prepared] = (await jobs()).results;
-      expect(prepared?.status).toBe("pending");
-      expect(prepared?.payload).toBe("[]");
-      expect(send).not.toHaveBeenCalled();
-      for (const [step, version] of [5, 6, 8, 4, 1].entries()) {
-        await runReminders(bindings, NOW + (step + 2) * 60_000);
-        expect(JSON.parse((await jobs()).results[0]?.payload ?? "[]").version).toBe(version);
-        expect(send).not.toHaveBeenCalled();
-      }
-      await runReminders(bindings, NOW + 420_000);
-      expect((await jobs()).results[0]?.status).toBe("sent");
-      await runReminders(bindings, NOW + 480_000);
-      expect(send).toHaveBeenCalledTimes(1);
-    } finally {
-      vi.unstubAllGlobals();
-    }
-  });
-
-  it("honors report settings changed between preparation and delivery", async () => {
-    await save();
-    const runner = operations();
-    await runner.runReminders.execute({ now: NOW, deferNewReportSnapshot: true });
-    expect((await jobs()).results[0]?.status).toBe("pending");
-    await save({ enabled: false }, NOW + 30_000);
-    await runner.runReminders.execute({ now: NOW + 60_000, deferNewReportSnapshot: true });
-    expect(transport.send).not.toHaveBeenCalled();
-    expect((await jobs()).results[0]?.status).toBe("cancelled");
-  });
-
   it("sends one report with reminders disabled and handles parallel Cron ticks", async () => {
     await save();
     await Promise.all([

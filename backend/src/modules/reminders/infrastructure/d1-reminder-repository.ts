@@ -20,7 +20,6 @@ import {
   type ReminderSettings,
 } from "../domain/model";
 import { inheritanceBatches } from "./inheritance-batches";
-import { reportPayloadProjection } from "./report-payload-projection";
 
 type JobRow = typeof reminderJobs.$inferSelect;
 const toJob = (row: JobRow): ReminderJob => ({
@@ -305,7 +304,7 @@ export class D1ReminderRepository implements ReminderRepository {
       .all<typeof goalReminders.$inferSelect>();
     return rows.results.map(toReminder);
   }
-  async inheritanceState(ownerId: string, month: string, limit?: number) {
+  async inheritanceState(ownerId: string, month: string) {
     const rows = (
       await this.binding
         .prepare(`SELECT
@@ -316,17 +315,8 @@ export class D1ReminderRepository implements ReminderRepository {
         ON r.goal_id = target.carried_from_goal_id AND r.owner_id = target.owner_id
       WHERE target.owner_id = ? AND target.month <= ? AND target.deleted_at IS NULL
         AND target.carried_from_goal_id IS NOT NULL
-        ${
-          limit === undefined
-            ? ""
-            : `AND (r.goal_id IS NOT NULL AND NOT EXISTS (
-          SELECT 1 FROM goal_reminders inherited WHERE inherited.goal_id = target.id)
-        OR EXISTS (SELECT 1 FROM goal_progress_reports source
-          WHERE source.goal_id = target.carried_from_goal_id AND source.owner_id = target.owner_id)
-          AND NOT EXISTS (SELECT 1 FROM goal_progress_reports inherited WHERE inherited.goal_id = target.id))`
-        }
-        ORDER BY target.month, target.id ${limit === undefined ? "" : "LIMIT ?"}`)
-        .bind(ownerId, month, ...(limit === undefined ? [] : [limit]))
+        ORDER BY target.month, target.id`)
+        .bind(ownerId, month)
         .all<
           typeof goalReminders.$inferSelect & {
             sourceGoalId: string;
@@ -461,7 +451,7 @@ export class D1ReminderRepository implements ReminderRepository {
     const rows = await this.binding
       .prepare(`SELECT ${reminderColumns} FROM goal_reminders r JOIN plan_goals g ON g.id = r.goal_id
         WHERE r.owner_id = ? AND g.owner_id = ? AND g.month = ? AND g.deleted_at IS NULL
-          AND r.mode = 'scheduled' AND r.next_run_at <= ? ORDER BY r.next_run_at, r.goal_id LIMIT 5`)
+          AND r.mode = 'scheduled' AND r.next_run_at <= ? ORDER BY r.next_run_at, r.goal_id`)
       .bind(ownerId, ownerId, month, now)
       .all<typeof goalReminders.$inferSelect>();
     return rows.results.map(toReminder);
@@ -664,13 +654,7 @@ export class D1ReminderRepository implements ReminderRepository {
       p.enabled AS report_enabled, p.revision AS report_revision,
       p.wednesday_time, p.sunday_time, p.next_wednesday_at, p.next_sunday_at,
       ps.starts_on, ps.revision AS progress_revision FROM (
-      SELECT ${jobColumns.replace(
-        "payload,",
-        `${reportPayloadProjection} AS payload,
-        json_extract(payload, '$.captureId') AS report_capture_id,
-        coalesce(json_extract(payload, '$.offset'), 0) AS report_capture_offset,
-        json_extract(payload, '$.version') AS report_payload_version,`,
-      )} FROM reminder_jobs
+      SELECT ${jobColumns} FROM reminder_jobs
       WHERE status = 'pending' AND due_at <= ? ORDER BY due_at, id LIMIT 1
     ) j ${deliveryJoins}
       LEFT JOIN progress_report_settings p ON p.owner_id = j.ownerId AND j.kind = 'weekly-progress'
@@ -679,9 +663,6 @@ export class D1ReminderRepository implements ReminderRepository {
     const results = await this.binding.batch<
       JobRow &
         DeliveryRow & {
-          report_capture_id: string | null;
-          report_capture_offset: number;
-          report_payload_version: number | null;
           report_enabled: number | null;
           report_revision: number | null;
           wednesday_time: string | null;
@@ -694,15 +675,6 @@ export class D1ReminderRepository implements ReminderRepository {
     >([...this.recoveryStatements(now), snapshot]);
     return (results.at(-1)?.results ?? []).map((row) => ({
       ...toJob(row),
-      ...(row.report_capture_id && [4, 6, 7, 8].includes(row.report_payload_version ?? 0)
-        ? {
-            reportPayloadReference: {
-              captureId: row.report_capture_id,
-              offset: row.report_capture_offset,
-              version: row.report_payload_version as 4 | 6 | 7 | 8,
-            },
-          }
-        : {}),
       deliveryState: deliveryFromRow(row, row.ownerId),
       ...(row.kind === "weekly-progress"
         ? {
@@ -798,19 +770,9 @@ export class D1ReminderRepository implements ReminderRepository {
       .run();
   }
   async recover(now: number): Promise<void> {
-    await this.binding.batch(this.recoveryStatements(now));
-  }
-  private recoveryStatements(now: number): D1PreparedStatement[] {
-    // A crashed send may have reached Telegram: do not automatically resend it.
-    const recovery = this.binding
-      .prepare(
-        "UPDATE reminder_jobs SET status = 'unknown', lease_until = NULL WHERE status = 'sending' AND lease_until <= ?",
-      )
-      .bind(now);
-    if (Math.floor(now / 60_000) % 60 !== 0) return [recovery];
     const cutoff = now - 90 * 86_400_000;
-    return [
-      recovery,
+    await this.binding.batch([
+      ...this.recoveryStatements(now),
       this.binding
         .prepare(
           "DELETE FROM reminder_jobs WHERE id IN (SELECT id FROM reminder_jobs WHERE created_at < ? ORDER BY created_at LIMIT 25)",
@@ -821,7 +783,16 @@ export class D1ReminderRepository implements ReminderRepository {
           "DELETE FROM telegram_link_tokens WHERE token_hash IN (SELECT token_hash FROM telegram_link_tokens WHERE expires_at <= ? LIMIT 25)",
         )
         .bind(now),
-    ];
+    ]);
+  }
+  private recoveryStatements(now: number): D1PreparedStatement[] {
+    // A crashed send may have reached Telegram: do not automatically resend it.
+    const recovery = this.binding
+      .prepare(
+        "UPDATE reminder_jobs SET status = 'unknown', lease_until = NULL WHERE status = 'sending' AND lease_until <= ?",
+      )
+      .bind(now);
+    return [recovery];
   }
 
   async deliveryIssues(ownerId: string, since: number): Promise<number> {

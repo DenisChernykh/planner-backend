@@ -1,9 +1,7 @@
 import type { ProgressReportRepository } from "../application/ports/progress-report-repository";
-import type { ReportPayloadReference } from "../application/ports/reminder-repository";
 import type { ReminderJob, ReminderSettings } from "../domain/model";
 import type { ReportSelection, ReportSettings, ReportSlot } from "../domain/progress-reports";
 import { inheritanceBatches } from "./inheritance-batches";
-import { captureReportInputs } from "./native-report-capture";
 
 type Row = {
   owner_id: string;
@@ -24,23 +22,6 @@ const map = (row: Row): ReportSettings => ({
   revision: row.revision,
 });
 export class D1ProgressReportRepository implements ProgressReportRepository {
-  captureSnapshot(input: Parameters<ProgressReportRepository["captureSnapshot"]>[0]) {
-    return captureReportInputs(this.database, input);
-  }
-  async selectionState(ownerId: string, fromMonth: string, toMonth: string) {
-    const row = await this.database
-      .prepare(`SELECT
-      (SELECT json_group_array(goal_id) FROM goal_progress_reports WHERE owner_id = ? AND included = 1) AS selected,
-      (SELECT json_group_array(id) FROM (SELECT g.id FROM plan_goals g
-        JOIN goal_progress_reports s ON s.goal_id = g.id AND s.owner_id = g.owner_id
-        WHERE g.owner_id = ? AND g.deleted_at IS NULL AND s.included = 1 AND g.month BETWEEN ? AND ? ORDER BY g.id)) AS active`)
-      .bind(ownerId, ownerId, fromMonth, toMonth)
-      .first<{ selected: string; active: string }>();
-    return {
-      selectedIds: JSON.parse(row?.selected ?? "[]") as string[],
-      goalIds: JSON.parse(row?.active ?? "[]") as string[],
-    };
-  }
   async activeGoalIds(ownerId: string, fromMonth: string, toMonth: string): Promise<string[]> {
     const rows = await this.database
       .prepare(`SELECT g.id FROM plan_goals g
@@ -208,56 +189,12 @@ export class D1ProgressReportRepository implements ProgressReportRepository {
         ),
     ]);
   }
-  async appendCalculation(input: Parameters<ProgressReportRepository["appendCalculation"]>[0]) {
-    const { id, ownerId, captureId, previousOffset, nextOffset, result, done, nextChainId } = input;
-    const resultBody = result ? "json_insert(payload, '$.goals[#]', json(?))" : "payload";
-    const body = done
-      ? `json_remove(${resultBody}, '$.calculation.sources', '$.calculation.knownSources')`
-      : resultBody;
+  async setSnapshot(id: string, previous: string, payload: string) {
     const saved = await this.database
-      .prepare(`UPDATE reminder_jobs SET payload = json_set(${body},
-      '$.version', ?, '$.offset', ?, '$.nextChainId', ?)
-      WHERE id = ? AND owner_id = ? AND status = 'pending'
-        AND json_extract(payload, '$.captureId') = ? AND coalesce(json_extract(payload, '$.offset'), 0) = ?
-        AND json_extract(payload, '$.version') IN (6, 7)`)
-      .bind(
-        ...(result ? [JSON.stringify(result)] : []),
-        done ? 8 : 7,
-        nextOffset,
-        nextChainId,
-        id,
-        ownerId,
-        captureId,
-        previousOffset,
+      .prepare(
+        "UPDATE reminder_jobs SET payload = ? WHERE id = ? AND status = 'pending' AND payload = ?",
       )
-      .run();
-    return saved.meta.changes === 1;
-  }
-  async finishCalculation(input: Parameters<ProgressReportRepository["finishCalculation"]>[0]) {
-    const { id, ownerId, captureId, offset, metadata, overview } = input;
-    const saved = await this.database
-      .prepare(`UPDATE reminder_jobs SET payload = json_set(?, '$.overview',
-      json_set(?, '$.goals', json_extract(payload, '$.goals')))
-      WHERE id = ? AND owner_id = ? AND status = 'pending' AND json_extract(payload, '$.version') = 8
-        AND json_extract(payload, '$.captureId') = ? AND json_extract(payload, '$.offset') = ?`)
-      .bind(JSON.stringify(metadata), JSON.stringify(overview), id, ownerId, captureId, offset)
-      .run();
-    return saved.meta.changes === 1;
-  }
-  async setSnapshot(
-    id: string,
-    previous: string,
-    payload: string,
-    reference?: ReportPayloadReference,
-  ) {
-    const saved = await this.database
-      .prepare(`UPDATE reminder_jobs SET payload = ? WHERE id = ? AND status = 'pending'
-      AND ${reference ? "json_extract(payload, '$.captureId') = ? AND coalesce(json_extract(payload, '$.offset'), 0) = ? AND json_extract(payload, '$.version') = ?" : "payload = ?"}`)
-      .bind(
-        payload,
-        id,
-        ...(reference ? [reference.captureId, reference.offset, reference.version] : [previous]),
-      )
+      .bind(payload, id, previous)
       .run();
     return saved.meta.changes === 1;
   }

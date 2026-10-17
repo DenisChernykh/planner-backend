@@ -1,7 +1,9 @@
 # Planner workspace
 
 - One Git repository, one pnpm workspace/lockfile, one Cloudflare Worker `app`.
-- `backend/wrangler.jsonc` owns Hono, Static Assets, D1, webhook and one Cron.
+- `backend/wrangler.jsonc` owns Hono, Static Assets, D1, webhook, one Cron and
+  the SQLite-backed `ReminderScheduler` Durable Object. Cron only wakes it;
+  heavy reminders/reports execute in alarms. See docs/durable-reminders-migration.md.
 - Keep frontend and backend as source packages, with their existing architecture.
   Read their AGENTS.md before changing package code.
 - Use Node 24 and pnpm 11.15.1. Install from the root. Run root `pnpm check`

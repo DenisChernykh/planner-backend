@@ -1,3 +1,4 @@
+import { runDurableObjectAlarm } from "cloudflare:test";
 import { env } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp } from "../src";
@@ -19,6 +20,7 @@ import { D1ReminderRepository } from "../src/modules/reminders/infrastructure/d1
 import type { BotInput, OutgoingMessage } from "../src/modules/reminders/public-contracts";
 import { DeliveryError, type ReminderTransport } from "../src/modules/reminders/public-contracts";
 import { sha256Base64Url } from "../src/platform/crypto/secure-values";
+import { configureReminderScheduler } from "./reminder-runtime";
 
 const OWNER = "c5e7a036-50a6-4c56-90a1-59b3d212b44a";
 const now = Date.parse("2026-09-29T04:00:00Z"); // 09:00 Yekaterinburg
@@ -210,53 +212,31 @@ describe("reminder schedules", () => {
 });
 
 describe("Telegram reminders with D1", () => {
-  it("stages one due schedule at a time and suppresses a queued question answered before delivery", async () => {
+  it("schedules and drains multiple questions in one execution", async () => {
     await goal({ type: "check" });
     await goal({ type: "check" });
-    const runner = operations();
-    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
-    await runner.runReminders.execute({ now, deferNewDelivery: true });
-    expect(sent).toHaveLength(0);
-    const [queued] = await repository.due(now);
-    expect(queued?.status).toBe("pending");
-    expect(await env.DB.prepare("SELECT count(*) AS count FROM reminder_jobs").first("count")).toBe(
-      1,
-    );
-    const queuedGoal = queued?.goalId;
-    if (!queuedGoal) throw new Error("Missing staged goal");
-    await new UpsertGoalEntryUseCase(planningRepository).execute({
-      ownerId: OWNER,
-      goalId: queuedGoal,
-      date: "2026-09-29",
-      now: now + 30_000,
-      expectedRevision: null,
-      value: { completed: false },
-    });
-    await runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true });
-    expect(sent).toHaveLength(0);
-    expect((await repository.job(queued.id))?.status).toBe("cancelled");
-    await runner.runReminders.execute({ now: now + 120_000, deferNewDelivery: true });
-    expect(await repository.due(now + 120_000)).toHaveLength(1);
-    await runner.runReminders.execute({ now: now + 180_000, deferNewDelivery: true });
-    expect(sent).toHaveLength(1);
+    await operations().runReminders.execute({ now });
+    expect(sent).toHaveLength(2);
+    expect(await repository.due(now)).toHaveLength(0);
+    await operations().runReminders.execute({ now });
+    expect(sent).toHaveLength(2);
   });
 
-  it("keeps staged concurrent ticks idempotent and reads a changed Telegram connection before sending", async () => {
-    await goal();
-    const runner = operations();
-    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
-    await Promise.all([
-      runner.runReminders.execute({ now, deferNewDelivery: true }),
-      runner.runReminders.execute({ now, deferNewDelivery: true }),
-    ]);
-    const rows = await env.DB.prepare("SELECT status, attempts FROM reminder_jobs").all();
-    expect(rows.results).toEqual([{ status: "pending", attempts: 0 }]);
-    await env.DB.prepare("UPDATE telegram_links SET status = 'blocked' WHERE owner_id = ?")
-      .bind(OWNER)
-      .run();
-    await runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true });
-    expect(sent).toHaveLength(0);
-    expect((await firstJob()).status).toBe("cancelled");
+  it("rechecks the clock between deliveries when a batch reaches quiet hours", async () => {
+    await goal({ type: "check" });
+    await goal({ type: "check" });
+    let clock = now;
+    vi.mocked(transport.send).mockImplementationOnce(async (_chatId, message) => {
+      sent.push({ id: 1, message });
+      clock = Date.parse("2026-09-29T18:00:00Z"); // 23:00 local
+      return 1;
+    });
+    await operations().runReminders.execute({ now, clock: () => clock });
+    expect(sent).toHaveLength(1);
+    const deferred = await env.DB.prepare(
+      "SELECT due_at, attempts FROM reminder_jobs WHERE status = 'pending'",
+    ).first();
+    expect(deferred).toEqual({ due_at: Date.parse("2026-09-30T03:00:00Z"), attempts: 0 });
   });
 
   it("does not read another owner's reminder through the combined delivery state", async () => {
@@ -270,14 +250,11 @@ describe("Telegram reminders with D1", () => {
     });
   });
 
-  it("claims a staged question only once when two delivery ticks race", async () => {
+  it("claims a question only once when two runners race", async () => {
     await goal({ type: "check" });
-    const runner = operations();
-    await runner.prepareCurrentPlan.execute({ ownerId: OWNER, now });
-    await runner.runReminders.execute({ now, deferNewDelivery: true });
     await Promise.all([
-      runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true }),
-      runner.runReminders.execute({ now: now + 60_000, deferNewDelivery: true }),
+      operations().runReminders.execute({ now }),
+      operations().runReminders.execute({ now }),
     ]);
     expect(sent).toHaveLength(1);
     expect(await firstJob()).toMatchObject({ status: "sent", attempts: 1, messageId: 1 });
@@ -348,7 +325,7 @@ describe("Telegram reminders with D1", () => {
     expect(sent).toHaveLength(1);
   });
 
-  it("drains persisted questions one per tick before preparing any new schedules", async () => {
+  it("drains persisted questions together without duplicating scheduled events", async () => {
     const first = await goal();
     const second = await goal();
     for (const created of [first, second])
@@ -359,18 +336,16 @@ describe("Telegram reminders with D1", () => {
           goalId: created.id,
           date: "2026-09-29",
           kind: "question",
-          eventKey: `queued:${created.id}`,
+          eventKey: `scheduled:${created.id}:2026-09-29`,
           now,
         }),
       );
-    const prepare = vi.spyOn(D1PlanningRepository.prototype, "rolloverState");
     await operations().runReminders.execute({ now });
-    expect(sent).toHaveLength(1);
-    expect(await repository.due(now)).toHaveLength(1);
+    expect(sent).toHaveLength(2);
+    expect(await repository.due(now)).toHaveLength(0);
     await operations().runReminders.execute({ now: now + 60_000 });
     expect(sent).toHaveLength(2);
     expect(await repository.due(now + 60_000)).toHaveLength(0);
-    expect(prepare).not.toHaveBeenCalled();
     const rows = await env.DB.prepare("SELECT status, attempts FROM reminder_jobs").all();
     expect(rows.results).toEqual([
       { status: "sent", attempts: 1 },
@@ -951,16 +926,15 @@ describe("reminder runtime integration", () => {
         TELEGRAM_BOT_TOKEN: "321:runtime-test-token",
         TELEGRAM_BOT_WEBHOOK_SECRET: "runtime-test-secret",
       } as unknown as CloudflareBindings;
-      // The exact hour is reserved for retention, then preparation, scheduling
-      // and delivery each get an independent invocation.
-      for (let step = 0; step < 4; step++) {
-        vi.setSystemTime(now + step * 60_000);
-        await runtime.default.scheduled(
-          { scheduledTime: now + step * 60_000, cron: "* * * * *", noRetry() {} },
-          bindings,
-        );
-        if (step < 3) expect(messageId).toBe(0);
-      }
+      // Cron only arms the durable executor. The entire due question is sent
+      // by one alarm, including when hourly maintenance also runs.
+      await configureReminderScheduler(bindings, "reminders", true);
+      await runtime.default.scheduled(
+        { scheduledTime: now, cron: "* * * * *", noRetry() {} },
+        bindings,
+      );
+      expect(messageId).toBe(0);
+      expect(await runDurableObjectAlarm(env.REMINDER_SCHEDULER.getByName("reminders"))).toBe(true);
       const job = await firstJob();
       expect(job.messageId).toBe(1);
       const response = await createApp().request(

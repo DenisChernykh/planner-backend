@@ -15,37 +15,23 @@ export class PrepareCurrentPlanUseCase {
     ownerId,
     now,
     month,
-    deferInheritance = false,
     settings: schedulingSettings,
-    prepared = false,
   }: {
     ownerId: string;
     now: number;
     month?: string;
-    deferInheritance?: boolean;
     settings?: ReminderSettings;
-    prepared?: boolean;
   }): Promise<void> {
     const settings = schedulingSettings ?? (await this.repository.settings(ownerId));
     const currentMonth = localDate(now, settings.timeZone).slice(0, 7);
     if (month !== undefined && month !== currentMonth) return;
-    // Cron has just read the immutable rollover receipt in schedulingState.
-    // HTTP callers still ensure the plan before any inheritance.
-    if (!prepared)
-      await this.planning.ensureCurrentPlan({
-        ownerId,
-        now,
-        timeZone: settings.timeZone,
-        includeCarriedGoals: false,
-      });
-    if (deferInheritance) return;
-    // Cron repairs only actionable edges, capped per tick. Larger plans and
-    // unfinished generations resume from persisted missing rules on later ticks.
-    const state = await this.repository.inheritanceState(
+    await this.planning.ensureCurrentPlan({
       ownerId,
-      currentMonth,
-      prepared ? 1 : undefined,
-    );
+      now,
+      timeZone: settings.timeZone,
+      includeCarriedGoals: false,
+    });
+    const state = await this.repository.inheritanceState(ownerId, currentMonth);
     if (state.carried.length === 0) return;
     await this.reports?.inherit(ownerId, state.carried);
     const reminders = new Map(state.sources.map((rule) => [rule.goalId, rule]));

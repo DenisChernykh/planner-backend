@@ -11,11 +11,19 @@ Approved project decision (2026-09-29, clarified by the project owner): Telegram
 reminders are sized for one user's personal-use workload; this is a capacity
 assumption, not an access restriction. Each authenticated account may connect
 its own private Telegram chat and use owner-scoped reminders. Do not introduce
-a designated-owner allowlist. Reminders may use one once-per-minute Cron Trigger
-in the existing backend Worker, with schedule and delivery state in the existing D1 database. See
-`docs/telegram-reminders.md`. Do not add a queue, microservice, or scaling
-infrastructure for this feature. This decision does not authorize deployment
-or remote migrations; those remain separate operations.
+a designated-owner allowlist. Schedule and delivery state remain in the existing
+D1 database. Do not add a queue, microservice, or scaling infrastructure.
+
+Approved project decision (2026-10-17): use one SQLite-backed `ReminderScheduler`
+Durable Object in the same Worker, on Cloudflare Free. The existing once-per-minute
+Cron only bootstraps/recovers its alarm. Alarms prepare whole reports, inherit whole
+plans and drain due deliveries; do not reintroduce minute-by-minute calculation
+stages to fit an ordinary Worker's 10-ms CPU budget. Keep atomic D1 claims, ready
+snapshots for retries, ownership, quiet hours and ambiguous-send recovery. A bounded
+delivery batch protects external subrequest limits, not a per-goal CPU target.
+See `../docs/durable-reminders-migration.md`. This decision authorizes code and local
+verification; deployment, hosted resource creation and remote migrations remain
+separate operations requiring explicit authorization.
 
 The baseline runtime is Hono + D1/Drizzle. Telegram OIDC and owner-scoped Notes
 are reference capabilities, not permission to grow a generic auth framework.

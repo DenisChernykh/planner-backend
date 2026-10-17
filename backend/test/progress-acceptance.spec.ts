@@ -254,7 +254,12 @@ describe("selection, formatting and atomic persistence acceptance", () => {
     expect((await overview()).goals).toHaveLength(5);
     await operations().runReminders.execute({ now: NOW });
     const sent = vi.mocked(transport.send).mock.calls[0]?.[1];
-    expect(sent?.blocks?.filter((block) => block.kind === "goal")).toHaveLength(2);
+    expect(preview.message?.blocks?.filter((block) => block.kind === "goal")).toHaveLength(2);
+    expect(sent).toEqual({
+      text: preview.message?.text,
+      html: preview.message?.html,
+      buttons: preview.message?.buttons,
+    });
     const manual = await create("Новая ручная цель");
     expect(
       (await operations().reports.get({ ownerId: OWNER, month: "2026-10", now: NOW })).goals.find(
@@ -268,7 +273,7 @@ describe("selection, formatting and atomic persistence acceptance", () => {
     await operations().runReminders.execute({ now: NOW + 4 * 86400000 });
     expect(transport.send).toHaveBeenCalledTimes(1);
   });
-  it("uses safe HTML, literal user text and the same complete blocks in preview and transport", async () => {
+  it("uses safe HTML and the same literal text and buttons in preview and transport", async () => {
     await save();
     const preview = await operations().reports.preview({
       ownerId: OWNER,
@@ -278,7 +283,11 @@ describe("selection, formatting and atomic persistence acceptance", () => {
     });
     await operations().runReminders.execute({ now: NOW });
     const sent = vi.mocked(transport.send).mock.calls[0]?.[1];
-    expect(sent).toEqual(preview.message);
+    expect(sent).toEqual({
+      text: preview.message?.text,
+      html: preview.message?.html,
+      buttons: preview.message?.buttons,
+    });
     expect(sent?.html).toContain("&lt;b&gt; &amp; * _");
     expect(sent?.html).not.toContain("preserve note");
     expect(sent?.text).toContain("Любое название <b> & * _");

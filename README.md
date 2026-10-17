@@ -38,7 +38,8 @@ pnpm dev
 - `frontend/` — React/Vite, интерфейс и сгенерированный API-клиент.
 - `chatgpt/` — личный плагин Ритм; UI берётся из frontend.
 - `backend/src/modules/` — Identity, Planning, Notes, Reminders, Telegram Bot.
-- `backend/src/index.ts` — HTTP и Cron entrypoint единственного Worker.
+- `backend/src/index.ts` — HTTP, Cron и экспорт Durable Object единственного Worker.
+- `backend/src/app/reminder-scheduler.ts` — фоновая обработка через alarms; Cron только будит её.
 - `backend/wrangler.jsonc` — единственная конфигурация публикации, D1 и Static Assets.
 - `backend/migrations/` — существующая история миграций.
 
@@ -47,11 +48,11 @@ pnpm dev
 монолита. Smoke использует временное локальное состояние; remote D1 и Telegram
 не вызываются. CI выполняет тот же gate после frozen install.
 
-Локальный эксперимент с Durable Objects: `pnpm reminders:compare-do`.
-Он сравнивает текущий Cron с двумя вариантами обработки через настоящий локальный
-alarm, использует только синтетические данные и подставные ответы Telegram.
-Production-конфигурация не меняется; эксперимент не входит в CI. Методика и
-ограничения: [Durable Objects prototype](backend/experiments/durable-reminders/README.md).
+Переход напоминаний на Durable Objects и удаление дробления под 10 мс описаны в
+[решении и плане публикации](docs/durable-reminders-migration.md).
+`pnpm reminders:compare-do` воспроизводит исторический локальный эксперимент на
+зафиксированной старой ревизии; он использует синтетические данные и подставные
+ответы Telegram и не входит в CI. [Методика](backend/experiments/durable-reminders/README.md).
 
 После изменения API: `pnpm api:update`. Snapshot и клиент генерируются из
 серверного кода той же Git-ревизии. `pnpm test` запускает тесты всех пакетов;

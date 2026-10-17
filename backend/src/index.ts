@@ -1,7 +1,7 @@
 import { createApp } from "./app/create-app";
-import { runReminders } from "./app/run-reminders";
 
 export { createApp } from "./app/create-app";
+export { ReminderScheduler } from "./app/reminder-scheduler";
 
 let app: ReturnType<typeof createApp> | undefined;
 export default {
@@ -12,7 +12,8 @@ export default {
   },
   async scheduled(_controller: ScheduledController, env: CloudflareBindings): Promise<void> {
     try {
-      await runReminders(env, Date.now());
+      if (env.TELEGRAM_BOT_MODE === "webhook")
+        await env.REMINDER_SCHEDULER.getByName("reminders").wake();
     } catch {
       console.error(JSON.stringify({ event: "reminder_tick_failed" }));
       throw new Error("Reminder tick failed");

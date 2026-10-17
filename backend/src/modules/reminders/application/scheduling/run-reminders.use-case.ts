@@ -1,10 +1,14 @@
 import { dueGoalReminders, isRecentOccurrence } from "../../domain/jobs";
 import { afterQuietHours, localDate, nextOccurrence } from "../../domain/schedule";
 import type { DeliverReminderUseCase } from "../delivery/deliver-reminder.use-case";
-import type { QueuedReminder, ReminderRepository } from "../ports/reminder-repository";
+import type { ReminderRepository } from "../ports/reminder-repository";
 import type { ProgressReportsUseCases } from "../reports/progress-reports";
 import { makeJob } from "./make-job";
 import type { PrepareCurrentPlanUseCase } from "./prepare-current-plan.use-case";
+
+// Leave room below the Free plan's external subrequest limit. A report is
+// always calculated whole; only separate deliveries can continue in another alarm.
+export const DELIVERIES_PER_ALARM = 20;
 
 export class RunRemindersUseCase {
   constructor(
@@ -17,48 +21,21 @@ export class RunRemindersUseCase {
 
   async execute({
     now,
-    deferNewReportSnapshot = false,
-    deferNewDelivery = false,
+    clock = () => now,
   }: {
     now: number;
-    deferNewReportSnapshot?: boolean;
-    deferNewDelivery?: boolean;
-  }): Promise<void> {
-    if (!this.botAvailable) return;
-    const queued = await this.repository.recoverAndDue(now);
-    if (queued.length) {
-      // Finish persisted work before spending CPU on another scheduling pass.
-      await this.deliverQueued(queued, now, deferNewReportSnapshot);
-      return;
-    }
+    clock?: () => number;
+  }): Promise<boolean> {
+    if (!this.botAvailable) return false;
     const states = await this.repository.schedulingState();
-    if (deferNewDelivery) {
-      // Keep a new plan's copy and rule inheritance in separate invocations, and
-      // prepare all owners before draining one owner's simultaneous due rules.
-      for (const state of states) {
-        const month = localDate(now, state.settings.timeZone).slice(0, 7);
-        const missingPlan = !state.preparedMonths.includes(month);
-        if (!missingPlan && !state.inheritanceMonths.some((item) => item <= month)) continue;
-        await this.prepareCurrentPlan.execute({
-          ownerId: state.settings.ownerId,
-          now,
-          deferInheritance: missingPlan,
-          settings: state.settings,
-          prepared: !missingPlan,
-        });
-        return;
-      }
-    }
     for (const state of states) {
       const { settings } = state;
       const month = localDate(now, settings.timeZone).slice(0, 7);
       const prepare =
         !state.preparedMonths.includes(month) ||
         state.inheritanceMonths.some((inheritedMonth) => inheritedMonth <= month);
-      if (prepare) {
+      if (prepare)
         await this.prepareCurrentPlan.execute({ ownerId: settings.ownerId, now, settings });
-        if (deferNewDelivery) return;
-      }
       if (!settings.enabled) continue;
       const goalDue = prepare || (state.nextGoalRuns[month] ?? Infinity) <= now;
       const eveningDue = settings.nextEveningAt !== null && settings.nextEveningAt <= now;
@@ -80,9 +57,6 @@ export class RunRemindersUseCase {
             )
           : null;
         await this.repository.advanceGoal({ ...item, nextRunAt: next }, previous, job, settings);
-        // Persist one schedule transition per Cron invocation. Delivery on the next
-        // tick rechecks current settings/facts; it never trusts a cached eligibility.
-        if (deferNewDelivery) return;
       }
       if (settings.nextEveningAt !== null && settings.nextEveningAt <= now) {
         const previous = settings.nextEveningAt;
@@ -104,28 +78,22 @@ export class RunRemindersUseCase {
           nextOccurrence(now, settings.timeZone, settings.eveningTime),
           job,
         );
-        if (deferNewDelivery) return;
       }
     }
     if (states.some((state) => state.nextReportAt !== null && state.nextReportAt <= now))
       await this.reports?.schedule(
         now,
-        deferNewDelivery ? 1 : Infinity,
         new Map(states.map((state) => [state.settings.ownerId, state.settings])),
       );
-    if (deferNewDelivery) return;
-    await this.deliverQueued(await this.repository.due(now), now, deferNewReportSnapshot);
-  }
-
-  private async deliverQueued(
-    jobs: QueuedReminder[],
-    now: number,
-    deferNewReportSnapshot: boolean,
-  ) {
-    for (const job of jobs) {
-      if (job.kind === "weekly-progress")
-        await this.reports?.deliver(job.id, now, deferNewReportSnapshot, job);
-      else await this.deliver.execute({ job, now, state: job.deliveryState });
+    for (let count = 0; count < DELIVERIES_PER_ALARM; count++) {
+      // Network calls can cross quiet-hour/expiry boundaries. Each next delivery
+      // reads current time and fresh D1 eligibility, never a cached batch snapshot.
+      const at = clock();
+      const [job] = await this.repository.recoverAndDue(at);
+      if (!job) return false;
+      if (job.kind === "weekly-progress") await this.reports?.deliver(job.id, at, job);
+      else await this.deliver.execute({ job, now: at, state: job.deliveryState });
     }
+    return (await this.repository.due(clock())).length > 0;
   }
 }

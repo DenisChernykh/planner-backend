@@ -39,9 +39,9 @@ export function isRecentOccurrence(scheduledAt: number, now: number): boolean {
 }
 
 export function dueGoalReminders(reminders: GoalReminder[], now: number): GoalReminder[] {
-  return reminders
-    .filter((rule) => rule.mode === "scheduled" && rule.nextRunAt !== null && rule.nextRunAt <= now)
-    .slice(0, 5);
+  return reminders.filter(
+    (rule) => rule.mode === "scheduled" && rule.nextRunAt !== null && rule.nextRunAt <= now,
+  );
 }
 
 export function needsReminder(

@@ -1,8 +1,11 @@
 # Local Durable Object comparison
 
-This is an explicitly authorized local prototype, not an architecture migration.
+This is the historical local prototype that preceded the architecture migration.
 It uses the installed Miniflare/workerd, local D1 and SQLite-backed Durable Objects.
-Production sources, `backend/wrangler.jsonc`, bindings and migrations are unchanged.
+Runtime imports are compiled from Git revision `5e0d309`, extracted to a temporary
+directory. The obsolete staged implementation is no longer kept in production
+source. A clone must contain that commit (fetch history if using a shallow clone).
+This command neither modifies current production sources/configuration nor deploys.
 No Cloudflare account, secret file, remote database or real Telegram token is read.
 
 Run from the workspace root with Node 24 and pnpm 11.15.1:
@@ -23,12 +26,12 @@ Temporary D1/DO stores and the compiled Worker are removed on completion/failure
 
 | Mode | Application execution | Executor |
 | --- | --- | --- |
-| `cron` | Exact current `scheduled()` entry point, one bounded transition per call | Local Worker HTTP wrapper invokes `scheduled()` |
+| `cron` | Historical `scheduled()` entry point at `5e0d309`, one bounded transition per call | Local Worker HTTP wrapper invokes `scheduled()` |
 | `do-staged` | Same `scheduled()` entry point, draining bounded transitions without minute pauses | One actual workerd `alarm()` |
 | `do-direct` | Existing reminder runner with both defer flags off; full report preparation and month inheritance | One actual workerd `alarm()` |
 
 There is no new report algorithm and no fork of product rules. The non-deferred
-path already exists in application code. This separates removing minute gaps
+path exists in the archived application code. This separates removing minute gaps
 from removing the repeated reads/writes required by bounded stages.
 
 Both paths use the existing Telegram transport adapter. Miniflare's outbound

@@ -82,53 +82,12 @@ export function createReminderOperations(
     ),
   };
 }
-// Cron does not need HTTP settings, link-token, answer or report machinery on
-// its first idle tick or while sending a persisted question.
 export function createReminderRunner(
   database: D1Database,
   transport: ReminderTransport | null,
   appOrigin: string,
 ) {
-  const repository = new D1ReminderRepository(database);
-  let operations:
-    | { prepareCurrentPlan: PrepareCurrentPlanUseCase; reports: ProgressReportsUseCases }
-    | undefined;
-  const scheduledOperations = () => {
-    if (!operations) {
-      const planning = createPlanningOperations(database);
-      const reportRepository = new D1ProgressReportRepository(database);
-      const prepareCurrentPlan = new PrepareCurrentPlanUseCase(
-        repository,
-        planning,
-        reportRepository,
-      );
-      operations = {
-        prepareCurrentPlan,
-        reports: new ProgressReportsUseCases(
-          reportRepository,
-          repository,
-          planning,
-          createProgressOperations(database, planning),
-          prepareCurrentPlan,
-          transport,
-          appOrigin,
-        ),
-      };
-    }
-    return operations;
-  };
-  const digest = new DigestMessages(repository, transport, new FindMissingGoalsQuery(repository));
-  return new RunRemindersUseCase(
-    repository,
-    transport !== null,
-    new DeliverReminderUseCase(repository, transport, digest),
-    { execute: (input) => scheduledOperations().prepareCurrentPlan.execute(input) },
-    {
-      schedule: (now, limit, settings) =>
-        scheduledOperations().reports.schedule(now, limit, settings),
-      deliver: (id, now, defer, job) => scheduledOperations().reports.deliver(id, now, defer, job),
-    },
-  );
+  return createReminderOperations(database, transport, appOrigin).runReminders;
 }
 
 export function createReminderMaintenance(database: D1Database) {
