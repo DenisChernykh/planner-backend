@@ -2,8 +2,9 @@
 
 The owner approved replacing the minute-by-minute CPU workaround with a
 SQLite-backed Durable Object on Cloudflare Free, in the existing Worker `app`.
-This is implementation and local verification. It has not been deployed and
-does not authorize a remote migration, hosted resource creation or a real send.
+The implementation was verified locally first. The owner separately authorized
+deployment on 17 October; the production record is below. Test sends, remote D1
+migrations and paid-plan changes were not part of that deployment.
 
 ## Execution
 
@@ -123,4 +124,32 @@ and monolith smoke), root `pnpm boundaries:check`, production `pnpm deploy:dry-r
 and a pinned historical
 comparison smoke (`--rounds 1 --scenarios report`, all three modes plus
 restart/replay checks). Passing local gates does not establish GitHub CI or hosted
-behavior. No deploy, remote migration or real Telegram send is performed.
+behavior. These local checks performed no deploy, remote migration or real
+Telegram send.
+
+## Production deployment — 17 October 2026
+
+Published code revision `94b1fe77ab23e558bf411c54bf1992d6e20e5382` to the existing
+Worker `app` at 06:14:53 UTC after the owner's explicit deployment request.
+
+- Version: `4888c2c2-0df6-4228-845e-daf945a93701`.
+- Deployment: `77f3b345-a3d6-4b80-b907-0134ed13a971`, 100% traffic.
+- Previous version: `873fe2c9-bbd5-4e4a-9c98-12044f16f6d6`.
+- Applied platform migration: `v1-reminder-scheduler` (SQLite).
+- Namespace: `d520d811b99643cc95e1faac04d1cb45`, class `ReminderScheduler`,
+  binding `REMINDER_SCHEDULER`.
+
+Cloudflare version metadata confirms all previous bindings are unchanged, except
+`BUILD_REVISION`, which now identifies the full deployed commit. D1 and the five
+secret bindings remain the same. The deployment confirms the sole schedule
+`* * * * *`; no D1 schema migration or webhook mutation was run.
+
+Production `/health` returned 200 with the full revision. `/` and
+`/plans/2026-10/progress` matched the built SPA; OpenAPI returned 200,
+unauthenticated `/api/auth/me` returned 401, and a missing API route returned 404.
+Filtered live traces confirmed two successful invocations each of Cron,
+`ReminderScheduler.wake` and alarm, with no exceptions or log messages. The
+observer excluded request URLs, headers and log contents. No manual reminder or
+Telegram test send was invoked; ordinary scheduled
+processing remains enabled. This does not establish a real report delivery or
+long-term Free quota usage.
