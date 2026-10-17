@@ -90,3 +90,12 @@ attempt must use a new fixed manifest/control prefix, validate all helper paths
 before any remote mutation, observe the initial copy and all inheritance ticks,
 then run synthetic quiet scheduling and at most one first real report. Existing
 control history/manifest must remain intact. No further deployment is required.
+
+## Subsequent authorized control
+
+The owner subsequently authorized a fresh control with a new fixed manifest and
+event prefix. It completed without reusing this interrupted fixture or permission.
+Exactly one real report was sent, cleanup passed, and production CPU still
+exceeded 10 ms in inheritance/calculation. See the
+[completed follow-up](reminder-cpu-control-completed-2026-10-17.md); this document
+retains the original interrupted attempt's evidence unchanged.

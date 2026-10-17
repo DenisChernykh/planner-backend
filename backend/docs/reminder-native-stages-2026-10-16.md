@@ -206,3 +206,28 @@ protective cleanup removed its fixture. No report was enqueued or sent. The
 heartbeat is now paused; inheritance/report CPU remain unmeasured. See the
 [17 October outcome](reminder-cpu-control-2026-10-17.md) for the error, all
 available metrics, attribution limits and cleanup evidence.
+
+## Completed follow-up control — 17 October
+
+After a new explicit authorization, a fresh isolated control completed on the
+same deployed `47021ef` revision. All 24 inheritance edges and all report phases
+were observed; exactly one real report was sent with one attempt. Fixture data
+was removed, ordinary configuration/schedules stayed unchanged and FK checks
+passed. A temporary OAuth expiry interrupted local observation; refreshing the
+existing session allowed resume-only observation of the same job and final
+cleanup, without creating a replacement report.
+
+The strict production CPU criterion **failed**: 5 of 24 inheritance groups
+exceeded 10 ms (maximum **15.466 ms**), as did 9 of 17 report calculation groups
+(maximum **17.165 ms**). Month copy measured 4.473 ms; synthetic quiet scheduling
+9.587 ms; selection/capture 5.005/4.844 ms; summary/formatting 5.461/6.494 ms;
+the single real send 7.746 ms. These are adaptive metric groups correlated with
+event times and D1 transitions, with no explicit Cron/HTTP source discriminator.
+Concurrent HTTP candidates and all other overruns are retained separately;
+the dedicated scheduled dataset was empty. Stable CPU below 10 ms is therefore
+not achieved by this revision despite successful execution and delivery.
+
+See the [completed control](reminder-cpu-control-completed-2026-10-17.md) and its
+[sanitized evidence](reminder-cpu-2026-10-17-47021ef-completed-control.json) for
+the full timeline, sampling, attribution limits and cleanup verification.
+The original automation remains paused. No new deployment was performed.
