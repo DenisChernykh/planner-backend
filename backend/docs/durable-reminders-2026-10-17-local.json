@@ -1,0 +1,6216 @@
+{
+  "schemaVersion": 1,
+  "revision": "9adab259b529a37b69e41802bf080c607dfb7b53",
+  "node": "v24.18.0",
+  "createdAt": "2026-10-17T05:31:53.177Z",
+  "rounds": 5,
+  "goalsPerOwner": 24,
+  "method": "Sequential local workerd; V8 inspector active samples excluding idle/root/program; modules loaded, fresh application runner; fixed logical clock for exact payload parity; no simulated minute sleeps.",
+  "limitations": [
+    "Not Cloudflare billed CPU or enforced Free-tier limits",
+    "Not production cold-start evidence",
+    "Zero real network or Telegram sends",
+    "Elapsed time includes local dispatch, D1 and a 25-ms DO alarm arming delay; baseline excludes host observation",
+    "DO drain includes one fixture-completion observer query per transition; DO storage and result callback are included in CPU capture",
+    "Cron wait is modeled at one minute per transition, not observed wall time; excludes backlog/maintenance/quiet-hours delay",
+    "Small synthetic sample; no production reliability or capacity claim"
+  ],
+  "fingerprints": {
+    "backend/src/app/create-app.ts": "8ee9c3a34454d961d73ed8221b7f0ea8f57301b37b8ce58d779a74ff12c670ba",
+    "backend/src/app/run-reminders.ts": "2ed5b223c44ca1e68722e19dd60fcf57fa74d7f7100e62e9162529c8c41dc7df",
+    "backend/src/index.ts": "8b487f94d0594da570c09db3d16e33da1ce57b34d98eb7e28604958e3b86aa71",
+    "backend/src/modules/identity-access/application/development/development-identity.ts": "c1d06fd523ffb01191a526f891e7fdf60a50c8588f53989b5ec5fb7b6aad22b9",
+    "backend/src/modules/identity-access/application/development/find-development-session.query.ts": "00844b5cc0001a3d578161bccf4106907abb7f80320eb490f6fa31666e41747f",
+    "backend/src/modules/identity-access/application/development/start-development-session.use-case.ts": "1ba7be20d2feb5fe67471f4fcf98191d48a7327e7494a5b6f0f9af8bfb4963c3",
+    "backend/src/modules/identity-access/application/integrations/chatgpt-connection.ts": "db1bc2a30f2ac40c0528a4537dc0c27d0f2c4238fcef811e2cae02a024bd6906",
+    "backend/src/modules/identity-access/application/ports/identity-session-repository.ts": "803e1e1fd2c790e6848877d1c061ceffed2ba3c734c3df02038b7e4629b664f5",
+    "backend/src/modules/identity-access/application/ports/integration-token-repository.ts": "5522d1866aa8416cb4a857d875409a1f7cc8b60cc0a6962726563f8ddf765ac5",
+    "backend/src/modules/identity-access/application/ports/login-flow-codec.ts": "790527e0d77008f9303249556372c8703e814c00f664026a81bb466c3023f05d",
+    "backend/src/modules/identity-access/application/ports/telegram-oidc-client.ts": "4a0bcaf7d1603083f7160bfb28f0cde5a2f22ad55ba15d9d20f9916a0baa69a5",
+    "backend/src/modules/identity-access/application/sessions/authenticate-session.query.ts": "cb2b25dda47777b67a726b1622cc3eb3e1ae85d3e295a42360c4ba65a827d3ab",
+    "backend/src/modules/identity-access/application/sessions/logout.use-case.ts": "7e0e59dd7b7f3a8c02db5e8ca5e0d41c9a0fe007eaa65374faee276ee979002d",
+    "backend/src/modules/identity-access/application/sessions/model.ts": "df4d792aa36cb6a43b2c5debd643ea00de58f68d200fc5b93f2e9786821eaaf7",
+    "backend/src/modules/identity-access/application/sessions/session-policy.ts": "cdf5b3ebd860f81a5afa6cabc3adfc88cf6826555460eb333b4e0c8d457be97b",
+    "backend/src/modules/identity-access/application/telegram-login/complete-telegram-login.use-case.ts": "f06f1815aba7d3d867dac8e65de0b4b4a48a86d9b6fd46350cfd9fe72b775e14",
+    "backend/src/modules/identity-access/application/telegram-login/login-flow-policy.ts": "4545eee09661d193b665f4473d1cdd8e5a64e397991f6fbc107a5e87497ef39e",
+    "backend/src/modules/identity-access/application/telegram-login/model.ts": "72149e52a9713dbf8b1f42cd0fa2540fa557eedd6b544fe70ce2bf0f85f51b04",
+    "backend/src/modules/identity-access/application/telegram-login/return-to.ts": "b95796d94780b6422c07a0046686518de8790449cd82acdceb905b0300bd5957",
+    "backend/src/modules/identity-access/application/telegram-login/start-telegram-login.use-case.ts": "5db1ebbffdf416e23799516e3e9331abc98ef1b34ffc2efe644fd890eff0859c",
+    "backend/src/modules/identity-access/application/telegram-login/validate-telegram-login-flow.query.ts": "c850694755520141c03b7c76c670275bde959960c40be3081e720aaa25bc39f1",
+    "backend/src/modules/identity-access/index.ts": "6d793873c7572930f33eafb5e9daf213310d1de243e96730242247fa3213f82d",
+    "backend/src/modules/identity-access/infrastructure/aes-gcm-login-flow-codec.ts": "e6c500f73c54943e89665dc5dc3f9a99ee8cd3630afa0d447af20df705937933",
+    "backend/src/modules/identity-access/infrastructure/d1-identity-session-repository.ts": "d4f750486d16791e85ecae8ba34fa899d7441658eaf01581c0b24222b3cabea8",
+    "backend/src/modules/identity-access/infrastructure/d1-integration-token-repository.ts": "1e9c0a113f97c7bfb71f5128dc92b97cae0e38632407fd10d62d45b152365d1b",
+    "backend/src/modules/identity-access/infrastructure/telegram-oidc-client.ts": "b08bc7e3cb73615e8b95d60a8e3d2b3da295e560bf73d779f68c2f01bac7ce13",
+    "backend/src/modules/identity-access/presentation/chatgpt-http.ts": "ba80f3bc4b4cd9ece8e81d72d72e8a493e7bbd52fbe37a9ffef21f9b51463851",
+    "backend/src/modules/identity-access/presentation/http.ts": "94ef5f000f357bc3a1787239de96e7a1f555591c879c5ad7a47bf4d832c06e04",
+    "backend/src/modules/identity-access/public-contracts.ts": "7f52a13a51e8211d8140c4d098c76585516bf838c65a03a81c5b38cc412ee6f9",
+    "backend/src/modules/notes/application/ports/notes-repository.ts": "8b5fbbb139e2f83a12fbd00e4dccad915917ba3b71c3e6fd460cf88a7346a904",
+    "backend/src/modules/notes/application/reading/get-note.query.ts": "4f4e9fd3b782572c2798eb786d9e1f121e45b566f4f0eb87b1b2332f9a4cfdfc",
+    "backend/src/modules/notes/application/reading/list-notes.query.ts": "58f7c2e112f24626a018be7048c29b5fa9769f972c0440d8b71498ab551d31d3",
+    "backend/src/modules/notes/application/writing/create-note.use-case.ts": "639f562a56e9645a488dbb21adaaf3c16bd58b78f84e8ac4e6886820fd5eb4c6",
+    "backend/src/modules/notes/application/writing/delete-note.use-case.ts": "0d02b07c755c34c12e8497ef773de8d498f6b2606b6e96286fb222c26e243417",
+    "backend/src/modules/notes/application/writing/update-note.use-case.ts": "14034e61651d6351d9f93072f38a7daecfbde4a3259aa7710846f97f06ba33dc",
+    "backend/src/modules/notes/domain/errors.ts": "327114046a5931698f5fe7ff88f5db27acab8c2fe1cb778ad90cde045feeb5ab",
+    "backend/src/modules/notes/domain/model.ts": "cca25285105bbdd51002ddf7d7e0c6b26cb4b7971d40ee0867f3a97133bce4ec",
+    "backend/src/modules/notes/domain/rules.ts": "be5aa5fcd646c34b7d8eb8972f126f7dc5f887ad533958eea8be631445639fc1",
+    "backend/src/modules/notes/index.ts": "c8de8b58cc4bc9927e3d8ec9b2da418d3308015f270f4e4629827b2b4023204b",
+    "backend/src/modules/notes/infrastructure/d1-notes-repository.ts": "fb00da51153c60a50dfa4153bcb8d142b69bc4e0d69552e3d7fad37ae6ff4c79",
+    "backend/src/modules/notes/presentation/http.ts": "6bd6ee767d91d33e95394dc427fcd087f5107eeb5f3c4ef64253c2af14f7af1d",
+    "backend/src/modules/notes/presentation/problems.ts": "5506c6853018337915db5e9a629e3006a38b171c89cae7cbe6b955d0ba40038b",
+    "backend/src/modules/planning/application/entries/adjust-goal-entry.use-case.ts": "c150a193c7f9715a3be647fb34c2c2362919d78270ebbe32e946ce0c20e3ab2e",
+    "backend/src/modules/planning/application/entries/delete-goal-entry.use-case.ts": "1c0691a217f8c8fc6d110dde1793d3f87292e4c23cc36a75eafda3982d5ee9df",
+    "backend/src/modules/planning/application/entries/get-entry-snapshot.query.ts": "1c6b7819b30e91f7b0c6388e7fd98940e51a0a68da990233bf59efeb9158648d",
+    "backend/src/modules/planning/application/entries/prune-entry-commands.use-case.ts": "3489923b09d9069c4bcf646d6f5f1910bd96bc75cdaa49ef12702c1241cf375d",
+    "backend/src/modules/planning/application/entries/record-answer.use-case.ts": "30bc2fdbb77621e2bf639350d7b9010d9797fbc4421d407bb73feb649a9c2c07",
+    "backend/src/modules/planning/application/entries/upsert-goal-entry.use-case.ts": "705924a0b88da3b65f303054e1c186dcb81d6aad3086814f2924780a13facf1d",
+    "backend/src/modules/planning/application/goals/create-goal.use-case.ts": "67d90aba28a885e12291028e7e9a337d949d79dacd4138ca350845ce4e6d6e7d",
+    "backend/src/modules/planning/application/goals/delete-goal.use-case.ts": "823996b471f027aefd6017f637572c81f27af10da37ee427d3bfd604970e6c66",
+    "backend/src/modules/planning/application/goals/find-goal.query.ts": "cccab94d6495faabb0a9c10a4fcb82944c297808cd6fd652774110396c320c0b",
+    "backend/src/modules/planning/application/goals/reorder-goals.use-case.ts": "d7ecf60294177324782f7e1c178c56cd1e17bb151d487e5b73334f4422c9c02f",
+    "backend/src/modules/planning/application/goals/restore-goal.use-case.ts": "533773565de670d45e5243700a0d3a104efb414ea781a0861b64251384520b27",
+    "backend/src/modules/planning/application/goals/update-goal.use-case.ts": "30be0c6080937bc575b43057d684c7ae662bfe74ae5a727c16eb2e5399d6da81",
+    "backend/src/modules/planning/application/plans/ensure-current-plan.use-case.ts": "ba883d2d154adfcf0f46b8c404fd7c9805e9fab8ee8da1a4d2398c793aff685c",
+    "backend/src/modules/planning/application/plans/get-plan.query.ts": "96501c6477b4599f845c8dcba5a3f48e7b6c5811b0fee313d181c52f1bcff544",
+    "backend/src/modules/planning/application/plans/list-plan.query.ts": "c747d0d627806c3e1a487a17f53f2a324cbf6930623a35942722e3a2f8a05b6b",
+    "backend/src/modules/planning/application/plans/list-trash.query.ts": "8d7170d0668564602a71d6d1f1cf4e027713eddb24bb64bfc96d60d01b13c44a",
+    "backend/src/modules/planning/application/plans/progress-sources.query.ts": "a552770ec1ece1a4cb21b018ec71cbf249b961bc0d0f7a282a9516e295b9f597",
+    "backend/src/modules/planning/application/plans/search-planning.query.ts": "c907fea22e7956e1c79543565133636757ef1b6cf25a88b9f5a0ceb329ede735",
+    "backend/src/modules/planning/application/plans/with-entries.ts": "30a85aeef2ddb3ca77a969d33793600a6218416b8a06b30509dff04163aa61e3",
+    "backend/src/modules/planning/application/ports/answer-repository.ts": "09546d28bf5c4d774594e49012f5109a3114a8fbbc30bb56fada3dda5cdec597",
+    "backend/src/modules/planning/application/ports/month-rollover-repository.ts": "8461b74c37bf436e7eaabbcc9116872d97289dcf745dff695c731c53e4f1e70d",
+    "backend/src/modules/planning/application/ports/planning-repository.ts": "49177c04583fc28f5ac357b4bc19ff2c8319e34be1a7fa787a51c05cce23a037",
+    "backend/src/modules/planning/application/ports/search-repository.ts": "a6bc45e39208a9a9ccf6691abc66a4457c22bba603aa58274901f771a3dd653f",
+    "backend/src/modules/planning/domain/errors.ts": "e17930326a4d43ae48b71dbb32e950777f8d83eeeebb89b4f2eea6f2bba182d3",
+    "backend/src/modules/planning/domain/model.ts": "c98c2b2aa8a42deb526de77694b7aae8da7a46d48c1a7f74cf1c95090715c2f4",
+    "backend/src/modules/planning/domain/month-rollover.ts": "dd498b593f57f1bfbd043c7751ff78be5bd79d2837604d928855b4200ba3c940",
+    "backend/src/modules/planning/domain/rules.ts": "87a65bf214b1b179642459090bd827959c50842756cc5d281097cd360d1f18af",
+    "backend/src/modules/planning/domain/search.ts": "c006025ff49057d0c1d772c720cb1420bfcdb9e3d3532d7ca7143038327f5aa2",
+    "backend/src/modules/planning/index.ts": "1fa90d9057eeedae5123e674cdb28a5f7454819e504fab566e56460a7d473759",
+    "backend/src/modules/planning/infrastructure/d1-planning-repository.ts": "4bc32b434637709b98f23f55598954fba5a2af3964844f4c052b7767e94acf7c",
+    "backend/src/modules/planning/presentation/http.ts": "c08a353fc4efa6e47d09803e2016bc6a104f194c9d8d20b1aaed2d436c6b3142",
+    "backend/src/modules/planning/presentation/problems.ts": "da17819c0304d32e28cef23235f6029150ae8db71c927bef216bc1f6217946c1",
+    "backend/src/modules/planning/presentation/resource-schemas.ts": "19d5abe188ba784ca0465d8b597b7d09822767e8cb9ab61703801ed2916791d1",
+    "backend/src/modules/planning/presentation/search-http.ts": "d855b8ee64fa63ea760f64794e58e419262fa37365f813dace616202365910a6",
+    "backend/src/modules/planning/public-contracts.ts": "d1a494ce276dfcba25cb375406535354f95829f19c0e2383fffd50f05a31e4fa",
+    "backend/src/modules/progress/application/progress.ts": "15e41a2dc3a8a5c5f933e32c687ff4b2398a5da1a1dc35f48da9a0508fa8e9c0",
+    "backend/src/modules/progress/domain/calculate.ts": "5797587632341b5259cb7f623fe70523720dc45fa9851aad9827659653846b0f",
+    "backend/src/modules/progress/domain/calendar.ts": "0149c9ddae4b9a32e3a89bfc0914d66ec953d88a4cc0801a31f8325d912bb11d",
+    "backend/src/modules/progress/domain/model.ts": "d19af2a6f104f62ef083c601f8946fddba69cf03fd6f93712549e6970ec10948",
+    "backend/src/modules/progress/index.ts": "c1663af9980c80f08d8d24f020ed2d99c9c0a86906611cd43e50ced7b3f3eeef",
+    "backend/src/modules/progress/infrastructure/d1-progress-repository.ts": "0bd195be1a36c576752d7407a504c1ac344ef01592c22be5c10ba36f6eaabf70",
+    "backend/src/modules/progress/presentation/http.ts": "15308ac2745f6871f4f9ba444ac5d0ac68adc377234509736e365c993ff65344",
+    "backend/src/modules/progress/presentation/schemas.ts": "36b34b46b5e2d49dcf578b4116f0144d6e07ff108c448dc7fb97b877dce99039",
+    "backend/src/modules/progress/public-contracts.ts": "c7f3ffbab42400cc188a9cb7db998e7b53e4ce7632da63b75ef0f3365746452e",
+    "backend/src/modules/reminders/application/answers/conflict-message.ts": "1df46423e139e1a6fdb218b2ce2fd52c60000b6c24bb9cf3ec144f20c13902ac",
+    "backend/src/modules/reminders/application/answers/handle-reminder-reply.use-case.ts": "227b7ccf3621c1fdc5eac9b8181f312144666763a9055fd55cdbfe50ac1ba74e",
+    "backend/src/modules/reminders/application/answers/parse-answer.ts": "bb5506686180f25fccd6c807557b73c75a28c4e3d5819db86bdde108f48a6758",
+    "backend/src/modules/reminders/application/answers/record-reminder-answer.use-case.ts": "5e1c321e1c8a7a3877a9bd7908a183685c2915a209918b71ca80521ea8ab4914",
+    "backend/src/modules/reminders/application/connection/confirm-telegram-link.use-case.ts": "41116a2c7c2c4138f1e12a8f7a52b948448dae1170fa7188c52c5700f733d9c2",
+    "backend/src/modules/reminders/application/connection/connect-telegram.use-case.ts": "108fcd4d6c72079f90c427a7f272dcd3dfbc9490fe072ac2c37579d8377f693b",
+    "backend/src/modules/reminders/application/connection/disconnect-telegram.use-case.ts": "645643aeeec81ff447760890ecc2a8a14a278e351645d79f1c9504fc25ef20e1",
+    "backend/src/modules/reminders/application/connection/get-chat-connection.query.ts": "7322a550558c59807f4b4b9fdf54556fd38b5967b77a46ee56ae6b746032a0ad",
+    "backend/src/modules/reminders/application/connection/validate-link-token.query.ts": "c5df203ea9a806dfb52541d80f79b36808582469b6df7f82edc19a4aa59a266e",
+    "backend/src/modules/reminders/application/delivery/deliver-reminder.use-case.ts": "dd7e4a4fc2ab718be4912593139b70047f8f770636c0d39bd99b04e6250243f7",
+    "backend/src/modules/reminders/application/delivery/digest-messages.ts": "cdc9132f6d345605828b5f30936ec89757aa0cabc11ca38998d01f22c1c6b40f",
+    "backend/src/modules/reminders/application/delivery/find-missing-goals.query.ts": "f8372b86bcdebf4939d62ebf5765ebaf8e5f92ee07bd33c09482a7ddaa970f5e",
+    "backend/src/modules/reminders/application/delivery/format-digest.ts": "2680879aea6539d792abd9bf140735fbd75a6dc4ed06751da78c34e620bf4943",
+    "backend/src/modules/reminders/application/delivery/open-reminder-question.use-case.ts": "1284b22038c8281b51666afd622baf778765ec68ca5ddfea74f4c7dd3930ac84",
+    "backend/src/modules/reminders/application/delivery/outgoing-message.ts": "ed866c10424fecc6ec9e2e2ec342eab82c1e8d8453356af7a3e5721456664bd8",
+    "backend/src/modules/reminders/application/delivery/question-message.ts": "4cf79a3e6ceffa011873fcc0a65dc7f146d8eb8399f64b4254b7c4c7aa40973c",
+    "backend/src/modules/reminders/application/ports/link-token-codec.ts": "45d36f79a2a41b736a78ae856b3334eb80d6bd014d4f4d9b06db89df525a94b4",
+    "backend/src/modules/reminders/application/ports/progress-report-repository.ts": "78f725ddcd6da644c411eaf6ad1c1b079d3c5b6b6e532d4a5bfffd21972c216f",
+    "backend/src/modules/reminders/application/ports/reminder-repository.ts": "c5783144640d5cded9525486358e2a0add5205129d8ca8053bc14131248afc00",
+    "backend/src/modules/reminders/application/ports/reminder-transport.ts": "964bb911c33bb31a1fd837906fb58ed4e6fe3f858bd58d0e65d643d88cdce5ee",
+    "backend/src/modules/reminders/application/reports/progress-reports.ts": "85ce6eeaa202c3aa7383ac2b815c69ddb284af7565bf5ff335f747896d72e242",
+    "backend/src/modules/reminders/application/reports/report-message.ts": "e639b01f5555950c65a6c61dd0635ef17db3b77b888edc47e92f6dd9eef3c93b",
+    "backend/src/modules/reminders/application/reports/report-snapshot.ts": "6fd8dce190a3a90999dad28a1368683ec0d03ca51ea5b2dc0feceb6d65e4f8ab",
+    "backend/src/modules/reminders/application/scheduling/make-job.ts": "f5211bf677a0eb0fe8f6b51a4e1238e60070d1464c428b1f11708f5cff1b4a25",
+    "backend/src/modules/reminders/application/scheduling/prepare-current-plan.use-case.ts": "c9e76743ced7a2a554c4f3f9692c43d93e48c70c5886b443aef4ccccec3b234a",
+    "backend/src/modules/reminders/application/scheduling/run-reminders.use-case.ts": "e0f782066c03ef4d275be2d7c181d6577f59b47762b2852c3f7ef46016c2feea",
+    "backend/src/modules/reminders/application/settings/get-goal-reminders.query.ts": "3c1b2b33f9e1d0ce21a4db07ce17e038a093f190831ba70b6ccf1d96679b8f54",
+    "backend/src/modules/reminders/application/settings/get-reminder-state.query.ts": "ac935ff4851e4d7efc69176074f764400149bfed2e7917ce413a3e226ff8edd8",
+    "backend/src/modules/reminders/application/settings/save-goal-reminder.use-case.ts": "626927ded2a93d5ef1fca49453881d70404e33399d9e49722ddf670cd92b8c29",
+    "backend/src/modules/reminders/application/settings/save-reminder-settings.use-case.ts": "35488df7c68562b2465ff9ef69a0b39355f548867c414ac12459148349a2faa9",
+    "backend/src/modules/reminders/domain/errors.ts": "87fff6f500ed86496a9ae45bb3e52db8bb4f3f2349674f65723d010f47c9934f",
+    "backend/src/modules/reminders/domain/jobs.ts": "61503c86aaab888401931c5a5ca9c345758ca820e3bffd609171d64c0ba67db7",
+    "backend/src/modules/reminders/domain/model.ts": "02b405c76dcb9690ce473ac25ef76003ddf66cbe71c679d8791b542b59077dfc",
+    "backend/src/modules/reminders/domain/progress-reports.ts": "508d1f672340079cdd82f56fee82649d7470a9742558cfa71f3272165d67d320",
+    "backend/src/modules/reminders/domain/schedule.ts": "75276a09860d109cfde8ce0f3c6e4dec5548db11b54ce3325bf4bd72de09892a",
+    "backend/src/modules/reminders/index.ts": "fcc8be715c3bb386f6a4a7178a8355eaf3632e61ce17fd17a9188fd2a13457d0",
+    "backend/src/modules/reminders/infrastructure/d1-progress-report-repository.ts": "1d42791f42a298bdeb456b76e82ff6231a7d7dfa9e88a63d17eee6c5f4b44232",
+    "backend/src/modules/reminders/infrastructure/d1-reminder-repository.ts": "418cd8fab4239e11ea322d7d96a35f7070c3279f34aa67d74c2c1fc4dcb01bcf",
+    "backend/src/modules/reminders/infrastructure/inheritance-batches.ts": "10047884f4025e92dee97148d333bd1fe8e33338643ceb7732c4f1a21e13e42f",
+    "backend/src/modules/reminders/infrastructure/native-report-capture.ts": "ea3a717e337c3e52eb3c3390feb9694551005427c4a2a50f4cb9fff714379484",
+    "backend/src/modules/reminders/infrastructure/report-payload-projection.ts": "b55008e0a7f0d327af20db140731ebb758bcebb699ba3a28b7eaccc464675f7d",
+    "backend/src/modules/reminders/presentation/bot-input.ts": "2f20c5876e7ebed0317d3204002999d8f1e41adb4f48c4a0cda0db3927dfb854",
+    "backend/src/modules/reminders/presentation/bot.controller.ts": "f1b0ea0883386660e47553bef4dc282e5acc657170455c060a5398b49f0ad21c",
+    "backend/src/modules/reminders/presentation/http.ts": "da070e03c1f66af75b505806e284c95ab0dd1d8f2b328116d8b27d1030efc675",
+    "backend/src/modules/reminders/presentation/progress-reports-http.ts": "e3fb480e2f6eebe9504134e9025fdeedf6d07feb6cf8ecdfa380f263b0e4e79c",
+    "backend/src/modules/reminders/public-contracts.ts": "aaf9c1f1cfa7f6d51025dff3e4efffbbabd7a8c64837b249efb9cc714560709b",
+    "backend/src/modules/telegram-bot/index.ts": "8712ae3257859be10687242355e7bab0ea4a9629771ca87e6e11786d77f10127",
+    "backend/src/modules/telegram-bot/infrastructure/handlers.ts": "198cf2017c6569acba01df10376aa5a957854f1c75d6612744281e8e9d0f39d6",
+    "backend/src/modules/telegram-bot/infrastructure/reminder-transport.ts": "7bbf797e077be5bbeea696679a875a57552015cc0d512721756265f25e5493c3",
+    "backend/src/modules/telegram-bot/infrastructure/webhook-handler.ts": "894c8fb3b04ddff26125acdf01a703077ed41adb4d1bdc6b6c27cc0f91e5d049",
+    "backend/src/modules/telegram-bot/presentation/http.ts": "e1e8cf92dc6a9f1147827bbf1962aa0fd4d59e3446ca8640bc38a9e40eb3b916",
+    "backend/src/modules/telegram-bot/presentation/problems.ts": "734c7121ca3381ff24c163ffdd180abbb4c80e52573b3d7c29c57b3e67887986",
+    "backend/src/modules/telegram-bot/public-contracts.ts": "83f51abc171b6e42425bce1f85ad1edf901e14d9451782e71c3d9e5ef63618d4",
+    "backend/src/platform/config/runtime-config.ts": "8e15e0617147da33482485b4fd76f1689e4dd7454a94bec07d408bc33e4b1554",
+    "backend/src/platform/crypto/base64url.ts": "3d1c90e1081faa350717ce186c531084c9f2c853caaad4339e19cf81a1ace078",
+    "backend/src/platform/crypto/secure-values.ts": "ad7c009708084e9f143a338233798a95239b58daeccf36b394de3e8e3eb313ac",
+    "backend/src/platform/database/schema.ts": "9597df39625efc2a0458681bebae6c8cf9fa1d488fc2f676400211751a17e0c0",
+    "backend/src/platform/http/environment.ts": "1f08283ded3caa7a7a6b97ecc4e901dc0a063d660dd805a3feb33b4ef73064f3",
+    "backend/src/platform/http/problem-details-schema.ts": "0c9b58dc66dc652bfb7ef49c0a3914108493b951f9628a5a9591eb1121035fe7",
+    "backend/src/platform/http/problem-details.ts": "cd77346c53c24370a1a77a2e0ce38f10446057bb835f6028d532b41600796e7d",
+    "backend/src/platform/http/request-pipeline.ts": "64fb9797c379ec70af0bf9248e61365932817b3132d0f23580ebbdc2cbe0539c",
+    "backend/src/shared/application/application-error.ts": "ff54c036e2d051faeacfbe35832615798cffd5be74d82dba59551d97197dac99",
+    "backend/src/worker-configuration.d.ts": "3cbe0b49f2eaa96d08fefe28865f48ee9e1ff2f37c39936324f038165ec0721a",
+    "backend/experiments/durable-reminders/compare.mjs": "933046a0b0086f87dd3c1290af9b96ae369144ba3340a93d9ab653615fdc870f",
+    "backend/experiments/durable-reminders/fixture.mjs": "00120975030e1141c05de110acc73522f9fd8e651d0a5db89b7cf34f156bc403",
+    "backend/experiments/durable-reminders/tsconfig.json": "ba53b224ebd371cf7890a60234a449c8c0248f2303e770425681aaaccc0bb966",
+    "backend/experiments/durable-reminders/worker.ts": "7962356ead3869a404ce77ed20ebb36093a22636851f350740c5c78ee7a5460b",
+    "package.json": "0b2a6949bd743f61edbafaa0a9cbb91f1ac6d1ef452e6a96eb10f687945495fd",
+    "backend/package.json": "b092999833b1d3885a90a25cee75a5b2247410a9c3c4ea7363af735329e378d5",
+    "pnpm-lock.yaml": "86cd8c279353991eec7a8c6462a3b6c11debdd4bd301faf2215a4250ff5ed99c"
+  },
+  "samples": [
+    {
+      "round": 0,
+      "scenario": "report",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 83.65666699999974,
+      "sampledActiveMs": 62.025999999999996,
+      "maxInvocationSampledActiveMs": 6.301,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 8.155749999999898,
+          "sampledActiveMs": 6.301
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.965957999999773,
+          "sampledActiveMs": 3.546
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.468166999999994,
+          "sampledActiveMs": 2.057
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.743249999999989,
+          "sampledActiveMs": 2.954
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.148250000000189,
+          "sampledActiveMs": 0.602
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.983208999999988,
+          "sampledActiveMs": 2.352
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.534125000000131,
+          "sampledActiveMs": 2.517
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.905917000000045,
+          "sampledActiveMs": 2.157
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.811666999999943,
+          "sampledActiveMs": 2.192
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1085410000000593,
+          "sampledActiveMs": 2.395
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6780409999996664,
+          "sampledActiveMs": 2.069
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.759957999999642,
+          "sampledActiveMs": 2.08
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6816250000001673,
+          "sampledActiveMs": 2.074
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5326249999998254,
+          "sampledActiveMs": 1.404
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7171250000001237,
+          "sampledActiveMs": 1.554
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.039792000000034,
+          "sampledActiveMs": 2.369
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9625420000002123,
+          "sampledActiveMs": 2.379
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.834209000000101,
+          "sampledActiveMs": 2.208
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.414166000000023,
+          "sampledActiveMs": 2.845
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9519169999998667,
+          "sampledActiveMs": 2.224
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8760839999999916,
+          "sampledActiveMs": 2.229
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.102624999999989,
+          "sampledActiveMs": 2.396
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4043329999999514,
+          "sampledActiveMs": 1.628
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2439580000000205,
+          "sampledActiveMs": 2.54
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.632833000000119,
+          "sampledActiveMs": 4.954
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "report",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 76.53891700000077,
+      "sampledActiveMs": 44.17,
+      "maxInvocationSampledActiveMs": 44.17,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 76.53891700000077,
+          "sampledActiveMs": 44.17
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "report",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.15391600000021,
+      "sampledActiveMs": 10.19,
+      "maxInvocationSampledActiveMs": 10.19,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.15391600000021,
+          "sampledActiveMs": 10.19
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "rollover",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 50,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 0,
+      "elapsedMs": 121.85245299999588,
+      "sampledActiveMs": 60.09399999999999,
+      "maxInvocationSampledActiveMs": 3.25,
+      "modeledCronWaitMs": 2940000,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.75366699999995,
+          "sampledActiveMs": 3.25
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.996041000000332,
+          "sampledActiveMs": 3.054
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1032500000001164,
+          "sampledActiveMs": 1.788
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.576000000000022,
+          "sampledActiveMs": 0.83
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0291660000002594,
+          "sampledActiveMs": 2.46
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.503584000000046,
+          "sampledActiveMs": 2.225
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.42041700000118,
+          "sampledActiveMs": 1.254
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.221333000001323,
+          "sampledActiveMs": 1.56
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1341249999986758,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0547500000011496,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1722910000007687,
+          "sampledActiveMs": 0.475
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.189125000000786,
+          "sampledActiveMs": 1.775
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.182542000000467,
+          "sampledActiveMs": 1.761
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1953749999993306,
+          "sampledActiveMs": 1.609
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0484579999993002,
+          "sampledActiveMs": 0.831
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.276416999999128,
+          "sampledActiveMs": 1.599
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2188330000008136,
+          "sampledActiveMs": 1.758
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.222125000000233,
+          "sampledActiveMs": 1.615
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1075419999997393,
+          "sampledActiveMs": 1.453
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1172499999993306,
+          "sampledActiveMs": 0.323
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.160749999999098,
+          "sampledActiveMs": 2.023
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2440829999995913,
+          "sampledActiveMs": 0.316
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.226250000001528,
+          "sampledActiveMs": 1.762
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.526458000000275,
+          "sampledActiveMs": 1.769
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3905420000010054,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.074624999999287,
+          "sampledActiveMs": 1.791
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3700410000001284,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4920409999995172,
+          "sampledActiveMs": 2.065
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.232040999999299,
+          "sampledActiveMs": 1.77
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3964579999992566,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.492207999999664,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.494833999999173,
+          "sampledActiveMs": 1.925
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0095000000001164,
+          "sampledActiveMs": 0.972
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1176249999989523,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4929580000007263,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.141916000000492,
+          "sampledActiveMs": 1.464
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.135791999999128,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.21875,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.101082999999562,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.202624999999898,
+          "sampledActiveMs": 1.594
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.5189159999990807,
+          "sampledActiveMs": 2.429
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.09375,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0270409999993717,
+          "sampledActiveMs": 1.13
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9621250000000146,
+          "sampledActiveMs": 1.908
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1399579999997513,
+          "sampledActiveMs": 0.975
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1430419999996957,
+          "sampledActiveMs": 0.317
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1673749999990832,
+          "sampledActiveMs": 1.751
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1665419999990263,
+          "sampledActiveMs": 1.474
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1775830000005953,
+          "sampledActiveMs": 1.284
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.413249999999607,
+          "sampledActiveMs": 1.755
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "rollover",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 50,
+      "elapsedMs": 88.81658400000015,
+      "sampledActiveMs": 66.951,
+      "maxInvocationSampledActiveMs": 66.951,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 298,
+          "transitions": 50,
+          "observerQueries": 50,
+          "done": true,
+          "elapsedMs": 88.81658400000015,
+          "sampledActiveMs": 66.951
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "rollover",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 34.25183300000026,
+      "sampledActiveMs": 6.992,
+      "maxInvocationSampledActiveMs": 6.992,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 34.25183300000026,
+          "sampledActiveMs": 6.992
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "quiet",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 0,
+      "elapsedMs": 4.684250000000247,
+      "sampledActiveMs": 3.074,
+      "maxInvocationSampledActiveMs": 3.074,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.684250000000247,
+          "sampledActiveMs": 3.074
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "quiet",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 1,
+      "elapsedMs": 30.329250000000684,
+      "sampledActiveMs": 28.955,
+      "maxInvocationSampledActiveMs": 28.955,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.329250000000684,
+          "sampledActiveMs": 28.955
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "quiet",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 7,
+      "observerQueries": 1,
+      "elapsedMs": 32.890792000001966,
+      "sampledActiveMs": 7.039,
+      "maxInvocationSampledActiveMs": 7.039,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 7,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 32.890792000001966,
+          "sampledActiveMs": 7.039
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "question",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 0,
+      "elapsedMs": 6.1067499999990105,
+      "sampledActiveMs": 4.975,
+      "maxInvocationSampledActiveMs": 4.975,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.1067499999990105,
+          "sampledActiveMs": 4.975
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "question",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 30.395250000001397,
+      "sampledActiveMs": 2.589,
+      "maxInvocationSampledActiveMs": 2.589,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.395250000001397,
+          "sampledActiveMs": 2.589
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "question",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 32.02400000000125,
+      "sampledActiveMs": 6.167,
+      "maxInvocationSampledActiveMs": 6.167,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 32.02400000000125,
+          "sampledActiveMs": 6.167
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "ambiguous",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 81.38179300000411,
+      "sampledActiveMs": 60.501999999999995,
+      "maxInvocationSampledActiveMs": 4.755,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.291541999999026,
+          "sampledActiveMs": 4.755
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.893791999998939,
+          "sampledActiveMs": 2.241
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.7341660000020056,
+          "sampledActiveMs": 2.212
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.0746670000007725,
+          "sampledActiveMs": 3.794
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.766125000001921,
+          "sampledActiveMs": 1.399
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3102919999982987,
+          "sampledActiveMs": 2.59
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.936874999999418,
+          "sampledActiveMs": 2.23
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7657499999986612,
+          "sampledActiveMs": 2.228
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7933330000014394,
+          "sampledActiveMs": 0.819
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6784999999981665,
+          "sampledActiveMs": 2.87
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0965419999993173,
+          "sampledActiveMs": 2.542
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4074169999985315,
+          "sampledActiveMs": 2.74
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.125,
+          "sampledActiveMs": 2.541
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.125292000000627,
+          "sampledActiveMs": 2.561
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1018330000006245,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4279999999998836,
+          "sampledActiveMs": 2.699
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.5287090000019816,
+          "sampledActiveMs": 2.834
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9082090000010794,
+          "sampledActiveMs": 2.227
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.263374999998632,
+          "sampledActiveMs": 2.175
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.701500000002852,
+          "sampledActiveMs": 2.072
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.569916000000376,
+          "sampledActiveMs": 1.549
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.035874999997759,
+          "sampledActiveMs": 2.374
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6292500000017753,
+          "sampledActiveMs": 1.9
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9059999999990396,
+          "sampledActiveMs": 2.205
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.309833000002982,
+          "sampledActiveMs": 2.713
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "ambiguous",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 76.68537500000093,
+      "sampledActiveMs": 66.938,
+      "maxInvocationSampledActiveMs": 66.938,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 76.68537500000093,
+          "sampledActiveMs": 66.938
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "ambiguous",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 37.12550000000192,
+      "sampledActiveMs": 10.88,
+      "maxInvocationSampledActiveMs": 10.88,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 37.12550000000192,
+          "sampledActiveMs": 10.88
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "expired",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 0,
+      "elapsedMs": 5.26850000000195,
+      "sampledActiveMs": 1.699,
+      "maxInvocationSampledActiveMs": 1.699,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.26850000000195,
+          "sampledActiveMs": 1.699
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "expired",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 28.657541000000492,
+      "sampledActiveMs": 1.833,
+      "maxInvocationSampledActiveMs": 1.833,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 28.657541000000492,
+          "sampledActiveMs": 1.833
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "scenario": "expired",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 28.820082999998704,
+      "sampledActiveMs": 27.54,
+      "maxInvocationSampledActiveMs": 27.54,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 28.820082999998704,
+          "sampledActiveMs": 27.54
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "report",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 83.29879200000141,
+      "sampledActiveMs": 48.714,
+      "maxInvocationSampledActiveMs": 48.714,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 83.29879200000141,
+          "sampledActiveMs": 48.714
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "report",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.00620899999922,
+      "sampledActiveMs": 12.54,
+      "maxInvocationSampledActiveMs": 12.54,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.00620899999922,
+          "sampledActiveMs": 12.54
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "report",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 85.53525200000877,
+      "sampledActiveMs": 60.354,
+      "maxInvocationSampledActiveMs": 4.707,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 7.84679199999664,
+          "sampledActiveMs": 4.707
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6543750000055297,
+          "sampledActiveMs": 2.9
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.851457999997365,
+          "sampledActiveMs": 2.124
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.657500000001164,
+          "sampledActiveMs": 3.801
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6013330000059796,
+          "sampledActiveMs": 2.872
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0308750000040163,
+          "sampledActiveMs": 2.387
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.114625000001979,
+          "sampledActiveMs": 2.427
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0058330000028946,
+          "sampledActiveMs": 2.39
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.084167000000889,
+          "sampledActiveMs": 2.379
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.153459000001021,
+          "sampledActiveMs": 2.525
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.083582999999635,
+          "sampledActiveMs": 2.335
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.272125000003143,
+          "sampledActiveMs": 2.552
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0281249999970896,
+          "sampledActiveMs": 2.441
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0059170000022277,
+          "sampledActiveMs": 2.36
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8125419999996666,
+          "sampledActiveMs": 1.71
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2498750000013388,
+          "sampledActiveMs": 2.676
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8974170000001322,
+          "sampledActiveMs": 2.229
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9836250000007567,
+          "sampledActiveMs": 2.385
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6275840000016615,
+          "sampledActiveMs": 2.998
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3754169999956503,
+          "sampledActiveMs": 0.459
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1584169999987353,
+          "sampledActiveMs": 2.379
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.011459000001196,
+          "sampledActiveMs": 2.233
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2559159999946132,
+          "sampledActiveMs": 1.595
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8551660000011907,
+          "sampledActiveMs": 0.778
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.9176669999942533,
+          "sampledActiveMs": 2.712
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "rollover",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 50,
+      "elapsedMs": 91.28087500000402,
+      "sampledActiveMs": 50.751,
+      "maxInvocationSampledActiveMs": 50.751,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 298,
+          "transitions": 50,
+          "observerQueries": 50,
+          "done": true,
+          "elapsedMs": 91.28087500000402,
+          "sampledActiveMs": 50.751
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "rollover",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 34.43679200000042,
+      "sampledActiveMs": 7.841,
+      "maxInvocationSampledActiveMs": 7.841,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 34.43679200000042,
+          "sampledActiveMs": 7.841
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "rollover",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 50,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 0,
+      "elapsedMs": 123.64096099998278,
+      "sampledActiveMs": 71.858,
+      "maxInvocationSampledActiveMs": 5.403,
+      "modeledCronWaitMs": 2940000,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.59970799999428,
+          "sampledActiveMs": 5.403
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6610409999993863,
+          "sampledActiveMs": 1.705
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6707919999971637,
+          "sampledActiveMs": 1.909
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.584208000000217,
+          "sampledActiveMs": 2.091
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3672500000029686,
+          "sampledActiveMs": 1.146
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.21358400000463,
+          "sampledActiveMs": 1.286
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2883329999967827,
+          "sampledActiveMs": 0.992
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.479083999998693,
+          "sampledActiveMs": 0.767
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.402208999999857,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.73583299999882,
+          "sampledActiveMs": 1.634
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1815840000053868,
+          "sampledActiveMs": 0.999
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.054042000003392,
+          "sampledActiveMs": 1.608
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.182457999995677,
+          "sampledActiveMs": 1.743
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.076166999999259,
+          "sampledActiveMs": 1.633
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2039999999979045,
+          "sampledActiveMs": 1.768
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.544167000000016,
+          "sampledActiveMs": 1.776
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.391958000000159,
+          "sampledActiveMs": 0.687
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0040829999998095,
+          "sampledActiveMs": 1.596
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1949170000007143,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.029624999995576,
+          "sampledActiveMs": 1.087
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7701250000027358,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5079160000022966,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2790830000012647,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.184084000000439,
+          "sampledActiveMs": 1.459
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.044000000001688,
+          "sampledActiveMs": 1.443
+        },
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.805832999998529,
+          "sampledActiveMs": 1.183
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3571670000019367,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.311541999995825,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5392920000012964,
+          "sampledActiveMs": 1.881
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9248329999973066,
+          "sampledActiveMs": 2.422
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.368291999999201,
+          "sampledActiveMs": 1.903
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3072079999983544,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.209499999997206,
+          "sampledActiveMs": 1.748
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4517500000001746,
+          "sampledActiveMs": 2.073
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0955830000020796,
+          "sampledActiveMs": 1.635
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4704579999961425,
+          "sampledActiveMs": 2.084
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4098329999978887,
+          "sampledActiveMs": 1.924
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.286166999998386,
+          "sampledActiveMs": 0.985
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.018917000001238,
+          "sampledActiveMs": 1.451
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.247625000003609,
+          "sampledActiveMs": 2.056
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.865875000003143,
+          "sampledActiveMs": 0.673
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1491249999962747,
+          "sampledActiveMs": 1.752
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.328291999998328,
+          "sampledActiveMs": 1.891
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2884590000030585,
+          "sampledActiveMs": 1.237
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.142583000000741,
+          "sampledActiveMs": 1.923
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.285875000001397,
+          "sampledActiveMs": 1.632
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.371665999999095,
+          "sampledActiveMs": 1.776
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.276083999997354,
+          "sampledActiveMs": 1.295
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.271666999993613,
+          "sampledActiveMs": 1.312
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.207084000001487,
+          "sampledActiveMs": 2.058
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "quiet",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 1,
+      "elapsedMs": 30.942332999999053,
+      "sampledActiveMs": 29.915,
+      "maxInvocationSampledActiveMs": 29.915,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.942332999999053,
+          "sampledActiveMs": 29.915
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "quiet",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 7,
+      "observerQueries": 1,
+      "elapsedMs": 31.48612499999581,
+      "sampledActiveMs": 6.15,
+      "maxInvocationSampledActiveMs": 6.15,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 7,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.48612499999581,
+          "sampledActiveMs": 6.15
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "quiet",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 0,
+      "elapsedMs": 7.490916000002471,
+      "sampledActiveMs": 6.853,
+      "maxInvocationSampledActiveMs": 6.853,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 7.490916000002471,
+          "sampledActiveMs": 6.853
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "question",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 32.963583999997354,
+      "sampledActiveMs": 7.62,
+      "maxInvocationSampledActiveMs": 7.62,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 32.963583999997354,
+          "sampledActiveMs": 7.62
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "question",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 32.69379199999821,
+      "sampledActiveMs": 3.716,
+      "maxInvocationSampledActiveMs": 3.716,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 32.69379199999821,
+          "sampledActiveMs": 3.716
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "question",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 0,
+      "elapsedMs": 5.685790999996243,
+      "sampledActiveMs": 2.872,
+      "maxInvocationSampledActiveMs": 2.872,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.685790999996243,
+          "sampledActiveMs": 2.872
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "ambiguous",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 77.9285000000018,
+      "sampledActiveMs": 42.427,
+      "maxInvocationSampledActiveMs": 42.427,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 77.9285000000018,
+          "sampledActiveMs": 42.427
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "ambiguous",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.23225000000093,
+      "sampledActiveMs": 10.205,
+      "maxInvocationSampledActiveMs": 10.205,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.23225000000093,
+          "sampledActiveMs": 10.205
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "ambiguous",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 81.09466499998962,
+      "sampledActiveMs": 53.579999999999984,
+      "maxInvocationSampledActiveMs": 5.56,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.541249999994761,
+          "sampledActiveMs": 5.56
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9219169999996666,
+          "sampledActiveMs": 2.088
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1765420000010636,
+          "sampledActiveMs": 1.76
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.133750000000873,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9632089999940945,
+          "sampledActiveMs": 2.377
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.847915999998804,
+          "sampledActiveMs": 2.254
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8540830000056303,
+          "sampledActiveMs": 1.456
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1004160000011325,
+          "sampledActiveMs": 0.471
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.061582999995153,
+          "sampledActiveMs": 2.4
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.414042000003974,
+          "sampledActiveMs": 2.874
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.000832999998238,
+          "sampledActiveMs": 1.698
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1636250000010477,
+          "sampledActiveMs": 2.554
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.464791000005789,
+          "sampledActiveMs": 0.464
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3272500000020955,
+          "sampledActiveMs": 2.698
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.103958000006969,
+          "sampledActiveMs": 2.395
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.055624999993597,
+          "sampledActiveMs": 2.437
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.086041999995359,
+          "sampledActiveMs": 2.531
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0284580000006827,
+          "sampledActiveMs": 2.071
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3922079999902053,
+          "sampledActiveMs": 2.684
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.770875000001979,
+          "sampledActiveMs": 2.538
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8867079999909038,
+          "sampledActiveMs": 1.705
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0432500000024447,
+          "sampledActiveMs": 0.477
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.324292000004789,
+          "sampledActiveMs": 1.765
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.177916999993613,
+          "sampledActiveMs": 2.388
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.254125000006752,
+          "sampledActiveMs": 1.703
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "expired",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.983540999994148,
+      "sampledActiveMs": 4.52,
+      "maxInvocationSampledActiveMs": 4.52,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.983540999994148,
+          "sampledActiveMs": 4.52
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "expired",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 29.580916999999317,
+      "sampledActiveMs": 3.516,
+      "maxInvocationSampledActiveMs": 3.516,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 29.580916999999317,
+          "sampledActiveMs": 3.516
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "scenario": "expired",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 0,
+      "elapsedMs": 4.295499999992899,
+      "sampledActiveMs": 2.335,
+      "maxInvocationSampledActiveMs": 2.335,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.295499999992899,
+          "sampledActiveMs": 2.335
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "report",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.80745900000329,
+      "sampledActiveMs": 13.654,
+      "maxInvocationSampledActiveMs": 13.654,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.80745900000329,
+          "sampledActiveMs": 13.654
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "report",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 80.8777090000367,
+      "sampledActiveMs": 58.05099999999999,
+      "maxInvocationSampledActiveMs": 6.066,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 7.131124999999884,
+          "sampledActiveMs": 6.066
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7423330000019632,
+          "sampledActiveMs": 1.932
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6565410000039265,
+          "sampledActiveMs": 1.747
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.950125000003027,
+          "sampledActiveMs": 3.166
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8987919999926817,
+          "sampledActiveMs": 2.691
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.870999999999185,
+          "sampledActiveMs": 2.267
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.735916999998153,
+          "sampledActiveMs": 1.558
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.78125,
+          "sampledActiveMs": 2.075
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.792249999998603,
+          "sampledActiveMs": 1.924
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0932080000056885,
+          "sampledActiveMs": 2.39
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0224580000067363,
+          "sampledActiveMs": 1.703
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3312089999963064,
+          "sampledActiveMs": 2.556
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0016670000040904,
+          "sampledActiveMs": 2.384
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9807500000024447,
+          "sampledActiveMs": 2.694
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2900840000074822,
+          "sampledActiveMs": 2.666
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.423791999986861,
+          "sampledActiveMs": 0.917
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.288916000004974,
+          "sampledActiveMs": 2.544
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.08308300000499,
+          "sampledActiveMs": 2.525
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.439249999995809,
+          "sampledActiveMs": 2.701
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8716669999994338,
+          "sampledActiveMs": 2.229
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9125830000120914,
+          "sampledActiveMs": 2.216
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.96112500000163,
+          "sampledActiveMs": 2.351
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.403875000003609,
+          "sampledActiveMs": 1.607
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.067542000004323,
+          "sampledActiveMs": 2.36
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.14716700000281,
+          "sampledActiveMs": 0.782
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "report",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 76.95674999999756,
+      "sampledActiveMs": 44.89,
+      "maxInvocationSampledActiveMs": 44.89,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 76.95674999999756,
+          "sampledActiveMs": 44.89
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "rollover",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 34.44041599999764,
+      "sampledActiveMs": 7.73,
+      "maxInvocationSampledActiveMs": 7.73,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 34.44041599999764,
+          "sampledActiveMs": 7.73
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "rollover",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 50,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 0,
+      "elapsedMs": 121.62345799995819,
+      "sampledActiveMs": 62.48500000000001,
+      "maxInvocationSampledActiveMs": 5.111,
+      "modeledCronWaitMs": 2940000,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.017500000001746,
+          "sampledActiveMs": 5.111
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.496292000010726,
+          "sampledActiveMs": 2.044
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6118750000023283,
+          "sampledActiveMs": 1.147
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5271669999929145,
+          "sampledActiveMs": 1.934
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.314249999995809,
+          "sampledActiveMs": 1.598
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.414667000004556,
+          "sampledActiveMs": 1.604
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6917089999915333,
+          "sampledActiveMs": 0.843
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5698750000010477,
+          "sampledActiveMs": 2.068
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.58612500000163,
+          "sampledActiveMs": 2.077
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5008749999979045,
+          "sampledActiveMs": 2.084
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.371040999991237,
+          "sampledActiveMs": 1.926
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.301208000004408,
+          "sampledActiveMs": 1.788
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5532080000120914,
+          "sampledActiveMs": 1.75
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.433458999992581,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.401125000003958,
+          "sampledActiveMs": 1.608
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2947500000009313,
+          "sampledActiveMs": 1.621
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.117166999989422,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4345830000092974,
+          "sampledActiveMs": 0.672
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1257500000065193,
+          "sampledActiveMs": 1.459
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.30304199999955,
+          "sampledActiveMs": 1.891
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8058750000054715,
+          "sampledActiveMs": 2.373
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1478749999951106,
+          "sampledActiveMs": 1.95
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.122625000003609,
+          "sampledActiveMs": 1.926
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1129170000058366,
+          "sampledActiveMs": 0.629
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2489170000044396,
+          "sampledActiveMs": 0.672
+        },
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.8242499999905704,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.224415999997291,
+          "sampledActiveMs": 0.519
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0201250000100117,
+          "sampledActiveMs": 1.17
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.113082999989274,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0375000000058208,
+          "sampledActiveMs": 0.314
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.061999999990803,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.9922500000102445,
+          "sampledActiveMs": 1.247
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.290166999999201,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.5778750000026776,
+          "sampledActiveMs": 1.149
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.349999999991269,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.520749999996042,
+          "sampledActiveMs": 2.055
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2137910000019474,
+          "sampledActiveMs": 1.29
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3654160000005504,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2859170000010636,
+          "sampledActiveMs": 1.609
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.448374999992666,
+          "sampledActiveMs": 1.462
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.5632089999999152,
+          "sampledActiveMs": 3.011
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.447041999999783,
+          "sampledActiveMs": 0.679
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.107540999990306,
+          "sampledActiveMs": 1.905
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1675839999952586,
+          "sampledActiveMs": 2.207
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1922079999931157,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.111625000005006,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1137909999961266,
+          "sampledActiveMs": 0.309
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0533329999889247,
+          "sampledActiveMs": 0.827
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.991874999992433,
+          "sampledActiveMs": 0.823
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.045457999993232,
+          "sampledActiveMs": 1.134
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "rollover",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 50,
+      "elapsedMs": 99.14020800001163,
+      "sampledActiveMs": 50.801,
+      "maxInvocationSampledActiveMs": 50.801,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 298,
+          "transitions": 50,
+          "observerQueries": 50,
+          "done": true,
+          "elapsedMs": 99.14020800001163,
+          "sampledActiveMs": 50.801
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "quiet",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 7,
+      "observerQueries": 1,
+      "elapsedMs": 31.27416600000288,
+      "sampledActiveMs": 5.368,
+      "maxInvocationSampledActiveMs": 5.368,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 7,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.27416600000288,
+          "sampledActiveMs": 5.368
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "quiet",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 0,
+      "elapsedMs": 6.024541999999201,
+      "sampledActiveMs": 5.095,
+      "maxInvocationSampledActiveMs": 5.095,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.024541999999201,
+          "sampledActiveMs": 5.095
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "quiet",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 1,
+      "elapsedMs": 31.85341699999117,
+      "sampledActiveMs": 5.58,
+      "maxInvocationSampledActiveMs": 5.58,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.85341699999117,
+          "sampledActiveMs": 5.58
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "question",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 30.5149170000077,
+      "sampledActiveMs": 5.164,
+      "maxInvocationSampledActiveMs": 5.164,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.5149170000077,
+          "sampledActiveMs": 5.164
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "question",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 0,
+      "elapsedMs": 6.813083999993978,
+      "sampledActiveMs": 4.755,
+      "maxInvocationSampledActiveMs": 4.755,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.813083999993978,
+          "sampledActiveMs": 4.755
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "question",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 29.921708000008948,
+      "sampledActiveMs": 26.288,
+      "maxInvocationSampledActiveMs": 26.288,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 29.921708000008948,
+          "sampledActiveMs": 26.288
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "ambiguous",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.470375000004424,
+      "sampledActiveMs": 13.173,
+      "maxInvocationSampledActiveMs": 13.173,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.470375000004424,
+          "sampledActiveMs": 13.173
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "ambiguous",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 81.28841599998123,
+      "sampledActiveMs": 55.660999999999994,
+      "maxInvocationSampledActiveMs": 4.222,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.384625000006054,
+          "sampledActiveMs": 4.222
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9237909999937983,
+          "sampledActiveMs": 1.773
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2699159999901894,
+          "sampledActiveMs": 1.786
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.8615829999907874,
+          "sampledActiveMs": 2.073
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8784169999998994,
+          "sampledActiveMs": 2.221
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.876084000003175,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.746583999993163,
+          "sampledActiveMs": 2.072
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.902583000002778,
+          "sampledActiveMs": 2.249
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7930000000051223,
+          "sampledActiveMs": 2.225
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.086457999990671,
+          "sampledActiveMs": 2.38
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9037499999976717,
+          "sampledActiveMs": 2.388
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.850624999991851,
+          "sampledActiveMs": 2.683
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9256250000034925,
+          "sampledActiveMs": 2.687
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8586660000000848,
+          "sampledActiveMs": 1.923
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.726542000003974,
+          "sampledActiveMs": 1.541
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1589999999996508,
+          "sampledActiveMs": 2.27
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.938292000006186,
+          "sampledActiveMs": 2.223
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.256374999997206,
+          "sampledActiveMs": 2.551
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.90625,
+          "sampledActiveMs": 3.004
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.609582999997656,
+          "sampledActiveMs": 2.842
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.233749999999418,
+          "sampledActiveMs": 0.467
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3660000000090804,
+          "sampledActiveMs": 0.83
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.77979200000118,
+          "sampledActiveMs": 1.945
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.411959000004572,
+          "sampledActiveMs": 2.699
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6391659999935655,
+          "sampledActiveMs": 2.375
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "ambiguous",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 77.37233300000662,
+      "sampledActiveMs": 37.038,
+      "maxInvocationSampledActiveMs": 37.038,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 77.37233300000662,
+          "sampledActiveMs": 37.038
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "expired",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.42500000000291,
+      "sampledActiveMs": 4.948,
+      "maxInvocationSampledActiveMs": 4.948,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.42500000000291,
+          "sampledActiveMs": 4.948
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "expired",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 0,
+      "elapsedMs": 4.030125000004773,
+      "sampledActiveMs": 3.253,
+      "maxInvocationSampledActiveMs": 3.253,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.030125000004773,
+          "sampledActiveMs": 3.253
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "scenario": "expired",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.49025000000256,
+      "sampledActiveMs": 4.12,
+      "maxInvocationSampledActiveMs": 4.12,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.49025000000256,
+          "sampledActiveMs": 4.12
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "report",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 82.77571100005298,
+      "sampledActiveMs": 55.424,
+      "maxInvocationSampledActiveMs": 5.388,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.3691669999971054,
+          "sampledActiveMs": 5.388
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.82195800000045,
+          "sampledActiveMs": 2.245
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.669167000000016,
+          "sampledActiveMs": 1.536
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.131292000005487,
+          "sampledActiveMs": 3.319
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4803329999995185,
+          "sampledActiveMs": 2.757
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.8027920000022277,
+          "sampledActiveMs": 1.63
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.351375000012922,
+          "sampledActiveMs": 2.544
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9133750000037253,
+          "sampledActiveMs": 2.235
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.99441700000898,
+          "sampledActiveMs": 1.717
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0490419999987353,
+          "sampledActiveMs": 1.87
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8626250000088476,
+          "sampledActiveMs": 2.272
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.84275000001071,
+          "sampledActiveMs": 0.469
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9515839999949094,
+          "sampledActiveMs": 2.392
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.92949999999837,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8525839999929303,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.432083000006969,
+          "sampledActiveMs": 3.203
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.00700000001234,
+          "sampledActiveMs": 2.388
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.830374999990454,
+          "sampledActiveMs": 1.728
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.7602920000063023,
+          "sampledActiveMs": 3.002
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9376670000056038,
+          "sampledActiveMs": 2.235
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7784580000006827,
+          "sampledActiveMs": 0.309
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2640409999876283,
+          "sampledActiveMs": 2.541
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.613167000003159,
+          "sampledActiveMs": 1.786
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3987080000079004,
+          "sampledActiveMs": 2.695
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.731958999997005,
+          "sampledActiveMs": 0.699
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "report",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 77.04466699999466,
+      "sampledActiveMs": 51.424,
+      "maxInvocationSampledActiveMs": 51.424,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 77.04466699999466,
+          "sampledActiveMs": 51.424
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "report",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 39.072291999997105,
+      "sampledActiveMs": 10.413,
+      "maxInvocationSampledActiveMs": 10.413,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 39.072291999997105,
+          "sampledActiveMs": 10.413
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "rollover",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 50,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 0,
+      "elapsedMs": 133.4075439999724,
+      "sampledActiveMs": 85.30600000000001,
+      "maxInvocationSampledActiveMs": 4.307,
+      "modeledCronWaitMs": 2940000,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.8637500000040745,
+          "sampledActiveMs": 4.307
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6760419999918668,
+          "sampledActiveMs": 3.388
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8236249999899883,
+          "sampledActiveMs": 2.552
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.500791999991634,
+          "sampledActiveMs": 1.775
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.818583000000217,
+          "sampledActiveMs": 2.96
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.021334000004572,
+          "sampledActiveMs": 2.448
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8029160000005504,
+          "sampledActiveMs": 1.895
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.85341700000572,
+          "sampledActiveMs": 0.849
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4312080000090646,
+          "sampledActiveMs": 2.019
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2524589999957243,
+          "sampledActiveMs": 2.671
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7997920000052545,
+          "sampledActiveMs": 2.298
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.598374999986845,
+          "sampledActiveMs": 1.434
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6875,
+          "sampledActiveMs": 2.142
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.861625000005006,
+          "sampledActiveMs": 0.872
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6376670000026934,
+          "sampledActiveMs": 2.115
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6569999999919673,
+          "sampledActiveMs": 2.135
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4963750000024447,
+          "sampledActiveMs": 1.119
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4689170000056038,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.248458000001847,
+          "sampledActiveMs": 1.314
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4457079999992857,
+          "sampledActiveMs": 2.003
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6658750000060536,
+          "sampledActiveMs": 2.699
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.69804099999601,
+          "sampledActiveMs": 0.883
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6893330000020796,
+          "sampledActiveMs": 2.428
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6609170000010636,
+          "sampledActiveMs": 0.875
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.064457999993465,
+          "sampledActiveMs": 2.287
+        },
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.11241699999664,
+          "sampledActiveMs": 1.919
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4056669999990845,
+          "sampledActiveMs": 1.763
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.388375000009546,
+          "sampledActiveMs": 0.945
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.212249999996857,
+          "sampledActiveMs": 1.135
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8221249999915017,
+          "sampledActiveMs": 1.61
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.40479200000118,
+          "sampledActiveMs": 0.682
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.309124999999767,
+          "sampledActiveMs": 1.46
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4124590000137687,
+          "sampledActiveMs": 3.174
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.09083400000236,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.230541999990237,
+          "sampledActiveMs": 1.619
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0882500000006985,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.121167000004789,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2877080000034766,
+          "sampledActiveMs": 2.072
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0043750000040745,
+          "sampledActiveMs": 1.619
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1694160000042757,
+          "sampledActiveMs": 1.769
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8198339999944437,
+          "sampledActiveMs": 2.426
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0430839999899035,
+          "sampledActiveMs": 1.143
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1225419999973383,
+          "sampledActiveMs": 0.314
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0584579999995185,
+          "sampledActiveMs": 2.063
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1279579999973066,
+          "sampledActiveMs": 1.456
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.9813750000030268,
+          "sampledActiveMs": 1.605
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.237082999999984,
+          "sampledActiveMs": 2.077
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3079579999903217,
+          "sampledActiveMs": 1.921
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6149999999906868,
+          "sampledActiveMs": 2.398
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.310582999998587,
+          "sampledActiveMs": 0.668
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "rollover",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 50,
+      "elapsedMs": 93.11570900000515,
+      "sampledActiveMs": 52.902,
+      "maxInvocationSampledActiveMs": 52.902,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 298,
+          "transitions": 50,
+          "observerQueries": 50,
+          "done": true,
+          "elapsedMs": 93.11570900000515,
+          "sampledActiveMs": 52.902
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "rollover",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 35.57433299999684,
+      "sampledActiveMs": 9.198,
+      "maxInvocationSampledActiveMs": 9.198,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 35.57433299999684,
+          "sampledActiveMs": 9.198
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "quiet",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 0,
+      "elapsedMs": 6.60283299999719,
+      "sampledActiveMs": 6.151,
+      "maxInvocationSampledActiveMs": 6.151,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.60283299999719,
+          "sampledActiveMs": 6.151
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "quiet",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 1,
+      "elapsedMs": 30.6195000000007,
+      "sampledActiveMs": 4.466,
+      "maxInvocationSampledActiveMs": 4.466,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.6195000000007,
+          "sampledActiveMs": 4.466
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "quiet",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 7,
+      "observerQueries": 1,
+      "elapsedMs": 30.36170900000434,
+      "sampledActiveMs": 4.922,
+      "maxInvocationSampledActiveMs": 4.922,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 7,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.36170900000434,
+          "sampledActiveMs": 4.922
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "question",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 0,
+      "elapsedMs": 6.205415999997058,
+      "sampledActiveMs": 5.882,
+      "maxInvocationSampledActiveMs": 5.882,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.205415999997058,
+          "sampledActiveMs": 5.882
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "question",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 30.29587499999616,
+      "sampledActiveMs": 5.662,
+      "maxInvocationSampledActiveMs": 5.662,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.29587499999616,
+          "sampledActiveMs": 5.662
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "question",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 32.47658400000364,
+      "sampledActiveMs": 6.415,
+      "maxInvocationSampledActiveMs": 6.415,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 32.47658400000364,
+          "sampledActiveMs": 6.415
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "ambiguous",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 81.59379200014519,
+      "sampledActiveMs": 58.092999999999996,
+      "maxInvocationSampledActiveMs": 4.059,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.96012500001234,
+          "sampledActiveMs": 4.059
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.502708000014536,
+          "sampledActiveMs": 1.593
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.435541999991983,
+          "sampledActiveMs": 1.769
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.837541999993846,
+          "sampledActiveMs": 3.604
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.959208000014769,
+          "sampledActiveMs": 2.25
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.775041999993846,
+          "sampledActiveMs": 2.081
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8819169999915175,
+          "sampledActiveMs": 2.223
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.973874999996042,
+          "sampledActiveMs": 2.239
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9697500000183936,
+          "sampledActiveMs": 2.402
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.611957999994047,
+          "sampledActiveMs": 2.816
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.873749999998836,
+          "sampledActiveMs": 2.228
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9747500000230502,
+          "sampledActiveMs": 2.383
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8752910000039265,
+          "sampledActiveMs": 0.473
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6186670000024606,
+          "sampledActiveMs": 1.465
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1598330000124406,
+          "sampledActiveMs": 2.249
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.8057499999995343,
+          "sampledActiveMs": 2.791
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2613340000098106,
+          "sampledActiveMs": 2.536
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.355416000005789,
+          "sampledActiveMs": 2.678
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.61841700001969,
+          "sampledActiveMs": 2.707
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0270000000018626,
+          "sampledActiveMs": 2.826
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1145420000248123,
+          "sampledActiveMs": 2.369
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2472080000152346,
+          "sampledActiveMs": 2.232
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4589169999817386,
+          "sampledActiveMs": 1.222
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1297920000215527,
+          "sampledActiveMs": 2.22
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1654580000031274,
+          "sampledActiveMs": 2.678
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "ambiguous",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 77.77520800000639,
+      "sampledActiveMs": 47.407,
+      "maxInvocationSampledActiveMs": 47.407,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 77.77520800000639,
+          "sampledActiveMs": 47.407
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "ambiguous",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 38.90595899999607,
+      "sampledActiveMs": 10.927,
+      "maxInvocationSampledActiveMs": 10.927,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 38.90595899999607,
+          "sampledActiveMs": 10.927
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "expired",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 0,
+      "elapsedMs": 4.553416000009747,
+      "sampledActiveMs": 3.797,
+      "maxInvocationSampledActiveMs": 3.797,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.553416000009747,
+          "sampledActiveMs": 3.797
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "expired",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.752875000005588,
+      "sampledActiveMs": 2.642,
+      "maxInvocationSampledActiveMs": 2.642,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.752875000005588,
+          "sampledActiveMs": 2.642
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "scenario": "expired",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.72329200000968,
+      "sampledActiveMs": 4.352,
+      "maxInvocationSampledActiveMs": 4.352,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.72329200000968,
+          "sampledActiveMs": 4.352
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "report",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 78.47266599998693,
+      "sampledActiveMs": 45.877,
+      "maxInvocationSampledActiveMs": 45.877,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 78.47266599998693,
+          "sampledActiveMs": 45.877
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "report",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 37.36166699999012,
+      "sampledActiveMs": 9.99,
+      "maxInvocationSampledActiveMs": 9.99,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 37.36166699999012,
+          "sampledActiveMs": 9.99
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "report",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 80.90029199997662,
+      "sampledActiveMs": 64.04299999999999,
+      "maxInvocationSampledActiveMs": 3.974,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.735959000012372,
+          "sampledActiveMs": 3.974
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.929459000006318,
+          "sampledActiveMs": 2.252
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.837874999997439,
+          "sampledActiveMs": 2.118
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.1397500000020955,
+          "sampledActiveMs": 3.308
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0221249999885913,
+          "sampledActiveMs": 2.389
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7798750000074506,
+          "sampledActiveMs": 2.533
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8380830000096466,
+          "sampledActiveMs": 2.225
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.697041999985231,
+          "sampledActiveMs": 2.069
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9748749999853317,
+          "sampledActiveMs": 2.185
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2991669999901205,
+          "sampledActiveMs": 2.7
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.755750000011176,
+          "sampledActiveMs": 2.218
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9194579999893904,
+          "sampledActiveMs": 2.686
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.6987500000104774,
+          "sampledActiveMs": 2.212
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.901207999995677,
+          "sampledActiveMs": 2.228
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.028041999990819,
+          "sampledActiveMs": 2.392
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.198374999978114,
+          "sampledActiveMs": 2.544
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8022500000079162,
+          "sampledActiveMs": 2.225
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.947249999997439,
+          "sampledActiveMs": 2.396
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.498457999987295,
+          "sampledActiveMs": 3.291
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9763329999987036,
+          "sampledActiveMs": 2.723
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.4787499999802094,
+          "sampledActiveMs": 3.224
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.124708000017563,
+          "sampledActiveMs": 2.376
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.374959000007948,
+          "sampledActiveMs": 1.754
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3873330000205897,
+          "sampledActiveMs": 2.708
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.5544579999987036,
+          "sampledActiveMs": 3.313
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "rollover",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 50,
+      "elapsedMs": 94.10104199999478,
+      "sampledActiveMs": 47.842,
+      "maxInvocationSampledActiveMs": 47.842,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 298,
+          "transitions": 50,
+          "observerQueries": 50,
+          "done": true,
+          "elapsedMs": 94.10104199999478,
+          "sampledActiveMs": 47.842
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "rollover",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 36.492499999993015,
+      "sampledActiveMs": 10.947,
+      "maxInvocationSampledActiveMs": 10.947,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 36.492499999993015,
+          "sampledActiveMs": 10.947
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "rollover",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 50,
+      "transitions": 50,
+      "queries": 298,
+      "observerQueries": 0,
+      "elapsedMs": 120.61662399995839,
+      "sampledActiveMs": 65.04899999999999,
+      "maxInvocationSampledActiveMs": 4.195,
+      "modeledCronWaitMs": 2940000,
+      "sends": 0,
+      "statuses": [],
+      "observations": [
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.43954200000735,
+          "sampledActiveMs": 4.195
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.5339579999854323,
+          "sampledActiveMs": 2.709
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.1864999999816064,
+          "sampledActiveMs": 1.801
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.035875000001397,
+          "sampledActiveMs": 2.387
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.279999999998836,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.528500000014901,
+          "sampledActiveMs": 1.29
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.203957999998238,
+          "sampledActiveMs": 1.291
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4244160000234842,
+          "sampledActiveMs": 1.138
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.843916000012541,
+          "sampledActiveMs": 0.832
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6814160000067204,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.4229580000101123,
+          "sampledActiveMs": 0.672
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.609792000002926,
+          "sampledActiveMs": 1.619
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.27487499997369,
+          "sampledActiveMs": 0.623
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2715840000018943,
+          "sampledActiveMs": 0.979
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2297079999989364,
+          "sampledActiveMs": 1.77
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1635829999868292,
+          "sampledActiveMs": 1.454
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.9795419999863952,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.342417000007117,
+          "sampledActiveMs": 0.679
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0910839999851305,
+          "sampledActiveMs": 1.754
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0503329999919515,
+          "sampledActiveMs": 0.972
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.831500000000233,
+          "sampledActiveMs": 1.92
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.501625000004424,
+          "sampledActiveMs": 0.675
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3611670000245795,
+          "sampledActiveMs": 1.947
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1094999999913853,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2363750000076834,
+          "sampledActiveMs": 1.619
+        },
+        {
+          "queries": 5,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.927709000010509,
+          "sampledActiveMs": 1.297
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0400420000078157,
+          "sampledActiveMs": 1.446
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2901670000283048,
+          "sampledActiveMs": 1.648
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.9537079999863636,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 1.9416249999776483,
+          "sampledActiveMs": 1.748
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.0321249999979045,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.010083000001032,
+          "sampledActiveMs": 1.75
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.02033400000073,
+          "sampledActiveMs": 1.607
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.2362080000166316,
+          "sampledActiveMs": 1.297
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.204583000013372,
+          "sampledActiveMs": 1.246
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1252499999827705,
+          "sampledActiveMs": 1.751
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.019125000020722,
+          "sampledActiveMs": 1.097
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1351250000006985,
+          "sampledActiveMs": 1.444
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3762080000014976,
+          "sampledActiveMs": 1.951
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.432249999983469,
+          "sampledActiveMs": 1.931
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.071541999990586,
+          "sampledActiveMs": 0.683
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1917909999901894,
+          "sampledActiveMs": 0.998
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.229583000007551,
+          "sampledActiveMs": 0
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.3636249999981374,
+          "sampledActiveMs": 2.069
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.331417000008514,
+          "sampledActiveMs": 1.601
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.364291999983834,
+          "sampledActiveMs": 1.934
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.3072919999831356,
+          "sampledActiveMs": 0.683
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1766249999927823,
+          "sampledActiveMs": 1.476
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.1397499999729916,
+          "sampledActiveMs": 1.466
+        },
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.062040999997407,
+          "sampledActiveMs": 1.6
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "quiet",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 1,
+      "elapsedMs": 30.658499999990454,
+      "sampledActiveMs": 3.966,
+      "maxInvocationSampledActiveMs": 3.966,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.658499999990454,
+          "sampledActiveMs": 3.966
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "quiet",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 7,
+      "observerQueries": 1,
+      "elapsedMs": 31.952917000016896,
+      "sampledActiveMs": 5.705,
+      "maxInvocationSampledActiveMs": 5.705,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 7,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.952917000016896,
+          "sampledActiveMs": 5.705
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "quiet",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 6,
+      "observerQueries": 0,
+      "elapsedMs": 5.746042000013404,
+      "sampledActiveMs": 4.127,
+      "maxInvocationSampledActiveMs": 4.127,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["pending"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 5.746042000013404,
+          "sampledActiveMs": 4.127
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "question",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 30.615124999982072,
+      "sampledActiveMs": 5.095,
+      "maxInvocationSampledActiveMs": 5.095,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.615124999982072,
+          "sampledActiveMs": 5.095
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "question",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 1,
+      "elapsedMs": 31.462375000002794,
+      "sampledActiveMs": 4.95,
+      "maxInvocationSampledActiveMs": 4.95,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.462375000002794,
+          "sampledActiveMs": 4.95
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "question",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 4,
+      "observerQueries": 0,
+      "elapsedMs": 6.45374999998603,
+      "sampledActiveMs": 4.623,
+      "maxInvocationSampledActiveMs": 4.623,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["sent"],
+      "observations": [
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 6.45374999998603,
+          "sampledActiveMs": 4.623
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "ambiguous",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 25,
+      "elapsedMs": 75.50800000000163,
+      "sampledActiveMs": 44.063,
+      "maxInvocationSampledActiveMs": 44.063,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 102,
+          "transitions": 25,
+          "observerQueries": 25,
+          "done": true,
+          "elapsedMs": 75.50800000000163,
+          "sampledActiveMs": 44.063
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "ambiguous",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 16,
+      "observerQueries": 1,
+      "elapsedMs": 38.11716699998942,
+      "sampledActiveMs": 37.794,
+      "maxInvocationSampledActiveMs": 37.794,
+      "modeledCronWaitMs": 0,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 16,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 38.11716699998942,
+          "sampledActiveMs": 37.794
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "ambiguous",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 25,
+      "transitions": 25,
+      "queries": 102,
+      "observerQueries": 0,
+      "elapsedMs": 77.72862700012047,
+      "sampledActiveMs": 46.98700000000001,
+      "maxInvocationSampledActiveMs": 4.432,
+      "modeledCronWaitMs": 1440000,
+      "sends": 1,
+      "statuses": ["unknown"],
+      "observations": [
+        {
+          "queries": 6,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 4.885624999995343,
+          "sampledActiveMs": 4.432
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.6835420000134036,
+          "sampledActiveMs": 2.234
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.061374999990221,
+          "sampledActiveMs": 1.755
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.62370899997768,
+          "sampledActiveMs": 2.983
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.8332500000251457,
+          "sampledActiveMs": 2.24
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.875417000002926,
+          "sampledActiveMs": 0.308
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.719209000002593,
+          "sampledActiveMs": 2.06
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.704250000009779,
+          "sampledActiveMs": 2.055
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9314590000140015,
+          "sampledActiveMs": 1.731
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.987250000005588,
+          "sampledActiveMs": 2.214
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.747583999997005,
+          "sampledActiveMs": 0.985
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9320410000218544,
+          "sampledActiveMs": 2.234
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.915666000015335,
+          "sampledActiveMs": 0.159
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.869957999995677,
+          "sampledActiveMs": 2.065
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.841500000009546,
+          "sampledActiveMs": 2.244
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.0316250000032596,
+          "sampledActiveMs": 0.769
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.9081249999871943,
+          "sampledActiveMs": 0.171
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.7149999999965075,
+          "sampledActiveMs": 0.775
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.7520840000070166,
+          "sampledActiveMs": 2.345
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.35012500002631,
+          "sampledActiveMs": 2.7
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2944160000188276,
+          "sampledActiveMs": 2.555
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.2042079999810085,
+          "sampledActiveMs": 0.84
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 2.771042000007583,
+          "sampledActiveMs": 1.252
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.351667000009911,
+          "sampledActiveMs": 2.695
+        },
+        {
+          "queries": 4,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.738500000006752,
+          "sampledActiveMs": 3.186
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "expired",
+      "mode": "do-staged",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 30.805166999984067,
+      "sampledActiveMs": 4.807,
+      "maxInvocationSampledActiveMs": 4.807,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 30.805166999984067,
+          "sampledActiveMs": 4.807
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "expired",
+      "mode": "do-direct",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 1,
+      "elapsedMs": 31.281374999991385,
+      "sampledActiveMs": 3.732,
+      "maxInvocationSampledActiveMs": 3.732,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 1,
+          "done": true,
+          "elapsedMs": 31.281374999991385,
+          "sampledActiveMs": 3.732
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "scenario": "expired",
+      "mode": "cron",
+      "goalsPerOwner": 24,
+      "invocations": 1,
+      "transitions": 1,
+      "queries": 3,
+      "observerQueries": 0,
+      "elapsedMs": 3.422915999981342,
+      "sampledActiveMs": 1.972,
+      "maxInvocationSampledActiveMs": 1.972,
+      "modeledCronWaitMs": 0,
+      "sends": 0,
+      "statuses": ["cancelled"],
+      "observations": [
+        {
+          "queries": 3,
+          "transitions": 1,
+          "observerQueries": 0,
+          "elapsedMs": 3.422915999981342,
+          "sampledActiveMs": 1.972
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "round": 0,
+      "mode": "cron",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-staged",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-direct",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "cron",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-staged",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-direct",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "cron",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-staged",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 0,
+      "mode": "do-direct",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-staged",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-direct",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "cron",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-staged",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-direct",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "cron",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-staged",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "do-direct",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 1,
+      "mode": "cron",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-direct",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "cron",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-staged",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-direct",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "cron",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-staged",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-direct",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "cron",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 2,
+      "mode": "do-staged",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "cron",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-staged",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-direct",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "cron",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-staged",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-direct",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "cron",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-staged",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 3,
+      "mode": "do-direct",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-staged",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-direct",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "cron",
+      "scenario": "quiet",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-staged",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-direct",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "cron",
+      "scenario": "ambiguous",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-staged",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "do-direct",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "round": 4,
+      "mode": "cron",
+      "scenario": "expired",
+      "check": "replay preserves delivery policy",
+      "passed": true
+    },
+    {
+      "mode": "do-staged",
+      "check": "runtime restart after raw capture",
+      "passed": true
+    },
+    {
+      "mode": "do-staged",
+      "check": "replay after completed send",
+      "passed": true
+    },
+    {
+      "mode": "do-direct",
+      "check": "replay after completed send",
+      "passed": true
+    }
+  ],
+  "profiles": "durable-reminders-2026-10-17-local-profiles.json.gz"
+}

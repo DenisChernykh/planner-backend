@@ -47,6 +47,12 @@ pnpm dev
 монолита. Smoke использует временное локальное состояние; remote D1 и Telegram
 не вызываются. CI выполняет тот же gate после frozen install.
 
+Локальный эксперимент с Durable Objects: `pnpm reminders:compare-do`.
+Он сравнивает текущий Cron с двумя вариантами обработки через настоящий локальный
+alarm, использует только синтетические данные и подставные ответы Telegram.
+Production-конфигурация не меняется; эксперимент не входит в CI. Методика и
+ограничения: [Durable Objects prototype](backend/experiments/durable-reminders/README.md).
+
 После изменения API: `pnpm api:update`. Snapshot и клиент генерируются из
 серверного кода той же Git-ревизии. `pnpm test` запускает тесты всех пакетов;
 `pnpm build` собирает SPA; `pnpm deploy:dry-run` собирает production Worker
