@@ -9,8 +9,9 @@ calculation 15.183 and final calculation/summary 11.236 ms. Sending took
 was sent once. Full evidence and attribution limits remain in the linked report.
 
 The implementation was deployed as `47021ef` after explicit authorization and
-successful CI. The new production control is scheduled for 17 October, 09:10
-Asia/Yekaterinburg; it has not run yet. Local inspector samples are estimates,
+successful CI. The 17 October control started but was interrupted by a local observer error;
+its fixture was cleaned up and no report was sent. See the
+[interrupted control outcome](reminder-cpu-control-2026-10-17.md). Local inspector samples are estimates,
 not Cloudflare CPU metrics or proof of stable Free-tier operation.
 
 ## Persisted steps
@@ -193,12 +194,15 @@ No migration, resource/plan change or additional Telegram send occurred during
 this rollout. Sanitized evidence is in
 [`reminder-cpu-2026-10-16-47021ef-rollout.json`](reminder-cpu-2026-10-16-47021ef-rollout.json).
 
-Local thread heartbeat `planner-cpu-17` is active with a one-time schedule for
+Local thread heartbeat `planner-cpu-17` was created with a one-time schedule for
 17 October at 09:10. It checks the exact deployed revision, follows the control
 plan above, uses a fresh private manifest and a 90-minute deadline, cleans up on
 failure and disables itself after the control. It must not deploy another
 revision or enqueue a replacement report after an ambiguous result. The Mac
 must be on and the app running for work with local files, as described in the
 [official scheduled-task documentation](https://learn.chatgpt.com/docs/automations?surface=app).
-No control fixtures have been created for the new run yet; actual CPU results
-remain pending.
+The run was interrupted after fixture activation by a manifest-path mismatch;
+protective cleanup removed its fixture. No report was enqueued or sent. The
+heartbeat is now paused; inheritance/report CPU remain unmeasured. See the
+[17 October outcome](reminder-cpu-control-2026-10-17.md) for the error, all
+available metrics, attribution limits and cleanup evidence.
