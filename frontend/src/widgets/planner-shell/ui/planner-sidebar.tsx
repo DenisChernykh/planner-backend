@@ -17,6 +17,8 @@ import {
   useSidebar,
 } from "@/shared/ui";
 
+import { DeveloperCard } from "./developer-card";
+
 type PlannerSidebarProps = {
   month: string;
   user: AuthenticatedUser;
@@ -121,6 +123,9 @@ export function PlannerSidebar({ month, user }: PlannerSidebarProps) {
             )}
           </SidebarMenu>
         </nav>
+        <div className="mt-auto shrink-0 px-2 pt-6 pb-3 md:pr-[7px]">
+          <DeveloperCard />
+        </div>
       </SidebarContent>
       <SidebarFooter className="border-t px-3 py-4">
         {embedded ? (
