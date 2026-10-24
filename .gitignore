@@ -58,3 +58,7 @@ frontend/docs/design/**/*.png
 .env.local
 .env.production
 !*.example
+
+# Local planning source documents
+/backend/Апрель.docx
+/frontend/docs/Апрель.docx
