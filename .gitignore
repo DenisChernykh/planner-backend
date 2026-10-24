@@ -55,3 +55,6 @@ test-results/
 # UI mockups live in pen.dev; keep only images used by the Pen document.
 frontend/docs/design/**/*.png
 !frontend/docs/design/images/**/*.png
+.env.local
+.env.production
+!*.example
